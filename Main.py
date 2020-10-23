@@ -92,5 +92,4 @@ while ReturnDecision != "exit":
     ReturnDecision = Main_Center.NextChoice()  # この関数のところで"exit"returnしたら終了するようにしてる
 
 print("通常終了")
-print("ご利用ありがとうございました")
 sys.exit()
