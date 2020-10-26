@@ -46,7 +46,7 @@ class MakeObject:
             inp_in = str(sys.stdin.readline().rstrip())
             try:
                 NewObjct = cv2.VideoCapture(inp_in)
-                layer[self.NumberLayer].append(NewObjct)
+                layer[self.NumberLayer][1] = NewObjct
                 print("読み込みに成功")
                 return layer
 

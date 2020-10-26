@@ -9,6 +9,8 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
+import Organize
+
 import Encode
 import EditSize
 
@@ -17,6 +19,15 @@ import SetPoints
 import NewObject
 
 #input = sys.stdin.readline().rstrip()
+
+# layer[各レイヤー][レイヤ,メディアファイル,[POINT,POINT,POINT,POINT,POINT].....]
+
+
+# layer
+# 一次元目：各レイヤー
+# 二次元目：レイヤー,メディアファイル,POINT
+# 三次元目(POINTのみ):たくさんのPOINT
+# 四次元目(POINTのみ):Time x y size
 
 print("=======================")
 print("")
@@ -38,7 +49,7 @@ class Center:  # 中心的な役割になる、はず
     def NextChoice(self):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
         NextChoiceList = {1: "exit", 2: "NewLayer",
-                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints"}
+                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints"}
         print(NextChoiceList)
 
         AskNextAction = sys.stdin.readline().rstrip()
@@ -50,7 +61,7 @@ class Center:  # 中心的な役割になる、はず
                 "RGBA", (self.EditSize[0], self.EditSize[1]), (0, 0, 0, 0))
             DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
-            self.layer.append([DrawSetImg])
+            self.layer.append([DrawSetImg, None, []])
 
             print("レイヤー数:" + str(len(self.layer)))
             print(self.layer)
@@ -71,6 +82,19 @@ class Center:  # 中心的な役割になる、はず
 
         elif AskNextAction == NextChoiceList[5] or AskNextAction == "5":
             print("動画エンコード")
+            if len(self.layer) != 0:
+                AskDi = MovImgsEncode.Main(self.layer)
+                """
+                if AskDi == "Det":
+                    print("問題あり")
+                    return
+                else:
+                    self.layer == AskDi
+                """
+
+            else:
+                print("レイヤーがありません")
+                return
 
         elif AskNextAction == NextChoiceList[6] or AskNextAction == "6":
             print("オブジェクトの追加")
@@ -116,6 +140,21 @@ class Center:  # 中心的な役割になる、はず
                 print("レイヤーがありません")
                 return
 
+        elif AskNextAction == NextChoiceList[9] or AskNextAction == "9":
+            print("レイヤーの中にあるPoint設定を時間順に並び替えます")
+            if len(self.layer) != 0:
+                AddOREdit = 1
+                AskDi = ArrayOrganize.PointOrganize(self.layer)
+                if AskDi == "Det":
+                    print("問題あり")
+                    return
+                else:
+                    self.layer == AskDi
+
+            else:
+                print("レイヤーがありません")
+                return
+
 
 Main_Center = Center()
 SetSuperSetEditSize = EditSize.SuperSetEditSize()
@@ -123,6 +162,9 @@ New_MakeObject = NewObject.MakeObject()
 
 Set_MakePoint = SetPoints.MakePoints()
 
+MovImgsEncode = Encode.Encoder()
+
+ArrayOrganize = Organize.ArrayOrganize()
 
 ReturnDecision = ""
 while ReturnDecision != "exit":

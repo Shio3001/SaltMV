@@ -10,3 +10,19 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
 #input = sys.stdin.readline
+
+
+class Encoder:
+    def Main(self, layer):
+        print("動画の出力を開始")
+        print("")
+        print("")
+        print("******************************************************")
+        print("")
+        print(layer)
+        print("")
+        print("******************************************************")
+        print("")
+        print("")
+
+        return layer

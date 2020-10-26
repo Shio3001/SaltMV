@@ -16,7 +16,7 @@ class SelectLayer:
 
         try:
             NumberLayer = int(sys.stdin.readline().rstrip())
-            print(layer[NumberLayer][0])
+            print(layer[NumberLayer])
             return NumberLayer
 
         except:
@@ -27,11 +27,11 @@ class SelectLayer:
         print("変更する中間点を選択")
         print(layer)
 
-        print("番号 [ 1 から ] ")
+        print("番号 [ 0 から ] ")
 
         try:
             NumberPoint = int(sys.stdin.readline().rstrip())
-            print(layer[NumberLayer][NumberPoint])
+            print(layer[NumberLayer][2][NumberPoint])
             return NumberPoint
 
         except:

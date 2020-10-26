@@ -16,9 +16,9 @@ import SelectLayer
 class MakePoints:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
-        self.AddPoint = [0, 0, 0, 0]  # time(フレーム) , x , y ,透明度
 
     def Main(self, layer, AddOREdit):
+        self.AddPoint = [0, 0, 0, 0]  # time(フレーム) , x , y ,透明度
         NumberLayer = self.SetSelectLayer.Main(layer)
 
         NumberPoint = None
@@ -62,9 +62,11 @@ class MakePoints:
             return "Det"
 
         if AddOREdit == 0:
-            layer[NumberLayer].append(self.AddPoint)
+            print(layer[NumberLayer][2])
+            layer[NumberLayer][2].append(self.AddPoint)
+            print(layer[NumberLayer][2])
 
         elif AddOREdit == 1:
-            layer[NumberLayer][NumberPoint] = self.AddPoint
+            layer[NumberLayer][2][NumberPoint] = self.AddPoint
 
         return layer
