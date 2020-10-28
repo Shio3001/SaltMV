@@ -155,7 +155,10 @@ class Center:  # 中心的な役割になる、はず
         elif AskNextAction == NextChoiceList[9] or AskNextAction == "9":
             print("レイヤーの中にあるPoint設定を時間順に並び替えます")
             if len(self.layer) != 0:
-                GetPoint = self.GetPrint.GetPoint(self.layer, 0)
+
+                for ilayer in range(len(self.layer)):
+                    GetPoint = self.GetPrint.GetPoint(self.layer, ilayer)
+
                 print("Point 処理前 " + str(GetPoint))
 
                 AskDi = ArrayOrganize.PointOrganize(self.layer)
@@ -166,7 +169,8 @@ class Center:  # 中心的な役割になる、はず
                 else:
 
                     self.layer == AskDi
-                    GetPoint = self.GetPrint.GetPoint(self.layer, 0)
+                    for ilayer in range(len(self.layer)):
+                        GetPoint = self.GetPrint.GetPoint(self.layer, ilayer)
                     print("Point 処理後 " + str(GetPoint))
 
             else:
