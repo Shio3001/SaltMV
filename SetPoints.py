@@ -12,6 +12,8 @@ import PIL.ImageFont as ImageFont
 import SelectLayer
 #input = sys.stdin.readline
 
+import PrintLayers
+
 
 class MakePoints:
     def __init__(self):
@@ -23,10 +25,13 @@ class MakePoints:
 
         NumberPoint = None
 
+        if NumberLayer == "Det":
+            return "Det"
+
         if AddOREdit == 1:
             NumberPoint = self.SetSelectLayer.Point(layer, NumberLayer)
 
-        if NumberLayer == "Det" or NumberPoint == "Det":
+        if NumberPoint == "Det":
             return "Det"
 
         print("")
@@ -62,11 +67,12 @@ class MakePoints:
             return "Det"
 
         if AddOREdit == 0:
-            print(layer[NumberLayer][2])
-            layer[NumberLayer][2].append(self.AddPoint)
-            print(layer[NumberLayer][2])
+            print(layer[NumberLayer].Point)
+
+            layer[NumberLayer].Point.append(self.AddPoint)
+            print(layer[NumberLayer].Point)
 
         elif AddOREdit == 1:
-            layer[NumberLayer][2][NumberPoint] = self.AddPoint
+            layer[NumberLayer].Point[NumberPoint] = self.AddPoint
 
         return layer

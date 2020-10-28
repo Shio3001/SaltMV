@@ -4,13 +4,17 @@ import numpy
 import os
 
 #input = sys.stdin.readline
+import PrintLayers
 
 
 class SelectLayer:
 
+    def __init__(self):
+        self.GetPrint = PrintLayers.PrintMain()
+
     def Main(self, layer):
         print("オブジェクトを入れるレイヤーを選択")
-        print(layer)
+        print(self.GetPrint.ReturnPrint(layer))
 
         print("番号 [ 0 から ] ")
 
@@ -25,13 +29,13 @@ class SelectLayer:
 
     def Point(self, layer, NumberLayer):
         print("変更する中間点を選択")
-        print(layer)
+        print(self.GetPrint.ReturnPrint(layer))
 
         print("番号 [ 0 から ] ")
 
         try:
             NumberPoint = int(sys.stdin.readline().rstrip())
-            print(layer[NumberLayer][2][NumberPoint])
+            print(layer[NumberLayer].Point[NumberPoint])
             return NumberPoint
 
         except:

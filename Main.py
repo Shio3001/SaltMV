@@ -18,7 +18,9 @@ import SetPoints
 
 import NewObject
 
-#input = sys.stdin.readline().rstrip()
+import PrintLayers
+
+# input = sys.stdin.readline().rstrip()
 
 # layer[各レイヤー][レイヤ,メディアファイル,[POINT,POINT,POINT,POINT,POINT].....]
 
@@ -40,10 +42,18 @@ print("")
 print("=======================")
 
 
+class layerElements:
+    def __init__(self, DrawSetImg):
+        self.DrawSetImg = DrawSetImg
+        self.Document = None
+        self.Point = []
+
+
 class Center:  # 中心的な役割になる、はず
     def __init__(self):
         self.layer = []
         self.EditSize = [0, 0]
+        self.GetPrint = PrintLayers.PrintMain()
         # self.Point = [0, 0, 0, 0, 0]  # Time , X , Y ,Z ,Size
 
     def NextChoice(self):
@@ -61,10 +71,11 @@ class Center:  # 中心的な役割になる、はず
                 "RGBA", (self.EditSize[0], self.EditSize[1]), (0, 0, 0, 0))
             DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
-            self.layer.append([DrawSetImg, None, []])
+            self.layer.append(layerElements(DrawSetImg))
+            # self.layer.append([DrawSetImg, None, []])
 
             print("レイヤー数:" + str(len(self.layer)))
-            print(self.layer)
+            print(self.GetPrint.ReturnPrint(self.layer))
 
         elif AskNextAction == NextChoiceList[3] or AskNextAction == "3":
 
@@ -78,7 +89,7 @@ class Center:  # 中心的な役割になる、はず
 
         elif AskNextAction == NextChoiceList[4] or AskNextAction == "4":
             print("レイヤー数:" + str(len(self.layer)))
-            print(self.layer)
+            print(self.GetPrint.ReturnPrint(self.layer))
 
         elif AskNextAction == NextChoiceList[5] or AskNextAction == "5":
             print("動画エンコード")
@@ -134,6 +145,7 @@ class Center:  # 中心的な役割になる、はず
                     print("問題あり")
                     return
                 else:
+                    xs
                     self.layer == AskDi
 
             else:
@@ -143,13 +155,19 @@ class Center:  # 中心的な役割になる、はず
         elif AskNextAction == NextChoiceList[9] or AskNextAction == "9":
             print("レイヤーの中にあるPoint設定を時間順に並び替えます")
             if len(self.layer) != 0:
-                AddOREdit = 1
+                GetPoint = self.GetPrint.GetPoint(self.layer, 0)
+                print("Point 処理前 " + str(GetPoint))
+
                 AskDi = ArrayOrganize.PointOrganize(self.layer)
+
                 if AskDi == "Det":
                     print("問題あり")
                     return
                 else:
+
                     self.layer == AskDi
+                    GetPoint = self.GetPrint.GetPoint(self.layer, 0)
+                    print("Point 処理後 " + str(GetPoint))
 
             else:
                 print("レイヤーがありません")

@@ -10,7 +10,7 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
 import SelectLayer
-
+import PrintLayers
 # ここから各オブジェクトを追加するのを書く
 import MakeText
 # ここから各オブジェクトを追加するのを書く
@@ -46,7 +46,7 @@ class MakeObject:
             inp_in = str(sys.stdin.readline().rstrip())
             try:
                 NewObjct = cv2.VideoCapture(inp_in)
-                layer[self.NumberLayer][1] = NewObjct
+                layer[self.NumberLayer].Document = NewObjct
                 print("読み込みに成功")
                 return layer
 
