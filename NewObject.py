@@ -11,7 +11,6 @@ import PIL.ImageFont as ImageFont
 
 import SelectLayer
 import PrintLayers
-# ここから各オブジェクトを追加するのを書く
 import MakeText
 # ここから各オブジェクトを追加するのを書く
 

@@ -11,7 +11,7 @@ class PrintMain:
 
             print("")
             print("レイヤー" + str(iprint))
-            print(ip.DrawSetImg)
+            # print(ip.DrawSetImg)
             print(ip.Document)
             print(ip.Point)
             print("")

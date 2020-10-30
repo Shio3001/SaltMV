@@ -10,15 +10,12 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
 import Organize
-
 import Encode
 import EditSize
-
 import SetPoints
-
 import NewObject
-
 import PrintLayers
+import MakeText
 
 # input = sys.stdin.readline().rstrip()
 
@@ -43,9 +40,9 @@ print("=======================")
 
 
 class layerElements:
-    def __init__(self, DrawSetImg):
-        self.DrawSetImg = DrawSetImg
-        self.Document = None
+    def __init__(self):
+        #self.DrawSetImg = DrawSetImg
+        self.Document = []
         self.Point = []
 
 
@@ -59,7 +56,7 @@ class Center:  # 中心的な役割になる、はず
     def NextChoice(self):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
         NextChoiceList = {1: "exit", 2: "NewLayer",
-                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints"}
+                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints", 10: "MakeText"}
         print(NextChoiceList)
 
         AskNextAction = sys.stdin.readline().rstrip()
@@ -67,11 +64,16 @@ class Center:  # 中心的な役割になる、はず
             return "exit"
 
         elif AskNextAction == NextChoiceList[2] or AskNextAction == "2":
+
+            """
             SetImg = Image.new(
                 "RGBA", (self.EditSize[0], self.EditSize[1]), (0, 0, 0, 0))
             DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
-            self.layer.append(layerElements(DrawSetImg))
+            self.layer.append(layerElements([DrawSetImg]))
+
+            """
+            self.layer.append(layerElements())
             # self.layer.append([DrawSetImg, None, []])
 
             print("レイヤー数:" + str(len(self.layer)))
@@ -90,18 +92,18 @@ class Center:  # 中心的な役割になる、はず
         elif AskNextAction == NextChoiceList[4] or AskNextAction == "4":
             print("レイヤー数:" + str(len(self.layer)))
             print(self.GetPrint.ReturnPrint(self.layer))
+            print("")
 
         elif AskNextAction == NextChoiceList[5] or AskNextAction == "5":
             print("動画エンコード")
             if len(self.layer) != 0:
-                AskDi = MovImgsEncode.Main(self.layer)
-                """
+                AskDi = MovImgsEncode.Main(self.layer, self.EditSize)
+
                 if AskDi == "Det":
                     print("問題あり")
                     return
                 else:
                     self.layer == AskDi
-                """
 
             else:
                 print("レイヤーがありません")
@@ -115,7 +117,7 @@ class Center:  # 中心的な役割になる、はず
                     print("問題あり")
                     return
                 else:
-                    self.layer == AskDi
+                    self.layer = AskDi
 
             else:
                 print("レイヤーがありません")
@@ -130,7 +132,7 @@ class Center:  # 中心的な役割になる、はず
                     print("問題あり")
                     return
                 else:
-                    self.layer == AskDi
+                    self.layer = AskDi
 
             else:
                 print("レイヤーがありません")
@@ -145,8 +147,7 @@ class Center:  # 中心的な役割になる、はず
                     print("問題あり")
                     return
                 else:
-                    xs
-                    self.layer == AskDi
+                    self.layer = AskDi
 
             else:
                 print("レイヤーがありません")
@@ -168,11 +169,31 @@ class Center:  # 中心的な役割になる、はず
                     return
                 else:
 
-                    self.layer == AskDi
+                    self.layer = AskDi
                     for ilayer in range(len(self.layer)):
                         GetPoint = self.GetPrint.GetPoint(self.layer, ilayer)
                     print("Point 処理後 " + str(GetPoint))
 
+            else:
+                print("レイヤーがありません")
+                return
+        elif AskNextAction == NextChoiceList[10] or AskNextAction == "10":
+            print("テキストを生成します")
+
+            if self.EditSize[0] == 0:
+                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
+                return
+            elif self.EditSize[1] == 0:
+                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
+                return
+
+            if len(self.layer) != 0:
+                AskDi = Set_MakeText.Main(self.layer, self.EditSize)
+                if AskDi == "Det":
+                    print("問題あり")
+                    return
+                else:
+                    self.layer = AskDi
             else:
                 print("レイヤーがありません")
                 return
@@ -187,6 +208,8 @@ Set_MakePoint = SetPoints.MakePoints()
 MovImgsEncode = Encode.Encoder()
 
 ArrayOrganize = Organize.ArrayOrganize()
+
+Set_MakeText = MakeText.MakeTexts()
 
 ReturnDecision = ""
 while ReturnDecision != "exit":

@@ -1,7 +1,9 @@
 # coding:utf-8
 import sys
-import numpy
-import os
+
+
+#import numpy
+#import os
 
 #input = sys.stdin.readline
 import PrintLayers
@@ -13,8 +15,9 @@ class SelectLayer:
         self.GetPrint = PrintLayers.PrintMain()
 
     def Main(self, layer):
-        print("オブジェクトを入れるレイヤーを選択")
+
         print(self.GetPrint.ReturnPrint(layer))
+        print("オブジェクトを入れるレイヤーを選択")
 
         print("番号 [ 0 から ] ")
 
@@ -28,9 +31,9 @@ class SelectLayer:
             return "Det"
 
     def Point(self, layer, NumberLayer):
-        print("変更する中間点を選択")
-        print(self.GetPrint.ReturnPrint(layer))
 
+        print(self.GetPrint.ReturnPrint(layer))
+        print("変更する中間点を選択")
         print("番号 [ 0 から ] ")
 
         try:

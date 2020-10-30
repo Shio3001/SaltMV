@@ -15,7 +15,7 @@ import PrintLayers
 
 class SuperSetEditSize:
     def __init__(self):
-        self.EditSize = [0, 0]
+        self.EditSize = [0, 0, 0, 0]
 
     def SetEditSize(self):
         print("動画の縦横サイズを入力してください[X,Y]")
@@ -34,6 +34,18 @@ class SuperSetEditSize:
         except:
             return "Det"
 
+        print("[ fps ] を入力")
+        try:
+            self.EditSize[2] = round(int(sys.stdin.readline().rstrip()))
+        except:
+            return "Det"
+
+        print("[ 長さ ] を入力")
+        try:
+            self.EditSize[3] = round(int(sys.stdin.readline().rstrip()))
+        except:
+            return "Det"
+
         print("入力終了 " + "横 : " +
-              str(self.EditSize[0]) + " 高 : " + str(self.EditSize[1]))
+              str(self.EditSize[0]) + " 高 : " + str(self.EditSize[1]) + " fps値 : " + str(self.EditSize[2]) + " 長さ : " + str(self.EditSize[3]))
         return self.EditSize
