@@ -9,7 +9,7 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
-#input = sys.stdin.readline
+# input = sys.stdin.readline
 import PrintLayers
 
 
@@ -49,16 +49,23 @@ class Encoder:
         size = (EditSize[0], EditSize[1])
         fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
 
-        print("合成用動画ファイルを生成しています")
+        os.system("mkdir Encode")
 
+        # あとで移設
+        print("*** ファイル削除 ***")
+
+        os.system("rm -fv Encode/OutputBasePicture.png")
+        os.system("rm -fv Encode/OutputBaseMov.mp4")
+
+        print("*** ファイル削除 終了 ***")
+
+        print("合成用動画ファイルを生成しています")
         OutputBasePicture = Image.new(
             "RGB", (EditSize[0], EditSize[1]), (0, 0, 0))
 
-        os.system("mkdir Encode")
-
         OutputBasePicture.save("Encode/OutputBasePicture.png")
 
-        #os.system("ffmpeg -loop 1 -i test.jpg -vcodec libx264 -pix_fmt yuv420p -t 3 -r 30 output.mp4")
+        # os.system("ffmpeg -loop 1 -i test.jpg -vcodec libx264 -pix_fmt yuv420p -t 3 -r 30 output.mp4")
 
         os.system("ffmpeg -loop 1 -i Encode/OutputBasePicture.png -vcodec libx264 -pix_fmt yuv420p -t " +
                   str(EditSize[3] / EditSize[2])+" -r "+str(EditSize[2])+" Encode/OutputBaseMov.mp4")
@@ -66,32 +73,50 @@ class Encoder:
         print("合成用動画ファイルを生成が終了しました")
         print("動画の出力を開始します")
 
-        """
-        writer = cv2.VideoWriter(
+        BaseMov = cv2.VideoCapture("Encode/OutputBaseMov.mp4")
+
+        Writer = cv2.VideoWriter(
             GetOutputAhead, fmt, EditSize[2], size)  # ライター作成
 
-        while mov.isOpened():
-            ret, moves = mov.read()
+        PreviewFps = 1
+
+        while BaseMov.isOpened():
+            ret, Ar_BeseMove = BaseMov.read()
             if ret == True:
-                cv2.cvtColor(moves, cv2.COLOR_RGB2RGBA)
-                Point_img1ar, moves, last_ctm = self.InText(
-                    mov.get(cv2.CAP_PROP_POS_FRAMES), moves, img1_ar, movSize, picture_size_text, last_ctm, Point_img1ar)
+                cv2.cvtColor(BaseMov, cv2.COLOR_RGB2RGBA)
+                OutputData = self.ArrayedSet(
+                    BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
+                # EditSize ・・・ 動画の設定など
+                # BaseMov ・・・出力用の真っ黒なファイル
+                # layer ・・・ 動画編集情報
+
                 # 現在いるフレームを送信
-                cv2.imshow('test', moves)
-                cv2.cvtColor(moves, cv2.COLOR_RGBA2RGB)
-                writer.write(moves)
-                if cv2.waitKey(fff) & 0xFF == ord('q'):
+                cv2.imshow('OutputPreview', OutputData)
+                cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
+                Writer.write(OutputData)
+                if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
                     print("再生終了")
                     break
 
             else:
                 break
 
-        writer.release()
+        Writer.release()
         cv2.destroyAllWindows()
         print("OPENCV END")
-        """
 
         print("動画の出力が終了しました")
 
         return layer
+
+    def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
+        print("Classから出力用データを生成する")
+
+        for ilayerloop in range(len(layer)):
+            print(str(ilayerloop) + "レイヤー処理")
+
+            for rs in range(3):
+                Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (
+                    img1_arMov[:, :, rs] - Ar_BeseMove[:, :, rs]) * (img1_arMov[:, :, 3] / 255)
+
+        return Ar_BeseMove

@@ -45,9 +45,15 @@ class MakeObject:
             inp_in = str(sys.stdin.readline().rstrip())
             try:
                 NewObjct = cv2.VideoCapture(inp_in)
-                layer[self.NumberLayer].Document = NewObjct
-                print("読み込みに成功")
-                return layer
+
+                ret, Moves = NewObjct.read()
+
+                if ret == False:
+                    return "Det"
+                elif ret == True:
+                    layer[self.NumberLayer].Document = Moves
+                    print("読み込みに成功")
+                    return layer
 
             except:
                 print("ファイルを正常に読み込めませんでした")

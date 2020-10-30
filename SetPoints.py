@@ -17,6 +17,8 @@ import SelectLayer
 
 import PrintLayers
 
+# 基本中間点を設定させる
+
 
 class MakePoints:
     def __init__(self):
@@ -38,7 +40,11 @@ class MakePoints:
             return "Det"
 
         print("")
-        print("起点・中間点・終点の追加入力の開始")
+
+        print("設定するものを入力 [x][y][a] 複数記入も可 例:[xy] [ya]")
+        Choices = str(sys.stdin.readline().rstrip())
+
+        print(Choices)
 
         print("")
         print("設定する時間の入力 [ 数値 ]")
@@ -49,25 +55,33 @@ class MakePoints:
             return "Det"
 
         print("")
-        print("座標：Xの入力 [ 数値 ]")
-        try:
-            self.AddPoint[1] = int(sys.stdin.readline().rstrip())
-        except:
-            return "Det"
+
+        Cho = "x" in Choices
+        if Cho == True:
+            print("座標：Xの入力 [ 数値 ]")
+            try:
+                self.AddPoint[1] = int(sys.stdin.readline().rstrip())
+            except:
+                return "Det"
 
         print("")
-        print("座標：Yの入力 [ 数値 ]")
-        try:
-            self.AddPoint[2] = int(sys.stdin.readline().rstrip())
-        except:
-            return "Det"
+
+        Cho = "y" in Choices
+        if Cho == True:
+            print("座標：Yの入力 [ 数値 ]")
+            try:
+                self.AddPoint[2] = int(sys.stdin.readline().rstrip())
+            except:
+                return "Det"
 
         print("")
-        print("透明度 [ 数値 ]")
-        try:
-            self.AddPoint[3] = int(sys.stdin.readline().rstrip())
-        except:
-            return "Det"
+        Cho = "a" in Choices
+        if Cho == True:
+            print("透明度 [ 数値 ]")
+            try:
+                self.AddPoint[3] = int(sys.stdin.readline().rstrip())
+            except:
+                return "Det"
 
         if AddOREdit == 0:
             print(layer[NumberLayer].Point)
