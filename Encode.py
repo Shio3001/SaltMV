@@ -115,12 +115,12 @@ class Encoder:
 
     def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
 
-        print("Classから出力用データを生成する")
+        # print("Classから出力用データを生成する")
 
         # try:
 
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
-            print(str(ilayerloop) + "レイヤー処理")
+            #print(str(ilayerloop) + "レイヤー処理")
 
             # Pointの数だけ処理を行います
             for iPoint in range(len(layer[ilayerloop].Point)):
@@ -129,17 +129,37 @@ class Encoder:
                 for Storage in range(3):
 
                     if layer[ilayerloop].Point[iPoint][Storage + 1] != None:
-                        print(Storage + 1)
+                        #print(Storage + 1)
 
-                        # 現在の中間点がどこか検索します
-                        for itime in range(EditSize[3]):  # itime = 中間点検索用
-                            if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
-                                PreviousPoint = itime
-                                print("現在の地点:" + str(PreviousPoint))
-                                break
-                        # print("アバババ")
+                        try:
 
-                # OutSynthesis =
+                            PreviousPoint = 0
+
+                            # 現在の中間点がどこか検索します
+                            for itime in range(EditSize[3]):  # itime = 中間点検索用
+                                if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
+                                    PreviousPoint = itime - 1
+                                    #print("現在の地点:" + str(PreviousPoint))
+                                    break
+
+                            NextPoint = layer[ilayerloop].Point[PreviousPoint +
+                                                                1][Storage + 1]
+                            OldPoint = layer[ilayerloop].Point[PreviousPoint][Storage + 1]
+
+                            NextPointTime = layer[ilayerloop].Point[PreviousPoint + 1][0]
+                            OldPointTime = layer[ilayerloop].Point[PreviousPoint][0]
+
+                            print("入力情報:" + " 前フレーム地点: " + str(NextPoint) + " 次フレーム地点: " + str(
+                                OldPoint) + " 次フレーム時間: " + str(NextPointTime) + " 前フレーム時間: " + str(OldPointTime))
+
+                            OutSynthesis = (
+                                ((NextPoint - OldPoint) / (NextPointTime - OldPointTime * NowFlame) - OldPointTime)) + OldPoint
+                            print(OutSynthesis)
+                            # print("アバババ")
+
+                        except:
+                            print("動画の中間点指定に失敗しました")
+                            return "Det"
 
                 # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム - 前のフレーム時間)) + 前の地点
             """
