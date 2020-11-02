@@ -63,7 +63,11 @@ class Encoder:
         OutputBasePicture = Image.new(
             "RGB", (EditSize[0], EditSize[1]), (0, 0, 0))
 
-        OutputBasePicture.save("Encode/OutputBasePicture.png")
+        try:
+            OutputBasePicture.save("Encode/OutputBasePicture.png")
+        except:
+            print("動画出力用ファイルの作成に失敗しました 画面サイズが設定されていない可能性があります")
+            return "Det"
 
         # os.system("ffmpeg -loop 1 -i test.jpg -vcodec libx264 -pix_fmt yuv420p -t 3 -r 30 output.mp4")
 
@@ -83,7 +87,7 @@ class Encoder:
         while BaseMov.isOpened():
             ret, Ar_BeseMove = BaseMov.read()
             if ret == True:
-                cv2.cvtColor(BaseMov, cv2.COLOR_RGB2RGBA)
+                cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
                 OutputData = self.ArrayedSet(
                     BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
                 # EditSize ・・・ 動画の設定など
@@ -95,8 +99,8 @@ class Encoder:
                 cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
                 Writer.write(OutputData)
                 if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
-                    print("再生終了")
-                    break
+                    print("書き出し中・・・")
+                    # break
 
             else:
                 break
@@ -110,13 +114,41 @@ class Encoder:
         return layer
 
     def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
+
         print("Classから出力用データを生成する")
 
-        for ilayerloop in range(len(layer)):
+        # try:
+
+        for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
             print(str(ilayerloop) + "レイヤー処理")
 
+            # Pointの数だけ処理を行います
+            for iPoint in range(len(layer[ilayerloop].Point)):
+
+                # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
+                for Storage in range(3):
+
+                    if layer[ilayerloop].Point[iPoint][Storage + 1] != None:
+                        print(Storage + 1)
+
+                        # 現在の中間点がどこか検索します
+                        for itime in range(EditSize[3]):  # itime = 中間点検索用
+                            if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
+                                PreviousPoint = itime
+                                print("現在の地点:" + str(PreviousPoint))
+                                break
+                        # print("アバババ")
+
+                # OutSynthesis =
+
+                # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム - 前のフレーム時間)) + 前の地点
+            """
             for rs in range(3):
                 Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (
                     img1_arMov[:, :, rs] - Ar_BeseMove[:, :, rs]) * (img1_arMov[:, :, 3] / 255)
+            """
+
+    # except:
+        #    print("なんか無理だった")
 
         return Ar_BeseMove

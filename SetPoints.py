@@ -63,6 +63,8 @@ class MakePoints:
                 self.AddPoint[1] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
+        else:
+            self.AddPoint[1] = None
 
         print("")
 
@@ -73,6 +75,8 @@ class MakePoints:
                 self.AddPoint[2] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
+        else:
+            self.AddPoint[2] = None
 
         print("")
         Cho = "a" in Choices
@@ -82,6 +86,8 @@ class MakePoints:
                 self.AddPoint[3] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
+        else:
+            self.AddPoint[3] = None
 
         if AddOREdit == 0:
             print(layer[NumberLayer].Point)
