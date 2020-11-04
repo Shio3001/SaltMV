@@ -20,7 +20,7 @@ class ArrayOrganize:
     def __init__(self):
         self.PrintGet_Points = PrintLayers.PrintMain()
 
-    def PointOrganize(self, layer):
+    def PointOrganize(self, layer, EditSize):
 
         print("Pointを時間順に差し替え")
 
@@ -31,8 +31,15 @@ class ArrayOrganize:
                 layer[ilayer].Point, key=lambda x: x[0], reverse=False)
             print("sort処理: " + str(ilayer) + " 処理回数: " + str(len(layer)))
 
+            Backmost = layer[ilayer].Point[int(
+                round(len(layer[ilayer].Point))) - 1][0]
+
+            if Backmost > EditSize[3]:
+                EditSize[3] = Backmost
+                print("最後尾フレームを変更しました" + str(Backmost))
+
         # self.PrintGet_Points.ReturnPrint(layer)
         #GetPoint = self.PrintGet_Points.GetPoint(layer, 0)
         #print("Point 処理後 " + str(GetPoint))
 
-        return layer
+        return layer, EditSize

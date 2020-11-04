@@ -163,7 +163,8 @@ class Center:  # 中心的な役割になる、はず
 
                 print("Point 処理前 " + str(GetPoint))
 
-                AskDi = ArrayOrganize.PointOrganize(self.layer)
+                AskDi, self.EditSize = ArrayOrganize.PointOrganize(
+                    self.layer, self.EditSize)
 
                 if AskDi == "Det":
                     print("問題あり")
