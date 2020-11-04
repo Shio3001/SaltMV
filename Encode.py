@@ -150,12 +150,14 @@ class Encoder:
                     OldAdjustment = 0
                     NextAdjustment = 0
 
+                    """
                     print("--- 読み込み先 ---")
                     print(layer[ilayerloop].Point[PreviousPoint +
                                                   OldAdjustment][Storage + 1])
                     print(layer[ilayerloop].Point[PreviousPoint +
                                                   NextAdjustment + 1][Storage + 1])
                     print("--- 　おわり　 ---")
+                    """
 
                     while layer[ilayerloop].Point[PreviousPoint + OldAdjustment][Storage + 1] is None and PreviousPoint + OldAdjustment != 0:
 
