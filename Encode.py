@@ -89,7 +89,7 @@ class Encoder:
             if ret == True:
                 cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
                 OutputData = self.ArrayedSet(
-                    BaseMov.get(cv2.CAP_PROP_POS_FRAMES) + 1, EditSize, Ar_BeseMove, layer)
+                    BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
 
                 if OutputData == "Det":
                     print("出力エラー")
@@ -126,88 +126,103 @@ class Encoder:
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
             # print(str(ilayerloop) + "レイヤー処理")
 
+            try:
+                if layer[ilayerloop].Property[0] == "Text":
+                    print("テキストを検出")
+                    UseDocument = layer[ilayerloop].Document
+            except:
+                print("テキストなし")
+
             # Pointの数だけ処理を行います
-            for iPoint in range(len(layer[ilayerloop].Point)):
+            # for iPoint in range(len(layer[ilayerloop].Point)):
 
-                PreviousPoint = 0
+            PreviousPoint = 0
 
-                # 現在の中間点がどこか検索します
-                # itime = 中間点検索用
-                for itime in range(int(round(len(layer[ilayerloop].Point)))):
-                    if layer[ilayerloop].Point[itime][0] >= NowFlame:
-                        PreviousPoint = itime - 1
-                        break
+            # 現在の中間点がどこか検索します
+            # itime = 中間点検索用
+            for iPoint in range(int(round(len(layer[ilayerloop].Point)))):
+                if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
+                    PreviousPoint = iPoint - 1
+                    break
 
                 # print("決定")
+            AfterTreatmentPoint = []
+            AfterTreatmentPoint.append(None)
 
-                # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
-                for Storage in range(3):
+            # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
+            for Storage in range(3):
 
-                    OldAdjustment = 0
-                    NextAdjustment = 0
+                OldAdjustment = 0
+                NextAdjustment = 0
 
-                    while layer[ilayerloop].Point[PreviousPoint + OldAdjustment][Storage + 1] is None and PreviousPoint + OldAdjustment != 0:
+                while layer[ilayerloop].Point[PreviousPoint + OldAdjustment][Storage + 1] is None and PreviousPoint + OldAdjustment != 0:
 
-                        OldAdjustment -= 1
-                        print("前の値がNoneだったので数値を変更します")
+                    OldAdjustment -= 1
+                    print("前の値がNoneだったので数値を変更します")
 
-                    while layer[ilayerloop].Point[PreviousPoint + NextAdjustment + 1][Storage + 1] is None:
+                while layer[ilayerloop].Point[PreviousPoint + NextAdjustment + 1][Storage + 1] is None:
 
-                        NextAdjustment += 1
-                        print("次の値がNoneだったので数値を変更します")
+                    NextAdjustment += 1
+                    print("次の値がNoneだったので数値を変更します")
 
-                    OldPoint = layer[ilayerloop].Point[PreviousPoint +
-                                                       OldAdjustment][Storage + 1]
-                    OldPointTime = layer[ilayerloop].Point[PreviousPoint +
-                                                           OldAdjustment][0]
+                OldPoint = layer[ilayerloop].Point[PreviousPoint +
+                                                   OldAdjustment][Storage + 1]
+                OldPointTime = layer[ilayerloop].Point[PreviousPoint +
+                                                       OldAdjustment][0]
 
-                    NextPoint = layer[ilayerloop].Point[PreviousPoint +
-                                                        1 + NextAdjustment][Storage + 1]
-                    NextPointTime = layer[ilayerloop].Point[PreviousPoint +
-                                                            1 + NextAdjustment][0]
+                NextPoint = layer[ilayerloop].Point[PreviousPoint +
+                                                    1 + NextAdjustment][Storage + 1]
+                NextPointTime = layer[ilayerloop].Point[PreviousPoint +
+                                                        1 + NextAdjustment][0]
 
-                    # 中間点地点計算
-                    """
-                    OutSynthesis = (
-                        ((NextPoint - OldPoint) / (NextPointTime - OldPointTime)) * (NowFlame - OldPointTime)) + OldPoint
-                    """
+                # 中間点地点計算
+                """
+                OutSynthesis = (
+                    ((NextPoint - OldPoint) / (NextPointTime - OldPointTime)) * (NowFlame - OldPointTime)) + OldPoint
+                """
 
-                    FrameInterpolation = NextPoint - OldPoint
-                    TimeInterpolation = NextPointTime - OldPointTime
-                    AdditionalTime = NowFlame - OldPointTime
+                FrameInterpolation = NextPoint - OldPoint  # 次の地点 - 前の地点
+                TimeInterpolation = NextPointTime - OldPointTime  # 次の地点到達時間 - 前の地点到達時間
+                AdditionalTime = NowFlame - OldPointTime  # 今の時間 - 前の地点到達時間
 
-                    OutSynthesis = ((
-                        FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
+                OutSynthesis = ((
+                    FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
 
-                    print("入力情報:" + "出力地点: " + str(OutSynthesis))
+                AfterTreatmentPoint.append(OutSynthesis)
 
-                    print("移動一コマあたり:" + str(FrameInterpolation / TimeInterpolation))
+                print("入力情報:" + "出力地点: " + str(OutSynthesis))
 
-                    print("計算用:" + " 次地点-前地点: " + str(FrameInterpolation) + " 次時間-前時間: " +
-                          str(TimeInterpolation) + " 今時間-前時間: " + str(AdditionalTime))
+                print("移動一コマあたり:" + str(FrameInterpolation / TimeInterpolation))
 
-                    print("現在地点:" + str(PreviousPoint) +
-                          " 現在フレーム:" + str(NowFlame))
+                print("計算用:" + " 次地点-前地点: " + str(FrameInterpolation) + " 次時間-前時間: " +
+                      str(TimeInterpolation) + " 今時間-前時間: " + str(AdditionalTime))
 
-                    print("次フレーム地点: " + str(NextPoint) + " 前フレーム地点: " + str(
-                        OldPoint) + " , 次フレーム時間: " + str(NextPointTime) + " 前フレーム時間: " + str(OldPointTime))
+                print("現在地点:" + str(PreviousPoint) +
+                      " 現在フレーム:" + str(NowFlame))
 
-                    print("")
+                print("次フレーム地点: " + str(NextPoint) + " 前フレーム地点: " + str(
+                    OldPoint) + " , 次フレーム時間: " + str(NextPointTime) + " 前フレーム時間: " + str(OldPointTime))
 
-                    # print("アバババ")
+                print("")
 
-                    # except:
-                    #    print("動画の中間点指定に失敗しました")
-                    #    return "Det"
+                # print("アバババ")
 
-                # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
-            """
-            for rs in range(3):
-                Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (
-                    img1_arMov[:, :, rs] - Ar_BeseMove[:, :, rs]) * (img1_arMov[:, :, 3] / 255)
-            """
+                # except:
+                #    print("動画の中間点指定に失敗しました")
+                #    return "Det"
 
-    # except:
-        #    print("なんか無理だった")
+            Coordinate = numpy.float32([[1, 0, AfterTreatmentPoint[1]], [
+                0, 1, AfterTreatmentPoint[2]]])
+
+            #print("処理ずみ：" + str(Coordinate))
+
+            # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
+
+            for DocM in range(int(len(UseDocument))):
+                UseDocument[DocM] = cv2.warpAffine(
+                    UseDocument[DocM], Coordinate, (EditSize[0], EditSize[1]))
+                for rs in range(3):  # これの3、は座標とかではなくRGBのこと
+                    Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (
+                        UseDocument[DocM][:, :, rs] - Ar_BeseMove[:, :, rs]) * (UseDocument[DocM][:, :, 3] / 255)
 
         return Ar_BeseMove

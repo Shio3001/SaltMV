@@ -46,4 +46,5 @@ class MakeTexts:
             # print(layer)
             layer[NumberLayer].Document.append(InTextDrawSetImg)
 
+        # print(layer[NumberLayer].Document)
         return layer

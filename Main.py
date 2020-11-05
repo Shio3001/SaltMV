@@ -15,7 +15,7 @@ import EditSize
 import SetPoints
 import NewObject
 import PrintLayers
-import MakeText
+
 
 # input = sys.stdin.readline().rstrip()
 
@@ -45,19 +45,20 @@ class layerElements:
         #self.DrawSetImg = DrawSetImg
         self.Document = []
         self.Point = []
+        self.Property = []
 
 
 class Center:  # 中心的な役割になる、はず
     def __init__(self):
         self.layer = []
-        self.EditSize = [0, 0]
+        self.EditSize = [0, 0, 0, 0]
         self.GetPrint = PrintLayers.PrintMain()
         # self.Point = [0, 0, 0, 0, 0]  # Time , X , Y ,Z ,Size
 
     def NextChoice(self):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
         NextChoiceList = {1: "exit", 2: "NewLayer",
-                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints", 10: "MakeText"}
+                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints"}
         print(NextChoiceList)
 
         AskNextAction = sys.stdin.readline().rstrip()
@@ -113,7 +114,8 @@ class Center:  # 中心的な役割になる、はず
         elif AskNextAction == NextChoiceList[6] or AskNextAction == "6":
             print("オブジェクトの追加")
             if len(self.layer) != 0:
-                AskDi = New_MakeObject.MakeObjectCenter(self.layer)
+                AskDi = New_MakeObject.MakeObjectCenter(
+                    self.layer, self.EditSize)
                 if AskDi == "Det":
                     print("問題あり")
                     return
@@ -179,26 +181,6 @@ class Center:  # 中心的な役割になる、はず
             else:
                 print("レイヤーがありません")
                 return
-        elif AskNextAction == NextChoiceList[10] or AskNextAction == "10":
-            print("テキストを生成します")
-
-            if self.EditSize[0] == 0:
-                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
-                return
-            elif self.EditSize[1] == 0:
-                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
-                return
-
-            if len(self.layer) != 0:
-                AskDi = Set_MakeText.Main(self.layer, self.EditSize)
-                if AskDi == "Det":
-                    print("問題あり")
-                    return
-                else:
-                    self.layer = AskDi
-            else:
-                print("レイヤーがありません")
-                return
 
 
 Main_Center = Center()
@@ -211,7 +193,6 @@ MovImgsEncode = Encode.Encoder()
 
 ArrayOrganize = Organize.ArrayOrganize()
 
-Set_MakeText = MakeText.MakeTexts()
 
 ReturnDecision = ""
 while ReturnDecision != "exit":

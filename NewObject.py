@@ -20,10 +20,11 @@ import MakeText
 class MakeObject:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
+        self.Set_MakeText = MakeText.MakeTexts()
         print("")
         self.NumberLayer = 0
 
-    def MakeObjectCenter(self, layer):
+    def MakeObjectCenter(self, layer, EditSize):
 
         self.NumberLayer = self.SetSelectLayer.Main(layer)
         if self.NumberLayer == "Det":
@@ -34,7 +35,7 @@ class MakeObject:
         print("種類を選択 [ 番号 ]")
         print("1:動画")
         print("2:")
-        print("3:")
+        print("3:テキスト")
         print("4:")
         ObjectType = str(sys.stdin.readline().rstrip())
 
@@ -67,6 +68,9 @@ class MakeObject:
                     NewObjct.release()
                     cv2.destroyAllWindows()
                     print("読み込みに成功")
+
+                    layer[self.NumberLayer].Property = ["Movie", 0, 100]
+
                     return layer
 
                 else:
@@ -75,5 +79,29 @@ class MakeObject:
                     cv2.destroyAllWindows()
                     return "Det"
                     # break
+
+        if ObjectType == "3":
+            print("テキストを入力")
+
+            if EditSize[0] == 0:
+                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
+                return "Det"
+            elif EditSize[1] == 0:
+                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
+                return "Det"
+
+            layer[self.NumberLayer].Property = ["Text", 0, 100]
+
+            if len(layer) != 0:
+                AskDi = self.Set_MakeText.Main(layer, EditSize)
+                if AskDi == "Det":
+                    print("問題あり")
+                    return
+                else:
+                    layer = AskDi
+                    return layer
+            else:
+                print("レイヤーがありません")
+                return "Det"
 
         return "Det"
