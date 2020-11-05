@@ -89,7 +89,7 @@ class Encoder:
             if ret == True:
                 cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
                 OutputData = self.ArrayedSet(
-                    BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
+                    BaseMov.get(cv2.CAP_PROP_POS_FRAMES) + 1, EditSize, Ar_BeseMove, layer)
 
                 if OutputData == "Det":
                     print("出力エラー")
@@ -132,9 +132,10 @@ class Encoder:
                 PreviousPoint = 0
 
                 # 現在の中間点がどこか検索します
-                for itime in range(int(round(NowFlame))):  # itime = 中間点検索用
-                    if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
-                        PreviousPoint = itime
+                # itime = 中間点検索用
+                for itime in range(int(round(len(layer[ilayerloop].Point)))):
+                    if layer[ilayerloop].Point[itime][0] >= NowFlame:
+                        PreviousPoint = itime - 1
                         break
 
                 # print("決定")
@@ -175,15 +176,20 @@ class Encoder:
                     TimeInterpolation = NextPointTime - OldPointTime
                     AdditionalTime = NowFlame - OldPointTime
 
-                    OutSynthesis = (
-                        FrameInterpolation / TimeInterpolation) * AdditionalTime + OldPoint
+                    OutSynthesis = ((
+                        FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
 
                     print("入力情報:" + "出力地点: " + str(OutSynthesis))
+
+                    print("移動一コマあたり:" + str(FrameInterpolation / TimeInterpolation))
+
+                    print("計算用:" + " 次地点-前地点: " + str(FrameInterpolation) + " 次時間-前時間: " +
+                          str(TimeInterpolation) + " 今時間-前時間: " + str(AdditionalTime))
 
                     print("現在地点:" + str(PreviousPoint) +
                           " 現在フレーム:" + str(NowFlame))
 
-                    print("前フレーム地点: " + str(NextPoint) + " 次フレーム地点: " + str(
+                    print("次フレーム地点: " + str(NextPoint) + " 前フレーム地点: " + str(
                         OldPoint) + " , 次フレーム時間: " + str(NextPointTime) + " 前フレーム時間: " + str(OldPointTime))
 
                     print("")
