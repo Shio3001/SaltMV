@@ -126,38 +126,24 @@ class Encoder:
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
             # print(str(ilayerloop) + "レイヤー処理")
 
-            PointNotTime = layer[ilayerloop].Point
-            del PointNotTime[:][0]
-
             # Pointの数だけ処理を行います
             for iPoint in range(len(layer[ilayerloop].Point)):
+
+                PreviousPoint = 0
+
+                # 現在の中間点がどこか検索します
+                for itime in range(int(round(NowFlame))):  # itime = 中間点検索用
+                    if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
+                        PreviousPoint = itime
+                        break
+
+                # print("決定")
 
                 # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
                 for Storage in range(3):
 
-                    PreviousPoint = 0
-
-                    # 現在の中間点がどこか検索します
-                    for itime in range(EditSize[3]):  # itime = 中間点検索用
-                        if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
-                            PreviousPoint = itime
-                            # print("")
-                            # print("現在の地点：変更")
-                            # print("")
-                            # print("現在の地点:" + str(PreviousPoint))
-                            break
-
                     OldAdjustment = 0
                     NextAdjustment = 0
-
-                    """
-                    print("--- 読み込み先 ---")
-                    print(layer[ilayerloop].Point[PreviousPoint +
-                                                  OldAdjustment][Storage + 1])
-                    print(layer[ilayerloop].Point[PreviousPoint +
-                                                  NextAdjustment + 1][Storage + 1])
-                    print("--- 　おわり　 ---")
-                    """
 
                     while layer[ilayerloop].Point[PreviousPoint + OldAdjustment][Storage + 1] is None and PreviousPoint + OldAdjustment != 0:
 
@@ -180,8 +166,17 @@ class Encoder:
                                                             1 + NextAdjustment][0]
 
                     # 中間点地点計算
+                    """
                     OutSynthesis = (
-                        (NextPoint - OldPoint) / (NextPointTime - OldPointTime) * (NowFlame - OldPointTime)) + OldPoint
+                        ((NextPoint - OldPoint) / (NextPointTime - OldPointTime)) * (NowFlame - OldPointTime)) + OldPoint
+                    """
+
+                    FrameInterpolation = NextPoint - OldPoint
+                    TimeInterpolation = NextPointTime - OldPointTime
+                    AdditionalTime = NowFlame - OldPointTime
+
+                    OutSynthesis = (
+                        FrameInterpolation / TimeInterpolation) * AdditionalTime + OldPoint
 
                     print("入力情報:" + "出力地点: " + str(OutSynthesis))
 
@@ -199,7 +194,7 @@ class Encoder:
                     #    print("動画の中間点指定に失敗しました")
                     #    return "Det"
 
-                # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム - 前のフレーム時間)) + 前の地点
+                # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
             """
             for rs in range(3):
                 Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (
