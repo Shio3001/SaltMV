@@ -126,13 +126,6 @@ class Encoder:
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
             # print(str(ilayerloop) + "レイヤー処理")
 
-            try:
-                if layer[ilayerloop].Property[0] == "Text":
-                    print("テキストを検出")
-                    UseDocument = layer[ilayerloop].Document
-            except:
-                print("テキストなし")
-
             # Pointの数だけ処理を行います
             # for iPoint in range(len(layer[ilayerloop].Point)):
 
@@ -146,8 +139,8 @@ class Encoder:
                     break
 
                 # print("決定")
-            AfterTreatmentPoint = []
-            AfterTreatmentPoint.append(None)
+            AfterTreatmentPoint = numpy.full(
+                int(len(layer[ilayerloop].Point[0])), None)
 
             # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
             for Storage in range(3):
@@ -188,7 +181,7 @@ class Encoder:
                 OutSynthesis = ((
                     FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
 
-                AfterTreatmentPoint.append(OutSynthesis)
+                AfterTreatmentPoint[Storage + 1] = OutSynthesis
 
                 print("入力情報:" + "出力地点: " + str(OutSynthesis))
 
@@ -205,24 +198,29 @@ class Encoder:
 
                 print("")
 
-                # print("アバババ")
-
-                # except:
-                #    print("動画の中間点指定に失敗しました")
-                #    return "Det"
-
-            Coordinate = numpy.float32([[1, 0, AfterTreatmentPoint[1]], [
-                0, 1, AfterTreatmentPoint[2]]])
-
-            #print("処理ずみ：" + str(Coordinate))
-
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
-            for DocM in range(int(len(UseDocument))):
-                UseDocument[DocM] = cv2.warpAffine(
-                    UseDocument[DocM], Coordinate, (EditSize[0], EditSize[1]))
-                for rs in range(3):  # これの3、は座標とかではなくRGBのこと
-                    Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (
-                        UseDocument[DocM][:, :, rs] - Ar_BeseMove[:, :, rs]) * (UseDocument[DocM][:, :, 3] / 255)
+            if layer[ilayerloop].Property[0] == "Text":
 
-        return Ar_BeseMove
+                print("テキストを検出")
+
+                UseDocument = layer[ilayerloop].Document
+                UseDocument_After = layer[ilayerloop].Document
+
+                # テキストの数だけ処理
+                for DocM in range(int(len(layer[ilayerloop].Document))):
+                    DecisionPosition = [AfterTreatmentPoint[1] +
+                                        (DocM * layer[ilayerloop].Point[0][4]), AfterTreatmentPoint[2]]
+
+                    M = numpy.float32([[1, 0, 640], [0, 1, 360]])
+
+                    UseDocument_After[DocM] = cv2.warpAffine(
+                        UseDocument[DocM], M, (1280, 720))
+
+                    for rs in range(3):  # これの3、は座標とかではなくRGBのこと
+                        Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (UseDocument_After[DocM][:, :, rs] - Ar_BeseMove[:, :, rs]) * (
+                            (UseDocument_After[DocM][:, :, 3]) / 255)
+
+        OutputData = Ar_BeseMove
+        print("返却処理")
+        return OutputData

@@ -18,6 +18,7 @@ class MakeTexts:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
         self.NewTextString = None
+        self.fntSize = 34
 
     def Main(self, layer, EditSize):
 
@@ -29,22 +30,32 @@ class MakeTexts:
         print("生成したいテキストを入力")
         self.NewTextString = str(sys.stdin.readline().rstrip())  # 入力させる
 
+        print("フォントサイズを入力")
+        try:
+            self.fntSize = int(sys.stdin.readline().rstrip())
+        except:
+            "Det"
+
+        AddText = []
+
         for imakeImge in range(len(self.NewTextString)):
+
             print(str(imakeImge) + "文字目の処理")
             SetImg = Image.new(
-                "RGBA", (EditSize[0], EditSize[1]), (0, 0, 0, 0))
+                "RGBA", (self.fntSize, self.fntSize), (0, 0, 0, 0))
             DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
-            fntSize = 30
             fnt = ImageFont.truetype(
-                'logotypejp_mp_b_1.1.ttf', fntSize)  # ImageFontインスタンスを作る
+                'logotypejp_mp_b_1.1.ttf', self.fntSize)  # ImageFontインスタンスを作る
             # fontを指定
-            DrawSetImg.text((imakeImge * fntSize, 0),
+            DrawSetImg.text((0, 0),
                             self.NewTextString[imakeImge], font=fnt)
-            print("座標" + str(imakeImge * fntSize))
+            #print("座標" + str(0))
             InTextDrawSetImg = numpy.array(SetImg)
             # print(layer)
-            layer[NumberLayer].Document.append(InTextDrawSetImg)
+            AddText.append(InTextDrawSetImg)
 
         # print(layer[NumberLayer].Document)
+        #layer[NumberLayer].Point[:][4] = self.fntSize
+        layer[NumberLayer].Document = AddText
         return layer

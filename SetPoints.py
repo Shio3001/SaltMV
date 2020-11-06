@@ -25,7 +25,7 @@ class MakePoints:
         self.SetSelectLayer = SelectLayer.SelectLayer()
 
     def Main(self, layer, AddOREdit):
-        self.AddPoint = [0, 0, 0, 0]  # time(フレーム) , x , y ,透明度
+        self.AddPoint = [0, 0, 0, 0, 34]  # time(フレーム) , x , y ,透明度 , その他
         NumberLayer = self.SetSelectLayer.Main(layer)
 
         NumberPoint = None

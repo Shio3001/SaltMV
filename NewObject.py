@@ -93,6 +93,7 @@ class MakeObject:
             layer[self.NumberLayer].Property = ["Text", 0, 100]
 
             if len(layer) != 0:
+
                 AskDi = self.Set_MakeText.Main(layer, EditSize)
                 if AskDi == "Det":
                     print("問題あり")

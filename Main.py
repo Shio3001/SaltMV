@@ -45,7 +45,7 @@ class layerElements:
         #self.DrawSetImg = DrawSetImg
         self.Document = []
         self.Point = []
-        self.Property = []
+        self.Property = ["", None, None]
 
 
 class Center:  # 中心的な役割になる、はず
