@@ -25,7 +25,7 @@ class MakePoints:
         self.SetSelectLayer = SelectLayer.SelectLayer()
 
     def Main(self, layer, AddOREdit):
-        self.AddPoint = [0, 0, 0, 0, 34]  # time(フレーム) , x , y ,透明度 , その他
+        self.AddPoint = [0, 0, 0, 0, 0]  # time(フレーム) , x , y ,透明度 , その他
         NumberLayer = self.SetSelectLayer.Main(layer)
 
         NumberPoint = None
@@ -41,7 +41,7 @@ class MakePoints:
 
         print("")
 
-        print("設定するものを入力 [x][y][a] 複数記入も可 例:[xy] [ya]")
+        print("設定するものを入力 [x][y][a][s] 複数記入も可 例:[xy] [ya]")
         Choices = str(sys.stdin.readline().rstrip())
 
         print(Choices)
@@ -88,6 +88,17 @@ class MakePoints:
                 return "Det"
         else:
             self.AddPoint[3] = None
+
+        print("")
+        Cho = "s" in Choices
+        if Cho == True:
+            print("拡大率 [ 数値 ]")
+            try:
+                self.AddPoint[4] = int(sys.stdin.readline().rstrip())
+            except:
+                return "Det"
+        else:
+            self.AddPoint[4] = None
 
         if AddOREdit == 0:
             print(layer[NumberLayer].Point)

@@ -45,7 +45,8 @@ class layerElements:
         # self.DrawSetImg = DrawSetImg
         self.Document = []
         self.Point = []
-        self.Property = ["", None, None]
+        self.Property = ["", None, None]  # これが何を意味するか,開始地点,終了地点
+        self.UniqueProperty = []  # それぞれの
 
 
 class Center:  # 中心的な役割になる、はず
@@ -65,7 +66,7 @@ class Center:  # 中心的な役割になる、はず
         if AskNextAction == NextChoiceList[1] or AskNextAction == "1":
             return "exit"
 
-        elif AskNextAction == NextChoiceList[2] or AskNextAction == "2":
+        if AskNextAction == NextChoiceList[2] or AskNextAction == "2":
 
             """
             SetImg = Image.new(
@@ -81,7 +82,7 @@ class Center:  # 中心的な役割になる、はず
             print("レイヤー数:" + str(len(self.layer)))
             print(self.GetPrint.ReturnPrint(self.layer))
 
-        elif AskNextAction == NextChoiceList[3] or AskNextAction == "3":
+        if AskNextAction == NextChoiceList[3] or AskNextAction == "3":
 
             AskDi = SetSuperSetEditSize.SetEditSize()
             if AskDi == "Det":
@@ -91,12 +92,12 @@ class Center:  # 中心的な役割になる、はず
                 self.EditSize = AskDi
                 print(self.EditSize)
 
-        elif AskNextAction == NextChoiceList[4] or AskNextAction == "4":
+        if AskNextAction == NextChoiceList[4] or AskNextAction == "4":
             print("レイヤー数:" + str(len(self.layer)))
             print(self.GetPrint.ReturnPrint(self.layer))
             print("")
 
-        elif AskNextAction == NextChoiceList[5] or AskNextAction == "5":
+        if AskNextAction == NextChoiceList[5] or AskNextAction == "5":
             print("動画エンコード")
             if len(self.layer) != 0:
                 AskDi = MovImgsEncode.Main(self.layer, self.EditSize)
@@ -111,7 +112,7 @@ class Center:  # 中心的な役割になる、はず
                 print("レイヤーがありません")
                 return
 
-        elif AskNextAction == NextChoiceList[6] or AskNextAction == "6":
+        if AskNextAction == NextChoiceList[6] or AskNextAction == "6":
             print("オブジェクトの追加")
             if len(self.layer) != 0:
                 AskDi = New_MakeObject.MakeObjectCenter(
@@ -122,14 +123,11 @@ class Center:  # 中心的な役割になる、はず
                 else:
                     self.layer = AskDi
 
-                    testoutput102 = Image.fromarray(self.layer[0].Document[0])
-                    testoutput102.save('EncodeTest/EncodeTest102.png')
-
             else:
                 print("レイヤーがありません")
                 return
 
-        elif AskNextAction == NextChoiceList[7] or AskNextAction == "7":
+        if AskNextAction == NextChoiceList[7] or AskNextAction == "7":
             print("オブジェクトの移動・透明度変更などを行います [ 新規作成 ]")
             if len(self.layer) != 0:
                 AddOREdit = 0
@@ -144,7 +142,7 @@ class Center:  # 中心的な役割になる、はず
                 print("レイヤーがありません")
                 return
 
-        elif AskNextAction == NextChoiceList[8] or AskNextAction == "8":
+        if AskNextAction == NextChoiceList[8] or AskNextAction == "8":
             print("オブジェクトの移動・透明度変更などを行います [ 変更 ]")
             if len(self.layer) != 0:
                 AddOREdit = 1
@@ -159,7 +157,7 @@ class Center:  # 中心的な役割になる、はず
                 print("レイヤーがありません")
                 return
 
-        elif AskNextAction == NextChoiceList[9] or AskNextAction == "9":
+        if AskNextAction == NextChoiceList[9] or AskNextAction == "9":
             print("レイヤーの中にあるPoint設定を時間順に並び替えます")
             if len(self.layer) != 0:
 

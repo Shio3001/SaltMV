@@ -17,7 +17,7 @@ class SelectLayer:
     def Main(self, layer):
 
         print(self.GetPrint.ReturnPrint(layer))
-        print("オブジェクトを入れるレイヤーを選択")
+        print("レイヤーを選択")
 
         print("番号 [ 0 から ] ")
 

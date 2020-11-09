@@ -44,7 +44,8 @@ class Encoder:
         print("動画出力名を入力...")
         os.system("pwd")
         os.system("ls")
-        GetOutputAhead = str(sys.stdin.readline().rstrip())
+        os.system("mkdir Output")
+        GetOutputAhead = "Output/" + str(sys.stdin.readline().rstrip())
 
         size = (EditSize[0], EditSize[1])
         fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
@@ -83,9 +84,6 @@ class Encoder:
             GetOutputAhead, fmt, EditSize[2], size)  # ライター作成
 
         PreviewFps = 1
-
-        testoutput103 = Image.fromarray(layer[0].Document[0])
-        testoutput103.save('EncodeTest/EncodeTest103.png')
 
         while BaseMov.isOpened():
             ret, Ar_BeseMove = BaseMov.read()
@@ -148,7 +146,7 @@ class Encoder:
                 int(len(layer[ilayerloop].Point[0])), None)  # 数値補間用
 
             # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
-            for Storage in range(3):
+            for Storage in range(int(len(layer[ilayerloop].Point))):
 
                 OldAdjustment = 0
                 NextAdjustment = 0
@@ -209,53 +207,43 @@ class Encoder:
 
                 print("テキストを検出")
 
-                DocM = 0
-                UseDocument = layer[ilayerloop].Document[DocM]
-                UseDocument_After = layer[ilayerloop].Document[DocM]
+                # テキストの数だけ処理
+                # DocM = DocumentMove
+                for DocM in range(int(len(layer[ilayerloop].Document))):
+                    # print(len(layer[ilayerloop].Document))
+                    UseDocument = layer[ilayerloop].Document[DocM]
+                    UseDocument_Size_After = UseDocument
+                    UseDocument_Move_After = UseDocument
 
-                # テキストの数だけ処理 #ここが悪いかもしれない
-                # for DocM in range(int(len(layer[ilayerloop].Document))):
-                # print(len(layer[ilayerloop].Document))
-                #DocM = 0
-                DecisionPosition = [AfterTreatmentPoint[1] +
-                                    (DocM * layer[ilayerloop].Point[0][4]), AfterTreatmentPoint[2]]
+                    TextSpaceCalculation = [
+                        AfterTreatmentPoint[1], AfterTreatmentPoint[2]]
 
-                M = numpy.float32([[1, 0, 10 + DocM * 34], [0, 1, 10]])
+                    if layer[ilayerloop].UniqueProperty[0] == 0:
+                        TextSpaceCalculation[0] = TextSpaceCalculation[0] + (
+                            DocM * (layer[ilayerloop].UniqueProperty[1] + layer[ilayerloop].UniqueProperty[2]))
 
-                testoutputNow = Image.fromarray(UseDocument)
-                testoutputNow.save('EncodeTest/読み込み毎/EncodeTest' +
-                                   str(NowFlame) + '.png')
+                    if layer[ilayerloop].UniqueProperty[0] == 1:
+                        TextSpaceCalculation[1] = TextSpaceCalculation[1] + (
+                            DocM * (layer[ilayerloop].UniqueProperty[1] + layer[ilayerloop].UniqueProperty[2]))
 
-                testoutput1 = Image.fromarray(UseDocument)
-                testoutput1.save('EncodeTest/EncodeTest1.png')
+                    # 明日はこここをやれ
+                    # ここから拡大縮小の件 Aviutでいう普通の[拡大縮小][フォントサイズの方ではない]
+                    UseDocument_Size_After = cv2.resize(
+                        UseDocument, (UseDocument.shape[1] * TextSpaceCalculation[4], UseDocument.shape[0] * TextSpaceCalculation[4]), interpolation=cv2.INTER_LINEAR)
 
-                if NowFlame == 1:
-                    testoutput1B = Image.fromarray(UseDocument)
-                    testoutput1B.save('EncodeTest/EncodeTest1B.png')
+                    ResizeCoordinateCorrection = [
+                        UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # 画像サイズが打ち込まれている
+                    # ここまで
 
-                # ************************************************************
+                    M = numpy.float32([[1, 0, TextSpaceCalculation[0]], [
+                                      0, 1, TextSpaceCalculation[1]]])
 
-                UseDocument_After = cv2.warpAffine(
-                    UseDocument, M, (EditSize[0], EditSize[1]))
+                    UseDocument_Move_After = cv2.warpAffine(
+                        UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
 
-                # ************************************************************
-
-                if NowFlame == 1:
-                    testoutput1C = Image.fromarray(UseDocument)
-                    testoutput1C.save('EncodeTest/EncodeTest1C.png')
-
-                testoutput2 = Image.fromarray(UseDocument)
-                testoutput2.save('EncodeTest/EncodeTest2.png')
-
-                testoutput3 = Image.fromarray(UseDocument_After)
-                testoutput3.save('EncodeTest/EncodeTest3.png')
-
-                for rs in range(3):  # これの3、は座標とかではなくRGBのこと
-                    Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (UseDocument_After[:, :, rs] - Ar_BeseMove[:, :, rs]) * (
-                        (UseDocument_After[:, :, 3]) / 255)
-
-                UseDocument = []
-                UseDocument_after = []
+                    for rs in range(3):  # これの3、は座標とかではなくRGBのこと
+                        Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (UseDocument_Move_After[:, :, rs] - Ar_BeseMove[:, :, rs]) * (
+                            (UseDocument_Move_After[:, :, 3]) / 255)
 
         print("返却処理")
 

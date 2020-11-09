@@ -18,21 +18,30 @@ class MakeTexts:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
         self.NewTextString = None
-        self.fntSize = 34
+        self.fntSize = None
+        self.WritingDirection = 0  # 書字方向 #初期値横書き
+        self.CharacterSpacing = 0  # 初期値 -で狭める、+で広げる
 
-    def Main(self, layer, EditSize):
+    def Main(self, layer, EditSize, NumberLayer):
 
-        print("レイヤーを選択")
-        NumberLayer = self.SetSelectLayer.Main(layer)
-        if NumberLayer == "Det":
-            return "Det"
-
-        print("生成したいテキストを入力")
+        print("生成したいテキストを入力 [ 文字列 ]")
         self.NewTextString = str(sys.stdin.readline().rstrip())  # 入力させる
 
-        print("フォントサイズを入力")
+        print("フォントサイズを入力 [ 数値 ]")
         try:
             self.fntSize = int(sys.stdin.readline().rstrip())
+        except:
+            "Det"
+
+        print("横書き [ 0 ] 縦書き [ 1 ] を入力 [ 数値 ]")
+        try:
+            self.WritingDirection = int(sys.stdin.readline().rstrip())
+        except:
+            "Det"
+
+        print("文字間隔 を入力 [ 数値 ]")
+        try:
+            self.CharacterSpacing = int(sys.stdin.readline().rstrip())
         except:
             "Det"
 
@@ -55,10 +64,13 @@ class MakeTexts:
             # print(layer)
             AddText.append(InTextDrawSetImg)
 
-            testoutput101 = Image.fromarray(InTextDrawSetImg)
-            testoutput101.save('EncodeTest/EncodeTest101.png')
-
         # print(layer[NumberLayer].Document)
         #layer[NumberLayer].Point[:][4] = self.fntSize
         layer[NumberLayer].Document = AddText
+
+        layer[NumberLayer].Point[:].append(None)
+        layer[NumberLayer].Point[:][5] = self.fntSize
+
+        layer[NumberLayer].UniqueProperty = [
+            self.WritingDirection, self.CharacterSpacing]  # 書字方向,文字間隔 の順に設定
         return layer
