@@ -83,10 +83,7 @@ class MakeObject:
         if ObjectType == "3":
             print("テキストを入力")
 
-            if EditSize[0] == 0:
-                print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
-                return "Det"
-            elif EditSize[1] == 0:
+            if EditSize[0] == 0 or EditSize[1] == 0:
                 print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
                 return "Det"
 

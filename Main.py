@@ -42,7 +42,7 @@ print("=======================")
 
 class layerElements:
     def __init__(self):
-        #self.DrawSetImg = DrawSetImg
+        # self.DrawSetImg = DrawSetImg
         self.Document = []
         self.Point = []
         self.Property = ["", None, None]
@@ -121,6 +121,9 @@ class Center:  # 中心的な役割になる、はず
                     return
                 else:
                     self.layer = AskDi
+
+                    testoutput102 = Image.fromarray(self.layer[0].Document[0])
+                    testoutput102.save('EncodeTest/EncodeTest102.png')
 
             else:
                 print("レイヤーがありません")

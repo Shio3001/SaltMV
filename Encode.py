@@ -84,6 +84,9 @@ class Encoder:
 
         PreviewFps = 1
 
+        testoutput103 = Image.fromarray(layer[0].Document[0])
+        testoutput103.save('EncodeTest/EncodeTest103.png')
+
         while BaseMov.isOpened():
             ret, Ar_BeseMove = BaseMov.read()
             if ret == True:
@@ -119,6 +122,8 @@ class Encoder:
 
     def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
 
+        #Ar_BeseMove2 = Ar_BeseMove
+
         # print("Classから出力用データを生成する")
 
         # try:
@@ -140,7 +145,7 @@ class Encoder:
 
                 # print("決定")
             AfterTreatmentPoint = numpy.full(
-                int(len(layer[ilayerloop].Point[0])), None)
+                int(len(layer[ilayerloop].Point[0])), None)  # 数値補間用
 
             # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
             for Storage in range(3):
@@ -204,23 +209,54 @@ class Encoder:
 
                 print("テキストを検出")
 
-                UseDocument = layer[ilayerloop].Document
-                UseDocument_After = layer[ilayerloop].Document
+                DocM = 0
+                UseDocument = layer[ilayerloop].Document[DocM]
+                UseDocument_After = layer[ilayerloop].Document[DocM]
 
-                # テキストの数だけ処理
-                for DocM in range(int(len(layer[ilayerloop].Document))):
-                    DecisionPosition = [AfterTreatmentPoint[1] +
-                                        (DocM * layer[ilayerloop].Point[0][4]), AfterTreatmentPoint[2]]
+                # テキストの数だけ処理 #ここが悪いかもしれない
+                # for DocM in range(int(len(layer[ilayerloop].Document))):
+                # print(len(layer[ilayerloop].Document))
+                #DocM = 0
+                DecisionPosition = [AfterTreatmentPoint[1] +
+                                    (DocM * layer[ilayerloop].Point[0][4]), AfterTreatmentPoint[2]]
 
-                    M = numpy.float32([[1, 0, 640], [0, 1, 360]])
+                M = numpy.float32([[1, 0, 10 + DocM * 34], [0, 1, 10]])
 
-                    UseDocument_After[DocM] = cv2.warpAffine(
-                        UseDocument[DocM], M, (1280, 720))
+                testoutputNow = Image.fromarray(UseDocument)
+                testoutputNow.save('EncodeTest/読み込み毎/EncodeTest' +
+                                   str(NowFlame) + '.png')
 
-                    for rs in range(3):  # これの3、は座標とかではなくRGBのこと
-                        Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (UseDocument_After[DocM][:, :, rs] - Ar_BeseMove[:, :, rs]) * (
-                            (UseDocument_After[DocM][:, :, 3]) / 255)
+                testoutput1 = Image.fromarray(UseDocument)
+                testoutput1.save('EncodeTest/EncodeTest1.png')
 
-        OutputData = Ar_BeseMove
+                if NowFlame == 1:
+                    testoutput1B = Image.fromarray(UseDocument)
+                    testoutput1B.save('EncodeTest/EncodeTest1B.png')
+
+                # ************************************************************
+
+                UseDocument_After = cv2.warpAffine(
+                    UseDocument, M, (EditSize[0], EditSize[1]))
+
+                # ************************************************************
+
+                if NowFlame == 1:
+                    testoutput1C = Image.fromarray(UseDocument)
+                    testoutput1C.save('EncodeTest/EncodeTest1C.png')
+
+                testoutput2 = Image.fromarray(UseDocument)
+                testoutput2.save('EncodeTest/EncodeTest2.png')
+
+                testoutput3 = Image.fromarray(UseDocument_After)
+                testoutput3.save('EncodeTest/EncodeTest3.png')
+
+                for rs in range(3):  # これの3、は座標とかではなくRGBのこと
+                    Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (UseDocument_After[:, :, rs] - Ar_BeseMove[:, :, rs]) * (
+                        (UseDocument_After[:, :, 3]) / 255)
+
+                UseDocument = []
+                UseDocument_after = []
+
         print("返却処理")
-        return OutputData
+
+        return Ar_BeseMove

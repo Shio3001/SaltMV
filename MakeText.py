@@ -55,6 +55,9 @@ class MakeTexts:
             # print(layer)
             AddText.append(InTextDrawSetImg)
 
+            testoutput101 = Image.fromarray(InTextDrawSetImg)
+            testoutput101.save('EncodeTest/EncodeTest101.png')
+
         # print(layer[NumberLayer].Document)
         #layer[NumberLayer].Point[:][4] = self.fntSize
         layer[NumberLayer].Document = AddText
