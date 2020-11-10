@@ -88,7 +88,7 @@ class Encoder:
         while BaseMov.isOpened():
             ret, Ar_BeseMove = BaseMov.read()
             if ret == True:
-                cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
+                Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
                 OutputData = self.ArrayedSet(
                     BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
 
@@ -101,7 +101,7 @@ class Encoder:
 
                 # 現在いるフレームを送信
                 cv2.imshow('OutputPreview', OutputData)
-                cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
+                OutputData = cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
                 Writer.write(OutputData)
                 if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
                     print("書き出し中・・・")
@@ -146,7 +146,7 @@ class Encoder:
                 int(len(layer[ilayerloop].Point[0])), None)  # 数値補間用
 
             # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
-            for Storage in range(int(len(layer[ilayerloop].Point))):
+            for Storage in range(int(len(layer[ilayerloop].Point[0]))-1):
 
                 OldAdjustment = 0
                 NextAdjustment = 0
@@ -209,6 +209,9 @@ class Encoder:
 
                 # テキストの数だけ処理
                 # DocM = DocumentMove
+
+                PreviousMoveAmount = [0, 0]  # 個別縮小がOFFの時、前の奴がどれだけ移動したかを記憶
+
                 for DocM in range(int(len(layer[ilayerloop].Document))):
                     # print(len(layer[ilayerloop].Document))
                     UseDocument = layer[ilayerloop].Document[DocM]
@@ -218,33 +221,61 @@ class Encoder:
                     TextSpaceCalculation = [
                         AfterTreatmentPoint[1], AfterTreatmentPoint[2]]
 
-                    if layer[ilayerloop].UniqueProperty[0] == 0:
-                        TextSpaceCalculation[0] = TextSpaceCalculation[0] + (
-                            DocM * (layer[ilayerloop].UniqueProperty[1] + layer[ilayerloop].UniqueProperty[2]))
-
-                    if layer[ilayerloop].UniqueProperty[0] == 1:
-                        TextSpaceCalculation[1] = TextSpaceCalculation[1] + (
-                            DocM * (layer[ilayerloop].UniqueProperty[1] + layer[ilayerloop].UniqueProperty[2]))
-
                     # 明日はこここをやれ
                     # ここから拡大縮小の件 Aviutでいう普通の[拡大縮小][フォントサイズの方ではない]
-                    UseDocument_Size_After = cv2.resize(
-                        UseDocument, (UseDocument.shape[1] * TextSpaceCalculation[4], UseDocument.shape[0] * TextSpaceCalculation[4]), interpolation=cv2.INTER_LINEAR)
 
-                    ResizeCoordinateCorrection = [
-                        UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # 画像サイズが打ち込まれている
-                    # ここまで
+                    # print(AfterTreatmentPoint[4])
+                    # print(UseDocument.shape[1])
+                    # print(UseDocument.shape[0])
 
-                    M = numpy.float32([[1, 0, TextSpaceCalculation[0]], [
-                                      0, 1, TextSpaceCalculation[1]]])
+                    ExpansionRate = [int(UseDocument.shape[1] * (AfterTreatmentPoint[4] * 0.01)),
+                                     int(UseDocument.shape[0] * (AfterTreatmentPoint[4] * 0.01))]
+                    # 拡大率変更前の画像サイズとどれぐらい拡大縮小するかを計算する
 
-                    UseDocument_Move_After = cv2.warpAffine(
-                        UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
+                    # print(ExpansionRate)
 
-                    for rs in range(3):  # これの3、は座標とかではなくRGBのこと
-                        Ar_BeseMove[:, :, rs] = Ar_BeseMove[:, :, rs] + (UseDocument_Move_After[:, :, rs] - Ar_BeseMove[:, :, rs]) * (
-                            (UseDocument_Move_After[:, :, 3]) / 255)
+                    if 0 in ExpansionRate:  # 拡大率に0が会ったら弾く
+                        PreviousMoveAmount = [0, 0]
 
+                    else:
+                        UseDocument_Size_After = cv2.resize(
+                            UseDocument, (ExpansionRate[0], ExpansionRate[1]), interpolation=cv2.INTER_LINEAR)
+
+                        ResizeCoordinateCorrection = [
+                            UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # リサイズ後画像サイズが打ち込まれている
+
+                        # ここまで
+
+                        if layer[ilayerloop].UniqueProperty[0] == 0:  # 文字が横書きの処理
+                            TextSpaceCalculation[0] = TextSpaceCalculation[0] + (
+                                DocM * (layer[ilayerloop].UniqueProperty[1] + layer[ilayerloop].UniqueProperty[2]))
+
+                            PreviousMoveAmount = [PreviousMoveAmount[0] + (ResizeCoordinateCorrection[0]
+                                                                           * 0.25), PreviousMoveAmount[1]]
+
+                        if layer[ilayerloop].UniqueProperty[0] == 1:  # 文字が縦書きの処理
+                            TextSpaceCalculation[1] = TextSpaceCalculation[1] + (
+                                DocM * (layer[ilayerloop].UniqueProperty[1] + layer[ilayerloop].UniqueProperty[2]))
+
+                            PreviousMoveAmount = [PreviousMoveAmount[0], PreviousMoveAmount[1] + (ResizeCoordinateCorrection[1] * 0.25)]
+
+                        # ここから移動に関する処理
+
+                        M = numpy.float32([[1, 0, TextSpaceCalculation[0] + PreviousMoveAmount[0]], [
+                            0, 1, TextSpaceCalculation[1] + PreviousMoveAmount[1]]])
+
+                        UseDocument_Move_After = cv2.warpAffine(
+                            UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
+                            
+                        
+                        Ar_BeseMove_img = Image.fromarray(Ar_BeseMove) #変換
+                        UseDocument_Move_After_img = Image.fromarray(UseDocument_Move_After) #変換
+                            
+                        Ar_BeseMove_img.paste(UseDocument_Move_After_img, mask=UseDocument_Move_After_img) #合成
+                        
+                        Ar_BeseMove = numpy.array(Ar_BeseMove_img) #numpy返却
+                            
+                        
         print("返却処理")
 
         return Ar_BeseMove

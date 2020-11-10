@@ -21,6 +21,7 @@ class MakeTexts:
         self.fntSize = None
         self.WritingDirection = 0  # 書字方向 #初期値横書き
         self.CharacterSpacing = 0  # 初期値 -で狭める、+で広げる
+        self.TextIndividualObject = True  # 文字毎に個別オブジェクト
 
     def Main(self, layer, EditSize, NumberLayer):
 
@@ -31,27 +32,31 @@ class MakeTexts:
         try:
             self.fntSize = int(sys.stdin.readline().rstrip())
         except:
-            "Det"
+            return "Det"
 
         print("横書き [ 0 ] 縦書き [ 1 ] を入力 [ 数値 ]")
         try:
             self.WritingDirection = int(sys.stdin.readline().rstrip())
         except:
-            "Det"
+            return "Det"
 
         print("文字間隔 を入力 [ 数値 ]")
         try:
             self.CharacterSpacing = int(sys.stdin.readline().rstrip())
         except:
-            "Det"
+            return "Det"
 
         AddText = []
 
         for imakeImge in range(len(self.NewTextString)):
 
             print(str(imakeImge) + "文字目の処理")
-            SetImg = Image.new(
-                "RGBA", (self.fntSize, self.fntSize), (0, 0, 0, 0))
+
+            try:
+                SetImg = Image.new(
+                    "RGBA", (self.fntSize, self.fntSize), (0, 0, 0, 0))
+            except:
+                return "Det"
             DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
             fnt = ImageFont.truetype(
@@ -68,9 +73,8 @@ class MakeTexts:
         #layer[NumberLayer].Point[:][4] = self.fntSize
         layer[NumberLayer].Document = AddText
 
-        layer[NumberLayer].Point[:].append(None)
-        layer[NumberLayer].Point[:][5] = self.fntSize
+        #layer[NumberLayer].Point[:][4] = self.fntSize
 
         layer[NumberLayer].UniqueProperty = [
-            self.WritingDirection, self.CharacterSpacing]  # 書字方向,文字間隔 の順に設定
+            self.WritingDirection, self.CharacterSpacing, self.TextIndividualObject, self.fntSize]  # 書字方向, 文字間隔 ,文字毎に個別オブジェクト , フォントサイズの順に設定
         return layer
