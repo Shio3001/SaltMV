@@ -61,7 +61,7 @@ class MakeTexts:
 
         print("個別オブジェクトにするかしないかを入力 しない [ 0 ] する [ 1 ] ")
         try:
-            layer[NumberLayer].IndividualObject = int(sys.stdin.readline().rstrip())
+            layer[NumberLayer].UniqueProperty.IndividualObject = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
@@ -88,41 +88,38 @@ class MakeTexts:
             AddText.append([InTextDrawSetImg, self.addfntSize[imakeImge]])
             # print(layer)
 
-            # もし個別オブジェクトでない場合は配列の合成を行う
-
+        # もし個別オブジェクトでない場合は配列の合成を行う
         if layer[NumberLayer].UniqueProperty.IndividualObject == 0:
-            AddText = [self.Textconcatenation(AddText, layer[NumberLayer].UniqueProperty.AlignmentPosition)]
-
-        # if layer[NumberLayer].UniqueProperty.IndividualObject == 1:
+            AddText = [[self.Textconcatenation(AddText, layer[NumberLayer].UniqueProperty)]]
 
         layer[NumberLayer].Document = AddText
+
         return layer
 
-    def Textconcatenation(self, AddText, AlignmentPosition):
+    def Textconcatenation(self, AddText, UniqueProperty):
         print("テキストの連結処理")
 
-        AddText_concatenation = AddText[0]
+        AddText_concatenation = AddText[0][0]
 
         for ic, item_ic in enumerate(AddText):
 
-            print(str(ic) + "文字目の処理")
-            # 基本連結
-            if int(ic) + 1 < int(len(AddText)) and AlignmentPosition == 0:
-                AddText_concatenation = numpy.hstack((AddText_concatenation, AddText[ic + 1]))
+            AdditionalBlank = numpy.zeros((AddText[ic][1], AddText[ic][1], 4))
 
-            if int(ic) + 1 < int(len(AddText)) and AlignmentPosition == 1:
-                AddText_concatenation = numpy.vstack((AddText_concatenation, AddText[ic + 1]))
+            # 基本連結 #lenで取得できるのはあくまで[要素数]であって配列番号ではないことから、<=ではなく <になっている
+            if int(ic) + 1 < int(len(AddText)) and UniqueProperty.WritingDirection == 0:
+                AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
+                AddText_concatenation = numpy.hstack((AddText_concatenation, AddText[ic + 1][0]))
 
-            # 終了
-
+            if int(ic) + 1 < int(len(AddText)) and UniqueProperty.WritingDirection == 1:
+                AddText_concatenation = numpy.vstack((AddText_concatenation, AdditionalBlank))
+                AddText_concatenation = numpy.vstack((AddText_concatenation, AddText[ic + 1][0]))
         return AddText_concatenation
 
 
 class TextElements:
     def __init__(self):
-        self.WritingDirection = False  # 個別毎に管理しないか Trueでする flaseでしない
         self.TextSpacing = 0  # テキスト間隔 初期値 -で狭める、+で広げる
         self.WritingDirection = 0  # 書字方向 #初期値横書き
         self.AlignmentPosition = 1  # 揃え位置を図る奴 0が左 1が真ん中 2が右
-        self.IndividualObject = 0
+        self.IndividualObject = 0  # 個別に管理するか
         # self.fntSize = []  # フォントサイズ 前との文字との間隔を表すため テキスト数-1にしろ

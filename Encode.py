@@ -91,10 +91,6 @@ class Encoder:
                 Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
                 OutputData = self.ArrayedSet(
                     BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
-
-                if OutputData == "Det":
-                    print("出力エラー")
-                    return "Det"
                 # EditSize ・・・ 動画の設定など
                 # BaseMov ・・・出力用の真っ黒なファイル
                 # layer ・・・ 動画編集情報
@@ -120,6 +116,7 @@ class Encoder:
 
     def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
+
             # print(str(ilayerloop) + "レイヤー処理")
 
             # Pointの数だけ処理を行います
@@ -180,7 +177,6 @@ class Encoder:
                 AfterTreatmentPoint[Storage + 1] = OutSynthesis
 
                 """
-
                 print("入力情報:" + "出力地点: " + str(OutSynthesis))
 
                 print("移動一コマあたり:" + str(FrameInterpolation / TimeInterpolation))
@@ -195,13 +191,12 @@ class Encoder:
                     OldPoint) + " , 次フレーム時間: " + str(NextPointTime) + " 前フレーム時間: " + str(OldPointTime))
 
                 print("")
-
                 """
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
             if layer[ilayerloop].Property[0] == "Text":
-                print("テキストを検出")
+                # print("テキストを検出")
                 PreviousMoveAmount = [0, 0]  # 前の時どれだけ移動したかを記憶
 
                 # 文字間隔をもらう
@@ -210,11 +205,14 @@ class Encoder:
                 WHSelection = layer[ilayerloop].UniqueProperty.WritingDirection
                 # 前揃えか中揃えか後ろ揃えかの選択結果をもらってくる
                 AlignmentPos = layer[ilayerloop].UniqueProperty.AlignmentPosition
+                # 個別オブジェクトか判断 0(false) or 1(true)
+                IndividualObject = layer[ilayerloop].UniqueProperty.IndividualObject
 
                 for DocM in range(int(len(layer[ilayerloop].Document))):  # 気が向いたらenumerateにしろ
                     DocMlet = int(len(layer[ilayerloop].Document))
 
                     UseDocument = layer[ilayerloop].Document[DocM][0]
+
                     UseDocument_Size_After = map(None, UseDocument)
                     UseDocument_Move_After = map(None, UseDocument)
 
@@ -228,35 +226,27 @@ class Encoder:
 
                     else:
                         UseDocument_Size_After = cv2.resize(UseDocument, (ExpansionRate[0], ExpansionRate[1]), interpolation=cv2.INTER_LINEAR)
-
                         ResizeCoordinateCorrection = [UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # リサイズ後画像サイズが打ち込まれている
 
-                        # if layer[ilayerloop].UniqueProperty[0] == 0:  # 文字が横書きの処理
-                        if WHSelection == 1:  # 文字が縦書きの処理
-                            PreviousMoveAmount.reverse()  # 拡大率計算の配列を反転させる
+                        TextSpacing = [0, 0]
+                        if IndividualObject == 1:
+                            TextSpacing[WHSelection] = DocM * (layer[ilayerloop].UniqueProperty.TextSpacing + UseDocument.shape[1 - WHSelection])
 
-                        # ここから移動に関する処理
-
-                        TextLocation = [TextSpaceCalculation[0] + PreviousMoveAmount[0],
-                                        TextSpaceCalculation[1] + PreviousMoveAmount[1]]  # テキストの最終位置決定
+                        TextLocation = [TextSpaceCalculation[0] + PreviousMoveAmount[0] + TextSpacing[0],
+                                        TextSpaceCalculation[1] + PreviousMoveAmount[1] + TextSpacing[1]]  # テキストの最終位置決定
 
                         M = numpy.float32(
                             [[1, 0, TextLocation[0]], [0, 1, TextLocation[1]]])
 
-                        UseDocument_Move_After = cv2.warpAffine(
-                            UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
+                        UseDocument_Move_After = cv2.warpAffine(UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
 
-                        Ar_BeseMove_img = Image.fromarray(
-                            Ar_BeseMove)  # RGBAnumpy -> PIL 変換
-                        UseDocument_Move_After_img = Image.fromarray(
-                            UseDocument_Move_After)  # RGBAnumpy -> PIL 変換
+                        Ar_BeseMove_img = Image.fromarray(Ar_BeseMove)  # RGBAnumpy -> PIL 変換
+                        UseDocument_Move_After_img = Image.fromarray((UseDocument_Move_After).astype(numpy.uint8))  # RGBAnumpy -> PIL 変換
 
-                        Ar_BeseMove_img.paste(
-                            UseDocument_Move_After_img, mask=UseDocument_Move_After_img)  # 通常合成
+                        Ar_BeseMove_img.paste(UseDocument_Move_After_img, mask=UseDocument_Move_After_img)  # 通常合成
 
                         # numpy返却 PIL -> RGBAnumpy
                         Ar_BeseMove = numpy.array(Ar_BeseMove_img)
-
         print("返却処理")
 
         return Ar_BeseMove
