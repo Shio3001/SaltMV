@@ -53,9 +53,15 @@ class MakeTexts:
         except:
             return "Det"
 
-        print("揃え位置を入力 上揃え [ 0 ] 中揃え [ 1 ] 右揃え [ 2 ] [ 数値 ]")
+        print("[左右]揃え位置を入力 左揃え [ 0 ] 中揃え [ 1 ] 右揃え [ 2 ] [ 数値 ]")
         try:
-            layer[NumberLayer].UniqueProperty.AlignmentPosition = int(sys.stdin.readline().rstrip())
+            layer[NumberLayer].UniqueProperty.AlignmentPosition[0] = int(sys.stdin.readline().rstrip())
+        except:
+            return "Det"
+
+        print("[上下]揃え位置を入力 上揃え [ 0 ] 中揃え [ 1 ] 下揃え [ 2 ] [ 数値 ]")
+        try:
+            layer[NumberLayer].UniqueProperty.AlignmentPosition[1] = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
@@ -86,6 +92,8 @@ class MakeTexts:
             # print("座標" + str(0))
             InTextDrawSetImg = numpy.array(SetImg)
             AddText.append([InTextDrawSetImg, self.addfntSize[imakeImge]])
+            # extend はappendの強い番
+
             # print(layer)
 
         # もし個別オブジェクトでない場合は配列の合成を行う
@@ -120,6 +128,6 @@ class TextElements:
     def __init__(self):
         self.TextSpacing = 0  # テキスト間隔 初期値 -で狭める、+で広げる
         self.WritingDirection = 0  # 書字方向 #初期値横書き
-        self.AlignmentPosition = 1  # 揃え位置を図る奴 0が左 1が真ん中 2が右
+        self.AlignmentPosition = [1, 1]  # 揃え位置を図る奴 0が左・上 1が真ん中 2が右・下
         self.IndividualObject = 0  # 個別に管理するか
         # self.fntSize = []  # フォントサイズ 前との文字との間隔を表すため テキスト数-1にしろ

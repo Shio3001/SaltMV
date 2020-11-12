@@ -171,8 +171,7 @@ class Encoder:
                 TimeInterpolation = NextPointTime - OldPointTime  # 次の地点到達時間 - 前の地点到達時間
                 AdditionalTime = NowFlame - OldPointTime  # 今の時間 - 前の地点到達時間
 
-                OutSynthesis = ((
-                    FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
+                OutSynthesis = ((FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
 
                 AfterTreatmentPoint[Storage + 1] = OutSynthesis
 
@@ -197,7 +196,6 @@ class Encoder:
 
             if layer[ilayerloop].Property[0] == "Text":
                 # print("テキストを検出")
-                PreviousMoveAmount = [0, 0]  # 前の時どれだけ移動したかを記憶
 
                 # 文字間隔をもらう
                 CharacterSpace = layer[ilayerloop].UniqueProperty.TextSpacing
@@ -208,8 +206,14 @@ class Encoder:
                 # 個別オブジェクトか判断 0(false) or 1(true)
                 IndividualObject = layer[ilayerloop].UniqueProperty.IndividualObject
 
+                CentralCalculation = [0, 0]
+
+                if IndividualObject == 1:
+                    for i in range(2):
+                        CentralCalculation[i] = -1 * ((DocMlet * (layer[ilayerloop].UniqueProperty.TextSpacing + UseDocument.shape[1 - i]) + ResizeCoordinateCorrection[i]) / 2)
+
                 for DocM in range(int(len(layer[ilayerloop].Document))):  # 気が向いたらenumerateにしろ
-                    DocMlet = int(len(layer[ilayerloop].Document))
+                    DocMlet = int(len(layer[ilayerloop].Document))  # 要素の数
 
                     UseDocument = layer[ilayerloop].Document[DocM][0]
 
@@ -221,19 +225,23 @@ class Encoder:
                     ExpansionRate = [int(UseDocument.shape[1] * (AfterTreatmentPoint[4] * 0.01)), int(UseDocument.shape[0] * (AfterTreatmentPoint[4] * 0.01))]
                     # 拡大率変更後どのぐらいのサイズにするか計算
 
-                    if 0 in ExpansionRate:  # 拡大率に0が会ったら弾く
-                        PreviousMoveAmount = [None, None]  # 仮 こいつの意味がわからんなったわ
-
-                    else:
+                    if 0 not in ExpansionRate:
                         UseDocument_Size_After = cv2.resize(UseDocument, (ExpansionRate[0], ExpansionRate[1]), interpolation=cv2.INTER_LINEAR)
                         ResizeCoordinateCorrection = [UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # リサイズ後画像サイズが打ち込まれている
 
                         TextSpacing = [0, 0]
+                        TextLocation = [0, 0]
+
+                        if IndividualObject == 0:
+                            for i in range(2):
+                                CentralCalculation[i] = -1 * (ResizeCoordinateCorrection[i] / 2)
+
                         if IndividualObject == 1:
                             TextSpacing[WHSelection] = DocM * (layer[ilayerloop].UniqueProperty.TextSpacing + UseDocument.shape[1 - WHSelection])
+                            # 何文字目かの処理＊( テキストの間隔 + 元のフォントサイズ )
 
-                        TextLocation = [TextSpaceCalculation[0] + PreviousMoveAmount[0] + TextSpacing[0],
-                                        TextSpaceCalculation[1] + PreviousMoveAmount[1] + TextSpacing[1]]  # テキストの最終位置決定
+                        for i in range(2):
+                            TextLocation[i] = TextSpaceCalculation[i] + TextSpacing[i] + CentralCalculation[i]  # テキストの最終位置決定
 
                         M = numpy.float32(
                             [[1, 0, TextLocation[0]], [0, 1, TextLocation[1]]])
@@ -247,6 +255,6 @@ class Encoder:
 
                         # numpy返却 PIL -> RGBAnumpy
                         Ar_BeseMove = numpy.array(Ar_BeseMove_img)
-        print("返却処理")
+        # print("返却処理")
 
         return Ar_BeseMove
