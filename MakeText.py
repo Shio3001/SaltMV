@@ -25,11 +25,11 @@ class MakeTexts:
         # self.TextSpacing  # 初期値 -で狭める、+で広げる
         # self.TextIndividualObject = True  # 文字毎に個別オブジェクト
 
-    def Main(self, layer, EditSize, NumberLayer):
+    def Main(self, layer, EditSize, ilayerloop):
 
         # fntSizeは定数 拡大縮小は基本pointのsizeからやること
 
-        layer[NumberLayer].UniqueProperty = TextElements()
+        layer[ilayerloop].UniqueProperty = TextElements()
 
         print("生成したいテキストを入力 [ 文字列 ]")
         self.NewTextString = str(sys.stdin.readline().rstrip())  # 入力させる
@@ -43,31 +43,31 @@ class MakeTexts:
 
         print("横書き [ 0 ] 縦書き [ 1 ] を入力 [ 数値 ]")
         try:
-            layer[NumberLayer].UniqueProperty.WritingDirection = int(sys.stdin.readline().rstrip())
+            layer[ilayerloop].UniqueProperty.WritingDirection = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
         print("文字間隔 を入力 [ 数値 ]")
         try:
-            layer[NumberLayer].UniqueProperty.TextSpacing = int(sys.stdin.readline().rstrip())
+            layer[ilayerloop].UniqueProperty.TextSpacing = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
         print("[左右]揃え位置を入力 左揃え [ 0 ] 中揃え [ 1 ] 右揃え [ 2 ] [ 数値 ]")
         try:
-            layer[NumberLayer].UniqueProperty.AlignmentPosition[0] = int(sys.stdin.readline().rstrip())
+            layer[ilayerloop].UniqueProperty.AlignmentPosition[0] = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
         print("[上下]揃え位置を入力 上揃え [ 0 ] 中揃え [ 1 ] 下揃え [ 2 ] [ 数値 ]")
         try:
-            layer[NumberLayer].UniqueProperty.AlignmentPosition[1] = int(sys.stdin.readline().rstrip())
+            layer[ilayerloop].UniqueProperty.AlignmentPosition[1] = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
         print("個別オブジェクトにするかしないかを入力 しない [ 0 ] する [ 1 ] ")
         try:
-            layer[NumberLayer].UniqueProperty.IndividualObject = int(sys.stdin.readline().rstrip())
+            layer[ilayerloop].UniqueProperty.IndividualObject = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
@@ -97,10 +97,12 @@ class MakeTexts:
             # print(layer)
 
         # もし個別オブジェクトでない場合は配列の合成を行う
-        if layer[NumberLayer].UniqueProperty.IndividualObject == 0:
-            AddText = [[self.Textconcatenation(AddText, layer[NumberLayer].UniqueProperty)]]
+        if layer[ilayerloop].UniqueProperty.IndividualObject == 0:
+            AddText = [[self.Textconcatenation(AddText, layer[ilayerloop].UniqueProperty)], self.addfntSize[imakeImge]]
 
-        layer[NumberLayer].Document = AddText
+        layer[ilayerloop].Maxfnt = max(self.addfntSize)
+
+        layer[ilayerloop].Document = AddText
 
         return layer
 
@@ -130,4 +132,5 @@ class TextElements:
         self.WritingDirection = 0  # 書字方向 #初期値横書き
         self.AlignmentPosition = [1, 1]  # 揃え位置を図る奴 0が左・上 1が真ん中 2が右・下
         self.IndividualObject = 0  # 個別に管理するか
+        self.Maxfnt = 0
         # self.fntSize = []  # フォントサイズ 前との文字との間隔を表すため テキスト数-1にしろ

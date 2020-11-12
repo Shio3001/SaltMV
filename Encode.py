@@ -206,16 +206,33 @@ class Encoder:
                 # 個別オブジェクトか判断 0(false) or 1(true)
                 IndividualObject = layer[ilayerloop].UniqueProperty.IndividualObject
 
-                CentralCalculation = [0, 0]
+                CentralCalculation = [0, 0]  # 上下左右中央の揃えよう、どれだけずらすかを格納
 
+                DocMlet = int(len(layer[ilayerloop].Document))  # 要素の数
+                UseDocumentAll = layer[ilayerloop].Document
+
+                TotalCharacter = [0, int(layer[ilayerloop].Maxfnt)]
+
+                #TotalCharacter[0] = sum(layer[ilayerloop].Document, axis=3)
+
+                for i in range(int(len(layer[ilayerloop].Document))):
+                    # print(i)
+                    TotalCharacter[0] += layer[ilayerloop].Document[i][1]
+
+                # print(TotalCharacter)
+
+                # 4現目にflag化しろ
                 if IndividualObject == 1:
-                    for i in range(2):
-                        CentralCalculation[i] = -1 * ((DocMlet * (layer[ilayerloop].UniqueProperty.TextSpacing + UseDocument.shape[1 - i]) + ResizeCoordinateCorrection[i]) / 2)
+                    CentralCalculation[WHSelection] = (CharacterSpace * (DocMlet - 1)) + TotalCharacter[0]
+                    CentralCalculation[1 - WHSelection] = TotalCharacter[1]
+
+                    CentralCalculation = list(map(lambda x: -(x/2), CentralCalculation))
+                    print(CentralCalculation)
+                    # print(CentralCalculation)
 
                 for DocM in range(int(len(layer[ilayerloop].Document))):  # 気が向いたらenumerateにしろ
-                    DocMlet = int(len(layer[ilayerloop].Document))  # 要素の数
 
-                    UseDocument = layer[ilayerloop].Document[DocM][0]
+                    UseDocument = UseDocumentAll[DocM][0]
 
                     UseDocument_Size_After = map(None, UseDocument)
                     UseDocument_Move_After = map(None, UseDocument)
