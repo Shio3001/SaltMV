@@ -20,6 +20,7 @@ class MakeTexts:
         self.NewTextString = None  # 生成するてきすと
         self.fntSize = None  # Pointスキップ方法に基づきNone
         self.addfntSize = []
+        # self.AddText = []
 
         # self.WritingDirection = 0  # 書字方向 #初期値横書き
         # self.TextSpacing  # 初期値 -で狭める、+で広げる
@@ -30,6 +31,7 @@ class MakeTexts:
         # fntSizeは定数 拡大縮小は基本pointのsizeからやること
 
         layer[ilayerloop].UniqueProperty = TextElements()
+        layer[ilayerloop].Document = []
 
         print("生成したいテキストを入力 [ 文字列 ]")
         self.NewTextString = str(sys.stdin.readline().rstrip())  # 入力させる
@@ -71,59 +73,72 @@ class MakeTexts:
         except:
             return "Det"
 
-        AddText = []
+        layer[ilayerloop].Document = [0] * int(len(self.NewTextString))
 
-        for imakeImge in range(len(self.NewTextString)):
+        # for imakeImge, item_ic in enumerate(layer[ilayerloop].Document):
+        #print("A" + str(len(layer[ilayerloop].Document)))
+        for imakeImge, item_ic in enumerate(layer[ilayerloop].Document):
+            # layer[ilayerloop].Document.append()
+            layer[ilayerloop].Document[imakeImge] = UniqueText()
+            layer[ilayerloop].Document[imakeImge].TextInformation = self.TextDrawingGeneration(self.addfntSize, imakeImge, self.NewTextString)
+            layer[ilayerloop].Document[imakeImge].TextSize = self.addfntSize[imakeImge]
 
-            print(str(imakeImge) + "文字目の処理")
-
-            try:
-                SetImg = Image.new(
-                    "RGBA", (self.addfntSize[imakeImge], self.addfntSize[imakeImge]), (0, 0, 0, 0))
-            except:
-                return "Det"
-            DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
-
-            fnt = ImageFont.truetype(
-                'logotypejp_mp_b_1.1.ttf', self.addfntSize[imakeImge])  # ImageFontインスタンスを作る
-            # fontを指定
-            DrawSetImg.text((0, 0),
-                            self.NewTextString[imakeImge], font=fnt)
-            # print("座標" + str(0))
-            InTextDrawSetImg = numpy.array(SetImg)
-            AddText.append([InTextDrawSetImg, self.addfntSize[imakeImge]])
-            # extend はappendの強い番
-
-            # print(layer)
+        layer[ilayerloop].UniqueProperty.Maxfnt = max(self.addfntSize)
 
         # もし個別オブジェクトでない場合は配列の合成を行う
+
         if layer[ilayerloop].UniqueProperty.IndividualObject == 0:
-            AddText = [[self.Textconcatenation(AddText, layer[ilayerloop].UniqueProperty)], self.addfntSize[imakeImge]]
+            layer[ilayerloop].Document[0].TextInformation = self.Textconcatenation(layer[ilayerloop].Document, layer[ilayerloop].UniqueProperty)
+            layer[ilayerloop].Document[0].TextSize = layer[ilayerloop].UniqueProperty.Maxfnt
 
-        layer[ilayerloop].Maxfnt = max(self.addfntSize)
-
-        layer[ilayerloop].Document = AddText
-
+            del layer[ilayerloop].Document[1:]
         return layer
 
-    def Textconcatenation(self, AddText, UniqueProperty):
+    def TextDrawingGeneration(self, addfntSize, imakeImge, NewTextString):
+
+        try:
+            SetImg = Image.new("RGBA", (addfntSize[imakeImge], addfntSize[imakeImge]), (0, 0, 0, 0))
+
+        except:
+            return "Det"
+        DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
+
+        fnt = ImageFont.truetype('logotypejp_mp_b_1.1.ttf', addfntSize[imakeImge])  # ImageFontインスタンスを作る
+        # fontを指定
+        DrawSetImg.text((0, 0), NewTextString[imakeImge], font=fnt)
+        InTextDrawSetImg = numpy.array(SetImg)
+        return InTextDrawSetImg
+
+    def Textconcatenation(self, Document, UniqueProperty):
         print("テキストの連結処理")
 
-        AddText_concatenation = AddText[0][0]
+        AddText_concatenation = Document[0].TextInformation
 
-        for ic, item_ic in enumerate(AddText):
+        for ic, item_ic in enumerate(Document):
 
-            AdditionalBlank = numpy.zeros((AddText[ic][1], AddText[ic][1], 4))
+            AdditionalBlank = numpy.zeros((Document[ic].TextSize, UniqueProperty.Maxfnt, 4))
+
+            AddDifference = numpy.zeros((Document[ic].TextSize, UniqueProperty.Maxfnt - Document[ic].TextSize, 4))
 
             # 基本連結 #lenで取得できるのはあくまで[要素数]であって配列番号ではないことから、<=ではなく <になっている
-            if int(ic) + 1 < int(len(AddText)) and UniqueProperty.WritingDirection == 0:
+            if int(ic) + 1 < int(len(Document)) and UniqueProperty.WritingDirection == 0:
+                if int(len(AddDifference[0])) != 0:
+                    AddText_concatenation = numpy.vstack((AdditionalBlank, AddDifference))
                 AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
-                AddText_concatenation = numpy.hstack((AddText_concatenation, AddText[ic + 1][0]))
+                AddText_concatenation = numpy.hstack((AddText_concatenation, Document[ic + 1].TextInformation))
 
-            if int(ic) + 1 < int(len(AddText)) and UniqueProperty.WritingDirection == 1:
+            if int(ic) + 1 < int(len(Document)) and UniqueProperty.WritingDirection == 1:
+                if int(len(AddDifference[0])) != 0:
+                    AddText_concatenation = numpy.hstack((AdditionalBlank, AddDifference))
                 AddText_concatenation = numpy.vstack((AddText_concatenation, AdditionalBlank))
-                AddText_concatenation = numpy.vstack((AddText_concatenation, AddText[ic + 1][0]))
+                AddText_concatenation = numpy.vstack((AddText_concatenation, Document[ic + 1].TextInformation))
         return AddText_concatenation
+
+
+class UniqueText:
+    def __init__(self):
+        self.TextInformation = []
+        self.TextSize = 0
 
 
 class TextElements:
