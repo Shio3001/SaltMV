@@ -45,7 +45,8 @@ class layerElements:
         # self.DrawSetImg = DrawSetImg
         self.Document = []
         self.Point = []
-        self.Property = ["", None, None]  # これが何を意味するか,開始地点,終了地点
+        self.ObjectType = "NotSet"
+        self.Property = [None, None]  # これが何を意味するか,開始地点,終了地点
         self.UniqueProperty = []  # それぞれの
 
 
@@ -58,8 +59,8 @@ class Center:  # 中心的な役割になる、はず
 
     def NextChoice(self):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
-        NextChoiceList = {1: "exit", 2: "NewLayer",
-                          3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove", 6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints"}
+        NextChoiceList = {1: "exit", 2: "NewLayer", 3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove",
+                          6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints", 10: ""}
         print(NextChoiceList)
 
         AskNextAction = sys.stdin.readline().rstrip()
@@ -115,8 +116,7 @@ class Center:  # 中心的な役割になる、はず
         if AskNextAction == NextChoiceList[6] or AskNextAction == "6":
             print("オブジェクトの追加")
             if len(self.layer) != 0:
-                AskDi = New_MakeObject.MakeObjectCenter(
-                    self.layer, self.EditSize)
+                AskDi = New_MakeObject.MakeObjectCenter(self.layer, self.EditSize)
                 if AskDi == "Det":
                     print("問題あり")
                     return

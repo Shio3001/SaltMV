@@ -194,7 +194,7 @@ class Encoder:
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
-            if layer[ilayerloop].Property[0] == "Text":
+            if layer[ilayerloop].ObjectType == "3":  # テキスト選択の場合
                 # print("テキストを検出")
 
                 # 文字間隔をもらう
@@ -214,17 +214,17 @@ class Encoder:
                 for i in range(int(len(layer[ilayerloop].Document))):
                     TotalCharacter[0] += layer[ilayerloop].Document[i].TextSize
 
-                if IndividualObject == 1:
+                if IndividualObject == 1:  # 個別オブジェクト時、テキストの総合的な長さを計算する
                     CentralCalculation[WHSelection] = (CharacterSpace * (DocMlet - 1)) + TotalCharacter[0]  # 長い方
                     CentralCalculation[1 - WHSelection] = TotalCharacter[1]  # 短い方
 
                 for i in range(2):
-                    if AlignmentPos[i] == 0:
+                    if AlignmentPos[i] == 0:  # 左・上寄せの時は何もしない
                         CentralCalculation[i] = 0
                     if AlignmentPos[i] == 1:
-                        CentralCalculation[i] /= -2
+                        CentralCalculation[i] /= -2  # 中寄せの時は半分引く
                     if AlignmentPos[i] == 2:
-                        CentralCalculation[i] *= 1
+                        CentralCalculation[i] *= 1  # 右寄せの時は丸々足す
 
                 # CentralCalculation = list(map(lambda x: -(x/2), CentralCalculation)) #lambdaで頑張ってやったけど結局いらんやん
 
@@ -240,11 +240,12 @@ class Encoder:
                     ExpansionRate = [int(UseDocument.shape[1] * (AfterTreatmentPoint[4] * 0.01)), int(UseDocument.shape[0] * (AfterTreatmentPoint[4] * 0.01))]
                     # 拡大率変更後どのぐらいのサイズにするか計算
 
-                    if 0 not in ExpansionRate:
+                    if 0 not in ExpansionRate:  # 拡大率が0でない時
                         UseDocument_Size_After = cv2.resize(UseDocument, (ExpansionRate[0], ExpansionRate[1]), interpolation=cv2.INTER_LINEAR)
 
                         ResizeCoordinateCorrection = [UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # リサイズ後画像サイズが打ち込まれている
 
+                        SizeDifference = (layer[ilayerloop].UniqueProperty.Maxfnt * (AfterTreatmentPoint[4] * 0.01)) - ResizeCoordinateCorrection[1 - WHSelection]
                         TextSpacing = [0, 0]
                         TextLocation = [0, 0]
 
@@ -254,6 +255,8 @@ class Encoder:
 
                         for i in range(2):
                             TextLocation[i] = TextSpaceCalculation[i] + TextSpacing[i] + CentralCalculation[i]  # テキストの最終位置決定
+
+                        TextLocation[1 - WHSelection] += SizeDifference
 
                         M = numpy.float32(
                             [[1, 0, TextLocation[0]], [0, 1, TextLocation[1]]])

@@ -21,8 +21,9 @@ class MakeObject:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
         self.Set_MakeText = MakeText.MakeTexts()
-        print("")
         self.NumberLayer = 0
+        self.AskDi = None
+        self.EditMode = False  # 既存のものを編集(true)か新規作成か(false)
 
     def MakeObjectCenter(self, layer, EditSize):
 
@@ -30,18 +31,25 @@ class MakeObject:
         if self.NumberLayer == "Det":
             return "Det"
 
-        print("[ 読み込み ]")
+        ObjectType = ""
 
-        print("種類を選択 [ 番号 ]")
-        print("1:動画")
-        print("2:")
-        print("3:テキスト")
-        print("4:")
-        ObjectType = str(sys.stdin.readline().rstrip())
+        if layer[self.NumberLayer].ObjectType == "NotSet":
+            self.EditMode = False
+            print("[ 読み込み ]")
 
-        addNewMov = []
+            print("種類を選択 [ 番号 ]")
+            print("1:動画")
+            print("2:")
+            print("3:テキスト")
+            print("4:")
+            ObjectType = str(sys.stdin.readline().rstrip())
+        else:
+            self.EditMode = True
+            ObjectType = layer[self.NumberLayer].ObjectType
+            print("編集モード")
 
         if ObjectType == "1":
+            addNewMov = []
             print("動画ファイルを入力...")
             os.system("pwd")
             os.system("ls")
@@ -69,7 +77,8 @@ class MakeObject:
                     cv2.destroyAllWindows()
                     print("読み込みに成功")
 
-                    layer[self.NumberLayer].Property = ["Movie", 0, 100]
+                    layer[self.NumberLayer].ObjectType = "1"
+                    layer[self.NumberLayer].Property = [0, 100]
 
                     return layer
 
@@ -87,20 +96,24 @@ class MakeObject:
                 print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
                 return "Det"
 
-            layer[self.NumberLayer].Property = ["Text", 0, 100]
+            layer[self.NumberLayer].ObjectType = "3"
+            layer[self.NumberLayer].Property = [0, 100]
 
             if len(layer) != 0:
 
-                AskDi = self.Set_MakeText.Main(
-                    layer, EditSize, self.NumberLayer)
-                if AskDi == "Det":
-                    print("問題あり")
-                    return
+                if self.EditMode == True:
+                    self.AskDi = self.Set_MakeText.EditTexts_Main(layer, EditSize, self.NumberLayer)
                 else:
-                    layer = AskDi
+                    self.AskDi = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer)
+
+                if self.AskDi == "Det":
+                    print("問題あり")
+                    return "Det"
+                else:
+                    layer = self.AskDi
                     return layer
             else:
                 print("レイヤーがありません")
-                return "Det"
+                return layer
 
         return "Det"
