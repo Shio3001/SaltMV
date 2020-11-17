@@ -3,11 +3,16 @@ import sys
 import numpy
 import os
 
+import copy
+
 
 class MidpointElements:
     def Main(self, ilayerloop, NowFlame, layer):
 
-        GetMidpoint = layer[ilayerloop].Point
+        GetMidpoint = copy.deepcopy(layer[ilayerloop].Point)
+
+        # ここから先にGetMidpointに関するなんかしらの副作用がある説あり、copy.deepcopyで無理やり封印してますが
+
         PreviousPoint = 0
 
         print(layer[ilayerloop].Point)
