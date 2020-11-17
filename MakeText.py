@@ -28,11 +28,13 @@ class MakeTexts:
         # self.TextIndividualObject = True  # 文字毎に個別オブジェクト
 
     def Main(self, layer, EditSize, ilayerloop):
-
+        # CUI化で消滅
         # fntSizeは定数 拡大縮小は基本pointのsizeからやること
 
         layer[ilayerloop].UniqueProperty = TextElements()
         layer[ilayerloop].Document = []
+
+        TextSpacing = 0  # 仮設置 pointクラス化工事が終了した次第に削除するように
 
         print("生成したいテキストを入力 [ 文字列 ]")
         self.NewTextString = str(sys.stdin.readline().rstrip())  # 入力させる
@@ -52,7 +54,8 @@ class MakeTexts:
 
         print("文字間隔 を入力 [ 数値 ]")
         try:
-            layer[ilayerloop].UniqueProperty.TextSpacing = int(sys.stdin.readline().rstrip())
+            # layer[ilayerloop].UniqueProperty.TextSpacing = int(sys.stdin.readline().rstrip())
+            TextSpacing = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
@@ -75,6 +78,21 @@ class MakeTexts:
             return "Det"
 
         layer = self.Main_Control(layer, EditSize, ilayerloop)
+
+        # layer[ilayerloop].Point[:].update({"TextSpacing": TextSpacing})
+        # layer[ilayerloop].Point = map(lambda x: x.extend({"TextSpacing": TextSpacing}), layer[ilayerloop].Point)
+
+        print(type(layer[ilayerloop].Point[0]))
+        print(layer[ilayerloop].Point[0])
+
+        for i, ic in enumerate(layer[ilayerloop].Point):
+            layer[ilayerloop].Point[i] = {**layer[ilayerloop].Point[i], "TextSetting": {"TextSpace": TextSpacing}}
+
+        print(layer[ilayerloop].Point)
+
+        # layer[ilayerloop].Point = map(append(PointTextElements(TextSpacing)), layer[ilayerloop].Point)
+
+        # layer[ilayerloop].Point[:].
 
         return layer
 
@@ -126,7 +144,7 @@ class MakeTexts:
 
         EditTexts_fntSize = self.addfntSize
 
-        #self.GetEditTextsMember = None
+        # self.GetEditTextsMember = None
 
         for i in range(2):
             print("変更したいテキスト開始地点を入力[ 数値 ] (もしくは [ ALL ] 全て選択できます)")
@@ -140,7 +158,7 @@ class MakeTexts:
             except:
                 return "Det"
 
-        #self.GetEditTextsMember = map(lambda x: int(x), self.GetEditTextsMember)
+        # self.GetEditTextsMember = map(lambda x: int(x), self.GetEditTextsMember)
 
         EditTexts_Status = ""
         while EditTexts_Status != "Det":
@@ -198,16 +216,16 @@ class MakeTexts:
         layer = self.Main_Control(layer, EditSize, ilayerloop)
         return layer
 
-    def TextDrawingGeneration(self, addfntSize, imakeImge, NewTextString):
+    def TextDrawingGeneration(self, Draw_addfntSize, imakeImge, NewTextString):
 
         try:
-            SetImg = Image.new("RGBA", (addfntSize[imakeImge], addfntSize[imakeImge]), (0, 0, 0, 0))
+            SetImg = Image.new("RGBA", (Draw_addfntSize[imakeImge], Draw_addfntSize[imakeImge]), (0, 0, 0, 0))
 
         except:
             return "Det"
         DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
-        fnt = ImageFont.truetype('logotypejp_mp_b_1.1.ttf', addfntSize[imakeImge])  # ImageFontインスタンスを作る
+        fnt = ImageFont.truetype('logotypejp_mp_b_1.1.ttf', Draw_addfntSize[imakeImge])  # ImageFontインスタンスを作る
         # fontを指定
         DrawSetImg.text((0, 0), NewTextString[imakeImge], font=fnt)
         InTextDrawSetImg = numpy.array(SetImg)
@@ -246,16 +264,15 @@ class MakeTexts:
 
 class UniqueText:
     def __init__(self):
-        self.TextInformation = []
-        self.TextSize = 0
+        self.TextInformation = []  # テキストの画像での情報(ただし配列)
+        self.TextSize = 0  # テキストサイズ
 
 
-class TextElements:
+class TextElements:  # (TEXT定数)
     def __init__(self):
         self.TextSpacing = 0  # テキスト間隔 初期値 -で狭める、+で広げる
         self.WritingDirection = 0  # 書字方向 #初期値横書き
         self.AlignmentPosition = [1, 1]  # 揃え位置を図る奴 0が左・上 1が真ん中 2が右・下
         self.IndividualObject = 0  # 個別に管理するか
-        self.Maxfnt = 0
-        self.NewTextString = ""
-        # self.fntSize = []  # フォントサイズ 前との文字との間隔を表すため テキスト数-1にしろ
+        self.Maxfnt = 0  # 一番でかい文字サイズ
+        self.NewTextString = ""  # 文字列

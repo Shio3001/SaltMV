@@ -26,7 +26,7 @@ class MakeObject:
         self.EditMode = False  # 既存のものを編集(true)か新規作成か(false)
 
     def MakeObjectCenter(self, layer, EditSize):
-
+        # CUI化で消滅
         self.NumberLayer = self.SetSelectLayer.Main(layer)
         if self.NumberLayer == "Det":
             return "Det"

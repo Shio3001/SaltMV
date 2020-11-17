@@ -11,11 +11,13 @@ import PIL.ImageFont as ImageFont
 
 # input = sys.stdin.readline
 import PrintLayers
+import MidPoint
 
 
 class Encoder:
     def __init__(self):
         self.PrintGet_Points = PrintLayers.PrintMain()
+        self.Midpoint_Calculation = MidPoint.MidpointElements()
 
     def Main(self, layer, EditSize):
         print("動画の出力を開始")
@@ -72,8 +74,7 @@ class Encoder:
 
         # os.system("ffmpeg -loop 1 -i test.jpg -vcodec libx264 -pix_fmt yuv420p -t 3 -r 30 output.mp4")
 
-        os.system("ffmpeg -loop 1 -i Encode/OutputBasePicture.png -vcodec libx264 -pix_fmt yuv420p -t " +
-                  str(EditSize[3] / EditSize[2])+" -r "+str(EditSize[2])+" Encode/OutputBaseMov.mp4")
+        os.system("ffmpeg -loop 1 -i Encode/OutputBasePicture.png -vcodec libx264 -pix_fmt yuv420p -t " + str(EditSize[3] / EditSize[2])+" -r "+str(EditSize[2])+" Encode/OutputBaseMov.mp4")
 
         print("合成用動画ファイルを生成が終了しました")
         print("動画の出力を開始します")
@@ -122,77 +123,10 @@ class Encoder:
             # Pointの数だけ処理を行います
             # for iPoint in range(len(layer[ilayerloop].Point)):
 
-            PreviousPoint = 0
-
-            # 現在の中間点がどこか検索します
-            # itime = 中間点検索用
-            for iPoint in range(int(round(len(layer[ilayerloop].Point)))):
-                if layer[ilayerloop].Point[iPoint][0] >= NowFlame:
-                    PreviousPoint = iPoint - 1
-                    break
-
-                # print("決定")
-            AfterTreatmentPoint = numpy.full(
-                int(len(layer[ilayerloop].Point[0])), None)  # 数値補間用
-
-            # x y aを回しますが、timeのことを考慮しないといけないので + 1してください
-            for Storage in range(int(len(layer[ilayerloop].Point[0]))-1):
-
-                OldAdjustment = 0
-                NextAdjustment = 0
-
-                while layer[ilayerloop].Point[PreviousPoint + OldAdjustment][Storage + 1] is None and PreviousPoint + OldAdjustment != 0:
-
-                    OldAdjustment -= 1
-                    print("前の値がNoneだったので数値を変更します")
-
-                while layer[ilayerloop].Point[PreviousPoint + NextAdjustment + 1][Storage + 1] is None:
-
-                    NextAdjustment += 1
-                    print("次の値がNoneだったので数値を変更します")
-
-                OldPoint = layer[ilayerloop].Point[PreviousPoint +
-                                                   OldAdjustment][Storage + 1]
-                OldPointTime = layer[ilayerloop].Point[PreviousPoint +
-                                                       OldAdjustment][0]
-
-                NextPoint = layer[ilayerloop].Point[PreviousPoint +
-                                                    1 + NextAdjustment][Storage + 1]
-                NextPointTime = layer[ilayerloop].Point[PreviousPoint +
-                                                        1 + NextAdjustment][0]
-
-                # 中間点地点計算
-                """
-                OutSynthesis = (
-                    ((NextPoint - OldPoint) / (NextPointTime - OldPointTime)) * (NowFlame - OldPointTime)) + OldPoint
-                """
-
-                FrameInterpolation = NextPoint - OldPoint  # 次の地点 - 前の地点
-                TimeInterpolation = NextPointTime - OldPointTime  # 次の地点到達時間 - 前の地点到達時間
-                AdditionalTime = NowFlame - OldPointTime  # 今の時間 - 前の地点到達時間
-
-                OutSynthesis = ((FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
-
-                AfterTreatmentPoint[Storage + 1] = OutSynthesis
-
-                """
-                print("入力情報:" + "出力地点: " + str(OutSynthesis))
-
-                print("移動一コマあたり:" + str(FrameInterpolation / TimeInterpolation))
-
-                print("計算用:" + " 次地点-前地点: " + str(FrameInterpolation) + " 次時間-前時間: " +
-                      str(TimeInterpolation) + " 今時間-前時間: " + str(AdditionalTime))
-
-                print("現在地点:" + str(PreviousPoint) +
-                      " 現在フレーム:" + str(NowFlame))
-
-                print("次フレーム地点: " + str(NextPoint) + " 前フレーム地点: " + str(
-                    OldPoint) + " , 次フレーム時間: " + str(NextPointTime) + " 前フレーム時間: " + str(OldPointTime))
-
-                print("")
-                """
-
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
+
+            AfterTreatmentPoint = self.Midpoint_Calculation.Main(ilayerloop, NowFlame, layer)
+            # 今どのレイヤーを処理しているか、今のフレーム、レイヤーを送ってあげれば時間を返却してくれる優秀なやつだよ！
 
             if layer[ilayerloop].ObjectType == "3":  # テキスト選択の場合
                 # print("テキストを検出")

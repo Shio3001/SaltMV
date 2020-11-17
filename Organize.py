@@ -21,14 +21,14 @@ class ArrayOrganize:
         self.PrintGet_Points = PrintLayers.PrintMain()
 
     def PointOrganize(self, layer, EditSize):
+        # CUI化で消滅？
 
         print("Pointを時間順に差し替え")
 
         # layer = sorted(, key=lambda x: x[2])
 
         for ilayer in range(len(layer)):
-            layer[ilayer].Point = sorted(
-                layer[ilayer].Point, key=lambda x: x[0], reverse=False)
+            layer[ilayer].Point = sorted(layer[ilayer].Point, key=lambda x: x[0], reverse=False)
             print("sort処理: " + str(ilayer) + " 処理回数: " + str(len(layer)))
 
             Backmost = layer[ilayer].Point[int(

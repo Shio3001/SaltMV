@@ -13,7 +13,7 @@ import PIL.ImageFont as ImageFont
 """
 
 import SelectLayer
-#input = sys.stdin.readline
+# input = sys.stdin.readline
 
 import PrintLayers
 
@@ -23,9 +23,13 @@ import PrintLayers
 class MakePoints:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
+        self.AddPoint = [0, 0, 0, 0]  # time(フレーム) , x , y ,透明度 , その他
+        # self.PointInput =
+        self.AddPointTime = 0
 
     def Main(self, layer, AddOREdit):
-        self.AddPoint = [0, 0, 0, 0, 0]  # time(フレーム) , x , y ,透明度 , その他
+        # CUI化で消滅
+
         NumberLayer = self.SetSelectLayer.Main(layer)
 
         NumberPoint = None
@@ -50,7 +54,7 @@ class MakePoints:
         print("設定する時間の入力 [ 数値 ]")
 
         try:
-            self.AddPoint[0] = int(sys.stdin.readline().rstrip())
+            self.AddPointTime = int(sys.stdin.readline().rstrip())
         except:
             return "Det"
 
@@ -60,7 +64,7 @@ class MakePoints:
         if Cho == True:
             print("座標：Xの入力 [ 数値 ]")
             try:
-                self.AddPoint[1] = int(sys.stdin.readline().rstrip())
+                self.AddPoint[0] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
         else:
@@ -72,7 +76,7 @@ class MakePoints:
         if Cho == True:
             print("座標：Yの入力 [ 数値 ]")
             try:
-                self.AddPoint[2] = int(sys.stdin.readline().rstrip())
+                self.AddPoint[1] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
         else:
@@ -83,7 +87,7 @@ class MakePoints:
         if Cho == True:
             print("透明度 [ 数値 ]")
             try:
-                self.AddPoint[3] = int(sys.stdin.readline().rstrip())
+                self.AddPoint[2] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
         else:
@@ -94,19 +98,24 @@ class MakePoints:
         if Cho == True:
             print("拡大率 [ 数値 ]")
             try:
-                self.AddPoint[4] = int(sys.stdin.readline().rstrip())
+                self.AddPoint[3] = int(sys.stdin.readline().rstrip())
             except:
                 return "Det"
         else:
-            self.AddPoint[4] = None
+            self.AddPoint[3] = None
 
         if AddOREdit == 0:
             print(layer[NumberLayer].Point)
 
-            layer[NumberLayer].Point.append(self.AddPoint)
+            # layer[NumberLayer].Point.append(PointTime=self.AddPointTime, PointMain={"x": self.AddPoint[0], "y": self.AddPoint[1], "alpha": self.AddPoint[2], "size": self.AddPoint[3]})  # 任意
+            layer[NumberLayer].Point.append({"PointTime": self.AddPointTime, "PointMain": {"x": self.AddPoint[0], "y": self.AddPoint[1], "alpha": self.AddPoint[2], "size": self.AddPoint[3]}})
+            # layer[NumberLayer].Point[int(len(layer[NumberLayer].Point)) - 1]
+            # layer[NumberLayer].Point[int(len(layer[NumberLayer].Point)) - 1]
             print(layer[NumberLayer].Point)
 
         elif AddOREdit == 1:
-            layer[NumberLayer].Point[NumberPoint] = self.AddPoint
+            # layer[NumberLayer].Point[NumberPoint].append(PointTime=self.AddPointTime, PointMain={"x": self.AddPoint[0], "y": self.AddPoint[1], "alpha": self.AddPoint[2], "size": self.AddPoint[3]})  # 任意
+            layer[NumberLayer].Point[NumberPoint]["PointTime"] = self.AddPointTime
+            layer[NumberLayer].Point[NumberPoint]["PointMain"] = {"x": self.AddPoint[0], "y": self.AddPoint[1], "alpha": self.AddPoint[2], "size": self.AddPoint[3]}
 
         return layer

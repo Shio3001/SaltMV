@@ -41,16 +41,18 @@ print("=======================")
 
 
 class layerElements:
+    # GUI
     def __init__(self):
         # self.DrawSetImg = DrawSetImg
         self.Document = []
-        self.Point = []
+        self.Point = []  # 時間,x,y,size  #時間[x,y,a,size][間隔など、いろいろ]こっちの方がいいのでは
         self.ObjectType = "NotSet"
         self.Property = [None, None]  # これが何を意味するか,開始地点,終了地点
         self.UniqueProperty = []  # それぞれの
 
 
 class Center:  # 中心的な役割になる、はず
+    # CUI化で消滅
     def __init__(self):
         self.layer = []
         self.EditSize = [0, 0, 0, 0]
