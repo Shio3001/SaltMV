@@ -34,7 +34,7 @@ class MidpointElements:
         # PointGet_N , PointGet_key , PointGet_Element , PointGet_Key_data
         # PointContents_N , PointContents_key , PointContents_Element , PointContents_key_data
 
-        PointTime = PreviousPoint
+        PointTime = PreviousPoint  # PreviousPointは途中で数値が変更されるようになってるので分離しておきましょう
 
         # for PointTime in range(int(len(GetMidpoint))):  # Point(time)が何個あるか確認します
 
@@ -73,18 +73,6 @@ class MidpointElements:
                 FrameInterpolation = NextPoint - OldPoint  # 次の地点 - 前の地点
                 TimeInterpolation = NextPointTime - OldPointTime  # 次の地点到達時間 - 前の地点到達時間
                 AdditionalTime = NowFlame - OldPointTime  # 今の時間 - 前の地点到達時間
-
-                # if PointContents_key == "x":
-                #   print(GetMidpoint)
-                # print(OldPoint)
-                #print(layer[ilayerloop].Point[PreviousPoint + OldAdjustment]["PointMain"])
-                #print(PreviousPoint + OldAdjustment)
-                #print(PointGet_key, PointContents_key)
-                # print(OldPoint)
-                # print(NowFlame)
-                # print(FrameInterpolation)
-                # print(TimeInterpolation)
-                # print(AdditionalTime)
 
                 OutSynthesis = ((FrameInterpolation / TimeInterpolation) * AdditionalTime) + OldPoint
 

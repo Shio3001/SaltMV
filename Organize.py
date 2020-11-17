@@ -28,11 +28,10 @@ class ArrayOrganize:
         # layer = sorted(, key=lambda x: x[2])
 
         for ilayer in range(len(layer)):
-            layer[ilayer].Point = sorted(layer[ilayer].Point, key=lambda x: x[0], reverse=False)
+            layer[ilayer].Point = sorted(layer[ilayer].Point, key=lambda x: x["PointTime"], reverse=False)
             print("sort処理: " + str(ilayer) + " 処理回数: " + str(len(layer)))
 
-            Backmost = layer[ilayer].Point[int(
-                round(len(layer[ilayer].Point))) - 1][0]
+            Backmost = layer[ilayer].Point[int(round(len(layer[ilayer].Point))) - 1]["PointTime"]
 
             if Backmost > EditSize[3]:
                 EditSize[3] = Backmost

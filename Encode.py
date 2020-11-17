@@ -124,11 +124,6 @@ class Encoder:
     def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
 
-            # print(str(ilayerloop) + "レイヤー処理")
-
-            # Pointの数だけ処理を行います
-            # for iPoint in range(len(layer[ilayerloop].Point)):
-
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
             AfterTreatmentPoint = self.Midpoint_Calculation.Main(ilayerloop, NowFlame, layer)
