@@ -28,10 +28,10 @@ class Encoder:
             print("******************************************************")
             print("")
             print("")
-            print(layer)
+            # print(layer[0].Point)
             print("")
             print("")
-            print(self.PrintGet_Points)
+            # print(self.PrintGet_Points)
             print("")
             print("")
             print("******************************************************")
@@ -63,8 +63,7 @@ class Encoder:
         print("*** ファイル削除 終了 ***")
 
         print("合成用動画ファイルを生成しています")
-        OutputBasePicture = Image.new(
-            "RGB", (EditSize[0], EditSize[1]), (0, 0, 0))
+        OutputBasePicture = Image.new("RGB", (EditSize[0], EditSize[1]), (0, 0, 0))
 
         try:
             OutputBasePicture.save("Encode/OutputBasePicture.png")
@@ -81,17 +80,21 @@ class Encoder:
 
         BaseMov = cv2.VideoCapture("Encode/OutputBaseMov.mp4")
 
-        Writer = cv2.VideoWriter(
-            GetOutputAhead, fmt, EditSize[2], size)  # ライター作成
+        Writer = cv2.VideoWriter(GetOutputAhead, fmt, EditSize[2], size)  # ライター作成
 
         PreviewFps = 1
+
+        #layer2 = layer
+
+        # print(layer[0].Point)
 
         while BaseMov.isOpened():
             ret, Ar_BeseMove = BaseMov.read()
             if ret == True:
+
                 Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
-                OutputData = self.ArrayedSet(
-                    BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
+                OutputData = self.ArrayedSet(BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
+
                 # EditSize ・・・ 動画の設定など
                 # BaseMov ・・・出力用の真っ黒なファイル
                 # layer ・・・ 動画編集情報
@@ -107,8 +110,11 @@ class Encoder:
             else:
                 break
 
+        # print(layer[0].Point)
+
         Writer.release()
         cv2.destroyAllWindows()
+
         print("OPENCV END")
 
         print("動画の出力が終了しました")
@@ -169,9 +175,9 @@ class Encoder:
                     UseDocument_Size_After = map(None, UseDocument)
                     UseDocument_Move_After = map(None, UseDocument)
 
-                    TextSpaceCalculation = [AfterTreatmentPoint[1], AfterTreatmentPoint[2]]  # X座標,Y座標(ほんとはいるべき場所)
+                    TextSpaceCalculation = [AfterTreatmentPoint["PointMain"]["x"], AfterTreatmentPoint["PointMain"]["y"]]  # X座標,Y座標(ほんとはいるべき場所)
 
-                    ExpansionRate = [int(UseDocument.shape[1] * (AfterTreatmentPoint[4] * 0.01)), int(UseDocument.shape[0] * (AfterTreatmentPoint[4] * 0.01))]
+                    ExpansionRate = [int(UseDocument.shape[1] * (AfterTreatmentPoint["PointMain"]["size"] * 0.01)), int(UseDocument.shape[0] * (AfterTreatmentPoint["PointMain"]["size"] * 0.01))]
                     # 拡大率変更後どのぐらいのサイズにするか計算
 
                     if 0 not in ExpansionRate:  # 拡大率が0でない時
@@ -179,7 +185,7 @@ class Encoder:
 
                         ResizeCoordinateCorrection = [UseDocument_Size_After.shape[1], UseDocument_Size_After.shape[0]]  # リサイズ後画像サイズが打ち込まれている
 
-                        SizeDifference = (layer[ilayerloop].UniqueProperty.Maxfnt * (AfterTreatmentPoint[4] * 0.01)) - ResizeCoordinateCorrection[1 - WHSelection]
+                        SizeDifference = (layer[ilayerloop].UniqueProperty.Maxfnt * (AfterTreatmentPoint["PointMain"]["size"] * 0.01)) - ResizeCoordinateCorrection[1 - WHSelection]
                         TextSpacing = [0, 0]
                         TextLocation = [0, 0]
 
