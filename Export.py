@@ -99,9 +99,7 @@ class Export_Center:
     def ArrayedSet(self, NowFlame, EditSize, layer):
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
 
-            print(EditSize)
-
-            Ar_BeseMove = numpy.zeros((EditSize[1], EditSize[0], 4))
+            Ar_BeseMove = numpy.zeros((EditSize[1], EditSize[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい
             #Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点

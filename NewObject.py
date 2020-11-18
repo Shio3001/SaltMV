@@ -12,7 +12,16 @@ import PIL.ImageFont as ImageFont
 import SelectLayer
 import PrintLayers
 import MakeText
+import SelectColor
+
+from MakeText_Edit import EditData
+from MakeText_Edit import MakeText_Edit_Main
+from MakeText_Edit import MakeText_Edit_Size
+from MakeText_Edit import MakeText_Edit_Color
+from MakeText_Edit import MakeText_Calculation
+
 # ここから各オブジェクトを追加するのを書く
+# 一番えらい
 
 #input = sys.stdin.readline
 
@@ -21,6 +30,13 @@ class MakeObject:
     def __init__(self):
         self.SetSelectLayer = SelectLayer.SelectLayer()
         self.Set_MakeText = MakeText.MakeTexts()
+
+        self.Set_MakeEditText_EditData = EditData.EditDataElement()
+        self.Set_MakeEditText_Main = MakeText_Edit_Main.MakeEditMain()
+        self.Set_MakeEditText_Size = MakeText_Edit_Size.MakeEditSize()
+        self.Set_MakeEditText_Color = MakeText_Edit_Color.MakeEditColor()
+        self.Set_MakeEditText_Calculation = MakeText_Calculation.MakeText_Cal()
+
         self.NumberLayer = 0
         self.AskDi = None
         self.EditMode = False  # 既存のものを編集(true)か新規作成か(false)
@@ -99,10 +115,12 @@ class MakeObject:
             layer[self.NumberLayer].ObjectType = "3"
             layer[self.NumberLayer].Property = [0, 100]
 
+            EditData.EditDataElement().SetImport_Text(self.Set_MakeEditText_Main, self.Set_MakeEditText_Size, self.Set_MakeEditText_Color, self.Set_MakeEditText_Calculation)
+
             if len(layer) != 0:
 
                 if self.EditMode == True:
-                    self.AskDi = self.Set_MakeText.EditTexts_Main(layer, EditSize, self.NumberLayer)
+                    self.AskDi = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.Set_MakeEditText_EditData)
                 else:
                     self.AskDi = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer)
 
