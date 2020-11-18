@@ -81,7 +81,7 @@ class OutputText_Main:
 
                 UseDocument_Move_After = cv2.warpAffine(UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
 
-                Ar_BeseMove_img = Image.fromarray(Ar_BeseMove)  # RGBAnumpy -> PIL 変換
+                Ar_BeseMove_img = Image.fromarray((Ar_BeseMove).astype(numpy.uint8))  # RGBAnumpy -> PIL 変換
 
                 UseDocument_Move_After_img = Image.fromarray((UseDocument_Move_After).astype(numpy.uint8))  # RGBAnumpy -> PIL 変換
 

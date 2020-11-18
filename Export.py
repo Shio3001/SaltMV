@@ -58,34 +58,6 @@ class Export_Center:
         size = (EditSize[0], EditSize[1])
         fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
 
-        os.system("mkdir Export")
-
-        # あとで移設
-        print("*** ファイル削除 ***")
-
-        os.system("rm -fv Export/OutputBasePicture.png")
-        os.system("rm -fv Export/OutputBaseMov.mp4")
-
-        print("*** ファイル削除 終了 ***")
-
-        print("合成用動画ファイルを生成しています")
-        OutputBasePicture = Image.new("RGB", (EditSize[0], EditSize[1]), (0, 0, 0))
-
-        try:
-            OutputBasePicture.save("Export/OutputBasePicture.png")
-        except:
-            print("動画出力用ファイルの作成に失敗しました 画面サイズが設定されていない可能性があります")
-            return "Det"
-
-        # os.system("ffmpeg -loop 1 -i test.jpg -vcodec libx264 -pix_fmt yuv420p -t 3 -r 30 output.mp4")
-
-        os.system("ffmpeg -loop 1 -i Export/OutputBasePicture.png -vcodec libx264 -pix_fmt yuv420p -t " + str(EditSize[3] / EditSize[2])+" -r "+str(EditSize[2])+" Export/OutputBaseMov.mp4")
-
-        print("合成用動画ファイルを生成が終了しました")
-        print("動画の出力を開始します")
-
-        BaseMov = cv2.VideoCapture("Export/OutputBaseMov.mp4")
-
         Writer = cv2.VideoWriter(GetOutputAhead, fmt, EditSize[2], size)  # ライター作成
 
         PreviewFps = 1
@@ -96,27 +68,22 @@ class Export_Center:
 
         layer_Printer.ReturnPrint(layer)
 
-        while BaseMov.isOpened():
-            ret, Ar_BeseMove = BaseMov.read()
-            if ret == True:
+        for iExport in range(EditSize[3]):
+            OutputData = self.ArrayedSet(iExport, EditSize, layer)
 
-                Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
-                OutputData = self.ArrayedSet(BaseMov.get(cv2.CAP_PROP_POS_FRAMES), EditSize, Ar_BeseMove, layer)
+            # print(OutputData.shape)
 
-                # EditSize ・・・ 動画の設定など
-                # BaseMov ・・・出力用の真っ黒なファイル
-                # layer ・・・ 動画編集情報
+            # EditSize ・・・ 動画の設定など
+            # BaseMov ・・・出力用の真っ黒なファイル
+            # layer ・・・ 動画編集情報
 
-                # 現在いるフレームを送信
-                cv2.imshow('OutputPreview', OutputData)
-                OutputData = cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
-                Writer.write(OutputData)
-                if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
-                    print("書き出し中・・・")
-                    # break
-
-            else:
-                break
+            # 現在いるフレームを送信
+            cv2.imshow('OutputPreview', OutputData)
+            OutputData = cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
+            Writer.write(OutputData)
+            if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
+                print("書き出し中・・・")
+                # break
 
         # print(layer[0].Point)
 
@@ -129,8 +96,13 @@ class Export_Center:
 
         return layer
 
-    def ArrayedSet(self, NowFlame, EditSize, Ar_BeseMove, layer):
+    def ArrayedSet(self, NowFlame, EditSize, layer):
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
+
+            print(EditSize)
+
+            Ar_BeseMove = numpy.zeros((EditSize[1], EditSize[0], 4))
+            #Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
