@@ -9,13 +9,13 @@ import copy
 class MidpointElements:
     def Main(self, ilayerloop, NowFlame, layer):
 
-        GetMidpoint = copy.deepcopy(layer[ilayerloop].Point)
+        GetMidpoint = layer[ilayerloop].Point
 
         # ここから先にGetMidpointに関するなんかしらの副作用がある説あり、copy.deepcopyで無理やり封印してますが
 
         PreviousPoint = 0
 
-        print(layer[ilayerloop].Point)
+        # print(layer[ilayerloop].Point)
 
         # 現在の中間点がどこか検索します
         # itime = 中間点検索用
@@ -25,7 +25,7 @@ class MidpointElements:
                 break
 
             # print("決定")
-        AfterTreatmentPoint = GetMidpoint[0]  # 数値補間用
+        AfterTreatmentPoint = copy.deepcopy(GetMidpoint[0])  # 数値補間用 #ここが参照渡しになってたのが原因だった
 
         # 命名規則
         # PointTime

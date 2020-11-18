@@ -18,7 +18,7 @@ import PrintLayers
 class ArrayOrganize:
 
     def __init__(self):
-        self.PrintGet_Points = PrintLayers.PrintMain()
+        self.layer_Printer = PrintLayers.PrintMain()
 
     def PointOrganize(self, layer, EditSize):
         # CUI化で消滅？

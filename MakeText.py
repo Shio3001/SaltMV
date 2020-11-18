@@ -82,17 +82,11 @@ class MakeTexts:
         # layer[ilayerloop].Point[:].update({"TextSpacing": TextSpacing})
         # layer[ilayerloop].Point = map(lambda x: x.extend({"TextSpacing": TextSpacing}), layer[ilayerloop].Point)
 
-        print(type(layer[ilayerloop].Point[0]))
-        print(layer[ilayerloop].Point[0])
+        # print(type(layer[ilayerloop].Point[0]))
+        # print(layer[ilayerloop].Point[0])
 
         for i, ic in enumerate(layer[ilayerloop].Point):
             layer[ilayerloop].Point[i] = {**layer[ilayerloop].Point[i], "TextSetting": {"TextSpace": TextSpacing}}
-
-        print(layer[ilayerloop].Point)
-
-        # layer[ilayerloop].Point = map(append(PointTextElements(TextSpacing)), layer[ilayerloop].Point)
-
-        # layer[ilayerloop].Point[:].
 
         return layer
 

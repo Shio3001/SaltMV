@@ -1,25 +1,22 @@
 # coding:utf-8
+import sys
+import numpy
+import os
+
 
 class PrintMain:
     def ReturnPrint(self, layer):
-
-        ip = None
         for iprint in range(len(layer)):
-            # print(iprint)
-            # print(layer[iprint])
-            ip = layer[iprint]
 
             print("")
-            print("レイヤー" + str(iprint))
-            # print(ip.DrawSetImg)
-            print(ip.Document)
-            print(ip.Point)
+
+            #print(" " + str(layer[iprint].Document))
+
+            for iprint_Point in range(len(layer[iprint].Point)):
+                print("     " + str(layer[iprint].Point[iprint_Point]))
+
+            print("     " + "オブジェクトタイプ " + str(layer[iprint].ObjectType))
+            print("     " + "開始終了地点 " + str(layer[iprint].Property))
+            print("     " + str(layer[iprint].UniqueProperty))
+
             print("")
-
-        return ip
-
-    def GetPoint(self, layer, iprint):
-        ip = layer[iprint]
-        return ip.Point
-
-    #

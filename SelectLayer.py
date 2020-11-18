@@ -12,11 +12,13 @@ import PrintLayers
 class SelectLayer:
 
     def __init__(self):
-        self.GetPrint = PrintLayers.PrintMain()
+        #self.GetPrint = PrintLayers.PrintMain()
+
+        self.layer_Printer = PrintLayers.PrintMain()
 
     def Main(self, layer):
 
-        print(self.GetPrint.ReturnPrint(layer))
+        self.layer_Printer.ReturnPrint(layer)
         print("レイヤーを選択")
 
         print("番号 [ 0 から ] ")
@@ -32,7 +34,7 @@ class SelectLayer:
 
     def Point(self, layer, NumberLayer):
 
-        print(self.GetPrint.ReturnPrint(layer))
+        self.layer_Printer.ReturnPrint(layer)
         print("変更する中間点を選択")
         print("番号 [ 0 から ] ")
 

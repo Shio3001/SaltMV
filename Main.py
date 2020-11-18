@@ -10,7 +10,7 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
 import Organize
-import Encode
+import Export
 import EditSize
 import SetPoints
 import NewObject
@@ -56,12 +56,11 @@ class Center:  # 中心的な役割になる、はず
     def __init__(self):
         self.layer = []
         self.EditSize = [0, 0, 0, 0]
-        self.GetPrint = PrintLayers.PrintMain()
         # self.Point = [0, 0, 0, 0, 0]  # Time , X , Y ,Z ,Size
 
     def NextChoice(self):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
-        NextChoiceList = {1: "exit", 2: "NewLayer", 3: "SetEditeSize", 4: "CountLayer", 5: "EncodeMove",
+        NextChoiceList = {1: "exit", 2: "NewLayer", 3: "SetEditeSize", 4: "CountLayer", 5: "ExportMove",
                           6: "NewObject", 7: "SetPoints", 8: "EditPoints", 9: "OrganizePoints", 10: ""}
         print(NextChoiceList)
 
@@ -83,7 +82,7 @@ class Center:  # 中心的な役割になる、はず
             # self.layer.append([DrawSetImg, None, []])
 
             print("レイヤー数:" + str(len(self.layer)))
-            print(self.GetPrint.ReturnPrint(self.layer))
+            layer_Printer.ReturnPrint(self.layer)
 
         if AskNextAction == NextChoiceList[3] or AskNextAction == "3":
 
@@ -97,13 +96,13 @@ class Center:  # 中心的な役割になる、はず
 
         if AskNextAction == NextChoiceList[4] or AskNextAction == "4":
             print("レイヤー数:" + str(len(self.layer)))
-            print(self.GetPrint.ReturnPrint(self.layer))
+            layer_Printer.ReturnPrint(self.layer)
             print("")
 
         if AskNextAction == NextChoiceList[5] or AskNextAction == "5":
             print("動画エンコード")
             if len(self.layer) != 0:
-                AskDi = MovImgsEncode.Main(self.layer, self.EditSize)
+                AskDi = MovImgsExport.Main(self.layer, self.EditSize)
 
                 if AskDi == "Det":
                     print("問題あり")
@@ -163,10 +162,7 @@ class Center:  # 中心的な役割になる、はず
             print("レイヤーの中にあるPoint設定を時間順に並び替えます")
             if len(self.layer) != 0:
 
-                for ilayer in range(len(self.layer)):
-                    GetPoint = self.GetPrint.GetPoint(self.layer, ilayer)
-
-                print("Point 処理前 " + str(GetPoint))
+                print("Point 処理前 " + str(layer_Printer.ReturnPrint(self.layer)))
 
                 AskDi, self.EditSize = ArrayOrganize.PointOrganize(
                     self.layer, self.EditSize)
@@ -177,9 +173,7 @@ class Center:  # 中心的な役割になる、はず
                 else:
 
                     self.layer = AskDi
-                    for ilayer in range(len(self.layer)):
-                        GetPoint = self.GetPrint.GetPoint(self.layer, ilayer)
-                    print("Point 処理後 " + str(GetPoint))
+                    print("Point 処理後 " + str(layer_Printer.ReturnPrint(self.layer)))
 
             else:
                 print("レイヤーがありません")
@@ -192,10 +186,11 @@ New_MakeObject = NewObject.MakeObject()
 
 Set_MakePoint = SetPoints.MakePoints()
 
-MovImgsEncode = Encode.Encoder()
+MovImgsExport = Export.Export_Center()
 
 ArrayOrganize = Organize.ArrayOrganize()
 
+layer_Printer = PrintLayers.PrintMain()
 
 ReturnDecision = ""
 while ReturnDecision != "exit":
