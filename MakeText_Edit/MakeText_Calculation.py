@@ -23,7 +23,7 @@ class MakeText_Cal:
         for imakeImge, item_ic in enumerate(layer[ilayerloop].Document):
             # layer[ilayerloop].Document.append()
             layer[ilayerloop].Document[imakeImge] = UniqueText()
-            layer[ilayerloop].Document[imakeImge].TextIznformation = self.TextDrawingGeneration(addfntSize, imakeImge, NewTextString, RGBdata)
+            layer[ilayerloop].Document[imakeImge].TextInformation = numpy.array(self.TextDrawingGeneration(addfntSize, imakeImge, NewTextString, RGBdata))
             layer[ilayerloop].Document[imakeImge].TextSize = addfntSize[imakeImge]
 
         layer[ilayerloop].UniqueProperty.Maxfnt = max(addfntSize)
@@ -31,7 +31,7 @@ class MakeText_Cal:
         # もし個別オブジェクトでない場合は配列の合成を行う
 
         if layer[ilayerloop].UniqueProperty.IndividualObject == 0:
-            layer[ilayerloop].Document[0].TextInformation = self.Textconcatenation(layer[ilayerloop].Document, layer[ilayerloop].UniqueProperty)
+            layer[ilayerloop].Document[0].TextInformation = numpy.array(self.Textconcatenation(layer[ilayerloop].Document, layer[ilayerloop].UniqueProperty))
             layer[ilayerloop].Document[0].TextSize = layer[ilayerloop].UniqueProperty.Maxfnt
 
             del layer[ilayerloop].Document[1:]
@@ -66,21 +66,26 @@ class MakeText_Cal:
                 DifferenceSize = UniqueProperty.Maxfnt - Document[ic + 1].TextSize
 
                 if UniqueProperty.WritingDirection == 0:
-                    AdditionalBlank = numpy.zeros((UniqueProperty.Maxfnt, UniqueProperty.TextSpacing, 4))  # テキスト間の空白を入力
+
                     if DifferenceSize != 0:
                         AddDifference = numpy.zeros((DifferenceSize, Document[ic + 1].TextSize, 4))
                         Document[ic + 1].TextInformation = numpy.vstack((AddDifference, Document[ic + 1].TextInformation))  # 縦に連結
+                    if UniqueProperty.TextSpacing != 0:
+                        AdditionalBlank = numpy.zeros((UniqueProperty.Maxfnt, UniqueProperty.TextSpacing, 4))  # テキスト間の空白を入力
+                        AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
 
-                    AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
                     AddText_concatenation = numpy.hstack((AddText_concatenation, Document[ic + 1].TextInformation))
 
                 if UniqueProperty.WritingDirection == 1:
-                    AdditionalBlank = numpy.zeros((UniqueProperty.TextSpacing, UniqueProperty.Maxfnt, 4))  # テキスト間の空白を入力
+
                     if DifferenceSize != 0:
                         AddDifference = numpy.zeros((Document[ic + 1].TextSize, DifferenceSize, 4))
                         Document[ic + 1].TextInformation = numpy.hstack((Document[ic + 1].TextInformation, AddDifference))  # 横に連結
 
-                    AddText_concatenation = numpy.vstack((AddText_concatenation, AdditionalBlank))
+                    if UniqueProperty.TextSpacing != 0:
+                        AdditionalBlank = numpy.zeros((UniqueProperty.TextSpacing, UniqueProperty.Maxfnt, 4))  # テキスト間の空白を入力
+                        AddText_concatenation = numpy.vstack((AddText_concatenation, AdditionalBlank))
+
                     AddText_concatenation = numpy.vstack((AddText_concatenation, Document[ic + 1].TextInformation))
         return AddText_concatenation
 

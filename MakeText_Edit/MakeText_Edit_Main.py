@@ -15,7 +15,7 @@ import PIL.ImageFont as ImageFont
 
 class MakeEditMain:
 
-    def EditTexts_Main(self, layer, EditSize, ilayerloop, Set_SelectColor, Set_MakeEditText_EditData):
+    def EditTexts_Main(self, layer, EditSize, ilayerloop, Set_SelectColor, EditData_Ope, EditData_Info):
 
         GetEditTextsMember = [0, 0]
         Main_addfntSize = layer[ilayerloop].Document[:].TextSize
@@ -58,7 +58,7 @@ class MakeEditMain:
 
         EditTexts_Status = ""
         while EditTexts_Status != "Det":
-            EditTexts_Status, EditTexts_layer = self.EditTexts_Operation(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, Set_MakeEditText_EditData)
+            EditTexts_Status, EditTexts_layer = self.EditTexts_Operation(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
 
             if EditTexts_Status != "exit":
                 layer = EditTexts_layer
@@ -66,7 +66,7 @@ class MakeEditMain:
 
         return layer
 
-    def EditTexts_Operation(self, layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, Set_MakeEditText_EditData):
+    def EditTexts_Operation(self, layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, EditData_Ope, EditData_Info):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
         NextChoiceList = {1: "exit", 2: "size", 3: "colour"}
         print(NextChoiceList)
@@ -76,7 +76,7 @@ class MakeEditMain:
             return "exit", layer
 
         if AskNextAction == NextChoiceList[2] or AskNextAction == "2":
-            AskDi = Set_MakeEditText_EditData.EditDataElement().Import_Size(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, Set_MakeEditText_EditData)
+            AskDi = EditData_Ope.Import_Size(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, EditData_Ope, EditData_Info)
             if AskDi == "Det":
                 print("問題あり")
                 return "Det", layer
@@ -84,7 +84,7 @@ class MakeEditMain:
                 layer = AskDi
 
         if AskNextAction == NextChoiceList[3] or AskNextAction == "3":
-            AskDi = Set_MakeEditText_EditData.EditDataElement().Import_Color(layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, Set_MakeEditText_EditData)
+            AskDi = EditData_Ope.Import_Color(layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
             if AskDi == "Det":
                 print("問題あり")
                 return "Det", layer

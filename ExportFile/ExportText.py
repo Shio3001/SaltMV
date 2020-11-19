@@ -53,6 +53,8 @@ class OutputText_Main:
             UseDocument_Size_After = map(None, UseDocument)
             UseDocument_Move_After = map(None, UseDocument)
 
+            # print(UseDocument.shape)
+
             TextSpaceCalculation = [AfterTreatmentPoint["PointMain"]["x"], AfterTreatmentPoint["PointMain"]["y"]]  # X座標,Y座標(ほんとはいるべき場所)
 
             ExpansionRate = [int(UseDocument.shape[1] * (AfterTreatmentPoint["PointMain"]["size"] * 0.01)), int(UseDocument.shape[0] * (AfterTreatmentPoint["PointMain"]["size"] * 0.01))]

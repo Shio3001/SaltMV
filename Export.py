@@ -79,8 +79,9 @@ class Export_Center:
 
             # 現在いるフレームを送信
             cv2.imshow('OutputPreview', OutputData)
-            OutputData = cv2.cvtColor(OutputData, cv2.COLOR_RGBA2RGB)
             Writer.write(OutputData)
+            OutputData = cv2.cvtColor(OutputData.astype('float32'), cv2.COLOR_RGBA2RGB)
+
             if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
                 print("書き出し中・・・")
                 # break

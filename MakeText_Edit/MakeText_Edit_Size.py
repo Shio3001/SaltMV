@@ -16,9 +16,9 @@ import PIL.ImageFont as ImageFont
 
 
 class MakeEditSize:
-    def EditTexts_Size(self, layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, Set_MakeEditText_EditData):
+    def EditTexts_Size(self, layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize,  EditData_Ope, EditData_Info):
 
-        addfntSize = Set_MakeEditText_EditData.EditDataElement().addfntSize
+        addfntSize = EditData_Info.addfntSize
 
         print("変更後のフォントサイズを入力 [数値]")
         print("現在:" + str(EditTexts_fntSize))
@@ -43,5 +43,5 @@ class MakeEditSize:
             addfntSize[iEdit] = EditTexts_fntSize[iEdit]
 
         print(EditTexts_fntSize)
-        layer = Set_MakeEditText_EditData.EditDataElement().Import_Cal.Main_Control(layer, EditSize, ilayerloop, Set_MakeEditText_EditData.EditDataElement().RGBdata, addfntSize, Set_MakeEditText_EditData.EditDataElement().NewTextString)
+        layer = EditData_Ope.Import_Cal().Main_Control(layer, EditSize, ilayerloop, EditData_Info.RGBdata, addfntSize, EditData_Info.NewTextString)
         return layer

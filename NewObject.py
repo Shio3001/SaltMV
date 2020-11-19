@@ -23,7 +23,7 @@ from MakeText_Edit import MakeText_Calculation
 # ここから各オブジェクトを追加するのを書く
 # 一番えらい
 
-#input = sys.stdin.readline
+# input = sys.stdin.readline
 
 
 class MakeObject:
@@ -31,7 +31,11 @@ class MakeObject:
         self.SetSelectLayer = SelectLayer.SelectLayer()
         self.Set_MakeText = MakeText.MakeTexts()
 
-        self.Set_MakeEditText_EditData = EditData.EditDataElement()
+        self.EditData_Ope = None
+        self.EditData_Info = None
+
+        # self.Set_MakeEditText_EditData_Operation = EditData.EditDataElement_Operation()
+        # self.Set_MakeEditText_EditData_Information = EditData.EditDataElement_Information()
         self.Set_MakeEditText_Main = MakeText_Edit_Main.MakeEditMain()
         self.Set_MakeEditText_Size = MakeText_Edit_Size.MakeEditSize()
         self.Set_MakeEditText_Color = MakeText_Edit_Color.MakeEditColor()
@@ -115,20 +119,23 @@ class MakeObject:
             layer[self.NumberLayer].ObjectType = "3"
             layer[self.NumberLayer].Property = [0, 100]
 
-            EditData.EditDataElement().SetImport_Text(self.Set_MakeEditText_Main, self.Set_MakeEditText_Size, self.Set_MakeEditText_Color, self.Set_MakeEditText_Calculation)
+            self.EditData_Ope = EditData.EditDataElement_Operation(self.Set_MakeEditText_Main, self.Set_MakeEditText_Size, self.Set_MakeEditText_Color, self.Set_MakeEditText_Calculation)
 
             if len(layer) != 0:
 
                 if self.EditMode == True:
-                    self.AskDi = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.Set_MakeEditText_EditData)
+                    self.AskDi = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
                 else:
-                    self.AskDi = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer)
+
+                    self.AskDi, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)
+                    #self.AskDi = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
 
                 if self.AskDi == "Det":
                     print("問題あり")
                     return "Det"
                 else:
                     layer = self.AskDi
+                    self.EditData_Info = AsEditData_Info
                     return layer
             else:
                 print("レイヤーがありません")

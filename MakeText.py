@@ -15,8 +15,6 @@ import SelectLayer
 
 import SelectColor
 
-from MakeText_Edit import EditData
-
 
 class MakeTexts:
     def __init__(self):
@@ -28,7 +26,7 @@ class MakeTexts:
         self.addfntSize = []
         self.GetEditTextsMember = [None, None]
 
-    def Main(self, layer, EditSize, ilayerloop):
+    def Main(self, layer, EditSize, ilayerloop, EditData, EditData_Ope):
         # CUI化で消滅
         # fntSizeは定数 拡大縮小は基本pointのsizeからやること
 
@@ -86,14 +84,20 @@ class MakeTexts:
         else:
             RGBdata = [AskDi] * len(self.NewTextString)
 
-        layer = EditData.EditDataElement().Import_Cal(layer, EditSize, ilayerloop, RGBdata, self.addfntSize, self.NewTextString)
+        print(layer)
+        print(EditSize)
+        print(ilayerloop)
+        print(RGBdata)
+        print(self.addfntSize)
+        print(self.NewTextString)
 
-        EditData.EditDataElement().SetElement_Text(self.addfntSize, self.NewTextString, RGBdata)
+        EditData_Info = EditData.EditDataElement_Information(self.addfntSize, self.NewTextString, RGBdata)
+        layer = EditData_Ope.Import_Cal.Main_Control(layer, EditSize, ilayerloop, RGBdata, self.addfntSize, self.NewTextString)
 
         for i, ic in enumerate(layer[ilayerloop].Point):
             layer[ilayerloop].Point[i] = {**layer[ilayerloop].Point[i], "TextSetting": {"TextSpace": TextSpacing}}
 
-        return layer
+        return layer, EditData_Info
 
 
 class TextElements:  # (TEXT定数)
