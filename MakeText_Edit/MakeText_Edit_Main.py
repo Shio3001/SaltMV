@@ -57,15 +57,15 @@ class MakeEditMain:
                     break
 
             except:
-                return "Det"
+                return "EXC"
 
         # self.GetEditTextsMember = map(lambda x: int(x), self.GetEditTextsMember)
 
         EditTexts_Status = ""
-        while EditTexts_Status != "Det":
+        while EditTexts_Status != "EXC":
             EditTexts_Status, EditTexts_layer, RelayEditData_Info = self.EditTexts_Operation(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
 
-            if EditTexts_Status != "Det":
+            if EditTexts_Status != "EXC":
                 EditData_Info = RelayEditData_Info
 
             if EditTexts_Status != "exit":
@@ -84,21 +84,21 @@ class MakeEditMain:
             return "exit", layer
 
         if AskNextAction == NextChoiceList[2] or AskNextAction == "2":
-            AskDi, RelayEditData_Info = EditData_Ope.Import_Size.EditTexts_Size(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, EditData_Ope, EditData_Info)
-            if AskDi == "Det":
+            CHK, RelayEditData_Info = EditData_Ope.Import_Size.EditTexts_Size(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, EditData_Ope, EditData_Info)
+            if CHK == "EXC":
                 print("問題あり")
-                return "Det", layer
+                return "EXC", layer
             else:
-                layer = AskDi
+                layer = CHK
                 EditData_Info = RelayEditData_Info
 
         if AskNextAction == NextChoiceList[3] or AskNextAction == "3":
-            AskDi, RelayEditData_Info = EditData_Ope.Import_Color.EditTexts_Colour(layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
-            if AskDi == "Det":
+            CHK, RelayEditData_Info = EditData_Ope.Import_Color.EditTexts_Colour(layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
+            if CHK == "EXC":
                 print("問題あり")
-                return "Det", layer
+                return "EXC", layer
             else:
-                layer = AskDi
+                layer = CHK
                 EditData_Info = RelayEditData_Info
 
         return "ok", layer, EditData_Info

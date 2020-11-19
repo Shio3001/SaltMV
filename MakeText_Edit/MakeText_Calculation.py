@@ -44,7 +44,7 @@ class MakeText_Cal:
             SetImg = Image.new("RGBA", (Draw_addfntSize[imakeImge], Draw_addfntSize[imakeImge]), (0, 0, 0, 0))
 
         except:
-            return "Det"
+            return "EXC"
         DrawSetImg = ImageDraw.Draw(SetImg)  # im上のImageDrawインスタンスを作る
 
         fnt = ImageFont.truetype('logotypejp_mp_b_1.1.ttf', Draw_addfntSize[imakeImge])  # ImageFontインスタンスを作る

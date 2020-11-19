@@ -45,7 +45,7 @@ class Export_Center:
             print("")
         except:
             print("layer取得不可")
-            return "Det"
+            return "EXC"
 
         print("layer取得成功")
 

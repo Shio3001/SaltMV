@@ -43,14 +43,14 @@ class MakeObject:
         self.Set_MakeEditText_Calculation = MakeText_Calculation.MakeText_Cal()
 
         self.NumberLayer = 0
-        self.AskDi = None
+        self.CHK = None
         self.EditMode = False  # 既存のものを編集(true)か新規作成か(false)
 
     def MakeObjectCenter(self, layer, EditSize):
         # CUI化で消滅
         self.NumberLayer = self.SetSelectLayer.Main(layer)
-        if self.NumberLayer == "Det":
-            return "Det"
+        if self.NumberLayer == "EXC":
+            return "EXC"
 
         ObjectType = ""
 
@@ -108,7 +108,7 @@ class MakeObject:
                     print("ファイルが正常に入力できませんでした：終了")
                     NewObjct.release()
                     cv2.destroyAllWindows()
-                    return "Det"
+                    return "EXC"
                     # break
 
         if ObjectType == "3":
@@ -116,7 +116,7 @@ class MakeObject:
 
             if EditSize[0] == 0 or EditSize[1] == 0:
                 print("画面サイズが設定されていません,もしくは [ 0 ]に設定されています")
-                return "Det"
+                return "EXC"
 
             layer[self.NumberLayer].ObjectType = "3"
             layer[self.NumberLayer].Property = [0, 100]
@@ -129,21 +129,21 @@ class MakeObject:
 
                 if self.EditMode == True:
                     print("aba" + str(self.EditData_Info))
-                    self.AskDi, AsEditData_Info = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
+                    self.CHK, AsEditData_Info = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
                 else:
 
-                    self.AskDi, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)
-                    #self.AskDi = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
+                    self.CHK, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)
+                    #self.CHK = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
 
-                if self.AskDi == "Det":
+                if self.CHK == "EXC":
                     print("問題あり")
-                    return "Det"
+                    return "EXC"
                 else:
-                    layer = self.AskDi
+                    layer = self.CHK
                     self.EditData_Info = AsEditData_Info
                     return layer
             else:
                 print("レイヤーがありません")
                 return layer
 
-        return "Det"
+        return "EXC"

@@ -30,7 +30,7 @@ class SelectLayer:
 
         except:
             print("レイヤーの取得ができませんでした")
-            return "Det"
+            return "EXC"
 
     def Point(self, layer, NumberLayer):
 
@@ -45,4 +45,4 @@ class SelectLayer:
 
         except:
             print("中間点の取得ができませんでした")
-            return "Det"
+            return "EXC"

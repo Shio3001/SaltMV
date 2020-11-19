@@ -34,14 +34,14 @@ class MakePoints:
 
         NumberPoint = None
 
-        if NumberLayer == "Det":
-            return "Det"
+        if NumberLayer == "EXC":
+            return "EXC"
 
         if AddOREdit == 1:
             NumberPoint = self.SetSelectLayer.Point(layer, NumberLayer)
 
-        if NumberPoint == "Det":
-            return "Det"
+        if NumberPoint == "EXC":
+            return "EXC"
 
         print("")
 
@@ -56,7 +56,7 @@ class MakePoints:
         try:
             self.AddPointTime = int(sys.stdin.readline().rstrip())
         except:
-            return "Det"
+            return "EXC"
 
         print("")
 
@@ -66,7 +66,7 @@ class MakePoints:
             try:
                 self.AddPoint[0] = int(sys.stdin.readline().rstrip())
             except:
-                return "Det"
+                return "EXC"
         else:
             self.AddPoint[1] = None
 
@@ -78,7 +78,7 @@ class MakePoints:
             try:
                 self.AddPoint[1] = int(sys.stdin.readline().rstrip())
             except:
-                return "Det"
+                return "EXC"
         else:
             self.AddPoint[2] = None
 
@@ -89,7 +89,7 @@ class MakePoints:
             try:
                 self.AddPoint[2] = int(sys.stdin.readline().rstrip())
             except:
-                return "Det"
+                return "EXC"
         else:
             self.AddPoint[3] = None
 
@@ -100,7 +100,7 @@ class MakePoints:
             try:
                 self.AddPoint[3] = int(sys.stdin.readline().rstrip())
             except:
-                return "Det"
+                return "EXC"
         else:
             self.AddPoint[3] = None
 

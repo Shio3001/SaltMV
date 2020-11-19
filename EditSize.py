@@ -25,26 +25,26 @@ class SuperSetEditSize:
         try:
             self.EditSize[0] = round(int(sys.stdin.readline().rstrip()))
         except:
-            return "Det"
+            return "EXC"
 
         print("[ 高さ ] を入力")
 
         try:
             self.EditSize[1] = round(int(sys.stdin.readline().rstrip()))
         except:
-            return "Det"
+            return "EXC"
 
         print("[ fps ] を入力")
         try:
             self.EditSize[2] = round(int(sys.stdin.readline().rstrip()))
         except:
-            return "Det"
+            return "EXC"
 
         print("[ 長さ ] を入力")
         try:
             self.EditSize[3] = round(int(sys.stdin.readline().rstrip()))
         except:
-            return "Det"
+            return "EXC"
 
         print("入力終了 " + "横 : " +
               str(self.EditSize[0]) + " 高 : " + str(self.EditSize[1]) + " fps値 : " + str(self.EditSize[2]) + " 長さ : " + str(self.EditSize[3]))

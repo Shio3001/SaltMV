@@ -86,12 +86,12 @@ class Center:  # 中心的な役割になる、はず
 
         if AskNextAction == NextChoiceList[3] or AskNextAction == "3":
 
-            AskDi = SetSuperSetEditSize.SetEditSize()
-            if AskDi == "Det":
+            CHK = SetSuperSetEditSize.SetEditSize()
+            if CHK == "EXC":
                 print("入力に問題あり")
 
             else:
-                self.EditSize = AskDi
+                self.EditSize = CHK
                 print(self.EditSize)
 
         if AskNextAction == NextChoiceList[4] or AskNextAction == "4":
@@ -102,13 +102,13 @@ class Center:  # 中心的な役割になる、はず
         if AskNextAction == NextChoiceList[5] or AskNextAction == "5":
             print("動画エンコード")
             if len(self.layer) != 0:
-                AskDi = MovImgsExport.Main(self.layer, self.EditSize)
+                CHK = MovImgsExport.Main(self.layer, self.EditSize)
 
-                if AskDi == "Det":
+                if CHK == "EXC":
                     print("問題あり")
                     return
                 else:
-                    self.layer == AskDi
+                    self.layer == CHK
 
             else:
                 print("レイヤーがありません")
@@ -117,12 +117,12 @@ class Center:  # 中心的な役割になる、はず
         if AskNextAction == NextChoiceList[6] or AskNextAction == "6":
             print("オブジェクトの追加")
             if len(self.layer) != 0:
-                AskDi = New_MakeObject.MakeObjectCenter(self.layer, self.EditSize)
-                if AskDi == "Det":
+                CHK = New_MakeObject.MakeObjectCenter(self.layer, self.EditSize)
+                if CHK == "EXC":
                     print("問題あり")
                     return
                 else:
-                    self.layer = AskDi
+                    self.layer = CHK
 
             else:
                 print("レイヤーがありません")
@@ -132,12 +132,12 @@ class Center:  # 中心的な役割になる、はず
             print("オブジェクトの移動・透明度変更などを行います [ 新規作成 ]")
             if len(self.layer) != 0:
                 AddOREdit = 0
-                AskDi = Set_MakePoint.Main(self.layer, AddOREdit)
-                if AskDi == "Det":
+                CHK = Set_MakePoint.Main(self.layer, AddOREdit)
+                if CHK == "EXC":
                     print("問題あり")
                     return
                 else:
-                    self.layer = AskDi
+                    self.layer = CHK
 
             else:
                 print("レイヤーがありません")
@@ -147,12 +147,12 @@ class Center:  # 中心的な役割になる、はず
             print("オブジェクトの移動・透明度変更などを行います [ 変更 ]")
             if len(self.layer) != 0:
                 AddOREdit = 1
-                AskDi = Set_MakePoint.Main(self.layer, AddOREdit)
-                if AskDi == "Det":
+                CHK = Set_MakePoint.Main(self.layer, AddOREdit)
+                if CHK == "EXC":
                     print("問題あり")
                     return
                 else:
-                    self.layer = AskDi
+                    self.layer = CHK
 
             else:
                 print("レイヤーがありません")
@@ -164,15 +164,15 @@ class Center:  # 中心的な役割になる、はず
 
                 print("Point 処理前 " + str(layer_Printer.ReturnPrint(self.layer)))
 
-                AskDi, self.EditSize = ArrayOrganize.PointOrganize(
+                CHK, self.EditSize = ArrayOrganize.PointOrganize(
                     self.layer, self.EditSize)
 
-                if AskDi == "Det":
+                if CHK == "EXC":
                     print("問題あり")
                     return
                 else:
 
-                    self.layer = AskDi
+                    self.layer = CHK
                     print("Point 処理後 " + str(layer_Printer.ReturnPrint(self.layer)))
 
             else:

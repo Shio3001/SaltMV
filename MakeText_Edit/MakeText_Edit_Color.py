@@ -21,10 +21,10 @@ class MakeEditColor:
         # print(EditData_Info)
         RGBdata = EditData_Info.RGBdata
 
-        AskDi = Set_SelectColor.RGB_select()
+        CHK = Set_SelectColor.RGB_select()
 
-        if AskDi == "Det":
-            return "Det"
+        if CHK == "EXC":
+            return "EXC"
         else:
             NumberOfCalculations = int(GetEditTextsMember[1]) - int(GetEditTextsMember[0]) + 1
             print("計算回数" + str(NumberOfCalculations))
@@ -32,7 +32,7 @@ class MakeEditColor:
             for i in range(NumberOfCalculations):
                 iEdit = i + int(GetEditTextsMember[0])
                 print(iEdit)
-                RGBdata[iEdit] = AskDi
+                RGBdata[iEdit] = CHK
 
         layer = EditData_Ope.Import_Cal.Main_Control(layer, EditSize, ilayerloop, RGBdata, EditData_Info.addfntSize, EditData_Info.NewTextString)
 

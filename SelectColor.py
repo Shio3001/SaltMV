@@ -21,20 +21,20 @@ class SelectColor_Center:
         try:
             self.RGBdata[0] = int(sys.stdin.readline().rstrip())
         except:
-            return "Det"
+            return "EXC"
 
         print("色 : G を入力してください [0 ~ 255] [ 数値 ]")
 
         try:
             self.RGBdata[1] = int(sys.stdin.readline().rstrip())
         except:
-            return "Det"
+            return "EXC"
 
         print("色 : B を入力してください [0 ~ 255] [ 数値 ]")
 
         try:
             self.RGBdata[2] = int(sys.stdin.readline().rstrip())
         except:
-            return "Det"
+            return "EXC"
 
         return self.RGBdata
