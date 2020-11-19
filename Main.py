@@ -48,7 +48,7 @@ class layerElements:
         self.Point = []  # 時間,x,y,size  #時間[x,y,a,size][間隔など、いろいろ]こっちの方がいいのでは
         self.ObjectType = "NotSet"
         self.Property = [None, None]  # これが何を意味するか,開始地点,終了地点
-        self.UniqueProperty = []  # それぞれの
+        self.UniqueProperty = []  # それぞれ任意
 
 
 class Center:  # 中心的な役割になる、はず

@@ -77,7 +77,7 @@ class MakeObject:
             inp_in = str(sys.stdin.readline().rstrip())
             NewObjct = cv2.VideoCapture(inp_in)
 
-            while NewObjct.isOpened():
+            while NewObjct.isOpened():  # ベタがきになっててまずいからファイル分割してくれ
                 ret, inputData = NewObjct.read()
                 if ret == True:
                     cv2.cvtColor(inputData, cv2.COLOR_RGB2RGBA)
@@ -99,8 +99,9 @@ class MakeObject:
                     cv2.destroyAllWindows()
                     print("読み込みに成功")
 
+                    layer[self.NumberLayer].UniqueProperty = [NewObjct.get(cv2.CAP_PROP_FRAME_WIDTH), NewObjct.get(cv2.CAP_PROP_FRAME_HEIGHT), NewObjct.get(cv2.CAP_PROP_FPS), NewObjct.get(cv2.CAP_PROP_FRAME_COUNT)]
                     layer[self.NumberLayer].ObjectType = "1"
-                    layer[self.NumberLayer].Property = [0, 100]
+                    layer[self.NumberLayer].Property = [0, layer[self.NumberLayer].UniqueProperty[3]]
 
                     return layer
 
@@ -133,7 +134,7 @@ class MakeObject:
                 else:
 
                     self.CHK, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)
-                    #self.CHK = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
+                    # self.CHK = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
 
                 if self.CHK == "EXC":
                     print("問題あり")

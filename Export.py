@@ -14,10 +14,12 @@ import PrintLayers
 import MidPoint
 
 from ExportFile import ExportText
+from ExportFile import ExportMove
 
 layer_Printer = PrintLayers.PrintMain()
 
 ExportFile_ExportText = ExportText.OutputText_Main()
+ExportFile_ExportMove = ExportMove.OutputMove_Main()
 
 
 class Export_Center:
