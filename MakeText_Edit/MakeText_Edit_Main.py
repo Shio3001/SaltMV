@@ -18,7 +18,12 @@ class MakeEditMain:
     def EditTexts_Main(self, layer, EditSize, ilayerloop, Set_SelectColor, EditData_Ope, EditData_Info):
 
         GetEditTextsMember = [0, 0]
-        Main_addfntSize = layer[ilayerloop].Document[:].TextSize
+        Main_addfntSize = []
+        # layer[ilayerloop].Document[:].TextSize
+
+        for i, i_er in enumerate(layer[ilayerloop].Document):
+            Main_addfntSize.append(i_er)
+            # Main_addfntSize[i] =
 
         EditNewText = ""
         print("新しい文字列を入力 変更しないなら空白で [ 文字列 ]")
@@ -58,13 +63,16 @@ class MakeEditMain:
 
         EditTexts_Status = ""
         while EditTexts_Status != "Det":
-            EditTexts_Status, EditTexts_layer = self.EditTexts_Operation(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
+            EditTexts_Status, EditTexts_layer, RelayEditData_Info = self.EditTexts_Operation(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
+
+            if EditTexts_Status != "Det":
+                EditData_Info = RelayEditData_Info
 
             if EditTexts_Status != "exit":
                 layer = EditTexts_layer
                 break
 
-        return layer
+        return layer, EditData_Info
 
     def EditTexts_Operation(self, layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, StringCount, Set_SelectColor, EditData_Ope, EditData_Info):
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
@@ -76,19 +84,21 @@ class MakeEditMain:
             return "exit", layer
 
         if AskNextAction == NextChoiceList[2] or AskNextAction == "2":
-            AskDi = EditData_Ope.Import_Size(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, EditData_Ope, EditData_Info)
+            AskDi, RelayEditData_Info = EditData_Ope.Import_Size.EditTexts_Size(layer, EditSize, ilayerloop, GetEditTextsMember, EditTexts_fntSize, EditData_Ope, EditData_Info)
             if AskDi == "Det":
                 print("問題あり")
                 return "Det", layer
             else:
                 layer = AskDi
+                EditData_Info = RelayEditData_Info
 
         if AskNextAction == NextChoiceList[3] or AskNextAction == "3":
-            AskDi = EditData_Ope.Import_Color(layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
+            AskDi, RelayEditData_Info = EditData_Ope.Import_Color.EditTexts_Colour(layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, EditData_Ope, EditData_Info)
             if AskDi == "Det":
                 print("問題あり")
                 return "Det", layer
             else:
                 layer = AskDi
+                EditData_Info = RelayEditData_Info
 
-        return "ok", layer
+        return "ok", layer, EditData_Info

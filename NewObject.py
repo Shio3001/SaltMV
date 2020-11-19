@@ -2,6 +2,7 @@
 import sys
 import numpy
 import os
+import copy
 
 import cv2
 from PIL import Image, ImageDraw, ImageFilter
@@ -84,6 +85,7 @@ class MakeObject:
                     addNewMov.append(inputData)
 
                     # 現在いるフレームを送信
+
                     cv2.imshow('input now', inputData)
 
                     if cv2.waitKey(1):
@@ -123,8 +125,11 @@ class MakeObject:
 
             if len(layer) != 0:
 
+                AsEditData_Info = None
+
                 if self.EditMode == True:
-                    self.AskDi = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
+                    print("aba" + str(self.EditData_Info))
+                    self.AskDi, AsEditData_Info = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
                 else:
 
                     self.AskDi, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)

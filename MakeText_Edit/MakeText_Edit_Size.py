@@ -43,5 +43,7 @@ class MakeEditSize:
             addfntSize[iEdit] = EditTexts_fntSize[iEdit]
 
         print(EditTexts_fntSize)
-        layer = EditData_Ope.Import_Cal().Main_Control(layer, EditSize, ilayerloop, EditData_Info.RGBdata, addfntSize, EditData_Info.NewTextString)
-        return layer
+        layer = EditData_Ope.Import_Cal.Main_Control(layer, EditSize, ilayerloop, EditData_Info.RGBdata, addfntSize, EditData_Info.NewTextString)
+
+        EditData_Info.addfntSize = addfntSize
+        return layer, EditData_Info

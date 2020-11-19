@@ -62,7 +62,7 @@ class Export_Center:
 
         PreviewFps = 1
 
-        #layer2 = layer
+        # layer2 = layer
 
         # print(layer[0].Point)
 
@@ -79,8 +79,11 @@ class Export_Center:
 
             # 現在いるフレームを送信
             cv2.imshow('OutputPreview', OutputData)
+
+            OutputData = cv2.cvtColor(OutputData.astype('uint8'), cv2.COLOR_RGBA2RGB)
             Writer.write(OutputData)
-            OutputData = cv2.cvtColor(OutputData.astype('float32'), cv2.COLOR_RGBA2RGB)
+
+            # opencvの出力周りはuint8じゃないとダメなみたい
 
             if cv2.waitKey(PreviewFps) & 0xFF == ord('q'):
                 print("書き出し中・・・")
@@ -101,7 +104,7 @@ class Export_Center:
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
 
             Ar_BeseMove = numpy.zeros((EditSize[1], EditSize[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい
-            #Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
+            # Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 

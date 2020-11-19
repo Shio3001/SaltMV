@@ -18,6 +18,7 @@ import PIL.ImageFont as ImageFont
 class MakeEditColor:
     def EditTexts_Colour(self, layer, EditSize, ilayerloop, GetEditTextsMember, StringCount, Set_SelectColor, EditData_Ope, EditData_Info):
 
+        # print(EditData_Info)
         RGBdata = EditData_Info.RGBdata
 
         AskDi = Set_SelectColor.RGB_select()
@@ -33,5 +34,7 @@ class MakeEditColor:
                 print(iEdit)
                 RGBdata[iEdit] = AskDi
 
-        layer = EditData_Ope.Import_Cal().Main_Control(layer, EditSize, ilayerloop, RGBdata, EditData_Info.addfntSize, EditData_Info.NewTextString)
-        return layer
+        layer = EditData_Ope.Import_Cal.Main_Control(layer, EditSize, ilayerloop, RGBdata, EditData_Info.addfntSize, EditData_Info.NewTextString)
+
+        EditData_Info.RGBdata = RGBdata
+        return layer, EditData_Info
