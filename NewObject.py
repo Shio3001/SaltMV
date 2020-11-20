@@ -67,7 +67,7 @@ class MakeObject:
 
             print("種類を選択 [ 番号 ]")
             print("1:動画")
-            print("2:")
+            print("2:画像")
             print("3:テキスト")
             print("4:")
             ObjectType = str(sys.stdin.readline().rstrip())
@@ -106,26 +106,24 @@ class MakeObject:
 
             self.EditData_Ope = EditData.EditDataElement_Operation(self.Set_MakeEditText_Main, self.Set_MakeEditText_Size, self.Set_MakeEditText_Color, self.Set_MakeEditText_Calculation)
 
-            if len(layer) != 0:
+            if int(len(layer)) == 0:  # レイヤーがなかった時に跳ね返す
+                return "EXC"
 
-                AsEditData_Info = None
+            AsEditData_Info = None
 
-                if self.EditMode == True:
-                    self.CHK, AsEditData_Info = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
-                else:
-
-                    self.CHK, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)
-                    # self.CHK = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
-
-                if self.CHK == "EXC":
-                    print("問題あり")
-                    return "EXC"
-                else:
-                    layer = self.CHK
-                    self.EditData_Info = AsEditData_Info
-                    return layer
+            if self.EditMode == True:
+                self.CHK, AsEditData_Info = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
             else:
-                print("レイヤーがありません")
+
+                self.CHK, AsEditData_Info = self.Set_MakeText.Main(layer, EditSize, self.NumberLayer,  EditData, self.EditData_Ope)
+                # self.CHK = EditData_Ope.Import_Main.Main(layer, EditSize, self.NumberLayer,  EditData, EditData_Ope)
+
+            if self.CHK == "EXC":
+                print("問題あり")
+                return "EXC"
+            else:
+                layer = self.CHK
+                self.EditData_Info = AsEditData_Info
                 return layer
 
         return "EXC"

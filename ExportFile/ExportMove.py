@@ -17,7 +17,12 @@ class OutputMove_Main:
         Move_Property = layer[ilayerloop].Property
         NowPoint = [AfterTreatmentPoint["PointMain"]["x"], AfterTreatmentPoint["PointMain"]["y"]]  # X座標,Y座標(ほんとはいるべき場所)
 
-        UseDocument = layer[ilayerloop].Document[NowFlame - 1]
+        if layer[ilayerloop].ObjectType == "1":
+            UseDocument = layer[ilayerloop].Document[NowFlame]
+
+        if layer[ilayerloop].ObjectType == "2":
+            UseDocument = layer[ilayerloop].Document
+
         UseDocument_Size_After = map(None, UseDocument)
         UseDocument_Move_After = map(None, UseDocument)
 

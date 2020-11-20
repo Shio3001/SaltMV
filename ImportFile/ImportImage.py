@@ -18,9 +18,13 @@ class ImportImage_Main:
         os.system("ls")
         inp_in = str(sys.stdin.readline().rstrip())
 
-        addNewImgae_pic = numpy.array(Image.open(inp_in))
+        addNewImgae = cv2.cvtColor(cv2.imread(inp_in), cv2.COLOR_RGB2RGBA)
 
-        addNewImgae = cv2.cvtColor(addNewImgae_pic, cv2.COLOR_RGB2RGBA)
+        #addNewImgae = numpy.array(Image.open(inp_in))
+
+        #addNewImgae = cv2.cvtColor(addNewImgae_pic, cv2.COLOR_RGB2RGBA)
+
+        layer[NumberLayer].ObjectType = "2"
 
         layer[NumberLayer].Document = addNewImgae
 

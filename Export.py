@@ -100,10 +100,13 @@ class Export_Center:
             # print(layer[ilayerloop].Property)
             # print(NowFlame)
 
-            if layer[ilayerloop].ObjectType == "1" and layer[ilayerloop].Property[0] <= NowFlame <= layer[ilayerloop].Property[1]:  # 動画選択の場合
+            if layer[ilayerloop].ObjectType == "1" and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # 動画選択の場合
                 Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
 
-            if layer[ilayerloop].ObjectType == "3":  # テキスト選択の場合
+            if layer[ilayerloop].ObjectType == "2":  # and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # 画像の場合
+                Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
+
+            if layer[ilayerloop].ObjectType == "3" and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # テキスト選択の場合
                 Ar_BeseMove = ExportFile_ExportText.OutputText(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove)
 
                 # print("返却処理")
