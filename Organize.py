@@ -23,6 +23,9 @@ class ArrayOrganize:
     def PointOrganize(self, layer, EditSize):
         # CUI化で消滅？
 
+        if int(len(layer)) == 0:  # レイヤーがなかった時に跳ね返す
+            return "EXC"
+
         print("Pointを時間順に差し替え")
 
         # layer = sorted(, key=lambda x: x[2])

@@ -15,6 +15,9 @@ import PrintLayers
 import MakeText
 import SelectColor
 
+from ImportFile import ImportMove
+from ImportFile import ImportImage
+
 from MakeText_Edit import EditData
 from MakeText_Edit import MakeText_Edit_Main
 from MakeText_Edit import MakeText_Edit_Size
@@ -47,6 +50,10 @@ class MakeObject:
         self.EditMode = False  # 既存のものを編集(true)か新規作成か(false)
 
     def MakeObjectCenter(self, layer, EditSize):
+
+        if int(len(layer)) == 0:  # レイヤーがなかった時に跳ね返す
+            return "EXC"
+
         # CUI化で消滅
         self.NumberLayer = self.SetSelectLayer.Main(layer)
         if self.NumberLayer == "EXC":
@@ -70,47 +77,22 @@ class MakeObject:
             print("編集モード")
 
         if ObjectType == "1":
-            addNewMov = []
-            print("動画ファイルを入力...")
-            os.system("pwd")
-            os.system("ls")
-            inp_in = str(sys.stdin.readline().rstrip())
-            NewObjct = cv2.VideoCapture(inp_in)
+            self.CHK = ImportMove.ImportMove_Main().Move_Main(layer, self.NumberLayer)
+            if self.CHK == "EXC":
+                return "EXC"
+            else:
+                layer = self.CHK
 
-            while NewObjct.isOpened():  # ベタがきになっててまずいからファイル分割してくれ
-                ret, inputData = NewObjct.read()
-                if ret == True:
-                    cv2.cvtColor(inputData, cv2.COLOR_RGB2RGBA)
+            return layer
 
-                    addNewMov.append(inputData)
+        if ObjectType == "2":
+            self.CHK = ImportImage.ImportImage_Main().Image_Main(layer, self.NumberLayer)
+            if self.CHK == "EXC":
+                return "EXC"
+            else:
+                layer = self.CHK
 
-                    # 現在いるフレームを送信
-
-                    cv2.imshow('input now', inputData)
-
-                    if cv2.waitKey(1):
-                        print("読み込み")
-
-                    # break
-
-                elif len(addNewMov) == NewObjct.get(cv2.CAP_PROP_FRAME_COUNT):
-                    layer[self.NumberLayer].Document = addNewMov
-                    NewObjct.release()
-                    cv2.destroyAllWindows()
-                    print("読み込みに成功")
-
-                    layer[self.NumberLayer].UniqueProperty = [NewObjct.get(cv2.CAP_PROP_FRAME_WIDTH), NewObjct.get(cv2.CAP_PROP_FRAME_HEIGHT), NewObjct.get(cv2.CAP_PROP_FPS), NewObjct.get(cv2.CAP_PROP_FRAME_COUNT)]
-                    layer[self.NumberLayer].ObjectType = "1"
-                    layer[self.NumberLayer].Property = [0, layer[self.NumberLayer].UniqueProperty[3]]
-
-                    return layer
-
-                else:
-                    print("ファイルが正常に入力できませんでした：終了")
-                    NewObjct.release()
-                    cv2.destroyAllWindows()
-                    return "EXC"
-                    # break
+            return layer
 
         if ObjectType == "3":
             print("テキストを入力")
@@ -129,7 +111,6 @@ class MakeObject:
                 AsEditData_Info = None
 
                 if self.EditMode == True:
-                    print("aba" + str(self.EditData_Info))
                     self.CHK, AsEditData_Info = self.Set_MakeEditText_Main.EditTexts_Main(layer, EditSize, self.NumberLayer, SelectColor.SelectColor_Center(), self.EditData_Ope, self.EditData_Info)
                 else:
 

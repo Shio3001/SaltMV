@@ -46,7 +46,7 @@ class OutputText_Main:
 
         # CentralCalculation = list(map(lambda x: -(x/2), CentralCalculation)) #lambdaで頑張ってやったけど結局いらんやん
 
-        for DocM in range(int(len(layer[ilayerloop].Document))):  # 気が向いたらenumerateにしろ
+        for DocM in range(int(len(layer[ilayerloop].Document))):  # 気が向いたらenumerateにしろ #テキストの数だけやる
 
             UseDocument = layer[ilayerloop].Document[DocM].TextInformation
 
@@ -78,8 +78,7 @@ class OutputText_Main:
 
                 TextLocation[1 - WHSelection] += SizeDifference
 
-                M = numpy.float32(
-                    [[1, 0, TextLocation[0]], [0, 1, TextLocation[1]]])
+                M = numpy.float32([[1, 0, TextLocation[0]], [0, 1, TextLocation[1]]])
 
                 UseDocument_Move_After = cv2.warpAffine(UseDocument_Size_After, M, (EditSize[0], EditSize[1]))
 

@@ -30,23 +30,7 @@ class Export_Center:
     def Main(self, layer, EditSize):
         print("動画の出力を開始")
 
-        try:
-            print("")
-            print("")
-            print("******************************************************")
-            print("")
-            print("")
-            # print(layer[0].Point)
-            print("")
-            print("")
-            # print(self.PrintGet_Points)
-            print("")
-            print("")
-            print("******************************************************")
-            print("")
-            print("")
-        except:
-            print("layer取得不可")
+        if int(len(layer)) == 0:  # レイヤーがなかった時に跳ね返す
             return "EXC"
 
         print("layer取得成功")
@@ -103,15 +87,21 @@ class Export_Center:
         return layer
 
     def ArrayedSet(self, NowFlame, EditSize, layer):
+        Ar_BeseMove = numpy.zeros((EditSize[1], EditSize[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい
         for ilayerloop in range(len(layer)):  # レイヤーの数だけ処理を行う
 
-            Ar_BeseMove = numpy.zeros((EditSize[1], EditSize[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい
             # Ar_BeseMove = cv2.cvtColor(Ar_BeseMove, cv2.COLOR_RGB2RGBA)
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
             AfterTreatmentPoint = self.Midpoint_Calculation.Main(ilayerloop, NowFlame, layer)
             # 今どのレイヤーを処理しているか、今のフレーム、レイヤーを送ってあげれば時間を返却してくれる優秀なやつだよ！
+
+            # print(layer[ilayerloop].Property)
+            # print(NowFlame)
+
+            if layer[ilayerloop].ObjectType == "1" and layer[ilayerloop].Property[0] <= NowFlame <= layer[ilayerloop].Property[1]:  # 動画選択の場合
+                Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
 
             if layer[ilayerloop].ObjectType == "3":  # テキスト選択の場合
                 Ar_BeseMove = ExportFile_ExportText.OutputText(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove)

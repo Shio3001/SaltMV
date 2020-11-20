@@ -30,6 +30,9 @@ class MakePoints:
     def Main(self, layer, AddOREdit):
         # CUI化で消滅
 
+        if int(len(layer)) == 0:  # レイヤーがなかった時に跳ね返す
+            return "EXC"
+
         NumberLayer = self.SetSelectLayer.Main(layer)
 
         NumberPoint = None

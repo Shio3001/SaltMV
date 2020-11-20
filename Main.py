@@ -100,84 +100,62 @@ class Center:  # 中心的な役割になる、はず
             print("")
 
         if AskNextAction == NextChoiceList[5] or AskNextAction == "5":
-            print("動画エンコード")
-            if len(self.layer) != 0:
-                CHK = MovImgsExport.Main(self.layer, self.EditSize)
+            print("動画書き出し")
 
-                if CHK == "EXC":
-                    print("問題あり")
-                    return
-                else:
-                    self.layer == CHK
+            CHK = MovImgsExport.Main(self.layer, self.EditSize)
 
-            else:
-                print("レイヤーがありません")
+            if CHK == "EXC":
+                print("問題あり")
                 return
+            else:
+                self.layer == CHK
 
         if AskNextAction == NextChoiceList[6] or AskNextAction == "6":
             print("オブジェクトの追加")
-            if len(self.layer) != 0:
-                CHK = New_MakeObject.MakeObjectCenter(self.layer, self.EditSize)
-                if CHK == "EXC":
-                    print("問題あり")
-                    return
-                else:
-                    self.layer = CHK
 
-            else:
-                print("レイヤーがありません")
+            CHK = New_MakeObject.MakeObjectCenter(self.layer, self.EditSize)
+            if CHK == "EXC":
+                print("問題あり")
                 return
+            else:
+                self.layer = CHK
 
         if AskNextAction == NextChoiceList[7] or AskNextAction == "7":
             print("オブジェクトの移動・透明度変更などを行います [ 新規作成 ]")
-            if len(self.layer) != 0:
-                AddOREdit = 0
-                CHK = Set_MakePoint.Main(self.layer, AddOREdit)
-                if CHK == "EXC":
-                    print("問題あり")
-                    return
-                else:
-                    self.layer = CHK
 
-            else:
-                print("レイヤーがありません")
+            AddOREdit = 0
+            CHK = Set_MakePoint.Main(self.layer, AddOREdit)
+            if CHK == "EXC":
+                print("問題あり")
                 return
+            else:
+                self.layer = CHK
 
         if AskNextAction == NextChoiceList[8] or AskNextAction == "8":
             print("オブジェクトの移動・透明度変更などを行います [ 変更 ]")
-            if len(self.layer) != 0:
-                AddOREdit = 1
-                CHK = Set_MakePoint.Main(self.layer, AddOREdit)
-                if CHK == "EXC":
-                    print("問題あり")
-                    return
-                else:
-                    self.layer = CHK
 
-            else:
-                print("レイヤーがありません")
+            AddOREdit = 1
+            CHK = Set_MakePoint.Main(self.layer, AddOREdit)
+            if CHK == "EXC":
+                print("問題あり")
                 return
+            else:
+                self.layer = CHK
 
         if AskNextAction == NextChoiceList[9] or AskNextAction == "9":
             print("レイヤーの中にあるPoint設定を時間順に並び替えます")
-            if len(self.layer) != 0:
 
-                print("Point 処理前 " + str(layer_Printer.ReturnPrint(self.layer)))
+            print("Point 処理前 " + str(layer_Printer.ReturnPrint(self.layer)))
 
-                CHK, self.EditSize = ArrayOrganize.PointOrganize(
-                    self.layer, self.EditSize)
+            CHK, self.EditSize = ArrayOrganize.PointOrganize(self.layer, self.EditSize)
 
-                if CHK == "EXC":
-                    print("問題あり")
-                    return
-                else:
-
-                    self.layer = CHK
-                    print("Point 処理後 " + str(layer_Printer.ReturnPrint(self.layer)))
-
-            else:
-                print("レイヤーがありません")
+            if CHK == "EXC":
+                print("問題あり")
                 return
+            else:
+
+                self.layer = CHK
+                print("Point 処理後 " + str(layer_Printer.ReturnPrint(self.layer)))
 
 
 Main_Center = Center()
