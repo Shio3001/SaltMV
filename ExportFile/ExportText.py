@@ -36,13 +36,15 @@ class OutputText_Main:
             CentralCalculation[WHSelection] = (CharacterSpace * (DocMlet - 1)) + TotalCharacter[0]  # 長い方
             CentralCalculation[1 - WHSelection] = TotalCharacter[1]  # 短い方
 
-        for i in range(2):
-            if AlignmentPos[i] == 0:  # 左・上寄せの時は何もしない
-                CentralCalculation[i] = 0
-            if AlignmentPos[i] == 1:
-                CentralCalculation[i] /= -2  # 中寄せの時は半分引く
-            if AlignmentPos[i] == 2:
-                CentralCalculation[i] *= 1  # 右寄せの時は丸々足す
+            for i in range(2):
+                if AlignmentPos[i] == 0:  # 左・上寄せの時は何もしない
+                    CentralCalculation[i] = 0
+                if AlignmentPos[i] == 1:
+                    CentralCalculation[i] /= -2  # 中寄せの時は半分引く
+                if AlignmentPos[i] == 2:
+                    CentralCalculation[i] *= 1  # 右寄せの時は丸々足す
+
+                AlignmentPos[i] *= (AfterTreatmentPoint["PointMain"]["size"] * 0.01)
 
         # CentralCalculation = list(map(lambda x: -(x/2), CentralCalculation)) #lambdaで頑張ってやったけど結局いらんやん
 
@@ -68,6 +70,15 @@ class OutputText_Main:
                 SizeDifference = (layer[ilayerloop].UniqueProperty.Maxfnt * (AfterTreatmentPoint["PointMain"]["size"] * 0.01)) - ResizeCoordinateCorrection[1 - WHSelection]
                 TextSpacing = [0, 0]
                 TextLocation = [0, 0]
+
+                if IndividualObject == 0:
+                    for i in range(2):
+                        if AlignmentPos[i] == 0:  # 左・上寄せの時は何もしない
+                            CentralCalculation[i] = 0
+                        if AlignmentPos[i] == 1:
+                            CentralCalculation[i] = -1 * (ResizeCoordinateCorrection[i] / 2)  # 中寄せの時は半分引く
+                        if AlignmentPos[i] == 2:
+                            CentralCalculation[i] *= 1  # 右寄せの時は丸々足す
 
                 if IndividualObject == 1:
                     TextSpacing[WHSelection] = DocM * (layer[ilayerloop].UniqueProperty.TextSpacing + UseDocument.shape[1 - WHSelection])

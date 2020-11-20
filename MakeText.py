@@ -56,6 +56,7 @@ class MakeTexts:
         try:
             # layer[ilayerloop].UniqueProperty.TextSpacing = int(sys.stdin.readline().rstrip())
             TextSpacing = int(sys.stdin.readline().rstrip())
+            layer[ilayerloop].UniqueProperty.TextSpacing = TextSpacing
         except:
             return "EXC"
 

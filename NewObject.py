@@ -102,7 +102,7 @@ class MakeObject:
                 return "EXC"
 
             layer[self.NumberLayer].ObjectType = "3"
-            layer[self.NumberLayer].Property = [0, 100]
+            layer[self.NumberLayer].Property = [0, EditSize[3]]
 
             self.EditData_Ope = EditData.EditDataElement_Operation(self.Set_MakeEditText_Main, self.Set_MakeEditText_Size, self.Set_MakeEditText_Color, self.Set_MakeEditText_Calculation)
 

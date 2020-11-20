@@ -73,6 +73,7 @@ class MakeText_Cal:
                     if UniqueProperty.TextSpacing != 0:
                         AdditionalBlank = numpy.zeros((UniqueProperty.Maxfnt, UniqueProperty.TextSpacing, 4))  # テキスト間の空白を入力
                         AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
+                        print("連結処理")
 
                     AddText_concatenation = numpy.hstack((AddText_concatenation, Document[ic + 1].TextInformation))
 
