@@ -108,4 +108,5 @@ class TextElements:  # (TEXT定数)
         self.AlignmentPosition = [1, 1]  # 揃え位置を図る奴 0が左・上 1が真ん中 2が右・下
         self.IndividualObject = 0  # 個別に管理するか
         self.Maxfnt = 0  # 一番でかい文字サイズ
+        self.MaxfntIndex = 0
         self.NewTextString = ""  # 文字列

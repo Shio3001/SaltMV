@@ -21,7 +21,7 @@ class MakeEditSize:
         addfntSize = EditData_Info.addfntSize
 
         print("変更後のフォントサイズを入力 [数値]")
-        print("現在:" + str(EditTexts_fntSize))
+        print("現在:" + str(addfntSize))
         EditTexts_AfterSize = int(sys.stdin.readline().rstrip())
 
         print("挿入方式 置き換え:[ 0 ] 加算:[ 1 ]")
@@ -36,13 +36,13 @@ class MakeEditSize:
             print(iEdit)
 
             if EditTexts_CalculationSize == 0:
-                EditTexts_fntSize[iEdit] = EditTexts_AfterSize
+                addfntSize[iEdit] = EditTexts_AfterSize
             if EditTexts_CalculationSize == 1:
-                EditTexts_fntSize[iEdit] += EditTexts_AfterSize
+                addfntSize[iEdit] += EditTexts_AfterSize
 
-            addfntSize[iEdit] = EditTexts_fntSize[iEdit]
+            #addfntSize[iEdit] = EditTexts_fntSize[iEdit]
 
-        print(EditTexts_fntSize)
+        # print(EditTexts_fntSize)
         layer = EditData_Ope.Import_Cal.Main_Control(layer, EditSize, ilayerloop, EditData_Info.RGBdata, addfntSize, EditData_Info.NewTextString)
 
         EditData_Info.addfntSize = addfntSize

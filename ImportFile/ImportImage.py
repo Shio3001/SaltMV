@@ -18,7 +18,10 @@ class ImportImage_Main:
         os.system("ls")
         inp_in = str(sys.stdin.readline().rstrip())
 
-        addNewImgae = cv2.cvtColor(cv2.imread(inp_in), cv2.COLOR_RGB2RGBA)
+        try:
+            addNewImgae = cv2.cvtColor(cv2.imread(inp_in), cv2.COLOR_RGB2RGBA)
+        except:
+            return "EXC"
 
         #addNewImgae = numpy.array(Image.open(inp_in))
 

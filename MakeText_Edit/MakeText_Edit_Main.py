@@ -22,7 +22,7 @@ class MakeEditMain:
         # layer[ilayerloop].Document[:].TextSize
 
         for i, i_er in enumerate(layer[ilayerloop].Document):
-            Main_addfntSize.append(i_er)
+            Main_addfntSize.append(i_er.TextSize)
             # Main_addfntSize[i] =
 
         EditNewText = ""

@@ -27,7 +27,7 @@ class MakeText_Cal:
             layer[ilayerloop].Document[imakeImge].TextSize = addfntSize[imakeImge]
 
         layer[ilayerloop].UniqueProperty.Maxfnt = max(addfntSize)
-
+        layer[ilayerloop].UniqueProperty.MaxfntIndex = addfntSize.index(max(addfntSize))
         # もし個別オブジェクトでない場合は配列の合成を行う
 
         if layer[ilayerloop].UniqueProperty.IndividualObject == 0:
@@ -49,13 +49,24 @@ class MakeText_Cal:
 
         fnt = ImageFont.truetype('logotypejp_mp_b_1.1.ttf', Draw_addfntSize[imakeImge])  # ImageFontインスタンスを作る
         # fontを指定
-
-        DrawSetImg.text((0, 0), NewTextString[imakeImge], tuple(RGBdata[imakeImge]), font=fnt)
+        DrawSetImg.text((0, 0), NewTextString[imakeImge], tuple(reversed(RGBdata[imakeImge])), font=fnt)
         InTextDrawSetImg = numpy.array(SetImg)
         return InTextDrawSetImg
 
     def Textconcatenation(self, Document, UniqueProperty):
         print("テキストの連結処理")
+
+        DifferenceSize0 = UniqueProperty.Maxfnt - Document[0].TextSize
+
+        if UniqueProperty.WritingDirection == 0:
+            if DifferenceSize0 != 0:
+                AddDifference = numpy.zeros((DifferenceSize0, Document[0].TextSize, 4))
+                Document[0].TextInformation = numpy.vstack((AddDifference, Document[0].TextInformation))  # 縦に連結
+
+        if UniqueProperty.WritingDirection == 1:
+            if DifferenceSize0 != 0:
+                AddDifference = numpy.zeros((DifferenceSize0, Document[0].TextSize, 4))
+                Document[0].TextInformation = numpy.hstack((Document[0].TextInformation, AddDifference))  # 縦に連結
 
         AddText_concatenation = Document[0].TextInformation
 
@@ -65,6 +76,8 @@ class MakeText_Cal:
                 # 基本連結 #lenで取得できるのはあくまで[要素数]であって配列番号ではないことから、<=ではなく <になっている
                 DifferenceSize = UniqueProperty.Maxfnt - Document[ic + 1].TextSize
 
+                print("dif" + str(DifferenceSize))
+
                 if UniqueProperty.WritingDirection == 0:
 
                     if DifferenceSize != 0:
@@ -73,8 +86,8 @@ class MakeText_Cal:
                     if UniqueProperty.TextSpacing != 0:
                         AdditionalBlank = numpy.zeros((UniqueProperty.Maxfnt, UniqueProperty.TextSpacing, 4))  # テキスト間の空白を入力
                         AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
-                        print("連結処理")
 
+                        print("連結処理")
                     AddText_concatenation = numpy.hstack((AddText_concatenation, Document[ic + 1].TextInformation))
 
                 if UniqueProperty.WritingDirection == 1:
