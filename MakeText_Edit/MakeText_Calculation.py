@@ -75,9 +75,6 @@ class MakeText_Cal:
             if int(ic) + 1 < int(len(Document)):
                 # 基本連結 #lenで取得できるのはあくまで[要素数]であって配列番号ではないことから、<=ではなく <になっている
                 DifferenceSize = UniqueProperty.Maxfnt - Document[ic + 1].TextSize
-
-                print("dif" + str(DifferenceSize))
-
                 if UniqueProperty.WritingDirection == 0:
 
                     if DifferenceSize != 0:

@@ -145,7 +145,7 @@ class Center:  # 中心的な役割になる、はず
         if AskNextAction == NextChoiceList[9] or AskNextAction == "9":
             print("レイヤーの中にあるPoint設定を時間順に並び替えます")
 
-            print("Point 処理前 " + str(layer_Printer.ReturnPrint(self.layer)))
+            layer_Printer.ReturnPrint(self.layer)
 
             CHK, self.EditSize = ArrayOrganize.PointOrganize(self.layer, self.EditSize)
 
@@ -155,19 +155,15 @@ class Center:  # 中心的な役割になる、はず
             else:
 
                 self.layer = CHK
-                print("Point 処理後 " + str(layer_Printer.ReturnPrint(self.layer)))
+                layer_Printer.ReturnPrint(self.layer)
 
 
 Main_Center = Center()
 SetSuperSetEditSize = EditSize.SuperSetEditSize()
 New_MakeObject = NewObject.MakeObject()
-
 Set_MakePoint = SetPoints.MakePoints()
-
 MovImgsExport = Export.Export_Center()
-
 ArrayOrganize = Organize.ArrayOrganize()
-
 layer_Printer = PrintLayers.PrintMain()
 
 ReturnDecision = ""

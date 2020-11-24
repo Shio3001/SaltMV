@@ -94,21 +94,28 @@ class Export_Center:
 
             # ((次の地点-前の地点) / (次のフレーム時間 - 前のフレーム時間 * 現在のフレーム時間 - 前のフレーム時間)) + 前の地点
 
-            AfterTreatmentPoint = self.Midpoint_Calculation.Main(ilayerloop, NowFlame, layer)
-            # 今どのレイヤーを処理しているか、今のフレーム、レイヤーを送ってあげれば時間を返却してくれる優秀なやつだよ！
+            NowFlame += 1
 
-            # print(layer[ilayerloop].Property)
-            # print(NowFlame)
+            try:
+                AfterTreatmentPoint = self.Midpoint_Calculation.Main(ilayerloop, NowFlame, layer)
+                # 今どのレイヤーを処理しているか、今のフレーム、レイヤーを送ってあげれば時間を返却してくれる優秀なやつだよ！
 
-            if layer[ilayerloop].ObjectType == "1" and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # 動画選択の場合
-                Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
+                # print(layer[ilayerloop].Property)
+                print("レイヤー:" + str(ilayerloop) + "    " + str(NowFlame) + "フレーム目" + "書き出し " + "形式 :" + str(layer[ilayerloop].ObjectType))
 
-            if layer[ilayerloop].ObjectType == "2":  # and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # 画像の場合
-                Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
+                if layer[ilayerloop].ObjectType == "1" and layer[ilayerloop].Property[0] <= NowFlame <= layer[ilayerloop].Property[1]:  # 動画選択の場合
+                    Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
 
-            if layer[ilayerloop].ObjectType == "3" and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # テキスト選択の場合
-                Ar_BeseMove = ExportFile_ExportText.OutputText(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove)
+                if layer[ilayerloop].ObjectType == "2":  # and layer[ilayerloop].Property[0] <= NowFlame < layer[ilayerloop].Property[1]:  # 画像の場合
+                    Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
 
-                # print("返却処理")
+                if layer[ilayerloop].ObjectType == "3" and layer[ilayerloop].Property[0] <= NowFlame <= layer[ilayerloop].Property[1]:  # テキスト選択の場合
+                    Ar_BeseMove = ExportFile_ExportText.OutputText(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove)
+            except:
+                print("レイヤー:" + str(ilayerloop) + "    " + "処理エラー返却")
+
+            print("")
+
+            # print("返却処理")
 
         return Ar_BeseMove

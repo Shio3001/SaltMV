@@ -34,11 +34,14 @@ class ArrayOrganize:
             layer[ilayer].Point = sorted(layer[ilayer].Point, key=lambda x: x["PointTime"], reverse=False)
             print("sort処理: " + str(ilayer) + " 処理回数: " + str(len(layer)))
 
-            Backmost = layer[ilayer].Point[int(round(len(layer[ilayer].Point))) - 1]["PointTime"]
+            try:
+                Backmost = layer[ilayer].Point[int(round(len(layer[ilayer].Point))) - 1]["PointTime"]
 
-            if Backmost > EditSize[3]:
-                EditSize[3] = Backmost
-                print("最後尾フレームを変更しました" + str(Backmost))
+                if Backmost > EditSize[3]:
+                    EditSize[3] = Backmost
+                    print("最後尾フレームを変更しました" + str(Backmost))
+            except:
+                pass
 
         # self.PrintGet_Points.ReturnPrint(layer)
         #GetPoint = self.PrintGet_Points.GetPoint(layer, 0)
