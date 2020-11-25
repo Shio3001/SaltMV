@@ -107,6 +107,15 @@ class MakePoints:
         else:
             self.AddPoint[3] = None
 
+        if layer[NumberLayer].ObjectType == "3":
+            CHK = self.Text(layer, NumberLayer, NumberPoint)
+
+            if CHK == "EXC":
+                return "EXC"
+            else:
+                layer = CHK
+                return layer
+
         if AddOREdit == 0:
             print(layer[NumberLayer].Point)
 
@@ -120,5 +129,15 @@ class MakePoints:
             # layer[NumberLayer].Point[NumberPoint].append(PointTime=self.AddPointTime, PointMain={"x": self.AddPoint[0], "y": self.AddPoint[1], "alpha": self.AddPoint[2], "size": self.AddPoint[3]})  # 任意
             layer[NumberLayer].Point[NumberPoint]["PointTime"] = self.AddPointTime
             layer[NumberLayer].Point[NumberPoint]["PointMain"] = {"x": self.AddPoint[0], "y": self.AddPoint[1], "alpha": self.AddPoint[2], "size": self.AddPoint[3]}
+
+        return layer
+
+    def Text(self, layer, NumberLayer, NumberPoint):
+        print("文字間隔を入力 [ 数値 ]")
+        try:
+            AddTextSpace = int(sys.stdin.readline().rstrip())
+            layer[NumberLayer].Point[NumberPoint]["TextSetting"]["TextSpace"] = AddTextSpace
+        except:
+            return "EXC"
 
         return layer

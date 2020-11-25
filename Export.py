@@ -16,6 +16,8 @@ import MidPoint
 from ExportFile import ExportText
 from ExportFile import ExportMove
 
+from MakeText_Edit import MakeText_Calculation
+
 layer_Printer = PrintLayers.PrintMain()
 
 ExportFile_ExportText = ExportText.OutputText_Main()
@@ -26,6 +28,7 @@ class Export_Center:
     def __init__(self):
         self.PrintGet_Points = PrintLayers.PrintMain()
         self.Midpoint_Calculation = MidPoint.MidpointElements()
+        self.Set_MakeEditText_Calculation = MakeText_Calculation.MakeText_Cal()
 
     def Main(self, layer, EditSize):
         print("動画の出力を開始")
@@ -110,6 +113,9 @@ class Export_Center:
                     Ar_BeseMove = ExportFile_ExportMove.OutputMove(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove, NowFlame)
 
                 if layer[ilayerloop].ObjectType == "3" and layer[ilayerloop].Property[0] <= NowFlame <= layer[ilayerloop].Property[1]:  # テキスト選択の場合
+
+                    if layer[ilayerloop].UniqueProperty.IndividualObject == 0:
+                        layer[ilayerloop].Document[0].TextInformation = numpy.array(self.Set_MakeEditText_Calculation.Textconcatenation(layer[ilayerloop].Document, layer[ilayerloop].UniqueProperty))
                     Ar_BeseMove = ExportFile_ExportText.OutputText(layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove)
             except:
                 print("レイヤー:" + str(ilayerloop) + "    " + "処理エラー返却")

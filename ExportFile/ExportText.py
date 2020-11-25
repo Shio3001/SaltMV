@@ -16,7 +16,7 @@ class OutputText_Main:
 
     def OutputText(self, layer, ilayerloop, AfterTreatmentPoint, EditSize, Ar_BeseMove):
         # 文字間隔をもらう
-        CharacterSpace = layer[ilayerloop].UniqueProperty.TextSpacing
+        CharacterSpace = AfterTreatmentPoint["TextProperty"]["TextSpacing"]
         # 縦書きか横書きかの選択結果をもらってくる
         WHSelection = layer[ilayerloop].UniqueProperty.WritingDirection
         # 前揃えか中揃えか後ろ揃えかの選択結果をもらってくる

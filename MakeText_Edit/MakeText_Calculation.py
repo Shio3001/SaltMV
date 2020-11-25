@@ -56,6 +56,8 @@ class MakeText_Cal:
     def Textconcatenation(self, Document, UniqueProperty):
         print("テキストの連結処理")
 
+        UniqueTextSpacing = UniqueProperty.TextSpacing
+
         DifferenceSize0 = UniqueProperty.Maxfnt - Document[0].TextSize
 
         if UniqueProperty.WritingDirection == 0:
@@ -75,13 +77,14 @@ class MakeText_Cal:
             if int(ic) + 1 < int(len(Document)):
                 # 基本連結 #lenで取得できるのはあくまで[要素数]であって配列番号ではないことから、<=ではなく <になっている
                 DifferenceSize = UniqueProperty.Maxfnt - Document[ic + 1].TextSize
+
                 if UniqueProperty.WritingDirection == 0:
 
                     if DifferenceSize != 0:
                         AddDifference = numpy.zeros((DifferenceSize, Document[ic + 1].TextSize, 4))
                         Document[ic + 1].TextInformation = numpy.vstack((AddDifference, Document[ic + 1].TextInformation))  # 縦に連結
-                    if UniqueProperty.TextSpacing != 0:
-                        AdditionalBlank = numpy.zeros((UniqueProperty.Maxfnt, UniqueProperty.TextSpacing, 4))  # テキスト間の空白を入力
+                    if UniqueTextSpacing != 0:
+                        AdditionalBlank = numpy.zeros((UniqueProperty.Maxfnt, UniqueTextSpacing, 4))  # テキスト間の空白を入力
                         AddText_concatenation = numpy.hstack((AddText_concatenation, AdditionalBlank))
 
                         print("連結処理")
@@ -93,8 +96,8 @@ class MakeText_Cal:
                         AddDifference = numpy.zeros((Document[ic + 1].TextSize, DifferenceSize, 4))
                         Document[ic + 1].TextInformation = numpy.hstack((Document[ic + 1].TextInformation, AddDifference))  # 横に連結
 
-                    if UniqueProperty.TextSpacing != 0:
-                        AdditionalBlank = numpy.zeros((UniqueProperty.TextSpacing, UniqueProperty.Maxfnt, 4))  # テキスト間の空白を入力
+                    if UniqueTextSpacing != 0:
+                        AdditionalBlank = numpy.zeros((UniqueTextSpacing, UniqueProperty.Maxfnt, 4))  # テキスト間の空白を入力
                         AddText_concatenation = numpy.vstack((AddText_concatenation, AdditionalBlank))
 
                     AddText_concatenation = numpy.vstack((AddText_concatenation, Document[ic + 1].TextInformation))

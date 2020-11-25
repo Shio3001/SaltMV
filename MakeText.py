@@ -44,44 +44,47 @@ class MakeTexts:
             # self.fntSize.append(int(sys.stdin.readline().rstrip()))
             self.addfntSize = [int(sys.stdin.readline().rstrip())] * len(self.NewTextString)
         except:
-            return "EXC"
+            return "EXC", layer
 
         print("横書き [ 0 ] 縦書き [ 1 ] を入力 [ 数値 ]")
         try:
             layer[ilayerloop].UniqueProperty.WritingDirection = int(sys.stdin.readline().rstrip())
         except:
-            return "EXC"
+            return "EXC", layer
 
         print("文字間隔 を入力 [ 数値 ]")
         try:
             # layer[ilayerloop].UniqueProperty.TextSpacing = int(sys.stdin.readline().rstrip())
             TextSpacing = int(sys.stdin.readline().rstrip())
-            layer[ilayerloop].UniqueProperty.TextSpacing = TextSpacing
+            # layer[ilayerloop].UniqueProperty.TextSpacing = TextSpacing
+
+            for i, ic in enumerate(layer[ilayerloop].Point):
+                layer[ilayerloop].Point[i]["TextProperty"] = {"TextSpacing": TextSpacing}
         except:
-            return "EXC"
+            return "EXC", layer
 
         print("[左右]揃え位置を入力 左揃え [ 0 ] 中揃え [ 1 ] 右揃え [ 2 ] [ 数値 ]")
         try:
             layer[ilayerloop].UniqueProperty.AlignmentPosition[0] = int(sys.stdin.readline().rstrip())
         except:
-            return "EXC"
+            return "EXC", layer
 
         print("[上下]揃え位置を入力 上揃え [ 0 ] 中揃え [ 1 ] 下揃え [ 2 ] [ 数値 ]")
         try:
             layer[ilayerloop].UniqueProperty.AlignmentPosition[1] = int(sys.stdin.readline().rstrip())
         except:
-            return "EXC"
+            return "EXC", layer
 
         print("個別オブジェクトにするかしないかを入力 しない [ 0 ] する [ 1 ] ")
         try:
             layer[ilayerloop].UniqueProperty.IndividualObject = int(sys.stdin.readline().rstrip())
         except:
-            return "EXC"
+            return "EXC", layer
 
         print(self.addfntSize)
         CHK = self.Set_SelectColor.RGB_select()
         if CHK == "EXC":
-            return "EXC"
+            return "EXC", layer
         else:
             RGBdata = [CHK] * len(self.NewTextString)
 
