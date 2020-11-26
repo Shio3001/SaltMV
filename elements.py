@@ -5,6 +5,12 @@ import os
 import copy
 
 
+class AllElements:
+    def __init__(self):
+        self.layer_group = []  # 一番重要だと思われ
+        self.editor_info = []  # 動画の画面サイズとかその辺
+
+
 class layerElements:
     def __init__(self):
         self.layer_cutout = None

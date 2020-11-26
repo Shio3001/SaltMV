@@ -14,6 +14,8 @@ import main_user_CUI as main_user  # GUI処分 CUI中継操作
 
 # set
 from info_userCUI.Visualization import printlayer
+from info_userCUI.Visualization import layerselect
+from info_userCUI.Visualization import seteditsize
 
 from info_userCUI.EditPointFile import set_point  # CUI 操作に関するファイル GUI処分
 from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
@@ -48,23 +50,42 @@ if __name__ == "__main__":
 
 # 各種ファイルを設定 一度きりやしベタがき
 set_rally_Center = set_rally.Center(main_point)  # 情報入力関連をまとめてやってくれる
-userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer)  # CUI入力関連
+userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize)  # CUI入力関連登録
 
 out_rally_Center = out_rally.Center()  # 情報出力関連をまとめてやってくれる
 
 
 class Center:
     def __init__(self):
-        self.layer_group = []  # 一番重要だと思われ
+
+        self.all_elements = elements.AllElements()
 
         self.main_user_Center = main_user.Center()  # ユーザー操作を司る
 
-    def Main(self):
-        layer_group = self.main_user_Center.UserNextSelect(copy.deepcopy(self.layer_group), elements, userCUI_rally_Center)  # 次の選択を担うファイルへ送信
+        self.responselist = ["終了", "問題なし", "問題あり"]  # main.pyに戻ってくる時の応答リスト
+
+    def main(self):
+
+        UserNext = " "
+
+        while UserNext != self.responselist[0]:
+            self.all_elements, UserNext = self.main_user_Center.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, userCUI_rally_Center)  # 次の選択を担うファイルへ送信
+            print("")
+            print("********************************")
+
+            print("")
+            print("現在の状態")
+            userCUI_rally_Center.printlayer_Center.viaAll(self.all_elements)
+            print("")
+
+            print("********************************")
+            print("")
+
+        # sys.exit()
 
 
 main_Center = Center()
-main_Center.Main()
+main_Center.main()
 
 # まだ一回きりしか操作できないようになってる
 # git確認4
