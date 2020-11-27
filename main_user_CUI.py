@@ -84,6 +84,7 @@ class Center:
                     os.system("pwd")
                     os.system("ls")
                     inp_in = str(sys.stdin.readline().rstrip())
+                    thislayer, edit_object_response = operation_list["set"]["input_video"]["Center"].main(thislayer, thislayer_reobj_now, responselist, inp_in)
 
                 if object_user_select == object_selectlist[2] or object_user_select == str(object_selectlist_keys[2]):
                     pass

@@ -21,6 +21,7 @@ from info_userCUI.Visualization import timeselect
 from info_userCUI.EditPointFile import set_point  # CUI 操作に関するファイル GUI処分
 # from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
 from info_input.PointFile import main_point  # 内部処理
+from info_input import input_video
 # setend
 
 # out
@@ -55,7 +56,7 @@ if __name__ == "__main__":
 
 operation_list = {"set": {}, "out": {}, "CUI": {}}
 operation_list["set"]["main_point"] = {"Center": main_point.Center()}
-
+operation_list["set"]["input_video"] = {"Center": input_video.Center()}
 # operation_list["out"]["main_point"] = main_point
 
 operation_list["CUI"]["set_point"] = {"Center": set_point.Center()}

@@ -1,6 +1,6 @@
 # coding:utf-8
 import sys
-import numpy
+import numpy as np
 import os
 import copy
 
@@ -24,8 +24,8 @@ class Center:
 
             for j, jelement in enumerate(ielement.retention_object):  # オブジェクト単位
                 print("開始・終了地点: "+str(jelement.staend_property))
-                print(ielement.retention_object.document)
-                print(ielement.retention_object.point)
+                print("ファイル数: " + str(jelement.document.shape))
+                print(jelement.point)
 
     def viaObject(self, all_elements):
         pass
