@@ -28,9 +28,9 @@ from info_toset.PointFile import main_point  # 内部処理
 # outend
 
 # 統括ファイル
-from info_toset import info_toset_rally as set_rally  # 設定などを行う(内部)
-from info_userCUI import info_userCUI_rally as userCUI_rally  # 設定などを行う(CUI)
-from info_toout import info_toout_rally as out_rally  # 書き出す
+# from info_toset import info_toset_rally as set_rally  # 設定などを行う(内部)
+# from info_userCUI import info_userCUI_rally as userCUI_rally  # 設定などを行う(CUI)
+# from info_toout import info_toout_rally as out_rally  # 書き出す
 
 
 import elements
