@@ -3,21 +3,61 @@ import sys
 import numpy
 import os
 import copy
+import re
 
 
 class Center:
     def __init__(self):
         pass
 
-    def main(self):
-        print("時間を入力してください")
-        print("フレームでも時分秒でも可能 ただし時間分秒で入力する時には [ h ](時間) [ m ](分) [ s ](秒) [ ms ](ミリ秒をつけること)")
-        print("例: 10分5秒を表したい場合 -> [ 0h10m5s ]")
+    def main(self, all_elements):
 
-        user_select = str(sys.stdin.readline().rstrip())
+        user_select = None
+        while user_select != "exit":
 
-    def if_time(self):
-        pass
+            try:
+                print("時間を入力してください")
+                print("フレームでも時分秒でも可能 ただし時間分秒で入力する時には [ h ](時間) [ m ](分) [ s ](秒) [ ms ](ミリ秒をつけること)")
+                print("例: 10分5秒を表したい場合 -> [ 0h10m5s ] 単位未指定はフレーム値扱いになります")
 
-    def if_flame(self):
-        pass
+                user_select = str(sys.stdin.readline().rstrip().lower())
+
+                frame_result = 0
+                user_select_Wait = ""
+
+                # print(all_elements.editor_info)
+
+                for i, ie in enumerate(user_select):
+                    if ie == "m" and user_select[i + 1] == "s":
+                        frame_result += (int(user_select_Wait) / 1000) * int(all_elements.editor_info[2])
+                        user_select_Wait = ""
+                        print("ミリ秒を検知")
+                    elif ie == "h":
+                        frame_result += int(user_select_Wait) * 3600 * int(all_elements.editor_info[2])
+                        user_select_Wait = ""
+                        print("時間を検知")
+                    elif ie == "m":
+                        frame_result += int(user_select_Wait) * 60 * int(all_elements.editor_info[2])
+                        user_select_Wait = ""
+                        print("分を検知")
+                    elif ie == "s":
+                        frame_result += int(user_select_Wait) * int(all_elements.editor_info[2])
+                        user_select_Wait = ""
+                        print("秒を検知")
+                    else:
+                        user_select_Wait += ie
+                        # print(user_select_Wait)
+                        if i == int(len(user_select)) - 1:
+                            frame_result += int(user_select_Wait)
+
+                print(str(frame_result) + "フレーム")
+                print("")
+                print("")
+                return frame_result
+            except ValueError:
+                print("数字と特定の記号だけ入れようね")
+
+            except:
+                print("は？" + str(sys.exc_info()))
+
+        return 0

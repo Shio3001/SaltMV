@@ -36,4 +36,4 @@ class Center:
             print("数字以外を入れるなあほ")
 
         except:
-            print("どうして")
+            print("どうして" + str(sys.exc_info()))

@@ -16,6 +16,7 @@ import main_user_CUI as main_user  # GUI処分 CUI中継操作
 from info_userCUI.Visualization import printlayer
 from info_userCUI.Visualization import layerselect
 from info_userCUI.Visualization import seteditsize
+from info_userCUI.Visualization import timeselect
 
 from info_userCUI.EditPointFile import set_point  # CUI 操作に関するファイル GUI処分
 from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
@@ -49,10 +50,25 @@ if __name__ == "__main__":
     print("コマンドライン からの入力を確認")
 
 # 各種ファイルを設定 一度きりやしベタがき
-set_rally_Center = set_rally.Center(main_point)  # 情報入力関連をまとめてやってくれる
-userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize)  # CUI入力関連登録
+# set_rally_Center = set_rally.Center(main_point)  # 情報入力関連をまとめてやってくれる
+# userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize, timeselect)  # CUI入力関連登録
 
-out_rally_Center = out_rally.Center()  # 情報出力関連をまとめてやってくれる
+operation_list = {"set": {}, "out": {}, "CUI": {}}
+operation_list["set"]["main_point"] = {"Center": main_point.Center()}
+
+# operation_list["out"]["main_point"] = main_point
+
+operation_list["CUI"]["set_point"] = {"Center": set_point.Center()}
+operation_list["CUI"]["edit_point"] = {"Center": edit_point.Center()}
+operation_list["CUI"]["printlayer"] = {"Center": printlayer.Center()}
+operation_list["CUI"]["layerselect"] = {"Center": layerselect.Center()}
+operation_list["CUI"]["seteditsize"] = {"Center": seteditsize.Center()}
+operation_list["CUI"]["timeselect"] = {"Center": timeselect.Center()}
+
+print(operation_list)
+
+
+# out_rally_Center = out_rally.Center()  # 情報出力関連をまとめてやってくれる
 
 
 class Center:
@@ -69,13 +85,13 @@ class Center:
         UserNext = " "
 
         while UserNext != self.responselist[0]:
-            self.all_elements, UserNext = self.main_user_Center.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, userCUI_rally_Center)  # 次の選択を担うファイルへ送信
+            self.all_elements, UserNext = self.main_user_Center.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
             print("")
             print("********************************")
 
             print("")
             print("現在の状態")
-            userCUI_rally_Center.printlayer_Center.viaAll(self.all_elements)
+            operation_list["CUI"]["printlayer"]["Center"].viaAll(self.all_elements)
             print("")
 
             print("********************************")
@@ -86,6 +102,8 @@ class Center:
 
 main_Center = Center()
 main_Center.main()
+
+sys.exit()
 
 # まだ一回きりしか操作できないようになってる
 # git確認4
