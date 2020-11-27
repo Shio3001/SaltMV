@@ -19,8 +19,8 @@ from info_userCUI.Visualization import seteditsize
 from info_userCUI.Visualization import timeselect
 
 from info_userCUI.EditPointFile import set_point  # CUI 操作に関するファイル GUI処分
-from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
-from info_toset.PointFile import main_point  # 内部処理
+# from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
+from info_input.PointFile import main_point  # 内部処理
 # setend
 
 # out
@@ -59,7 +59,7 @@ operation_list["set"]["main_point"] = {"Center": main_point.Center()}
 # operation_list["out"]["main_point"] = main_point
 
 operation_list["CUI"]["set_point"] = {"Center": set_point.Center()}
-operation_list["CUI"]["edit_point"] = {"Center": edit_point.Center()}
+#operation_list["CUI"]["edit_point"] = {"Center": edit_point.Center()}
 operation_list["CUI"]["printlayer"] = {"Center": printlayer.Center()}
 operation_list["CUI"]["layerselect"] = {"Center": layerselect.Center()}
 operation_list["CUI"]["seteditsize"] = {"Center": seteditsize.Center()}
@@ -74,7 +74,7 @@ print(operation_list)
 class Center:
     def __init__(self):
 
-        self.all_elements = elements.AllElements()
+        self.all_elements = elements.AllElements()  # 全てを司るもの
 
         self.main_user_Center = main_user.Center()  # ユーザー操作を司る
 
@@ -82,10 +82,10 @@ class Center:
 
     def main(self):
 
-        UserNext = " "
+        user_next = " "
 
-        while UserNext != self.responselist[0]:
-            self.all_elements, UserNext = self.main_user_Center.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
+        while user_next != self.responselist[0]:
+            self.all_elements, user_next = self.main_user_Center.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
             print("")
             print("********************************")
 

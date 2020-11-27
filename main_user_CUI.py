@@ -9,7 +9,7 @@ import copy
 
 class Center:
     def __init__(self):
-        self.selectlist = {0: "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成"}
+        self.selectlist = {0: "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成", 6: "中間点設定"}
         self.selectlist_keys = list(self.selectlist.keys())
 
     def usernextselect(self, responselist, all_elements, elements, operation_list):
@@ -62,17 +62,52 @@ class Center:
 
             thislayer.retention_object.append(elements.ObjectElements())
 
-            thislayer_reobj_now = int(len(thislayer.retention_object)) - 1
+            thislayer_reobj_now = int(len(thislayer.retention_object)) - 1  # 操作すオブジェクトを最新のものにする
 
-            thislayer.retention_object[thislayer_reobj_now].staend_property = userselect_time
+            thislayer.retention_object[thislayer_reobj_now].staend_property = userselect_time  # 開始時間、終了時間を挿入
 
+            edit_object_response = ""
+            object_selectlist = {0: "返却", 1: "動画", 2: "画像", 3: "テキスト", 4: "図形", 5: "エフェクト"}
+            object_selectlist_keys = list(self.selectlist.keys())
+
+            while edit_object_response != responselist[0]:
+                print("種類を選択 [ 数値 ][文字列]")
+                print(object_selectlist)
+                object_user_select = str(sys.stdin.readline().rstrip())
+
+                if object_user_select == object_selectlist[0] or object_user_select == str(object_selectlist_keys[0]):
+                    break
+
+                if object_user_select == object_selectlist[1] or object_user_select == str(object_selectlist_keys[1]):
+
+                    print("動画ファイルを入力...")
+                    os.system("pwd")
+                    os.system("ls")
+                    inp_in = str(sys.stdin.readline().rstrip())
+
+                if object_user_select == object_selectlist[2] or object_user_select == str(object_selectlist_keys[2]):
+                    pass
+
+                if object_user_select == object_selectlist[3] or object_user_select == str(object_selectlist_keys[3]):
+                    pass
+
+                if object_user_select == object_selectlist[4] or object_user_select == str(object_selectlist_keys[4]):
+                    pass
+
+                if object_user_select == object_selectlist[5] or object_user_select == str(object_selectlist_keys[5]):
+                    pass
+
+                # 開始地点で整理する
             thislayer.retention_object = sorted(thislayer.retention_object, key=lambda x: x.staend_property[0], reverse=False)
-
-            all_elements.layer_group[userselect_layer] = thislayer  # あとで職員が美味しくいただきました(返却)
 
             operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
 
+            all_elements.layer_group[userselect_layer] = thislayer  # あとで職員が美味しくいただきました(返却)
+
             del thislayer
             return all_elements, responselist[1]
+
+        if user_select == self.selectlist[6] or user_select == str(self.selectlist_keys[6]):  # 中間点設定
+            pass
 
         return hold_all_elements, responselist[2]
