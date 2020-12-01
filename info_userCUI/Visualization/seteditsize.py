@@ -35,5 +35,5 @@ class Center:
         except ValueError:
             print("数字以外を入れるなあほ")
 
-        except:
+        except Exception:
             print("どうして" + str(sys.exc_info()))

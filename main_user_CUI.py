@@ -56,11 +56,19 @@ class Center:
 
         if user_select == self.selectlist[6] or user_select == str(self.selectlist_keys[6]):  # 中間点設定
             operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
-            userselect_layer = operation_list["CUI"]["layerselect"]["Center"].layer(all_elements.layer_group)
-            if len(all_elements.layer_group) == 0:
+            if len(all_elements.layer_group) == 0:  # レイヤーがないなら帰れ
                 return hold_all_elements, responselist[2]
 
             print("設定したいオブジェクトがあるレイヤーを選択 現在" + str(all_elements.layer_group) + "コ 確認")
             userselect_layer = operation_list["CUI"]["layerselect"]["Center"].layer(all_elements.layer_group)
+
+            if len(all_elements.layer_group[userselect_layer].retention_object) == 0:  # ０オブジェクトがないなら帰れ
+                return hold_all_elements, responselist[2]
+
+            print("設定したいオブジェクトを選択 現在" + str(all_elements.layer_group[userselect_layer].retention_object) + "コ 確認")
+            userselect_object = operation_list["CUI"]["layerselect"]["Center"].object(all_elements.layer_group[userselect_layer].retention_object)
+
+            all_elements.layer_group[userselect_layer].retention_object[userselect_object] = operation_list["CUI"]["usersetpoint"]["Center"].main(
+                copy.deepcopy(all_elements.layer_group[userselect_layer].retention_object[userselect_object]), all_elements, operation_list)
 
         return hold_all_elements, responselist[2]

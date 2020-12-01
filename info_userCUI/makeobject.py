@@ -64,7 +64,7 @@ class Center:
             if object_user_select == object_selectlist[3] or object_user_select == str(object_selectlist_keys[3]):
                 print("テキストを生成")
                 print("生成したいテキストを入力")
-                print("制御文字[ サイズ変更 : <s100> ] [ 色の変更 : <#カラーコード> ] [ 隙間を生成 : <px0py0>")
+                print("制御文字 : [ サイズ変更 : <s100> ] [ 色の変更 : <R255G255B255> ] [ 隙間を生成 : <px0py0>")
                 inp_in = str(sys.stdin.readline().rstrip())
                 operation_list["set"]["input_text"]["Center"].main(inp_in, thislayer, thislayer_reobj_now)
 
@@ -93,6 +93,17 @@ class Center:
         thislayer.retention_object.append(elements.ObjectElements())
         thislayer_reobj_now = int(len(thislayer.retention_object)) - 1
         thislayer.retention_object[thislayer_reobj_now].staend_property = userselect_time  # 開始時間、終了時間を挿入
+
+        thislayer.retention_object[-1].effect[-1].effectname = "Basic"
+        for i in range(2):
+            thislayer = self.new_obj_effect(thislayer, thislayer_reobj_now, elements, userselect_time[i])
+
         # 操作すオブジェクトを最新のものにする
 
         return thislayer, thislayer_reobj_now
+
+    def new_obj_effect(self, thislayer, thislayer_reobj_now, elements, settime):
+        thislayer.retention_object[thislayer_reobj_now].effects.append(elements.effectElements())
+        thislayer.retention_object[thislayer_reobj_now].effects.Point[-1]["time"] = settime
+
+        return thislayer
