@@ -18,10 +18,12 @@ from info_userCUI.Visualization import layerselect
 from info_userCUI.Visualization import seteditsize
 from info_userCUI.Visualization import timeselect
 
-from info_userCUI.EditPointFile import set_point  # CUI 操作に関するファイル GUI処分
+from info_userCUI import usersetpoint  # CUI 操作に関するファイル GUI処分
+from info_userCUI import makeobject
 # from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
-from info_input.PointFile import main_point  # 内部処理
-from info_input import input_video
+from info_input import input_point  # 内部処理
+from info_input import input_video_image
+from info_input import input_text
 # setend
 
 # out
@@ -54,17 +56,21 @@ if __name__ == "__main__":
 # set_rally_Center = set_rally.Center(main_point)  # 情報入力関連をまとめてやってくれる
 # userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize, timeselect)  # CUI入力関連登録
 
+#主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
 operation_list = {"set": {}, "out": {}, "CUI": {}}
-operation_list["set"]["main_point"] = {"Center": main_point.Center()}
-operation_list["set"]["input_video"] = {"Center": input_video.Center()}
+operation_list["set"]["input_point"] = {"Center": input_point.Center()}
+operation_list["set"]["input_video_image"] = {"Center": input_video_image.Center()}
+operation_list["set"]["input_text"] = {"Center": input_text.Center()}
 # operation_list["out"]["main_point"] = main_point
 
-operation_list["CUI"]["set_point"] = {"Center": set_point.Center()}
+operation_list["CUI"]["usersetpoint"] = {"Center": usersetpoint.Center()}
 #operation_list["CUI"]["edit_point"] = {"Center": edit_point.Center()}
 operation_list["CUI"]["printlayer"] = {"Center": printlayer.Center()}
 operation_list["CUI"]["layerselect"] = {"Center": layerselect.Center()}
 operation_list["CUI"]["seteditsize"] = {"Center": seteditsize.Center()}
 operation_list["CUI"]["timeselect"] = {"Center": timeselect.Center()}
+operation_list["CUI"]["makeobject"] = {"Center": makeobject.Center()}
+
 
 print(operation_list)
 

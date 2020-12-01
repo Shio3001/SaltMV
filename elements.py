@@ -26,3 +26,10 @@ class ObjectElements:
         self.staend_property = [None, None]  # 開始地点,終了地点
         self.objectType = 0
         self.unique_property = []  # それぞれ任意 #ObjectTypeによって分別
+        self.effects = {}
+
+
+class effectElements:
+    def __init__(self):
+        self.effectPoint = []
+        self.effectname = "Notinserted"

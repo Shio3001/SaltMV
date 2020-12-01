@@ -70,4 +70,4 @@ class Center:
             except:
                 print("は？" + str(sys.exc_info()))
 
-        return 0
+        return None
