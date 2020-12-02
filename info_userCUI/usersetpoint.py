@@ -33,7 +33,7 @@ class Center:
             try:
                 user_select = int(sys.stdin.readline().rstrip())
 
-                if user_select > int(len(thisobject.effects)):
+                if user_select > int(len(thisobject.effects)) - 1:
                     print("それは存在しない")
                     return thisobject
             except:
@@ -44,25 +44,28 @@ class Center:
 
         # 文字が入力されているかつ、存在している範囲ということを検出
 
-        if user_select_point == False:
-            print("新規作成")
-            # 新規作成の場合、ひとつ前のやつから複製して形をコーピー、それを編集という形にすれば良い
-            # 一つもない、っていうのはあり得ないはず
-            thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
-
-        else:
+        try:
             if int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)):
-                pass
-
+                thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
             else:
                 thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
+                thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
+        except:
+            thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
+            thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
 
-            # except:
-            #    print("数字以外いれんな " + str(sys.exc_info()))
+        print("point設定 返却")
+        print(thisobject.effects[user_select].effectPoint)
 
         thisobject.effects[user_select].effectPoint = sorted(thisobject.effects[user_select].effectPoint, key=lambda x: x["time"], reverse=False)
 
-        return thisobject
+        print(thisobject.effects[user_select].effectPoint)
+
+        thislayer.retention_object[userselect_object] = copy.deepcopy(thisobject)
+
+        del thisobject
+
+        return thislayer
 
     def newpoint(self, thisobject, operation_list, user_select, all_elements):
         print("存在しないので新規作成")
@@ -72,5 +75,22 @@ class Center:
 
         return thisobject
 
-    def editpoint(self):
-        pass
+    def editpoint(self, thisobject_effectPoint, operation_list):
+
+        print("すでに作成済みのものを編集")
+        print("編集するものを入力 [ 文字列 ] [ 確定は : exit ]")
+        print("変更後の数値を入力 [ 数値 ]")
+
+        print(thisobject_effectPoint)
+
+        user_select = ["0", "0"]
+        user_select[0] = str(sys.stdin.readline().rstrip())
+        try:
+            user_select[1] = int(sys.stdin.readline().rstrip())
+        except:
+            print("数値以外を入れないで")
+            return thisobject_effectPoint
+
+        thisobject_effectPoint = operation_list["set"]["input_point"]["Center"].edit_setting(thisobject_effectPoint, user_select)
+        print("変換処理終了")
+        return thisobject_effectPoint

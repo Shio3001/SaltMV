@@ -9,8 +9,13 @@ class Center:
     def __init__(self):
         pass
 
-    def edit_setting(self):
-        pass
+    def edit_setting(self, thisobject_effectPoint, user_select):
+        try:
+            thisobject_effectPoint[user_select[0]] = user_select[1]
+        except:
+            print("そんなものないよ")
+
+        return thisobject_effectPoint
 
     def several_setting(self, thisobject, operation_list, user_select, maketime):  # すでに一個以上存在してる場合
 

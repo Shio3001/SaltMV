@@ -17,10 +17,15 @@ class Center:
         self.addNewMov = []
 
     def video(self, thislayer, thislayer_reobj_now, responselist, inp_in):
-        new_video = cv2.VideoCapture(inp_in)
+
+        try:
+            new_video = cv2.VideoCapture(inp_in)
+        except:
+            print("読み込みに失敗 try - except")
+            return thislayer, responselist[2]
 
         if new_video.isOpened() != True:
-            print("読み込みに失敗")
+            print("読み込みに失敗 isOpened")
             return thislayer, responselist[2]
 
         new_video_getlist = {"width": new_video.get(cv2.CAP_PROP_FRAME_WIDTH), "height": new_video.get(cv2.CAP_PROP_FRAME_HEIGHT), "fps": new_video.get(cv2.CAP_PROP_FPS), "count": new_video.get(cv2.CAP_PROP_FRAME_COUNT)}
@@ -31,7 +36,7 @@ class Center:
         #    self.addNewMov.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA))
 
         thislayer.retention_object[thislayer_reobj_now].unique_property = copy.deepcopy(new_video_getlist)
-        thislayer.retention_object[thislayer_reobj_now].document = copy.deepcopy(new_video)
+        thislayer.retention_object[thislayer_reobj_now].document = inp_in
         #del new_video
         #del new_video_getlist
 
@@ -56,7 +61,7 @@ class Center:
             return thislayer, responselist[1]
 
         #thislayer.retention_object[thislayer_reobj_now].document = np.array([cv2.cvtColor(new_image, cv2.COLOR_RGB2RGBA)])
-        thislayer.retention_object[thislayer_reobj_now].document = new_image
+        thislayer.retention_object[thislayer_reobj_now].document = inp_in
         print("読み込みに成功")
 
         return thislayer, responselist[0]

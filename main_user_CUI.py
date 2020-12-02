@@ -47,7 +47,7 @@ class Center:
         if user_select == self.selectlist[5] or user_select == str(self.selectlist_keys[5]):  # オブジェクト生成
             if len(all_elements.layer_group) == 0:
                 return hold_all_elements, responselist[2]
-            print("生成したいレイヤーを入力 現在" + str(all_elements.layer_group) + "コ 確認")
+            print("生成したいレイヤーを入力 現在" + str(len(all_elements.layer_group)) + "コ 確認")
             operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
             userselect_layer = operation_list["CUI"]["layerselect"]["Center"].layer(all_elements.layer_group)
 
@@ -70,11 +70,11 @@ class Center:
             print("設定したいオブジェクトを選択 現在" + str(len(all_elements.layer_group[userselect_layer].retention_object)) + "コ 確認")
             userselect_object = operation_list["CUI"]["layerselect"]["Center"].object(all_elements.layer_group[userselect_layer].retention_object)
 
-            all_elements.layer_group[userselect_layer].retention_object[userselect_object] = operation_list["CUI"]["usersetpoint"]["Center"].main(
-                copy.deepcopy(all_elements.layer_group[userselect_layer]),  all_elements, operation_list, userselect_object)
+            all_elements.layer_group[userselect_layer] = operation_list["CUI"]["usersetpoint"]["Center"].main(copy.deepcopy(all_elements.layer_group[userselect_layer]),  all_elements, operation_list, userselect_object)
+            return all_elements, responselist[1]
 
         if user_select == self.selectlist[7] or user_select == str(self.selectlist_keys[7]):  # 中間点設定
-            userselect_layer = operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements.layer_group)
+            userselect_layer = operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
             return all_elements, responselist[1]
 
         return hold_all_elements, responselist[2]

@@ -10,11 +10,15 @@ class AllElements:  # えらい
         self.layer_group = []  # 一番重要だと思われ
         self.editor_info = []  # 動画の画面サイズとかその辺
 
+        print("全てのレイヤー管理 を追加しました : AllElements [ Elements ] ")
+
 
 class layerElements:  # 次にえらい
     def __init__(self):
         self.layer_cutout = None  # クリップングするか否か しばらく使わないでしょ
         self.retention_object = []
+
+        print("レイヤーを追加しました : layerElements [ Elements ]")
 
 
 class ObjectElements:  # その次にえらい
@@ -28,9 +32,13 @@ class ObjectElements:  # その次にえらい
         self.unique_property = []  # それぞれ任意 #ObjectTypeによって分別
         self.effects = []
 
+        print("オブジェクトを追加しました : ObjectElements [ Elements ]")
+
 
 class effectElements:  # えらくない
     def __init__(self):
         self.effectname = None
         self.effectPoint = []
         self.procedurelist = None  # インスタンス化したclassを詰め込む
+
+        print("エフェクトを追加しました : effectElements [ Elements ]")
