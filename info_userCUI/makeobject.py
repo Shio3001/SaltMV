@@ -90,20 +90,10 @@ class Center:
         userselect_time[1] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
 
         userselect_time.sort()
-        thislayer.retention_object.append(elements.ObjectElements())
+
+        print(thislayer.retention_object)
+        thislayer = operation_list["set"]["input_point"]["Center"].Initial_setting(thislayer, elements, userselect_time)
         thislayer_reobj_now = int(len(thislayer.retention_object)) - 1
-        thislayer.retention_object[thislayer_reobj_now].staend_property = userselect_time  # 開始時間、終了時間を挿入
-
-        thislayer.retention_object[-1].effect[-1].effectname = "Basic"
-        for i in range(2):
-            thislayer = self.new_obj_effect(thislayer, thislayer_reobj_now, elements, userselect_time[i])
-
         # 操作すオブジェクトを最新のものにする
 
         return thislayer, thislayer_reobj_now
-
-    def new_obj_effect(self, thislayer, thislayer_reobj_now, elements, settime):
-        thislayer.retention_object[thislayer_reobj_now].effects.append(elements.effectElements())
-        thislayer.retention_object[thislayer_reobj_now].effects.Point[-1]["time"] = settime
-
-        return thislayer

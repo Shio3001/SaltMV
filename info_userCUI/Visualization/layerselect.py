@@ -22,6 +22,8 @@ class Center:
                 if 1 <= int(user_select) <= len(layer_group):
                     print("問題なし")
                     return int(user_select) - 1  # ユーザーからみたら1からだけど中身は0からだから1だけ引くんだぞ
+                else:
+                    user_select = -1
             except:
                 print("問題あり" + str(sys.exc_info()))
                 user_select = -1
@@ -37,6 +39,8 @@ class Center:
                 if 1 <= int(user_select) <= len(object_group):
                     print("問題なし")
                     return int(user_select) - 1  # ユーザーからみたら1からだけど中身は0からだから1だけ引くんだぞ
+                else:
+                    user_select = -1
             except:
                 print("問題あり" + str(sys.exc_info()))
                 user_select = -1

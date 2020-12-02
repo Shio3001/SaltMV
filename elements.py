@@ -31,6 +31,6 @@ class ObjectElements:  # その次にえらい
 
 class effectElements:  # えらくない
     def __init__(self):
-        self.effectPoint = {}
         self.effectname = None
+        self.effectPoint = []
         self.procedurelist = None  # インスタンス化したclassを詰め込む

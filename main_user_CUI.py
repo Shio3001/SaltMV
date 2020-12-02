@@ -9,16 +9,17 @@ import copy
 
 class Center:
     def __init__(self):
-        self.selectlist = {0: "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成", 6: "中間点設定"}
+        self.selectlist = {0: "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成", 6: "中間点設定", 7: "設定書き出し"}
         self.selectlist_keys = list(self.selectlist.keys())
 
     def usernextselect(self, responselist, all_elements, elements, operation_list):
 
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("次の動作を入力 [ 番号 ] もしくは [ 文字列 ]")
+        print(self.selectlist)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         hold_all_elements = copy.deepcopy(all_elements)  # 問題があった時にはこれを返すようにすればいい
-
-        print(self.selectlist)
 
         user_select = str(sys.stdin.readline().rstrip())
 
@@ -59,16 +60,21 @@ class Center:
             if len(all_elements.layer_group) == 0:  # レイヤーがないなら帰れ
                 return hold_all_elements, responselist[2]
 
-            print("設定したいオブジェクトがあるレイヤーを選択 現在" + str(all_elements.layer_group) + "コ 確認")
+            print("設定したいオブジェクトがあるレイヤーを選択 現在" + str(len(all_elements.layer_group)) + "コ 確認")
             userselect_layer = operation_list["CUI"]["layerselect"]["Center"].layer(all_elements.layer_group)
 
             if len(all_elements.layer_group[userselect_layer].retention_object) == 0:  # ０オブジェクトがないなら帰れ
+                print("オブジェクトが存在しません")
                 return hold_all_elements, responselist[2]
 
-            print("設定したいオブジェクトを選択 現在" + str(all_elements.layer_group[userselect_layer].retention_object) + "コ 確認")
+            print("設定したいオブジェクトを選択 現在" + str(len(all_elements.layer_group[userselect_layer].retention_object)) + "コ 確認")
             userselect_object = operation_list["CUI"]["layerselect"]["Center"].object(all_elements.layer_group[userselect_layer].retention_object)
 
             all_elements.layer_group[userselect_layer].retention_object[userselect_object] = operation_list["CUI"]["usersetpoint"]["Center"].main(
-                copy.deepcopy(all_elements.layer_group[userselect_layer].retention_object[userselect_object]), all_elements, operation_list)
+                copy.deepcopy(all_elements.layer_group[userselect_layer]),  all_elements, operation_list, userselect_object)
+
+        if user_select == self.selectlist[7] or user_select == str(self.selectlist_keys[7]):  # 中間点設定
+            userselect_layer = operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements.layer_group)
+            return all_elements, responselist[1]
 
         return hold_all_elements, responselist[2]

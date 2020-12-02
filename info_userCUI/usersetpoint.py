@@ -17,31 +17,60 @@ class Center:
     def __init__(self):
         pass
 
-    def main(self, thisobject, all_elements, operation_list):
+    def main(self, thislayer, all_elements, operation_list, userselect_object):
 
+        thisobject = thislayer.retention_object[userselect_object]
+
+        print(thisobject.effects)
         # try:
-        print("どのエフェクトを選択するのか入力 [ 数値 ] [ 0 から ] [ 0 は座標などの基礎情報 ]")
-        print("現在" + str(int(len(thisobject.effects)) + 1) + "コ確認")
+        user_select = -1
 
-        user_select = int(sys.stdin.readline().rstrip())
+        while user_select == -1:
 
-        if user_select > int(len(thisobject.effects)):
-            print("それは存在しない")
-            return thisobject
+            print("どのエフェクトを選択するのか入力 [ 数値 ] [ 0 から ] [ 0 は座標などの基礎情報 ]")
+            print("現在" + str(int(len(thisobject.effects))) + "コ確認")
+
+            try:
+                user_select = int(sys.stdin.readline().rstrip())
+
+                if user_select > int(len(thisobject.effects)):
+                    print("それは存在しない")
+                    return thisobject
+            except:
+                user_select = -1
 
         print("どの中間点を選択するのか入力 [ 数値 ] [ 空白で新規作成 ]")
         user_select_point = str(sys.stdin.readline().rstrip())
 
-        if user_select_point > int(len(thisobject.effects[user_select])) or int(len(user_select_point)) == 0:
+        # 文字が入力されているかつ、存在している範囲ということを検出
+
+        if user_select_point == False:
+            print("新規作成")
             # 新規作成の場合、ひとつ前のやつから複製して形をコーピー、それを編集という形にすれば良い
             # 一つもない、っていうのはあり得ないはず
-            print("存在しないので新規作成")
-            print("作成する時間を入力")
-            maketime = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
+            thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
 
-            thisobject = operation_list["set"]["input_point"]["Center"].several_setting(thisobject, user_select, maketime)
+        else:
+            if int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)):
+                pass
 
-            # hisobject.effects[user_select].effectPoint[-1] =
+            else:
+                thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
 
-        # except:
-        #    print("数字以外いれんな " + str(sys.exc_info()))
+            # except:
+            #    print("数字以外いれんな " + str(sys.exc_info()))
+
+        thisobject.effects[user_select].effectPoint = sorted(thisobject.effects[user_select].effectPoint, key=lambda x: x["time"], reverse=False)
+
+        return thisobject
+
+    def newpoint(self, thisobject, operation_list, user_select, all_elements):
+        print("存在しないので新規作成")
+        print("作成する時間を入力")
+        maketime = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
+        thisobject = operation_list["set"]["input_point"]["Center"].several_setting(thisobject, operation_list, user_select, maketime)
+
+        return thisobject
+
+    def editpoint(self):
+        pass

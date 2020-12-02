@@ -37,28 +37,30 @@ class Center:
                     if iflag > 0 and i == int(len(user_select)):
                         break
 
-                    if user_select[i] == "m" and user_select[i + 1] == "s":
-                        frame_result += (int(user_select_Wait) / 1000) * int(all_elements.editor_info[2])
-                        user_select_Wait = ""
-                        print("ミリ秒を検知")
-                        iflag += 1
-
-                    elif user_select[i] == "h":
-                        frame_result += int(user_select_Wait) * 3600 * int(all_elements.editor_info[2])
-                        user_select_Wait = ""
-                        print("時間を検知")
-                    elif user_select[i] == "m":
-                        frame_result += int(user_select_Wait) * 60 * int(all_elements.editor_info[2])
-                        user_select_Wait = ""
-                        print("分を検知")
-                    elif user_select[i] == "s" and user_select[i - 1] != "m":
-                        frame_result += int(user_select_Wait) * int(all_elements.editor_info[2])
-                        user_select_Wait = ""
-                        print("秒を検知")
-                    else:
-                        user_select_Wait += user_select[i]
-                        if i == int(len(user_select)) - 1:
-                            frame_result += int(user_select_Wait)
+                    try:
+                        if user_select[i] == "m" and user_select[i + 1] == "s":
+                            frame_result += (int(user_select_Wait) / 1000) * int(all_elements.editor_info[2])
+                            user_select_Wait = ""
+                            print("ミリ秒を検知")
+                            iflag += 1
+                        elif user_select[i] == "h":
+                            frame_result += int(user_select_Wait) * 3600 * int(all_elements.editor_info[2])
+                            user_select_Wait = ""
+                            print("時間を検知")
+                        elif user_select[i] == "m":
+                            frame_result += int(user_select_Wait) * 60 * int(all_elements.editor_info[2])
+                            user_select_Wait = ""
+                            print("分を検知")
+                        elif user_select[i] == "s" and user_select[i - 1] != "m":
+                            frame_result += int(user_select_Wait) * int(all_elements.editor_info[2])
+                            user_select_Wait = ""
+                            print("秒を検知")
+                        else:
+                            user_select_Wait += user_select[i]
+                            if i == int(len(user_select)) - 1:
+                                frame_result += int(user_select_Wait)
+                    except:
+                        pass
 
                 print(str(frame_result) + "フレーム")
                 print("")

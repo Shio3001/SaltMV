@@ -27,7 +27,13 @@ class Center:
                 for j, jelement in enumerate(ielement.retention_object):  # オブジェクト単位
                     print("開始・終了地点: "+str(jelement.staend_property))
                     print("ファイル数: " + str(np.array(jelement.document).shape))
-                    print(jelement.point)
+                    # print(jelement.point)
+
+                    for k, kelement in enumerate(jelement.effects):  # エフェクト単位
+                        print("エフェクト名: " + str(kelement.effectname))
+                        print("エフェクト中間点: " + str(kelement.effectPoint))
+                        print("処理: " + str(kelement.procedurelist))
+                        print("")
 
         except:
             print(str(sys.exc_info()))
