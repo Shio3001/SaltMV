@@ -24,6 +24,8 @@ from info_userCUI import makeobject
 from info_input import input_point  # 内部処理
 from info_input import input_video_image
 from info_input import input_text
+
+from info_save import make_save
 # setend
 
 # out
@@ -57,10 +59,12 @@ if __name__ == "__main__":
 # userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize, timeselect)  # CUI入力関連登録
 
 #主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
-operation_list = {"set": {}, "out": {}, "CUI": {}}
+operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}}
 operation_list["set"]["input_point"] = {"Center": input_point.Center()}
 operation_list["set"]["input_video_image"] = {"Center": input_video_image.Center()}
 operation_list["set"]["input_text"] = {"Center": input_text.Center()}
+
+operation_list["save"]["make_save"] = {"Center": make_save.Center()}
 # operation_list["out"]["main_point"] = main_point
 
 operation_list["CUI"]["usersetpoint"] = {"Center": usersetpoint.Center()}

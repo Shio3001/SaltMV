@@ -81,18 +81,24 @@ class Center:
     def editpoint(self, thisobject_effectPoint, operation_list):
 
         print("すでに作成済みのものを編集")
-        print("編集するものを入力 [ 文字列 ] [ 確定は : exit ]")
-
         print(thisobject_effectPoint)
         user_select = ["0", "0"]
-        user_select[0] = str(sys.stdin.readline().rstrip())
-        try:
-            print("変更後の数値を入力 [ 数値 ]")
-            user_select[1] = int(sys.stdin.readline().rstrip())
-        except:
-            print("数値以外を入れないで")
-            return thisobject_effectPoint
 
-        thisobject_effectPoint = operation_list["set"]["input_point"]["Center"].edit_setting(thisobject_effectPoint, user_select)
-        print("変換処理終了")
+        while user_select[0] != "exit":
+            print("編集するものを入力 [ 文字列 ] [ 確定は : exit ]")
+            user_select[0] = str(sys.stdin.readline().rstrip())
+
+            if user_select[0] == "exit":
+                break
+
+            try:
+                print("変更後の数値を入力 [ 数値 ]")
+                user_select[1] = int(sys.stdin.readline().rstrip())
+                thisobject_effectPoint = operation_list["set"]["input_point"]["Center"].edit_setting(thisobject_effectPoint, user_select)
+                print("変換処理終わり")
+                print("")
+            except:
+                print("数値以外を入れないで")
+                print("")
+
         return thisobject_effectPoint

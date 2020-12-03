@@ -20,29 +20,28 @@ class Center:
 
         print("レイヤー数: " + str(len(all_elements.layer_group)))
 
+        print("")
+
         for i, ielement in enumerate(all_elements.layer_group):  # レイヤー単位
 
-            print(len(all_elements.layer_group[0].retention_object))
-
             print("レイヤー内オブジェクト数" + ": " + str(len(ielement.retention_object)))
-
             print("レイヤーでの切り抜き" + ": " + str(ielement.layer_cutout))
-
             print("")
 
             for j, jelement in enumerate(ielement.retention_object):  # オブジェクト単位
                 print("開始・終了地点: "+str(jelement.staend_property))
-                print("ファイル数: " + str(np.array(jelement.document).shape))
+                print("ファイル:   " + str(jelement.document))
                 # print(jelement.point)
+
+                print("")
 
                 for k, kelement in enumerate(jelement.effects):  # エフェクト単位
                     print("エフェクト名: " + str(kelement.effectname))
                     print("エフェクト中間点: " + str(kelement.effectPoint))
                     print("処理: " + str(kelement.procedurelist))
-                    print("")
-        print("")
 
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print("")
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
         # except:
         #    print(str(sys.exc_info()))

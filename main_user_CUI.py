@@ -30,6 +30,11 @@ class Center:
             return all_elements, responselist[0]
 
         if user_select == self.selectlist[2] or user_select == str(self.selectlist_keys[2]):  # 保存
+            print("保存先を入力")
+            user_select = str(sys.stdin.readline().rstrip())
+
+            operation_list["save"]["make_save"]["Center"].output(all_elements, user_select)
+
             return all_elements, responselist[1]
 
         if user_select == self.selectlist[3] or user_select == str(self.selectlist_keys[3]):  # 画面サイズなどを設定
