@@ -13,6 +13,8 @@ class Center:
 
         # try:
 
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
         print("")
         print("画面サイズ情報 : " + str(all_elements.editor_info))
 
@@ -38,6 +40,9 @@ class Center:
                     print("エフェクト中間点: " + str(kelement.effectPoint))
                     print("処理: " + str(kelement.procedurelist))
                     print("")
+        print("")
+
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
         # except:
         #    print(str(sys.exc_info()))

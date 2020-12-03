@@ -35,7 +35,7 @@ class Center:
 
                 if user_select > int(len(thisobject.effects)) - 1:
                     print("それは存在しない")
-                    return thisobject
+                    return thislayer
             except:
                 user_select = -1
 
@@ -44,15 +44,19 @@ class Center:
 
         # 文字が入力されているかつ、存在している範囲ということを検出
 
-        try:
-            if int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)):
-                thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
-            else:
-                thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
-                thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
-        except:
+        if not user_select_point:  # 文字が入力されていない場合
+            print("新規作成 < not user_select_point >")
             thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
-            thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
+            thisobject.effects[user_select].effectPoint[-1] = self.editpoint(thisobject.effects[user_select].effectPoint[-1], operation_list)
+
+        if user_select_point:  # 文字が入力されている場合
+            if int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)):
+                print("既存編集 < user_select_point >")
+                thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
+            else:  # 文字が入力されているけど範囲内ではない場合
+                print("新規作成 < user_select_point else >")
+                thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
+                thisobject.effects[user_select].effectPoint[-1] = self.editpoint(thisobject.effects[user_select].effectPoint[-1], operation_list)
 
         print("point設定 返却")
         print(thisobject.effects[user_select].effectPoint)
