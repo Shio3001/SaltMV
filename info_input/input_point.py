@@ -11,11 +11,14 @@ class Center:
 
     def edit_setting(self, thisobject_effectPoint, user_select):
 
-        if user_select[1] in thisobject_effectPoint == True:
+        if user_select[0] in thisobject_effectPoint.keys():
             try:
                 thisobject_effectPoint[user_select[0]] = user_select[1]
+                print("おきかえ")
             except:
                 print("そんなものないよ")
+        else:
+            print("keyが存在しなかったよ")
 
         return thisobject_effectPoint
 
@@ -28,13 +31,13 @@ class Center:
             print(thisobject.effects[user_select].effectPoint)
             print(thisobject.effects[user_select].effectPoint[i])
             if thisobject.effects[user_select].effectPoint[i]["time"] >= maketime:
-                addpoint = thisobject.effects[user_select].effectPoint[-1]  # 入れる予定の場所をもとに時間を検索
+                addpoint = copy.deepcopy(thisobject.effects[user_select].effectPoint[-1])  # 入れる予定の場所をもとに時間を検索
                 print("時間検索")
                 break
             # maketime以上の数を入れると取れなくなってしまうため完全に隔離した状態の時間でも対応させる必要がありそう
 
         if thisobject.effects[user_select].effectPoint[-1]["time"] < maketime:
-            addpoint = thisobject.effects[user_select].effectPoint[-1]
+            addpoint = copy.deepcopy(thisobject.effects[user_select].effectPoint[-1])
 
         print(addpoint)
         thisobject.effects[user_select].effectPoint.append(addpoint)  # 前のやつを複製

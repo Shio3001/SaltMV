@@ -47,7 +47,8 @@ class Center:
         if not user_select_point:  # 文字が入力されていない場合
             print("新規作成 < not user_select_point >")
             thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
-            thisobject.effects[user_select].effectPoint[-1] = self.editpoint(thisobject.effects[user_select].effectPoint[-1], operation_list)
+            edit_select_point = int(len(thisobject.effects[user_select].effectPoint)) - 1
+            thisobject.effects[user_select].effectPoint[edit_select_point] = self.editpoint(thisobject.effects[user_select].effectPoint[edit_select_point], operation_list)
 
         if user_select_point:  # 文字が入力されている場合
             if int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)):
@@ -55,12 +56,10 @@ class Center:
                 thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
             else:  # 文字が入力されているけど範囲内ではない場合
                 print("新規作成 < user_select_point else >")
-                thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
-                thisobject.effects[user_select].effectPoint[-1] = self.editpoint(thisobject.effects[user_select].effectPoint[-1], operation_list)
+                edit_select_point = int(len(thisobject.effects[user_select].effectPoint)) - 1
+                thisobject.effects[user_select].effectPoint[edit_select_point] = self.editpoint(thisobject.effects[user_select].effectPoint[edit_select_point], operation_list)
 
         print("point設定 返却")
-        print(thisobject.effects[user_select].effectPoint)
-
         thisobject.effects[user_select].effectPoint = sorted(thisobject.effects[user_select].effectPoint, key=lambda x: x["time"], reverse=False)
 
         print(thisobject.effects[user_select].effectPoint)
@@ -83,13 +82,12 @@ class Center:
 
         print("すでに作成済みのものを編集")
         print("編集するものを入力 [ 文字列 ] [ 確定は : exit ]")
-        print("変更後の数値を入力 [ 数値 ]")
 
         print(thisobject_effectPoint)
-
         user_select = ["0", "0"]
         user_select[0] = str(sys.stdin.readline().rstrip())
         try:
+            print("変更後の数値を入力 [ 数値 ]")
             user_select[1] = int(sys.stdin.readline().rstrip())
         except:
             print("数値以外を入れないで")
