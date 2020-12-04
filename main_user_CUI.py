@@ -9,18 +9,18 @@ import copy
 
 class Center:
     def __init__(self):
+
         # self.selectlist = {0, "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成", 6: "中間点設定", 7: "設定書き出し"}
-        self.selectlist = {
-            (0, "何もないよ"): self.nothing,
-            (1, "終了"): self.exit,
-            (2, "保存"): self.save,
-            (3, "読み込み"): self.load,
-            (4, "プロジェクト設定"): self.set_edit,
-            (5, "レイヤー生成"): self.newlayer,
-            (6, "オブジェクト生成"): self.newobject,
-            (7, "中間点設定"): self.newpoint,
-            (8, "書き出し"): self.printall
-        }
+
+        self.selectlist = np.array([["0", "何もないよ", self.nothing],
+                                    ["1", "終了", self.exit],
+                                    ["2", "保存", self.save],
+                                    ["3", "取得", self.load],
+                                    ["4", "プロジェクト設定", self.set_edit],
+                                    ["5", "レイヤー生成", self.newlayer],
+                                    ["6", "オブジェクト生成", self.newobject],
+                                    ["7", "中間点生成", self.newpoint],
+                                    ["8", "設定表示", self.printall]])
 
     def usernextselect(self, responselist, all_elements, elements, operation_list):
 
@@ -31,7 +31,13 @@ class Center:
 
         user_select = str(sys.stdin.readline().rstrip())
 
-        all_elements, responselist = self.selectlist[user_select](responselist, all_elements, elements, operation_list)
+        use_index = np.where(self.selectlist == user_select)
+        try:
+            all_elements, responselist = self.selectlist[use_index[0][0]][2](responselist, all_elements, elements, operation_list)
+            # 連想配列もどきの取得部分↑
+            return all_elements, responselist
+        except:
+            return all_elements, responselist[2]
 
     def nothing(self, responselist, all_elements, elements, operation_list):  # 0
         return all_elements, responselist[1]
@@ -48,7 +54,7 @@ class Center:
         return all_elements, responselist[1]
 
     def load(self, responselist, all_elements, elements, operation_list):  # 0
-        pass
+        return all_elements, responselist[1]
 
     def set_edit(self, responselist, all_elements, elements, operation_list):  # 0
         print(operation_list)
