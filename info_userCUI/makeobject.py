@@ -6,7 +6,7 @@ import copy
 
 
 class Center:
-    def main(self, all_elements, elements, thislayer, operation_list, responselist, selectlist):
+    def main(self, all_elements, elements, thislayer, operation_list, responselist):
 
         # 次のオブジェクトの開始地点と、今のオブジェクトの終了地点を引いて、0以下であればかぶっている判定にしてあげれば勝ち
 
@@ -30,7 +30,7 @@ class Center:
 
         edit_object_response = ""
         object_selectlist = {0: "返却", 1: "動画", 2: "画像", 3: "テキスト", 4: "図形", 5: "エフェクト"}
-        object_selectlist_keys = list(selectlist.keys())
+        object_selectlist_keys = list(object_selectlist.keys())
 
         while edit_object_response != responselist[0]:
             print("種類を選択 [ 数値 ][ 文字列 ]")
