@@ -13,7 +13,11 @@ class Center:
     def input(self, all_elements, user_select):  # 読み込み
         inputdata = json.loads(user_select)
 
-    def input_defrost(self):
+        all_elements = inputdata
+
+        return all_elements
+
+    def input_defrost(self):  # 解凍
         pass
 
     def output(self, all_elements, user_select):  # 書き出し
@@ -23,6 +27,24 @@ class Center:
         if user_select[-5:] != ".json":
             user_select += ".json"
 
+        user_select = self.DirectoryConversion(user_select)
+
+        os.system("touch " + user_select)
+
+        print(user_select)
+        with open(user_select, mode='w') as f:
+            f.write(outputdata)
+
+        return all_elements
+
+    def output_frozen(self, item):  # 冷凍
+        # if isinstance(item, object) and hasattr(item, '__dict__'):
+        print("json : " + str(item.__dict__))
+        return item.__dict__
+        # else:
+        #    raise TypeError
+
+    def DirectoryConversion(self, user_select):
         user_select_hold = ""
         now_directory = os.getcwd()
         for i in range(len(user_select)):
@@ -41,15 +63,5 @@ class Center:
                 user_select_hold += user_select[i]
 
         os.chdir(now_directory)
-        os.system("touch " + user_select)
 
-        print(user_select)
-        with open(user_select, mode='w') as f:
-            f.write(outputdata)
-
-    def output_frozen(self, item):
-        # if isinstance(item, object) and hasattr(item, '__dict__'):
-        print("json : " + str(item.__dict__))
-        return item.__dict__
-        # else:
-        #    raise TypeError
+        return user_select

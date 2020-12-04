@@ -49,11 +49,16 @@ class Center:
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
 
-        operation_list["save"]["make_save"]["Center"].output(all_elements, user_select)
+        all_elements = operation_list["save"]["make_save"]["Center"].output(all_elements, user_select)
 
         return all_elements, responselist[1]
 
     def load(self, responselist, all_elements, elements, operation_list):  # 0
+
+        print("取得するファイルを入力")
+        user_select = str(sys.stdin.readline().rstrip())
+
+        all_elements = operation_list["save"]["make_save"]["Center"].input(all_elements, user_select)
         return all_elements, responselist[1]
 
     def set_edit(self, responselist, all_elements, elements, operation_list):  # 0
