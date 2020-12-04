@@ -31,7 +31,7 @@ class Center:
 
         user_select = str(sys.stdin.readline().rstrip())
 
-        use_index = np.where(self.selectlist == user_select)
+        use_index = np.where(self.selectlist == user_select)  # 居場所は二次元配列で返されるので
         try:
             all_elements, responselist = self.selectlist[use_index[0][0]][2](responselist, all_elements, elements, operation_list)
             # 連想配列もどきの取得部分↑

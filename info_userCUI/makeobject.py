@@ -1,6 +1,6 @@
 # coding:utf-8
 import sys
-import numpy
+import numpy as np
 import os
 import copy
 
@@ -29,49 +29,25 @@ class Center:
             thislayer, thislayer_reobj_now = self.new_obj(thislayer, operation_list, all_elements, elements)
 
         edit_object_response = ""
-        object_selectlist = {0: "返却", 1: "動画", 2: "画像", 3: "テキスト", 4: "図形", 5: "エフェクト"}
-        object_selectlist_keys = list(object_selectlist.keys())
+        # object_selectlist = {0: "返却", 1: "動画", 2: "画像", 3: "テキスト", 4: "図形", 5: "エフェクト"}
+        object_selectlist = np.array([["0", "返却", self.nothing],
+                                      ["1", "動画", self.video],
+                                      ["2", "画像", self.image],
+                                      ["3", "テキスト", self.text],
+                                      ["4", "図形", self.shape],
+                                      ["5", "エフェクト", self.effect]])
+        # object_selectlist_keys=list(object_selectlist.keys())
 
         while edit_object_response != responselist[0]:
             print("種類を選択 [ 数値 ][ 文字列 ]")
             print(object_selectlist)
             object_user_select = str(sys.stdin.readline().rstrip())
 
-            if object_user_select == object_selectlist[0] or object_user_select == str(object_selectlist_keys[0]):
-                break
-
-            if object_user_select == object_selectlist[1] or object_user_select == str(object_selectlist_keys[1]):
-
-                print("動画ファイルを入力...")
-                os.system("pwd")
-                os.system("ls")
-                inp_in = str(sys.stdin.readline().rstrip())
-                thislayer, edit_object_response = operation_list["set"]["input_video_image"]["Center"].video(thislayer, thislayer_reobj_now, responselist, inp_in)
-
-                if thislayer.retention_object[thislayer_reobj_now].staend_property[0] == None:
-                    thislayer.retention_object[thislayer_reobj_now].staend_property[0] = 0
-
-                if thislayer.retention_object[thislayer_reobj_now].staend_property[1] == None:
-                    thislayer.retention_object[thislayer_reobj_now].staend_property[1] = thislayer.retention_object[thislayer_reobj_now].staend_property[0] + thislayer.retention_object[thislayer_reobj_now].unique_property["count"]
-
-            if object_user_select == object_selectlist[2] or object_user_select == str(object_selectlist_keys[2]):
-                print("画像ファイルを入力...")
-                os.system("pwd")
-                os.system("ls")
-                inp_in = str(sys.stdin.readline().rstrip())
-                thislayer, edit_object_response = operation_list["set"]["input_video_image"]["Center"].image(thislayer, thislayer_reobj_now, responselist, inp_in)
-
-            if object_user_select == object_selectlist[3] or object_user_select == str(object_selectlist_keys[3]):
-                print("テキストを生成")
-                print("生成したいテキストを入力")
-                print("制御文字 : [ サイズ変更 : <s100> ] [ 色の変更 : <R255G255B255> ] [ 隙間を生成 : <px0py0>")
-                inp_in = str(sys.stdin.readline().rstrip())
-                operation_list["set"]["input_text"]["Center"].main(inp_in, thislayer, thislayer_reobj_now)
-
-            if object_user_select == object_selectlist[4] or object_user_select == str(object_selectlist_keys[4]):
-                pass
-
-            if object_user_select == object_selectlist[5] or object_user_select == str(object_selectlist_keys[5]):
+            use_index = np.where(object_selectlist == object_user_select)  # 居場所は二次元配列で返されるので
+            try:
+                thislayer, edit_object_response = object_selectlist[use_index[0][0]][2](thislayer, thislayer_reobj_now, responselist, operation_list)
+                # 連想配列もどきの取得部分↑
+            except:
                 pass
 
             # 開始地点で整理する
@@ -80,6 +56,48 @@ class Center:
         operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
 
         return thislayer
+
+    def nothing(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+        return thislayer, responselist[0]
+
+    def video(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+        print("動画ファイルを入力...")
+        os.system("pwd")
+        os.system("ls")
+        inp_in = str(sys.stdin.readline().rstrip())
+        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["Center"].video(thislayer, thislayer_reobj_now, responselist, inp_in)
+
+        if thislayer.retention_object[thislayer_reobj_now].staend_property[0] == None:
+            thislayer.retention_object[thislayer_reobj_now].staend_property[0] = 0
+
+        if thislayer.retention_object[thislayer_reobj_now].staend_property[1] == None:
+            thislayer.retention_object[thislayer_reobj_now].staend_property[1] = thislayer.retention_object[thislayer_reobj_now].staend_property[0] + thislayer.retention_object[thislayer_reobj_now].unique_property["count"]
+
+        return thislayer, edit_object_response
+
+    def image(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+        print("画像ファイルを入力...")
+        os.system("pwd")
+        os.system("ls")
+        inp_in = str(sys.stdin.readline().rstrip())
+        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["Center"].image(thislayer, thislayer_reobj_now, responselist, inp_in)
+
+        return thislayer, edit_object_response
+
+    def text(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+        print("テキストを生成")
+        print("生成したいテキストを入力")
+        print("制御文字 : [ サイズ変更 : <s100> ] [ 色の変更 : <R255G255B255> ] [ 隙間を生成 : <px0py0>")
+        inp_in = str(sys.stdin.readline().rstrip())
+        operation_list["set"]["input_text"]["Center"].main(inp_in, thislayer, thislayer_reobj_now)
+
+        return thislayer, responselist[1]
+
+    def shape(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+        return thislayer, responselist[1]
+
+    def effect(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+        return thislayer, responselist[1]
 
     def new_obj(self, thislayer, operation_list, all_elements, elements):
         userselect_time = [0, 0]
