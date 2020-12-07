@@ -13,19 +13,19 @@ import PIL.ImageFont as ImageFont
 import main_user_CUI as main_user  # GUI処分 CUI中継操作
 
 # set
-from info_userCUI.Visualization import printlayer
-from info_userCUI.Visualization import layerselect
-from info_userCUI.Visualization import seteditsize
-from info_userCUI.Visualization import timeselect
+from userCUI.Visualization import printlayer
+from userCUI.Visualization import layerselect
+from userCUI.Visualization import seteditsize
+from userCUI.Visualization import timeselect
 
-from info_userCUI import usersetpoint  # CUI 操作に関するファイル GUI処分
-from info_userCUI import makeobject
+from userCUI import usersetpoint  # CUI 操作に関するファイル GUI処分
+from userCUI import makeobject
 # from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
-from info_input import input_point  # 内部処理
-from info_input import input_video_image
-from info_input import input_text
+from data_input import input_point  # 内部処理
+from data_input import input_video_image
+from data_input import input_text
 
-from info_save import make_save
+from doc_save import make_save
 # setend
 
 # out

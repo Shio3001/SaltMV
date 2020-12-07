@@ -20,7 +20,8 @@ class Center:
                                     ["5", "レイヤー生成", self.newlayer],
                                     ["6", "オブジェクト生成", self.newobject],
                                     ["7", "中間点生成", self.newpoint],
-                                    ["8", "設定表示", self.printall]])
+                                    ["8", "設定表示", self.printall],
+                                    ["9", "動画の書き出し", None]])
 
     def usernextselect(self, responselist, all_elements, elements, operation_list):
 
@@ -111,3 +112,6 @@ class Center:
     def printall(self, responselist, all_elements, elements, operation_list):  # 0
         userselect_layer = operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
         return all_elements, responselist[1]
+
+    def export_video(self, responselist, all_elements, elements, operation_list):
+        pass

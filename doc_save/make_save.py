@@ -11,7 +11,10 @@ import base64
 
 class Center:
     def input(self, all_elements, elements, user_select):  # json -> class 読み込み
+        if user_select[-5:] != ".json":
+            user_select += ".json"
         lordfile = open(user_select, 'rb')
+        #all_elements = lordfile
         all_elements = pickle.load(lordfile)
         return all_elements
 
