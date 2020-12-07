@@ -11,14 +11,25 @@ import pprint
 
 class Center:
     def input(self, all_elements, user_select):  # 読み込み
-        inputdata = json.loads(user_select)
 
-        all_elements = inputdata
+        inputdata = json.load(open(user_select, "r"))
+        print(inputdata)
+
+        all_elements = self.input_defrost('inputdata:{}'.format(type(inputdata)))
 
         return all_elements
 
-    def input_defrost(self):  # 解凍
-        pass
+    def input_defrost(self, before_conversion):  # 解凍
+
+        all_elements = []
+
+        for i in range(0):  # レイヤー単位
+            all_elements.append()
+            for j in range(0):  # オブジェクト単位
+                for k in range(0):  # エフェクト単位
+                    pass
+
+        return all_elements
 
     def output(self, all_elements, user_select):  # 書き出し
         outputdata = json.dumps(all_elements, default=self.output_frozen, indent=2)

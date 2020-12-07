@@ -49,6 +49,10 @@ class Center:
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
 
+        if not user_select:
+            print("入力なし返却")
+            return all_elements, responselist[2]
+
         all_elements = operation_list["save"]["make_save"]["Center"].output(all_elements, user_select)
 
         return all_elements, responselist[1]
@@ -58,7 +62,7 @@ class Center:
         print("取得するファイルを入力")
         user_select = str(sys.stdin.readline().rstrip())
 
-        all_elements = operation_list["save"]["make_save"]["Center"].input(all_elements, user_select)
+        all_elements = operation_list["save"]["make_save"]["Center"].input(all_elements, elements, user_select)
         return all_elements, responselist[1]
 
     def set_edit(self, responselist, all_elements, elements, operation_list):  # 0
@@ -69,7 +73,7 @@ class Center:
 
     def newlayer(self, responselist, all_elements, elements, operation_list):  # 0
         print("レイヤー生成")
-        all_elements.layer_group.append(elements.layerElements())
+        all_elements.layer_group.append(elements.layerElements())  # レイヤー追加
         operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
         return all_elements, responselist[1]
 
