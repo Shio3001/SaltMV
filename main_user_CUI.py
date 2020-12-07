@@ -32,12 +32,11 @@ class Center:
         user_select = str(sys.stdin.readline().rstrip())
 
         use_index = np.where(self.selectlist == user_select)  # 居場所は二次元配列で返されるので
-        try:
-            all_elements, responselist = self.selectlist[use_index[0][0]][2](responselist, all_elements, elements, operation_list)
-            # 連想配列もどきの取得部分↑
-            return all_elements, responselist
-        except:
+        if not use_index[0]:
             return all_elements, responselist[2]
+        all_elements, responselist = self.selectlist[use_index[0][0]][2](responselist, all_elements, elements, operation_list)
+        # 連想配列もどきの取得部分↑
+        return all_elements, responselist
 
     def nothing(self, responselist, all_elements, elements, operation_list):  # 0
         return all_elements, responselist[1]
@@ -53,7 +52,7 @@ class Center:
             print("入力なし返却")
             return all_elements, responselist[2]
 
-        all_elements = operation_list["save"]["make_save"]["Center"].output(all_elements, user_select)
+        all_elements = operation_list["save"]["make_save"]["Center"].output(all_elements, elements, user_select)
 
         return all_elements, responselist[1]
 
