@@ -45,7 +45,7 @@ class Center:
 
             use_index = np.where(object_selectlist == object_user_select)  # 居場所は二次元配列で返されるので
             try:
-                thislayer, edit_object_response = object_selectlist[use_index[0][0]][2](thislayer, thislayer_reobj_now, responselist, operation_list)
+                thislayer, edit_object_response = object_selectlist[use_index[0][0]][2](thislayer, thislayer_reobj_now, responselist, operation_list, elements)
                 # 連想配列もどきの取得部分↑
             except:
                 pass
@@ -57,10 +57,10 @@ class Center:
 
         return thislayer
 
-    def nothing(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+    def nothing(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         return thislayer, responselist[0]
 
-    def video(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+    def video(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         print("動画ファイルを入力...")
         os.system("pwd")
         os.system("ls")
@@ -75,7 +75,7 @@ class Center:
 
         return thislayer, edit_object_response
 
-    def image(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+    def image(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         print("画像ファイルを入力...")
         os.system("pwd")
         os.system("ls")
@@ -84,19 +84,20 @@ class Center:
 
         return thislayer, edit_object_response
 
-    def text(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+    def text(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         print("テキストを生成")
         print("生成したいテキストを入力")
         print("制御文字 : [ サイズ変更 : <s100> ] [ 色の変更 : <R255G255B255> ] [ 隙間を生成 : <px0py0>")
         inp_in = str(sys.stdin.readline().rstrip())
-        operation_list["set"]["input_text"]["Center"].main(inp_in, thislayer, thislayer_reobj_now)
+
+        operation_list["set"]["input_text"]["Center"].main(inp_in, thislayer, thislayer_reobj_now, elements, operation_list)
 
         return thislayer, responselist[1]
 
-    def shape(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+    def shape(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         return thislayer, responselist[1]
 
-    def effect(self, thislayer, thislayer_reobj_now, responselist, operation_list):
+    def effect(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         return thislayer, responselist[1]
 
     def new_obj(self, thislayer, operation_list, all_elements, elements):

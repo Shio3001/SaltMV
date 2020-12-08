@@ -4,6 +4,7 @@ import numpy as np
 import os
 import copy
 
+
 # GUI処分ファイル(CUI中継)
 
 
@@ -15,13 +16,17 @@ class Center:
         self.selectlist = np.array([["0", "何もないよ", self.nothing],
                                     ["1", "終了", self.exit],
                                     ["2", "保存", self.save],
+                                    ["2a", "上書き保存", self.overwrite_save],
                                     ["3", "取得", self.load],
                                     ["4", "プロジェクト設定", self.set_edit],
                                     ["5", "レイヤー生成", self.newlayer],
                                     ["6", "オブジェクト生成", self.newobject],
                                     ["7", "中間点生成", self.newpoint],
                                     ["8", "設定表示", self.printall],
-                                    ["9", "動画の書き出し", None]])
+                                    ["9", "動画の書き出し", self.export_video],
+                                    ["10", "画像の書き出し", self.export_image]])
+
+        self.save_location = ""
 
     def usernextselect(self, responselist, all_elements, elements, operation_list):
 
@@ -45,6 +50,18 @@ class Center:
     def exit(self, responselist, all_elements, elements, operation_list):  # 0
         return all_elements, responselist[0]
 
+    def overwrite_save(self, responselist, all_elements, elements, operation_list):  # 0
+
+        if not self.save_location:
+            print("入力なし移動")
+            all_elements, response = self.save(responselist, all_elements, elements, operation_list)
+
+        else:
+            user_select = self.save_location
+            all_elements, self.save_location = operation_list["save"]["make_save"]["Center"].output(all_elements, elements, operation_list, user_select)
+            response = responselist[1]
+        return all_elements, response
+
     def save(self, responselist, all_elements, elements, operation_list):  # 0
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
@@ -53,7 +70,7 @@ class Center:
             print("入力なし返却")
             return all_elements, responselist[2]
 
-        all_elements = operation_list["save"]["make_save"]["Center"].output(all_elements, elements, user_select)
+        all_elements, self.save_location = operation_list["save"]["make_save"]["Center"].output(all_elements, elements, operation_list, user_select)
 
         return all_elements, responselist[1]
 
@@ -62,7 +79,7 @@ class Center:
         print("取得するファイルを入力")
         user_select = str(sys.stdin.readline().rstrip())
 
-        all_elements = operation_list["save"]["make_save"]["Center"].input(all_elements, elements, user_select)
+        all_elements, self.save_location = operation_list["save"]["make_save"]["Center"].input(all_elements, elements, operation_list, user_select)
         return all_elements, responselist[1]
 
     def set_edit(self, responselist, all_elements, elements, operation_list):  # 0
@@ -73,7 +90,7 @@ class Center:
 
     def newlayer(self, responselist, all_elements, elements, operation_list):  # 0
         print("レイヤー生成")
-        all_elements.layer_group.append(elements.layerElements())  # レイヤー追加
+        all_elements = operation_list["set"]["new_layer"]["Center"].main(all_elements, elements)
         operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
         return all_elements, responselist[1]
 
@@ -114,4 +131,21 @@ class Center:
         return all_elements, responselist[1]
 
     def export_video(self, responselist, all_elements, elements, operation_list):
-        pass
+        print("保存先を入力")
+        user_select = str(sys.stdin.readline().rstrip())
+        user_select = operation_list["other"]["dircon"]["Center"].main(user_select)
+
+        operation_list["out"]["output_video_image"]["Center"].type_video(all_elements, operation_list, user_select)
+
+        return all_elements, responselist[1]
+
+    def export_image(self, responselist, all_elements, elements, operation_list):
+        print("保存先を入力")
+        user_select = str(sys.stdin.readline().rstrip())
+        user_select = operation_list["other"]["dircon"]["Center"].main(user_select)
+
+        print("書き出すフレームを入力")
+        select_time = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
+        operation_list["out"]["output_video_image"]["Center"].type_image(all_elements, operation_list, select_time, user_select)
+
+        return all_elements, responselist[1]

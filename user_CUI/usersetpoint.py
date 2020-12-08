@@ -39,7 +39,7 @@ class Center:
             except:
                 user_select = -1
 
-        print("どの中間点を選択するのか入力 [ 数値 ] [ 空白で新規作成 ]")
+        print("どの中間点を選択するのか入力 [ 数値 ] [ 空白で新規作成 ] [ 0 から ]")
         user_select_point = str(sys.stdin.readline().rstrip())
 
         # 文字が入力されているかつ、存在している範囲ということを検出
@@ -51,11 +51,12 @@ class Center:
             thisobject.effects[user_select].effectPoint[edit_select_point] = self.editpoint(thisobject.effects[user_select].effectPoint[edit_select_point], operation_list)
 
         if user_select_point:  # 文字が入力されている場合
-            if int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)):
+            if 0 <= int(user_select_point) <= int(len(thisobject.effects[user_select].effectPoint)) - 1:
                 print("既存編集 < user_select_point >")
                 thisobject.effects[user_select].effectPoint[int(user_select_point)] = self.editpoint(thisobject.effects[user_select].effectPoint[int(user_select_point)], operation_list)
             else:  # 文字が入力されているけど範囲内ではない場合
                 print("新規作成 < user_select_point else >")
+                thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)
                 edit_select_point = int(len(thisobject.effects[user_select].effectPoint)) - 1
                 thisobject.effects[user_select].effectPoint[edit_select_point] = self.editpoint(thisobject.effects[user_select].effectPoint[edit_select_point], operation_list)
 

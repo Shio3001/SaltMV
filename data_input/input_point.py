@@ -58,7 +58,7 @@ class Center:
         thisobject.staend_property = userselect_time  # 開始時間、終了時間を挿入
 
         thisobject.effects.append(elements.effectElements())
-        thisobject.effects[-1].effectname = "Basic"
+        thisobject.effects[-1].effectname = "basic"
 
         print(thisobject.staend_property)
         print(type(thisobject.staend_property))
@@ -81,3 +81,23 @@ class Center:
         # thislayer.retention_object[thislayer_reobj_now].effects.Point[-1]["time"] = settime
 
         # return thislayer
+
+    def text_Initial_setting(self, thislayer, elements):
+        thisobject = thislayer.retention_object[-1]
+        thisobject.effects.append(elements.effectElements())
+        thisobject.effects[-1].effectname = "text"
+        thisobject.effects[-1].effectPoint.append({"time": 0})
+        thisobject.effects[-1].effectPoint[-1]["letter_spacing"] = 0
+
+        return thislayer
+
+    def color_Initial_setting(self, thislayer, elements):
+        thisobject = thislayer.retention_object[-1]
+        thisobject.effects.append(elements.effectElements())
+        thisobject.effects[-1].effectname = "color"
+        thisobject.effects[-1].effectPoint.append({"time": 0})
+        thisobject.effects[-1].effectPoint[-1]["R"] = 0
+        thisobject.effects[-1].effectPoint[-1]["G"] = 0
+        thisobject.effects[-1].effectPoint[-1]["B"] = 0
+
+        return thislayer

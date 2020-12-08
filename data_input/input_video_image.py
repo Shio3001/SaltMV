@@ -37,6 +37,7 @@ class Center:
 
         thislayer.retention_object[thislayer_reobj_now].unique_property = copy.deepcopy(new_video_getlist)
         thislayer.retention_object[thislayer_reobj_now].document = inp_in
+        thislayer.retention_object[thislayer_reobj_now].objectType = "video"
         #del new_video
         #del new_video_getlist
 
@@ -62,6 +63,7 @@ class Center:
 
         #thislayer.retention_object[thislayer_reobj_now].document = np.array([cv2.cvtColor(new_image, cv2.COLOR_RGB2RGBA)])
         thislayer.retention_object[thislayer_reobj_now].document = inp_in
+        thislayer.retention_object[thislayer_reobj_now].objectType = "image"
         print("読み込みに成功")
 
         return thislayer, responselist[0]

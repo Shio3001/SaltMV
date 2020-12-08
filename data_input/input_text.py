@@ -16,6 +16,9 @@ class Center:
     def __init__(self):
         pass
 
-    def main(self, inp_in, thislayer, thislayer_reobj_now):
+    def main(self, inp_in, thislayer, thislayer_reobj_now, elements, operation_list):
         thislayer.retention_object[thislayer_reobj_now].document = inp_in
+        thislayer.retention_object[thislayer_reobj_now].objectType = "text"
+        thislayer = operation_list["set"]["input_point"]["Center"].text_Initial_setting(thislayer, elements)
+        thislayer = operation_list["set"]["input_point"]["Center"].color_Initial_setting(thislayer, elements)
         return thislayer

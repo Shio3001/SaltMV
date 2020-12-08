@@ -12,31 +12,27 @@ import PIL.ImageFont as ImageFont
 
 import main_user_CUI as main_user  # GUI処分 CUI中継操作
 
-# set
-from userCUI.Visualization import printlayer
-from userCUI.Visualization import layerselect
-from userCUI.Visualization import seteditsize
-from userCUI.Visualization import timeselect
+import directory_conversion as dircon
 
-from userCUI import usersetpoint  # CUI 操作に関するファイル GUI処分
-from userCUI import makeobject
+# set
+from user_CUI.Visualization import printlayer
+from user_CUI.Visualization import layerselect
+from user_CUI.Visualization import seteditsize
+from user_CUI.Visualization import timeselect
+
+from user_CUI import usersetpoint  # CUI 操作に関するファイル GUI処分
+from user_CUI import makeobject
 # from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
 from data_input import input_point  # 内部処理
 from data_input import input_video_image
 from data_input import input_text
+from data_input import new_layer
+
+from data_output import output_video_image
+from data_output import current_location
+from data_output import frame_process
 
 from doc_save import make_save
-# setend
-
-# out
-
-# outend
-
-# 統括ファイル
-# from info_toset import info_toset_rally as set_rally  # 設定などを行う(内部)
-# from info_userCUI import info_userCUI_rally as userCUI_rally  # 設定などを行う(CUI)
-# from info_toout import info_toout_rally as out_rally  # 書き出す
-
 
 import elements
 
@@ -59,14 +55,18 @@ if __name__ == "__main__":
 # userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize, timeselect)  # CUI入力関連登録
 
 #主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
-operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}}
-operation_list["set"]["input_point"] = {"Center": input_point.Center()}
-operation_list["set"]["input_video_image"] = {"Center": input_video_image.Center()}
-operation_list["set"]["input_text"] = {"Center": input_text.Center()}
+operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "other": {}}
+operation_list["set"]["input_point"] = {"Center": input_point.Center()}  # 中間点を設定する
+operation_list["set"]["input_video_image"] = {"Center": input_video_image.Center()}  # 動画・画像の読み込みを行う
+operation_list["set"]["input_text"] = {"Center": input_text.Center()}  # テキストの読み込みを行う
+operation_list["set"]["new_layer"] = {"Center": new_layer.Center()}
+
+operation_list["out"]["output_video_image"] = {"Center": output_video_image.Center()}  # 動画と画像の場合の出力をまとめる
+operation_list["out"]["current_location"] = {"Center": current_location.Center()}  # 中間点から現在の居場所を算出する
+operation_list["out"]["frame_process"] = {"Center": frame_process.Center()}  # フレームごとの処理を書いておく
 
 operation_list["save"]["make_save"] = {"Center": make_save.Center()}
 # operation_list["out"]["main_point"] = main_point
-
 operation_list["CUI"]["usersetpoint"] = {"Center": usersetpoint.Center()}
 #operation_list["CUI"]["edit_point"] = {"Center": edit_point.Center()}
 operation_list["CUI"]["printlayer"] = {"Center": printlayer.Center()}
@@ -74,6 +74,8 @@ operation_list["CUI"]["layerselect"] = {"Center": layerselect.Center()}
 operation_list["CUI"]["seteditsize"] = {"Center": seteditsize.Center()}
 operation_list["CUI"]["timeselect"] = {"Center": timeselect.Center()}
 operation_list["CUI"]["makeobject"] = {"Center": makeobject.Center()}
+
+operation_list["other"]["dircon"] = {"Center": dircon.Center()}
 
 
 print(operation_list)

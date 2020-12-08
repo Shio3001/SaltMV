@@ -28,7 +28,7 @@ class ObjectElements:  # その次にえらい
         self.document = []  # ファイルが入る
         # self.point = [{}]  # 時間,x,y,size  #時間[x,y,a,size][間隔など、いろいろ]こっちの方がいいのでは
         self.staend_property = [None, None]  # 開始地点,終了地点
-        self.objectType = 0
+        self.objectType = None
         self.unique_property = []  # それぞれ任意 #ObjectTypeによって分別
         self.effects = []
 
@@ -37,6 +37,9 @@ class ObjectElements:  # その次にえらい
 
 class effectElements:  # えらくない
     def __init__(self):
+        #basic : 座標など
+        #color : 色に関すること
+        #text : テキストなど
         self.effectname = None
         self.effectPoint = []
         self.procedurelist = None  # インスタンス化したclassを詰め込む
