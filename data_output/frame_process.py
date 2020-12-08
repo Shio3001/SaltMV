@@ -11,5 +11,14 @@ class Center:
     def __init__(self):
         pass
 
-    def frame_process(self, all_elements, now_frame, operation_list):  # フレームごとの処理
+    def main(self, export_draw, all_elements, now_frame, operation_list):  # フレームごとの処理
+        return export_draw
+
+    def video(self):
+        pass
+
+    def image(self):
+        pass
+
+    def text(self):
         pass

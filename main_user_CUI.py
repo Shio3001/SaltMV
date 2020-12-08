@@ -84,7 +84,7 @@ class Center:
 
     def set_edit(self, responselist, all_elements, elements, operation_list):  # 0
         print(operation_list)
-        all_elements.editor_info = operation_list["CUI"]["seteditsize"]["Center"].main()
+        all_elements.editor_info = operation_list["CUI"]["seteditsize"]["Center"].main(operation_list)
 
         return all_elements, responselist[1]
 

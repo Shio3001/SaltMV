@@ -74,7 +74,7 @@ class Center:
     def newpoint(self, thisobject, operation_list, user_select, all_elements):
         print("存在しないので新規作成")
         print("作成する時間を入力")
-        maketime = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
+        maketime = operation_list["CUI"]["timeselect"]["Center"].main(all_elements.editor_info[2])
         thisobject = operation_list["set"]["input_point"]["Center"].several_setting(thisobject, operation_list, user_select, maketime)
 
         return thisobject

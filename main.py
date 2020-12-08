@@ -50,10 +50,6 @@ import elements
 if __name__ == "__main__":
     print("コマンドライン からの入力を確認")
 
-# 各種ファイルを設定 一度きりやしベタがき
-# set_rally_Center = set_rally.Center(main_point)  # 情報入力関連をまとめてやってくれる
-# userCUI_rally_Center = userCUI_rally.Center(set_point, edit_point, printlayer, layerselect, seteditsize, timeselect)  # CUI入力関連登録
-
 #主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
 operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "other": {}}
 operation_list["set"]["input_point"] = {"Center": input_point.Center()}  # 中間点を設定する
@@ -62,13 +58,12 @@ operation_list["set"]["input_text"] = {"Center": input_text.Center()}  # テキ�
 operation_list["set"]["new_layer"] = {"Center": new_layer.Center()}
 
 operation_list["out"]["output_video_image"] = {"Center": output_video_image.Center()}  # 動画と画像の場合の出力をまとめる
-operation_list["out"]["current_location"] = {"Center": current_location.Center()}  # 中間点から現在の居場所を算出する
 operation_list["out"]["frame_process"] = {"Center": frame_process.Center()}  # フレームごとの処理を書いておく
 
+operation_list["out"]["current_location"] = {"Center": current_location.Center()}  # 中間点から現在の居場所を算出する
+
 operation_list["save"]["make_save"] = {"Center": make_save.Center()}
-# operation_list["out"]["main_point"] = main_point
 operation_list["CUI"]["usersetpoint"] = {"Center": usersetpoint.Center()}
-#operation_list["CUI"]["edit_point"] = {"Center": edit_point.Center()}
 operation_list["CUI"]["printlayer"] = {"Center": printlayer.Center()}
 operation_list["CUI"]["layerselect"] = {"Center": layerselect.Center()}
 operation_list["CUI"]["seteditsize"] = {"Center": seteditsize.Center()}

@@ -103,10 +103,10 @@ class Center:
     def new_obj(self, thislayer, operation_list, all_elements, elements):
         userselect_time = [0, 0]
         print("開始する時間を入力")
-        userselect_time[0] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
+        userselect_time[0] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements.editor_info[2])
 
         print("終了する時間を入力")
-        userselect_time[1] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
+        userselect_time[1] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements.editor_info[2])
 
         userselect_time.sort()
 

@@ -10,7 +10,7 @@ class Center:
     def __init__(self):
         pass
 
-    def main(self, all_elements):
+    def main(self, editor_fps):
 
         user_select = None
         while user_select != "exit":
@@ -25,7 +25,7 @@ class Center:
                 frame_result = 0
                 user_select_Wait = ""
 
-                # print(all_elements.editor_info)
+                # print(editor_info)
 
                 iflag = 0
 
@@ -39,20 +39,20 @@ class Center:
 
                     try:
                         if user_select[i] == "m" and user_select[i + 1] == "s":
-                            frame_result += (int(user_select_Wait) / 1000) * int(all_elements.editor_info[2])
+                            frame_result += (int(user_select_Wait) / 1000) * int(editor_fps)
                             user_select_Wait = ""
                             print("ミリ秒を検知")
                             iflag += 1
                         elif user_select[i] == "h":
-                            frame_result += int(user_select_Wait) * 3600 * int(all_elements.editor_info[2])
+                            frame_result += int(user_select_Wait) * 3600 * int(editor_fps)
                             user_select_Wait = ""
                             print("時間を検知")
                         elif user_select[i] == "m":
-                            frame_result += int(user_select_Wait) * 60 * int(all_elements.editor_info[2])
+                            frame_result += int(user_select_Wait) * 60 * int(editor_fps)
                             user_select_Wait = ""
                             print("分を検知")
                         elif user_select[i] == "s" and user_select[i - 1] != "m":
-                            frame_result += int(user_select_Wait) * int(all_elements.editor_info[2])
+                            frame_result += int(user_select_Wait) * int(editor_fps)
                             user_select_Wait = ""
                             print("秒を検知")
                         else:
