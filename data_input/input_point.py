@@ -5,7 +5,7 @@ import os
 import copy
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         pass
 
@@ -48,7 +48,7 @@ class Center:
         # except:
         #    print("一つも存在しない可能性あり")
         #    print("返却" + str(sys.exc_info()))
-        # thisobject = operation_list["set"]["input_point"]["Center"].several_setting(thisobject, operation_list, user_select, maketime)
+        # thisobject = operation_list["set"]["input_point"]["CentralRole"].several_setting(thisobject, operation_list, user_select, maketime)
         return thisobject
 
     def Initial_setting(self, thislayer, elements, userselect_time):  # 全くなかったり、オブジェクト生成時だったりする場合

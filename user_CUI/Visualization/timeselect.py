@@ -6,7 +6,7 @@ import copy
 import re
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         pass
 

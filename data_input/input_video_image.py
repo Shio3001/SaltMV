@@ -12,7 +12,7 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         self.addNewMov = []
 

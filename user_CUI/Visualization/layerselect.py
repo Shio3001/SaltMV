@@ -5,7 +5,7 @@ import os
 import copy
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         pass
 

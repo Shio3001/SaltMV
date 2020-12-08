@@ -7,7 +7,7 @@ import copy
 # 中間点などから情報をもらってきて、それを基に現在位置を決定するやつ
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         pass
 

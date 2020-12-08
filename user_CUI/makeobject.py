@@ -5,10 +5,12 @@ import os
 import copy
 
 
-class Center:
+class CentralRole:
     def main(self, all_elements, elements, thislayer, operation_list, responselist):
 
         # 次のオブジェクトの開始地点と、今のオブジェクトの終了地点を引いて、0以下であればかぶっている判定にしてあげれば勝ち
+
+        print("オブジェクト生成")
 
         userselect_layer_object_num = int(len(thislayer.retention_object))
         # 指定したレイヤーに何個オブジェクトがあるか確認
@@ -16,7 +18,7 @@ class Center:
 
         if userselect_layer_object_num != 0:
             print("このレイヤーにはすでにオブジェクトが" + str(userselect_layer_object_num) + "コ存在しています")
-            print("既存のオブジェクトを変更する場合は、オブジェクト番号を入力 [ 1から ][ 数値 ]")
+            print("既存のオブジェクトを変更する場合は、オブジェクト番号を入力 [ 1から ][ 数値 ] [ 新規作成は空白 ]")
 
             try:
                 thislayer_reobj_now = int(sys.stdin.readline().rstrip()) - 1
@@ -28,7 +30,7 @@ class Center:
         else:
             thislayer, thislayer_reobj_now = self.new_obj(thislayer, operation_list, all_elements, elements)
 
-        edit_object_response = ""
+        edit_object_response = responselist[1]
         # object_selectlist = {0: "返却", 1: "動画", 2: "画像", 3: "テキスト", 4: "図形", 5: "エフェクト"}
         object_selectlist = np.array([["0", "返却", self.nothing],
                                       ["1", "動画", self.video],
@@ -44,16 +46,14 @@ class Center:
             object_user_select = str(sys.stdin.readline().rstrip())
 
             use_index = np.where(object_selectlist == object_user_select)  # 居場所は二次元配列で返されるので
-            try:
+            if use_index[0]:
                 thislayer, edit_object_response = object_selectlist[use_index[0][0]][2](thislayer, thislayer_reobj_now, responselist, operation_list, elements)
-                # 連想配列もどきの取得部分↑
-            except:
-                pass
+            # 連想配列もどきの取得部分↑
 
             # 開始地点で整理する
         thislayer.retention_object = sorted(thislayer.retention_object, key=lambda x: x.staend_property[0], reverse=False)
 
-        operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
+        operation_list["CUI"]["printlayer"]["CentralRole"].viaAll(all_elements)
 
         return thislayer
 
@@ -65,7 +65,7 @@ class Center:
         os.system("pwd")
         os.system("ls")
         inp_in = str(sys.stdin.readline().rstrip())
-        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["Center"].video(thislayer, thislayer_reobj_now, responselist, inp_in)
+        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].video(thislayer, thislayer_reobj_now, responselist, inp_in)
 
         if thislayer.retention_object[thislayer_reobj_now].staend_property[0] == None:
             thislayer.retention_object[thislayer_reobj_now].staend_property[0] = 0
@@ -80,7 +80,7 @@ class Center:
         os.system("pwd")
         os.system("ls")
         inp_in = str(sys.stdin.readline().rstrip())
-        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["Center"].image(thislayer, thislayer_reobj_now, responselist, inp_in)
+        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].image(thislayer, thislayer_reobj_now, responselist, inp_in)
 
         return thislayer, edit_object_response
 
@@ -90,28 +90,49 @@ class Center:
         print("制御文字 : [ サイズ変更 : <s100> ] [ 色の変更 : <R255G255B255> ] [ 隙間を生成 : <px0py0>")
         inp_in = str(sys.stdin.readline().rstrip())
 
-        operation_list["set"]["input_text"]["Center"].main(inp_in, thislayer, thislayer_reobj_now, elements, operation_list)
+        operation_list["set"]["input_text"]["CentralRole"].main(inp_in, thislayer, thislayer_reobj_now, elements, operation_list)
 
-        return thislayer, responselist[1]
+        placement_select = [-1, -1]
+
+        for i in range(2):
+            while placement_select[i] == -1:
+                if i == 0:
+                    print("上下の揃え位置を入力")
+                    print(" [ 0 ] 上揃え / [ 1 ] 中揃え / [ 2 ] 下揃え")
+
+                if i == 1:
+                    print("左右の揃え位置を入力")
+                    print(" [ 0 ] 左揃え / [ 1 ] 中揃え / [ 2 ] 右揃え")
+
+                try:
+                    user_select = int(sys.stdin.readline().rstrip())
+                    if 0 <= user_select <= 2:
+                        placement_select[i] = user_select
+                except:
+                    print("数字以外入れないで" + str(sys.exc_info()))
+
+        thislayer.retention_object[thislayer_reobj_now].effects[-1].various_fixed["placement"] = placement_select
+
+        return thislayer, responselist[0]
 
     def shape(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
-        return thislayer, responselist[1]
+        return thislayer, responselist[0]
 
     def effect(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
-        return thislayer, responselist[1]
+        return thislayer, responselist[0]
 
     def new_obj(self, thislayer, operation_list, all_elements, elements):
         userselect_time = [0, 0]
         print("開始する時間を入力")
-        userselect_time[0] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements.editor_info[2])
+        userselect_time[0] = operation_list["CUI"]["timeselect"]["CentralRole"].main(all_elements.editor_info[2])
 
         print("終了する時間を入力")
-        userselect_time[1] = operation_list["CUI"]["timeselect"]["Center"].main(all_elements.editor_info[2])
+        userselect_time[1] = operation_list["CUI"]["timeselect"]["CentralRole"].main(all_elements.editor_info[2])
 
         userselect_time.sort()
 
         print(thislayer.retention_object)
-        thislayer = operation_list["set"]["input_point"]["Center"].Initial_setting(thislayer, elements, userselect_time)
+        thislayer = operation_list["set"]["input_point"]["CentralRole"].Initial_setting(thislayer, elements, userselect_time)
         thislayer_reobj_now = int(len(thislayer.retention_object)) - 1
         # 操作すオブジェクトを最新のものにする
 

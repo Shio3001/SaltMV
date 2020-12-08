@@ -44,4 +44,6 @@ class effectElements:  # えらくない
         self.effectPoint = []
         self.procedurelist = None  # インスタンス化したclassを詰め込む
 
+        self.various_fixed = {}
+
         print("エフェクトを追加しました : effectElements [ Elements ]")

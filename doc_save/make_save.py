@@ -9,7 +9,7 @@ import pickle
 import base64
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         self.extension = ".json"  # 拡張子
 
@@ -28,7 +28,7 @@ class Center:
 
         if user_select[-5:] != self.extension:
             user_select += self.extension
-        user_select = operation_list["other"]["dircon"]["Center"].main(user_select)
+        user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
         os.system("touch " + user_select)
         print(user_select)
 

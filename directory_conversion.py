@@ -5,7 +5,7 @@ import os
 import copy
 
 
-class Center:
+class CentralRole:
     def main(self, user_select):
         user_select_hold = ""
         now_directory = os.getcwd()

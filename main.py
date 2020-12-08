@@ -52,39 +52,39 @@ if __name__ == "__main__":
 
 #主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
 operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "other": {}}
-operation_list["set"]["input_point"] = {"Center": input_point.Center()}  # 中間点を設定する
-operation_list["set"]["input_video_image"] = {"Center": input_video_image.Center()}  # 動画・画像の読み込みを行う
-operation_list["set"]["input_text"] = {"Center": input_text.Center()}  # テキストの読み込みを行う
-operation_list["set"]["new_layer"] = {"Center": new_layer.Center()}
+operation_list["set"]["input_point"] = {"CentralRole": input_point.CentralRole()}  # 中間点を設定する
+operation_list["set"]["input_video_image"] = {"CentralRole": input_video_image.CentralRole()}  # 動画・画像の読み込みを行う
+operation_list["set"]["input_text"] = {"CentralRole": input_text.CentralRole()}  # テキストの読み込みを行う
+operation_list["set"]["new_layer"] = {"CentralRole": new_layer.CentralRole()}
 
-operation_list["out"]["output_video_image"] = {"Center": output_video_image.Center()}  # 動画と画像の場合の出力をまとめる
-operation_list["out"]["frame_process"] = {"Center": frame_process.Center()}  # フレームごとの処理を書いておく
+operation_list["out"]["output_video_image"] = {"CentralRole": output_video_image.CentralRole()}  # 動画と画像の場合の出力をまとめる
+operation_list["out"]["frame_process"] = {"CentralRole": frame_process.CentralRole()}  # フレームごとの処理を書いておく
 
-operation_list["out"]["current_location"] = {"Center": current_location.Center()}  # 中間点から現在の居場所を算出する
+operation_list["out"]["current_location"] = {"CentralRole": current_location.CentralRole()}  # 中間点から現在の居場所を算出する
 
-operation_list["save"]["make_save"] = {"Center": make_save.Center()}
-operation_list["CUI"]["usersetpoint"] = {"Center": usersetpoint.Center()}
-operation_list["CUI"]["printlayer"] = {"Center": printlayer.Center()}
-operation_list["CUI"]["layerselect"] = {"Center": layerselect.Center()}
-operation_list["CUI"]["seteditsize"] = {"Center": seteditsize.Center()}
-operation_list["CUI"]["timeselect"] = {"Center": timeselect.Center()}
-operation_list["CUI"]["makeobject"] = {"Center": makeobject.Center()}
+operation_list["save"]["make_save"] = {"CentralRole": make_save.CentralRole()}
+operation_list["CUI"]["usersetpoint"] = {"CentralRole": usersetpoint.CentralRole()}
+operation_list["CUI"]["printlayer"] = {"CentralRole": printlayer.CentralRole()}
+operation_list["CUI"]["layerselect"] = {"CentralRole": layerselect.CentralRole()}
+operation_list["CUI"]["seteditsize"] = {"CentralRole": seteditsize.CentralRole()}
+operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
+operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 
-operation_list["other"]["dircon"] = {"Center": dircon.Center()}
+operation_list["other"]["dircon"] = {"CentralRole": dircon.CentralRole()}
 
 
 print(operation_list)
 
 
-# out_rally_Center = out_rally.Center()  # 情報出力関連をまとめてやってくれる
+# out_rally_CentralRole = out_rally.CentralRole()  # 情報出力関連をまとめてやってくれる
 
 
-class Center:
+class CentralRole:
     def __init__(self):
 
         self.all_elements = elements.AllElements()  # 全てを司るもの
 
-        self.main_user_Center = main_user.Center()  # ユーザー操作を司る
+        self.main_user_CentralRole = main_user.CentralRole()  # ユーザー操作を司る
 
         self.responselist = ["終了", "問題なし", "問題あり"]  # main.pyに戻ってくる時の応答リスト
 
@@ -93,13 +93,13 @@ class Center:
         user_next = " "
 
         while user_next != self.responselist[0]:
-            self.all_elements, user_next = self.main_user_Center.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
+            self.all_elements, user_next = self.main_user_CentralRole.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
             print("")
             print("********************************")
 
             print("")
             print("現在の状態")
-            operation_list["CUI"]["printlayer"]["Center"].viaAll(self.all_elements)
+            operation_list["CUI"]["printlayer"]["CentralRole"].viaAll(self.all_elements)
             print("")
 
             print("********************************")
@@ -108,8 +108,8 @@ class Center:
         # sys.exit()
 
 
-main_Center = Center()
-main_Center.main()
+main_CentralRole = CentralRole()
+main_CentralRole.main()
 
 sys.exit()
 

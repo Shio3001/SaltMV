@@ -13,7 +13,7 @@ import copy
 # 変更 ←これは分割させる
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         pass
 
@@ -74,8 +74,8 @@ class Center:
     def newpoint(self, thisobject, operation_list, user_select, all_elements):
         print("存在しないので新規作成")
         print("作成する時間を入力")
-        maketime = operation_list["CUI"]["timeselect"]["Center"].main(all_elements.editor_info[2])
-        thisobject = operation_list["set"]["input_point"]["Center"].several_setting(thisobject, operation_list, user_select, maketime)
+        maketime = operation_list["CUI"]["timeselect"]["CentralRole"].main(all_elements.editor_info[2])
+        thisobject = operation_list["set"]["input_point"]["CentralRole"].several_setting(thisobject, operation_list, user_select, maketime)
 
         return thisobject
 
@@ -95,7 +95,7 @@ class Center:
             try:
                 print("変更後の数値を入力 [ 数値 ]")
                 user_select[1] = int(sys.stdin.readline().rstrip())
-                thisobject_effectPoint = operation_list["set"]["input_point"]["Center"].edit_setting(thisobject_effectPoint, user_select)
+                thisobject_effectPoint = operation_list["set"]["input_point"]["CentralRole"].edit_setting(thisobject_effectPoint, user_select)
                 print("変換処理終わり")
                 print("")
             except:

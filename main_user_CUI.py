@@ -8,7 +8,7 @@ import copy
 # GUI処分ファイル(CUI中継)
 
 
-class Center:
+class CentralRole:
     def __init__(self):
 
         # self.selectlist = {0, "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成", 6: "中間点設定", 7: "設定書き出し"}
@@ -58,7 +58,7 @@ class Center:
 
         else:
             user_select = self.save_location
-            all_elements, self.save_location = operation_list["save"]["make_save"]["Center"].output(all_elements, elements, operation_list, user_select)
+            all_elements, self.save_location = operation_list["save"]["make_save"]["CentralRole"].output(all_elements, elements, operation_list, user_select)
             response = responselist[1]
         return all_elements, response
 
@@ -70,7 +70,7 @@ class Center:
             print("入力なし返却")
             return all_elements, responselist[2]
 
-        all_elements, self.save_location = operation_list["save"]["make_save"]["Center"].output(all_elements, elements, operation_list, user_select)
+        all_elements, self.save_location = operation_list["save"]["make_save"]["CentralRole"].output(all_elements, elements, operation_list, user_select)
 
         return all_elements, responselist[1]
 
@@ -79,19 +79,19 @@ class Center:
         print("取得するファイルを入力")
         user_select = str(sys.stdin.readline().rstrip())
 
-        all_elements, self.save_location = operation_list["save"]["make_save"]["Center"].input(all_elements, elements, operation_list, user_select)
+        all_elements, self.save_location = operation_list["save"]["make_save"]["CentralRole"].input(all_elements, elements, operation_list, user_select)
         return all_elements, responselist[1]
 
     def set_edit(self, responselist, all_elements, elements, operation_list):  # 0
         print(operation_list)
-        all_elements.editor_info = operation_list["CUI"]["seteditsize"]["Center"].main(operation_list)
+        all_elements.editor_info = operation_list["CUI"]["seteditsize"]["CentralRole"].main(operation_list)
 
         return all_elements, responselist[1]
 
     def newlayer(self, responselist, all_elements, elements, operation_list):  # 0
         print("レイヤー生成")
-        all_elements = operation_list["set"]["new_layer"]["Center"].main(all_elements, elements)
-        operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
+        all_elements = operation_list["set"]["new_layer"]["CentralRole"].main(all_elements, elements)
+        operation_list["CUI"]["printlayer"]["CentralRole"].viaAll(all_elements)
         return all_elements, responselist[1]
 
     def newobject(self, responselist, all_elements, elements, operation_list):  # 0
@@ -99,53 +99,53 @@ class Center:
         if len(all_elements.layer_group) == 0:
             return hold_all_elements, responselist[2]
         print("生成したいレイヤーを入力 現在" + str(len(all_elements.layer_group)) + "コ 確認")
-        operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
-        userselect_layer = operation_list["CUI"]["layerselect"]["Center"].layer(all_elements.layer_group)
+        operation_list["CUI"]["printlayer"]["CentralRole"].viaAll(all_elements)
+        userselect_layer = operation_list["CUI"]["layerselect"]["CentralRole"].layer(all_elements.layer_group)
 
-        all_elements.layer_group[userselect_layer] = operation_list["CUI"]["makeobject"]["Center"].main(all_elements, elements, copy.deepcopy(
+        all_elements.layer_group[userselect_layer] = operation_list["CUI"]["makeobject"]["CentralRole"].main(all_elements, elements, copy.deepcopy(
             all_elements.layer_group[userselect_layer]), operation_list, responselist)
         return all_elements, responselist[1]
 
     def newpoint(self, responselist, all_elements, elements, operation_list):  # 0
 
         hold_all_elements = copy.deepcopy(all_elements)  # 問題があった時にはこれを返すようにすればいい
-        operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
+        operation_list["CUI"]["printlayer"]["CentralRole"].viaAll(all_elements)
         if len(all_elements.layer_group) == 0:  # レイヤーがないなら帰れ
             return hold_all_elements, responselist[2]
 
         print("設定したいオブジェクトがあるレイヤーを選択 現在" + str(len(all_elements.layer_group)) + "コ 確認")
-        userselect_layer = operation_list["CUI"]["layerselect"]["Center"].layer(all_elements.layer_group)
+        userselect_layer = operation_list["CUI"]["layerselect"]["CentralRole"].layer(all_elements.layer_group)
 
         if len(all_elements.layer_group[userselect_layer].retention_object) == 0:  # ０オブジェクトがないなら帰れ
             print("オブジェクトが存在しません")
             return hold_all_elements, responselist[2]
 
         print("設定したいオブジェクトを選択 現在" + str(len(all_elements.layer_group[userselect_layer].retention_object)) + "コ 確認")
-        userselect_object = operation_list["CUI"]["layerselect"]["Center"].object(all_elements.layer_group[userselect_layer].retention_object)
+        userselect_object = operation_list["CUI"]["layerselect"]["CentralRole"].object(all_elements.layer_group[userselect_layer].retention_object)
 
-        all_elements.layer_group[userselect_layer] = operation_list["CUI"]["usersetpoint"]["Center"].main(copy.deepcopy(all_elements.layer_group[userselect_layer]),  all_elements, operation_list, userselect_object)
+        all_elements.layer_group[userselect_layer] = operation_list["CUI"]["usersetpoint"]["CentralRole"].main(copy.deepcopy(all_elements.layer_group[userselect_layer]),  all_elements, operation_list, userselect_object)
         return all_elements, responselist[1]
 
     def printall(self, responselist, all_elements, elements, operation_list):  # 0
-        userselect_layer = operation_list["CUI"]["printlayer"]["Center"].viaAll(all_elements)
+        userselect_layer = operation_list["CUI"]["printlayer"]["CentralRole"].viaAll(all_elements)
         return all_elements, responselist[1]
 
     def export_video(self, responselist, all_elements, elements, operation_list):
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
-        user_select = operation_list["other"]["dircon"]["Center"].main(user_select)
+        user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
 
-        operation_list["out"]["output_video_image"]["Center"].type_video(all_elements, operation_list, user_select)
+        operation_list["out"]["output_video_image"]["CentralRole"].type_video(all_elements, operation_list, user_select)
 
         return all_elements, responselist[1]
 
     def export_image(self, responselist, all_elements, elements, operation_list):
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
-        user_select = operation_list["other"]["dircon"]["Center"].main(user_select)
+        user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
 
         print("書き出すフレームを入力")
-        select_time = operation_list["CUI"]["timeselect"]["Center"].main(all_elements)
-        operation_list["out"]["output_video_image"]["Center"].type_image(all_elements, operation_list, select_time, user_select)
+        select_time = operation_list["CUI"]["timeselect"]["CentralRole"].main(all_elements)
+        operation_list["out"]["output_video_image"]["CentralRole"].type_image(all_elements, operation_list, select_time, user_select)
 
         return all_elements, responselist[1]

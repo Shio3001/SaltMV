@@ -5,7 +5,7 @@ import os
 import copy
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         self.user_select = [0, 0, 0, 0]
 
@@ -28,12 +28,14 @@ class Center:
             print("")
 
             print("動画の長さを入力")
-            self.user_select[3] = int(operation_list["CUI"]["timeselect"]["Center"].main(self.user_select[2]))
+            self.user_select[3] = int(operation_list["CUI"]["timeselect"]["CentralRole"].main(self.user_select[2]))
             print("")
 
             return self.user_select
         except ValueError:
             print("数字以外を入れるなあほ")
+            return [0, 0, 0, 0]
 
         except Exception:
             print("どうして" + str(sys.exc_info()))
+            return [0, 0, 0, 0]

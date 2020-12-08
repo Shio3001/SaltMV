@@ -7,7 +7,7 @@ import copy
 import cv2
 
 
-class Center:
+class CentralRole:
     def __init__(self):
         pass
 
@@ -25,7 +25,7 @@ class Center:
         writer = cv2.VideoWriter(user_select, fmt, editor[2], size)  # ライター作成
 
         for now_frame in range(editor[3]):
-            export_draw = operation_list["out"]["frame_process"]["Center"].main(export_draw, all_elements, now_frame, operation_list)
+            export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw, all_elements, now_frame, operation_list)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
             print(str(now_frame) + "番目のフレームの出力")
