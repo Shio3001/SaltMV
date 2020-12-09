@@ -15,7 +15,6 @@ class AllElements:  # えらい
 
 class layerElements:  # 次にえらい
     def __init__(self):
-        self.layer_cutout = None  # クリップングするか否か しばらく使わないでしょ
         self.retention_object = []
 
         print("レイヤーを追加しました : layerElements [ Elements ]")
@@ -45,5 +44,9 @@ class effectElements:  # えらくない
         self.procedurelist = None  # インスタンス化したclassを詰め込む
 
         self.various_fixed = {}
+
+        # 二つ以上エフェクトがあった場合どのように処理をするか
+        # 位置座標系ならTrue , ブラインドなどのエフェクトならば、Falseとなる
+        self.calculation_mode = False  # Trueで積 #Falseで重
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

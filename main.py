@@ -31,6 +31,7 @@ from data_input import new_layer
 from data_output import output_video_image
 from data_output import current_location
 from data_output import frame_process
+from data_output import obj_substantial
 
 from doc_save import make_save
 
@@ -61,6 +62,7 @@ operation_list["out"]["output_video_image"] = {"CentralRole": output_video_image
 operation_list["out"]["frame_process"] = {"CentralRole": frame_process.CentralRole()}  # フレームごとの処理を書いておく
 
 operation_list["out"]["current_location"] = {"CentralRole": current_location.CentralRole()}  # 中間点から現在の居場所を算出する
+operation_list["out"]["obj_substantial"] = {"CentralRole": obj_substantial.CentralRole()}  # 中間点から現在の居場所を算出する
 
 operation_list["save"]["make_save"] = {"CentralRole": make_save.CentralRole()}
 operation_list["CUI"]["usersetpoint"] = {"CentralRole": usersetpoint.CentralRole()}

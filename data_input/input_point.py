@@ -89,6 +89,8 @@ class CentralRole:
         thisobject.effects[-1].effectPoint.append({"time": 0})
         thisobject.effects[-1].effectPoint[-1]["letter_spacing"] = 0
 
+        thisobject.effects[-1].calculation_mode = True
+
         return thislayer
 
     def color_Initial_setting(self, thislayer, elements):
@@ -99,5 +101,7 @@ class CentralRole:
         thisobject.effects[-1].effectPoint[-1]["R"] = 0
         thisobject.effects[-1].effectPoint[-1]["G"] = 0
         thisobject.effects[-1].effectPoint[-1]["B"] = 0
+
+        thisobject.effects[-1].calculation_mode = True
 
         return thislayer

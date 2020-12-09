@@ -25,7 +25,6 @@ class CentralRole:
             for i, ielement in enumerate(all_elements.layer_group):  # レイヤー単位
 
                 print("レイヤー内オブジェクト数" + ": " + str(len(ielement.retention_object)))
-                print("レイヤーでの切り抜き" + ": " + str(ielement.layer_cutout))
                 print("")
 
                 for j, jelement in enumerate(ielement.retention_object):  # オブジェクト単位

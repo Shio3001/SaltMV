@@ -16,10 +16,17 @@ class CentralRole:
     def input(self, all_elements, elements, operation_list, user_select):  # json -> class 読み込み
         if user_select[-5:] != self.extension:
             user_select += self.extension
-        lordfile = open(user_select, 'rb')
-        #all_elements = lordfile
-        all_elements = pickle.load(lordfile)
-        save_location = copy.deepcopy(user_select)
+
+        try:
+            lordfile = open(user_select, 'rb')
+            #all_elements = lordfile
+            all_elements = pickle.load(lordfile)
+            save_location = copy.deepcopy(user_select)
+
+        except:
+            print("ファイルが存在しませんでした")
+            save_location = ""
+
         return all_elements, save_location
 
     def output(self, all_elements, elements, operation_list, user_select):  # class -> json書き出し
