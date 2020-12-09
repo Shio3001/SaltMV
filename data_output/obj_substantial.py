@@ -14,23 +14,17 @@ class CentralRole:
     def __init__(self):
         pass
 
-    def video(self, this_objct, now_frame, export_draw):
+    def video(self, this_object, now_frame, export_draw):
         # 一律中央ぞろえ
-        new_video = ""
-        try:
-            new_video = cv2.VideoCapture(this_objct.document)
-        except:
-            print("読み込みに失敗 try - except")
 
-        if new_video.isOpened() != True:
-            print("読み込みに失敗 isOpened")
-
-        obj_property = {"width": new_video.get(cv2.CAP_PROP_FRAME_WIDTH), "height": new_video.get(cv2.CAP_PROP_FRAME_HEIGHT), "fps": new_video.get(cv2.CAP_PROP_FPS), "count": new_video.get(cv2.CAP_PROP_FRAME_COUNT)}
+        # obj_property = this_object.
+        new_video = this_object.document
+        obj_property = this_object.unique_property
 
         # CV_CAP_PROP_POS_AVI_RATIO
 
         print(obj_property)
-        use_now_frame = now_frame - this_objct.staend_property[0]
+        use_now_frame = now_frame - this_object.staend_property[0]
         print("フレーム数 : " + str(use_now_frame))
 
         if use_now_frame >= obj_property["count"]:

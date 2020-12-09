@@ -12,6 +12,7 @@ class CentralRole:
         pass
 
     def main(self, export_draw_base, all_elements, now_frame, operation_list):  # フレームごとの処理
+
         print(sys._getframe().f_code.co_name)
         substantial = operation_list["out"]["obj_substantial"]["CentralRole"]
         objectdict = {"video": substantial.video, "image": substantial.image, "text": substantial.text}

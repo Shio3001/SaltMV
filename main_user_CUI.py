@@ -135,7 +135,7 @@ class CentralRole:
         user_select = str(sys.stdin.readline().rstrip())
         user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
 
-        operation_list["out"]["output_video_image"]["CentralRole"].type_video(all_elements, operation_list, user_select)
+        operation_list["out"]["output_video_image"]["CentralRole"].type_video(copy.deepcopy(all_elements), operation_list, user_select)
 
         return all_elements, responselist[1]
 
@@ -146,6 +146,6 @@ class CentralRole:
 
         print("書き出すフレームを入力")
         select_time = operation_list["CUI"]["timeselect"]["CentralRole"].main(all_elements)
-        operation_list["out"]["output_video_image"]["CentralRole"].type_image(all_elements, operation_list, select_time, user_select)
+        operation_list["out"]["output_video_image"]["CentralRole"].type_image(copy.deepcopy(all_elements), operation_list, select_time, user_select)
 
         return all_elements, responselist[1]
