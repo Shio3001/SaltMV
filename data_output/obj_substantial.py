@@ -49,12 +49,15 @@ class CentralRole:
 
         return draw_substantial, obj_property
 
-    def image(self, this_objct, now_flame, export_draw):
+    def image(self, this_object, now_flame, export_draw):
         # 一律中央ぞろえ
-
+        draw_substantial = this_object.document
+        obj_property = this_object.unique_property
+        print("読み込んだファイルの大きさ : " + str(draw_substantial.shape))
+        draw_substantial = cv2.cvtColor(draw_substantial, cv2.COLOR_BGR2RGBA)
         return draw_substantial, obj_property
 
-    def text(self, this_objct, now_flame, export_draw):
+    def text(self, this_object, now_flame, export_draw):
         # 任意選択制
 
         return draw_substantial, obj_property

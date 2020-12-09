@@ -53,21 +53,34 @@ class CentralRole:
         for i_layer, this_layer in enumerate(all_elements.layer_group):
             for i_object, this_object in enumerate(this_layer.retention_object):
 
-                if this_object.objectType != "video":
-                    continue  # ガード文みたいな
+                if this_object.objectType == "video":
+                    new_video = ""
+                    try:
+                        new_video = cv2.VideoCapture(this_object.document)
+                    except:
+                        print("読み込みに失敗 try - except")
 
-                new_video = ""
-                try:
-                    new_video = cv2.VideoCapture(this_object.document)
-                except:
-                    print("読み込みに失敗 try - except")
+                    if new_video.isOpened() != True:
+                        print("読み込みに失敗 isOpened")
+                    else:
+                        video_property = {"width": new_video.get(cv2.CAP_PROP_FRAME_WIDTH), "height": new_video.get(cv2.CAP_PROP_FRAME_HEIGHT), "fps": new_video.get(cv2.CAP_PROP_FPS), "count": new_video.get(cv2.CAP_PROP_FRAME_COUNT)}
 
-                if new_video.isOpened() != True:
-                    print("読み込みに失敗 isOpened")
+                    all_elements.layer_group[i_layer].retention_object[i_object].document = new_video
+                    all_elements.layer_group[i_layer].retention_object[i_object].unique_property = video_property
 
-                video_property = {"width": new_video.get(cv2.CAP_PROP_FRAME_WIDTH), "height": new_video.get(cv2.CAP_PROP_FRAME_HEIGHT), "fps": new_video.get(cv2.CAP_PROP_FPS), "count": new_video.get(cv2.CAP_PROP_FRAME_COUNT)}
+                if this_object.objectType == "image":
+                    new_image = ""
+                    try:
+                        new_image = cv2.imread(this_object.document)
+                    except:
+                        print("読み込みに失敗 try - except")
 
-                all_elements.layer_group[i_layer].retention_object[i_object].document = new_video
-                all_elements.layer_group[i_layer].retention_object[i_object].unique_property = video_property
+                    if new_image is None:
+                        print("読み込みに失敗 - is None")
+                    else:
+                        image_property = {"width": new_image.shape[1], "height": new_image.shape[0]}
+
+                    all_elements.layer_group[i_layer].retention_object[i_object].document = new_image
+                    all_elements.layer_group[i_layer].retention_object[i_object].unique_property = image_property
 
         return all_elements

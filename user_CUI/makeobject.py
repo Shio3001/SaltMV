@@ -46,7 +46,7 @@ class CentralRole:
             object_user_select = str(sys.stdin.readline().rstrip())
 
             use_index = np.where(object_selectlist == object_user_select)  # 居場所は二次元配列で返されるので
-            if use_index[0]:
+            if not use_index[0] is None:
                 thislayer, edit_object_response = object_selectlist[use_index[0][0]][2](thislayer, thislayer_reobj_now, responselist, operation_list, elements)
             # 連想配列もどきの取得部分↑
 

@@ -44,6 +44,9 @@ class CentralRole:
 
         # 位置以外の、オブジェクト生成はここでやれ
 
+        if not this_object.objectType:
+            return export_draw
+
         draw_substantial, obj_property = objectdict[this_object.objectType](this_object, now_frame, export_draw)
 
         for this_effect in this_object.effects:  # エフェクト
