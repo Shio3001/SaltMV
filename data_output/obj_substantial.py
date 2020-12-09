@@ -37,6 +37,8 @@ class CentralRole:
 
         ret, draw_substantial = new_video.read()
 
+        draw_substantial = cv2.cvtColor(draw_substantial.astype('uint8'), cv2.COLOR_BGR2RGBA)
+
         if ret:
             print("読み込み成功 ret ")
             print("読み込んだファイルの大きさ : " + str(draw_substantial.shape))
