@@ -23,16 +23,16 @@ class CentralRole:
 
         # CV_CAP_PROP_POS_AVI_RATIO
 
-        print(obj_property)
+        # print(obj_property)
         use_now_frame = now_frame - this_object.staend_property[0]
-        print("フレーム数 : " + str(use_now_frame))
+        #print("フレーム数 : " + str(use_now_frame))
 
         if use_now_frame >= obj_property["count"]:
-            print("時間外です : " + str(use_now_frame))
+            #print("時間外 : " + str(use_now_frame))
             new_video.set(cv2.CAP_PROP_POS_FRAMES, obj_property["count"] - 1)
 
         else:
-            print("時間内、正常です")
+            #print("時間内  - 正常")
             new_video.set(cv2.CAP_PROP_POS_FRAMES, use_now_frame)
 
         ret, draw_substantial = new_video.read()
@@ -40,11 +40,12 @@ class CentralRole:
         draw_substantial = cv2.cvtColor(draw_substantial.astype('uint8'), cv2.COLOR_BGR2RGBA)
 
         if ret:
-            print("読み込み成功 ret ")
-            print("読み込んだファイルの大きさ : " + str(draw_substantial.shape))
+            #print("読み込み成功 ret ")
+            #print("読み込んだファイルの大きさ : " + str(draw_substantial.shape))
+            pass
 
         if not ret:
-            print("読み込みに失敗 ret ")
+            #print("読み込みに失敗 ret ")
             draw_substantial = export_draw
 
         return draw_substantial, obj_property
@@ -53,7 +54,7 @@ class CentralRole:
         # 一律中央ぞろえ
         draw_substantial = this_object.document
         obj_property = this_object.unique_property
-        print("読み込んだファイルの大きさ : " + str(draw_substantial.shape))
+        #print("読み込んだファイルの大きさ : " + str(draw_substantial.shape))
         draw_substantial = cv2.cvtColor(draw_substantial, cv2.COLOR_BGR2RGBA)
         return draw_substantial, obj_property
 

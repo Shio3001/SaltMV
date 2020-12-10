@@ -68,8 +68,9 @@ class CentralRole:
         thisobject.effects[-1].effectPoint.append({"time": 0})
         thisobject.effects[-1].effectPoint[-1]["x"] = 0
         thisobject.effects[-1].effectPoint[-1]["y"] = 0
-        thisobject.effects[-1].effectPoint[-1]["alpha"] = 0
-        thisobject.effects[-1].effectPoint[-1]["size"] = 0
+        thisobject.effects[-1].effectPoint[-1]["z_angle"] = 0
+        thisobject.effects[-1].effectPoint[-1]["alpha"] = 0  # 透明度なので255に近づけば近づくほど透明になる
+        thisobject.effects[-1].effectPoint[-1]["size"] = 100
 
         thislayer.retention_object[-1] = thisobject
 

@@ -5,6 +5,7 @@ import os
 import copy
 
 import cv2
+import time
 
 
 class CentralRole:
@@ -30,25 +31,49 @@ class CentralRole:
         size = (editor[0], editor[1])
         writer = cv2.VideoWriter(user_select, fmt, editor[2], size)  # ライター作成
         print("書き出し開始")
+        start_time = time.time()
 
-        all_elements = self.get_video(all_elements)
-
+        all_elements = self.get_media(all_elements)
         for now_frame in range(editor[3]):
-            print(str(now_frame) + "番目のフレームの出力 始")
+            print(str(now_frame) + "番目のフレームの出力")
             export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, now_frame, operation_list)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
+            # print(export_draw.shape)
             writer.write(output_data)
-            print(str(now_frame) + "番目のフレームの出力 終")
+            #print(str(now_frame) + "番目のフレームの出力 終")
 
         print("書き出し終了")
+        print("")
+        elapsed_time = time.time() - start_time
+        print("処理時間 : " + str(elapsed_time) + "秒")
+        print("1フレームあたり平均処理時間" + str(elapsed_time / editor[3]) + "秒")
+        print("")
+
         writer.release()
 
         return
 
     def type_image(self, all_elements, operation_list, select_time, user_select):  # 画像で出力
+
+        if user_select[-4:] != ".png":
+            user_select += ".png"
+        editor = all_elements.editor_info
+        export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
+
+        start_time = time.time()
+
+        all_elements = self.get_media(all_elements)
+        export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(select_time), operation_list)
+        output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
+
+        cv2.imwrite(user_select, output_data)
+
+        elapsed_time = time.time() - start_time
+        print("処理時間 : " + str(elapsed_time) + "秒")
+
         return
 
-    def get_video(self, all_elements):
+    def get_media(self, all_elements):
 
         for i_layer, this_layer in enumerate(all_elements.layer_group):
             for i_object, this_object in enumerate(this_layer.retention_object):
