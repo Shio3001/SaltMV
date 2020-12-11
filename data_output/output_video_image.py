@@ -38,9 +38,7 @@ class CentralRole:
             print(str(now_frame) + "番目のフレームの出力")
             export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, now_frame, operation_list)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
-            # print(export_draw.shape)
             writer.write(output_data)
-            #print(str(now_frame) + "番目のフレームの出力 終")
 
         print("書き出し終了")
         print("")
@@ -57,7 +55,12 @@ class CentralRole:
 
         if user_select[-4:] != ".png":
             user_select += ".png"
+
         editor = all_elements.editor_info
+        if not editor or 0 in editor:
+            print("画面サイズなどがきちんと設定されていないため動画を出力できません")
+            return
+
         export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
 
         start_time = time.time()
