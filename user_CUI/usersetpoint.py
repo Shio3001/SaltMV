@@ -44,6 +44,8 @@ class CentralRole:
 
         # 文字が入力されているかつ、存在している範囲ということを検出
 
+        print("開始・終了地点 : " + str(thisobject.staend_property))
+
         if not user_select_point:  # 文字が入力されていない場合
             print("新規作成 < not user_select_point >")
             thisobject = self.newpoint(thisobject, operation_list, user_select, all_elements)

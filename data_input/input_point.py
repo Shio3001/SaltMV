@@ -78,11 +78,6 @@ class CentralRole:
 
         return thislayer
 
-        # thislayer.retention_object[thislayer_reobj_now].effects.append(elements.effectElements())
-        # thislayer.retention_object[thislayer_reobj_now].effects.Point[-1]["time"] = settime
-
-        # return thislayer
-
     def text_Initial_setting(self, thislayer, elements):
         thisobject = thislayer.retention_object[-1]
         thisobject.effects.append(elements.effectElements())

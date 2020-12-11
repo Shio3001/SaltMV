@@ -35,6 +35,8 @@ from data_output import obj_substantial
 
 from doc_save import make_save
 
+from plugin.effect import *
+
 import elements
 
 # GUI処分ファイル・・・GUIにした時に削除するファイル

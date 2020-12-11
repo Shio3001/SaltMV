@@ -14,19 +14,6 @@ class CentralRole:
     def main(self, around_time, single_around_point, now_frame):
         #this_point_amount = int(len(this_point))
         #departure_point = 0
-        """
-        old_adjustment = 0
-        next_adjustment = 0
-
-        while this_point[departure_point + old_adjustment] is None and departure_point + old_adjustment != 0:
-            old_adjustment -= 1
-            print("前の値がNoneだったので数値を変更します")
-
-        while this_point[departure_point + next_adjustment + 1] is None:
-            next_adjustment += 1
-            print("次の値がNoneだったので数値を変更します")
-
-        """
 
         old_point = single_around_point[0]
         next_point = single_around_point[1]
@@ -39,7 +26,6 @@ class CentralRole:
         already_passed = now_frame - old_time
 
         whereabouts = ((distance_interval / time_interval) * already_passed) + old_point
-
         print(whereabouts)
 
         return whereabouts
