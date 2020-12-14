@@ -65,7 +65,7 @@ class CentralRole:
         os.system("pwd")
         os.system("ls")
         inp_in = str(sys.stdin.readline().rstrip())
-        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].video(thislayer, thislayer_reobj_now, responselist, inp_in)
+        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].video_image(thislayer, thislayer_reobj_now, responselist, operation_list, elements, inp_in, "video")
 
         if thislayer.retention_object[thislayer_reobj_now].staend_property[0] == None:
             thislayer.retention_object[thislayer_reobj_now].staend_property[0] = 0
@@ -80,7 +80,7 @@ class CentralRole:
         os.system("pwd")
         os.system("ls")
         inp_in = str(sys.stdin.readline().rstrip())
-        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].image(thislayer, thislayer_reobj_now, responselist, inp_in)
+        thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].video_image(thislayer, thislayer_reobj_now, responselist, operation_list, elements, inp_in, "image")
 
         return thislayer, edit_object_response
 

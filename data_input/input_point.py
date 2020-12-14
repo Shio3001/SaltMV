@@ -57,20 +57,8 @@ class CentralRole:
         thisobject = thislayer.retention_object[-1]
         thisobject.staend_property = userselect_time  # 開始時間、終了時間を挿入
 
-        thisobject.effects.append(elements.effectElements())
-        thisobject.effects[-1].effectname = "basic"
-
         print(thisobject.staend_property)
         print(type(thisobject.staend_property))
-
-        # effectPointはobjectないでの時間
-
-        thisobject.effects[-1].effectPoint.append({"time": 0})
-        thisobject.effects[-1].effectPoint[-1]["x"] = 0
-        thisobject.effects[-1].effectPoint[-1]["y"] = 0
-        thisobject.effects[-1].effectPoint[-1]["z_angle"] = 0
-        thisobject.effects[-1].effectPoint[-1]["alpha"] = 0  # 透明度なので255に近づけば近づくほど透明になる
-        thisobject.effects[-1].effectPoint[-1]["size"] = 100
 
         thislayer.retention_object[-1] = thisobject
 
@@ -78,26 +66,15 @@ class CentralRole:
 
         return thislayer
 
-    def text_Initial_setting(self, thislayer, elements):
+    def effect_Initial_setting(self, thislayer, operation_list, elements, effect_name):
         thisobject = thislayer.retention_object[-1]
-        thisobject.effects.append(elements.effectElements())
-        thisobject.effects[-1].effectname = "text"
-        thisobject.effects[-1].effectPoint.append({"time": 0})
-        thisobject.effects[-1].effectPoint[-1]["letter_spacing"] = 0
 
-        thisobject.effects[-1].calculation_mode = True
+        if not effect_name in operation_list["plugin"]["effect"]:
+            print("存在なし")
+            return thislayer
 
-        return thislayer
+        thisobject.effects.append(operation_list["plugin"]["effect"][str(effect_name)].InitialValue().main(elements))
 
-    def color_Initial_setting(self, thislayer, elements):
-        thisobject = thislayer.retention_object[-1]
-        thisobject.effects.append(elements.effectElements())
-        thisobject.effects[-1].effectname = "color"
-        thisobject.effects[-1].effectPoint.append({"time": 0})
-        thisobject.effects[-1].effectPoint[-1]["R"] = 0
-        thisobject.effects[-1].effectPoint[-1]["G"] = 0
-        thisobject.effects[-1].effectPoint[-1]["B"] = 0
-
-        thisobject.effects[-1].calculation_mode = True
+        thislayer.retention_object[-1] = thisobject
 
         return thislayer

@@ -36,14 +36,10 @@ class ObjectElements:  # その次にえらい
 
 class effectElements:  # えらくない
     def __init__(self):
-        #basic : 座標など
-        #color : 色に関すること
-        #text : テキストなど
         self.effectname = None
         self.effectPoint = []
         self.procedurelist = None  # インスタンス化したclassを詰め込む
-
-        self.various_fixed = {}
+        self.various_fixed = {}  # 固定設定
 
         # 二つ以上エフェクトがあった場合どのように処理をするか
         # 位置座標系ならTrue , ブラインドなどのエフェクトならば、Falseとなる

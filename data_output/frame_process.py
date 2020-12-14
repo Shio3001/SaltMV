@@ -76,20 +76,27 @@ class CentralRole:
         # その次のやつも取得する
 
         this_point = this_effect.effectPoint
-
+        this_point_time = 0
         print("座標計算開始" + str(this_point))
+        point_count = int(len(this_point))
+        for i in range(point_count):
+            if now_frame >= this_point[i]["time"]:
+                this_point_time = i - 1  # 前の地点を読み込む、ため一引く
+                print(this_point_time)
+                break
 
-        """
-
-        print(point_amount)
+        around_point = [{}, {}]
+        around_point[0] = this_point[this_point_time]
+        if this_point_time == point_count:
+            around_point[1] = around_point[0]
+        else:
+            around_point[1] = this_point[this_point_time + 1]  # 次の地点、に戻すために一をたす
 
         print("前後の地点 : " + str(around_point))
 
         whereabouts = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
                                                                                              (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
         print(whereabouts)
-
-        """
 
         # ここに処理を描く adjusted_draw - > adjusted_draw
 

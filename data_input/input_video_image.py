@@ -16,23 +16,10 @@ class CentralRole:
     def __init__(self):
         self.addNewMov = []
 
-    def video(self, thislayer, thislayer_reobj_now, responselist, inp_in):
+    def video_image(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements, inp_in, inp_type):
         #thislayer.retention_object[thislayer_reobj_now].unique_property = copy.deepcopy(new_video_getlist)
         thislayer.retention_object[thislayer_reobj_now].document = inp_in
-        thislayer.retention_object[thislayer_reobj_now].objectType = "video"
-        #del new_video
-        #del new_video_getlist
-
-        print(thislayer.retention_object[thislayer_reobj_now].unique_property)
-
-        # print(len(self.addNewMov))
-
-        print("読み込みに成功")
-        return thislayer, responselist[0]
-
-    def image(self, thislayer, thislayer_reobj_now, responselist, inp_in):
-        #thislayer.retention_object[thislayer_reobj_now].document = np.array([cv2.cvtColor(new_image, cv2.COLOR_RGB2RGBA)])
-        thislayer.retention_object[thislayer_reobj_now].document = inp_in
-        thislayer.retention_object[thislayer_reobj_now].objectType = "image"
+        thislayer.retention_object[thislayer_reobj_now].objectType = str(inp_type)
+        thislayer = operation_list["set"]["input_point"]["CentralRole"].effect_Initial_setting(thislayer, operation_list, elements, "basic")
 
         return thislayer, responselist[0]

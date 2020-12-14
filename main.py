@@ -35,37 +35,22 @@ from data_output import obj_substantial
 
 from doc_save import make_save
 
-from plugin.effect import *
-
 import elements
-
-# GUI処分ファイル・・・GUIにした時に削除するファイル
-# CUI中継・・・CUIでの操作を担う部分
-#
-# 返却時には layer , 状態 でやりとりを行うようにする事
-#
-# 管理,設定(入力)と生成(出力)は完全分離しろ
-#
-# CHK_ ・・・保留
-# EXC ・・・状態を表す
-
+import importlib
 
 if __name__ == "__main__":
     print("コマンドライン からの入力を確認")
 
-#主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
-operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "other": {}}
+# 主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
+operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "other": {}, "plugin": {}}
 operation_list["set"]["input_point"] = {"CentralRole": input_point.CentralRole()}  # 中間点を設定する
 operation_list["set"]["input_video_image"] = {"CentralRole": input_video_image.CentralRole()}  # 動画・画像の読み込みを行う
 operation_list["set"]["input_text"] = {"CentralRole": input_text.CentralRole()}  # テキストの読み込みを行う
 operation_list["set"]["new_layer"] = {"CentralRole": new_layer.CentralRole()}
-
 operation_list["out"]["output_video_image"] = {"CentralRole": output_video_image.CentralRole()}  # 動画と画像の場合の出力をまとめる
 operation_list["out"]["frame_process"] = {"CentralRole": frame_process.CentralRole()}  # フレームごとの処理を書いておく
-
 operation_list["out"]["current_location"] = {"CentralRole": current_location.CentralRole()}  # 中間点から現在の居場所を算出する
 operation_list["out"]["obj_substantial"] = {"CentralRole": obj_substantial.CentralRole()}  # 中間点から現在の居場所を算出する
-
 operation_list["save"]["make_save"] = {"CentralRole": make_save.CentralRole()}
 operation_list["CUI"]["usersetpoint"] = {"CentralRole": usersetpoint.CentralRole()}
 operation_list["CUI"]["printlayer"] = {"CentralRole": printlayer.CentralRole()}
@@ -73,14 +58,29 @@ operation_list["CUI"]["layerselect"] = {"CentralRole": layerselect.CentralRole()
 operation_list["CUI"]["seteditsize"] = {"CentralRole": seteditsize.CentralRole()}
 operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
-
 operation_list["other"]["dircon"] = {"CentralRole": dircon.CentralRole()}
+
+# plugin > file
+
+plugin_path = operation_list["other"]["dircon"]["CentralRole"].main("plugin/")
+plugin_file = os.listdir(plugin_path)  # ファイル・ディレクトリ取得
+plugin_list = [f for f in plugin_file if os.path.isdir(os.path.join(plugin_path, f))]  # ディレクトリのみにする
+
+for plugin_name in plugin_list:
+    operation_list["plugin"][str(plugin_name)] = {}  # プラグインの下のファイルによる連想配列生成
+    file_path = operation_list["other"]["dircon"]["CentralRole"].main("plugin/" + str(plugin_name) + "/")  # ファイル一覧
+    print(file_path)
+
+    file_list = list(map(str, os.listdir(file_path)))
+
+    for file_name in file_list:
+        if file_name[-3:] == ".py":
+            path = plugin_path.replace('/', '.') + str(plugin_name) + "." + file_name.replace('.py', '')  # /を.に、.pyを消去する
+            import_data = importlib.import_module(path)
+            operation_list["plugin"][str(plugin_name)][str(file_name.replace('.py', ''))] = import_data
 
 
 print(operation_list)
-
-
-# out_rally_CentralRole = out_rally.CentralRole()  # 情報出力関連をまとめてやってくれる
 
 
 class CentralRole:

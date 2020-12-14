@@ -19,6 +19,7 @@ class CentralRole:
     def main(self, inp_in, thislayer, thislayer_reobj_now, elements, operation_list):
         thislayer.retention_object[thislayer_reobj_now].document = inp_in
         thislayer.retention_object[thislayer_reobj_now].objectType = "text"
-        thislayer = operation_list["set"]["input_point"]["CentralRole"].text_Initial_setting(thislayer, elements)
-        thislayer = operation_list["set"]["input_point"]["CentralRole"].color_Initial_setting(thislayer, elements)
+        thislayer = operation_list["set"]["input_point"]["CentralRole"].effect_Initial_setting(thislayer, operation_list, elements, "basic")
+        thislayer = operation_list["set"]["input_point"]["CentralRole"].effect_Initial_setting(thislayer, operation_list, elements, "text")
+        thislayer = operation_list["set"]["input_point"]["CentralRole"].effect_Initial_setting(thislayer, operation_list, elements, "color")
         return thislayer
