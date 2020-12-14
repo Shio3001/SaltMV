@@ -38,6 +38,7 @@ class CentralRole:
                         print("エフェクト名: " + str(kelement.effectname))
                         print("エフェクト中間点: " + str(kelement.effectPoint))
                         print("処理: " + str(kelement.procedurelist))
+                        print("固定設定: " + str(kelement.various_fixed))
 
             print("")
             print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")

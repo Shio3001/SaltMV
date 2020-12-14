@@ -89,8 +89,9 @@ class CentralRole:
         print("生成したいテキストを入力")
         print("制御文字 : [ サイズ変更 : <s100> ] [ 色の変更 : <R255G255B255> ] [ 隙間を生成 : <px0py0>")
         inp_in = str(sys.stdin.readline().rstrip())
+        thislayer = operation_list["set"]["input_text"]["CentralRole"].main(inp_in, thislayer, thislayer_reobj_now, elements, operation_list)
 
-        operation_list["set"]["input_text"]["CentralRole"].main(inp_in, thislayer, thislayer_reobj_now, elements, operation_list)
+        """
 
         placement_select = [-1, -1]
 
@@ -110,8 +111,8 @@ class CentralRole:
                         placement_select[i] = user_select
                 except:
                     print("数字以外入れないで" + str(sys.exc_info()))
-
-        thislayer.retention_object[thislayer_reobj_now].effects[-1].various_fixed["placement"] = placement_select
+        
+        """
 
         return thislayer, responselist[0]
 

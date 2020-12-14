@@ -39,6 +39,15 @@ class CentralRole:
             except:
                 user_select = -1
 
+        print("中間点ではなく、各エフェクト固定設定を編集しますか？ [ true ] [ false ]")
+        user_select_Fixed = str(sys.stdin.readline().rstrip())
+
+        if user_select_Fixed == "true":
+            various_fixed = thislayer.retention_object[userselect_object].effects[user_select].various_fixed
+            various_fixed = self.edit_Fixed(various_fixed, operation_list)
+            thislayer.retention_object[userselect_object].effects[user_select].various_fixed = various_fixed
+            return thislayer
+
         print("どの中間点を選択するのか入力 [ 数値 ] [ 空白で新規作成 ] [ 0 から ]")
         user_select_point = str(sys.stdin.readline().rstrip())
 
@@ -80,6 +89,11 @@ class CentralRole:
         thisobject = operation_list["set"]["input_point"]["CentralRole"].several_setting(thisobject, operation_list, user_select, maketime)
 
         return thisobject
+
+    def edit_Fixed(self, various_fixed, operation_list):
+        various_fixed = self.editpoint(various_fixed, operation_list)
+        print(various_fixed)
+        return various_fixed
 
     def editpoint(self, thisobject_effectPoint, operation_list):
 
