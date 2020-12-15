@@ -135,18 +135,22 @@ class CentralRole:
         # スライスで+1しないでいい理由・・・numpyでの画像は0 ~ 1279でやってるから
         # 1 ~ 1280なら + 1しないといけない
 
+        change_end = [starting_point[i] + draw_range[i] for i in range(2)]
+
         adjusted_range = adjusted_draw[0:draw_range[1], 0:draw_range[0], :]
 
         print(starting_point, draw_range)
 
-        export_range = export_draw[starting_point[1]:starting_point[1] + draw_range[1], starting_point[0]:starting_point[0] + draw_range[0], :]
+        export_range = export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :]
 
         for i in range(3):
             adjusted_range[:, :, i] = (adjusted_range[:, :, i] - export_range[:, :, i]) * (adjusted_range[:, :, 3] / 255)
+            # a = (重ねる色 - 背景色) * (アルファ値 / 255)
         export_range[:, :, 0:3] += adjusted_range[:, :, 0:3]
+        # 確定色 = 背景色 + a
         # 確定色 = 背景色 + (重ねる色 - 背景色) * (アルファ値 / 255)
 
         print(export_range.shape)
 
-        export_draw[starting_point[1]:starting_point[1] + draw_range[1], starting_point[0]:starting_point[0] + draw_range[0], :] = export_range
+        export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :] = export_range
         return export_draw
