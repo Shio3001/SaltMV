@@ -36,7 +36,7 @@ class CentralRole:
         all_elements = self.get_media(all_elements)
         for now_frame in range(editor[3]):
             print(str(now_frame) + "番目のフレームの出力")
-            export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, now_frame, operation_list)
+            export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, now_frame, operation_list, editor)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
 
@@ -66,7 +66,7 @@ class CentralRole:
         start_time = time.time()
 
         all_elements = self.get_media(all_elements)
-        export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(select_time), operation_list)
+        export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(select_time), operation_list, editor)
         output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
 
         cv2.imwrite(user_select, output_data)
@@ -92,9 +92,9 @@ class CentralRole:
                         print("読み込みに失敗 isOpened")
                     else:
                         video_property = {"width": new_video.get(cv2.CAP_PROP_FRAME_WIDTH), "height": new_video.get(cv2.CAP_PROP_FRAME_HEIGHT), "fps": new_video.get(cv2.CAP_PROP_FPS), "count": new_video.get(cv2.CAP_PROP_FRAME_COUNT)}
+                        all_elements.layer_group[i_layer].retention_object[i_object].unique_property = video_property
 
                     all_elements.layer_group[i_layer].retention_object[i_object].document = new_video
-                    all_elements.layer_group[i_layer].retention_object[i_object].unique_property = video_property
 
                 if this_object.objectType == "image":
                     new_image = ""
@@ -107,8 +107,8 @@ class CentralRole:
                         print("読み込みに失敗 - is None")
                     else:
                         image_property = {"width": new_image.shape[1], "height": new_image.shape[0]}
+                        all_elements.layer_group[i_layer].retention_object[i_object].unique_property = image_property
 
                     all_elements.layer_group[i_layer].retention_object[i_object].document = new_image
-                    all_elements.layer_group[i_layer].retention_object[i_object].unique_property = image_property
 
         return all_elements

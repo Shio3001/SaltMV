@@ -12,7 +12,8 @@ import PIL.ImageFont as ImageFont
 
 import main_user_CUI as main_user  # GUI処分 CUI中継操作
 
-import directory_conversion as dircon
+from auxiliary import directory_conversion as dircon
+from auxiliary import effect_auxiliary
 
 # set
 from user_CUI.Visualization import printlayer
@@ -59,7 +60,8 @@ operation_list["CUI"]["seteditsize"] = {"CentralRole": seteditsize.CentralRole()
 operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 operation_list["other"]["dircon"] = {"CentralRole": dircon.CentralRole()}
-
+operation_list["other"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
+# otherには補助的な計算ファイルを挿入する
 # plugin > file
 
 plugin_path = operation_list["other"]["dircon"]["CentralRole"].main("plugin/")
