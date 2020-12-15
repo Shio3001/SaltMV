@@ -61,10 +61,11 @@ class CentralRole:
                 print("時系列加算")
 
             print(this_effect.effectPoint)
-            adjusted_draw = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame)
+            print(this_effect.procedure)
+            adjusted_draw, starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame)
 
         # んでオブジェクトとエフェクトの合算処理
-        draw = self.normal_synthetic(export_draw, adjusted_draw)
+        draw = self.normal_synthetic(export_draw, adjusted_draw, starting_point)
 
         del adjusted_draw
         return draw
@@ -99,13 +100,15 @@ class CentralRole:
                                                                                              (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
         print(whereabouts)
 
-        adjusted_draw = this_effect.procedurelist.main(adjusted_draw, whereabouts)
+        print(this_effect)
+
+        adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, whereabouts)
 
         # ここに処理を描く adjusted_draw - > adjusted_draw
 
-        return adjusted_draw
+        return adjusted_draw, starting_point
 
-    def normal_synthetic(self, export_draw, adjusted_draw):
+    def normal_synthetic(self, export_draw, adjusted_draw, starting_point):
         # print("通常合成")
         for i in range(3):
             adjusted_draw[:, :, i] = (adjusted_draw[:, :, i] - export_draw[:, :, i]) * (adjusted_draw[:, :, 3] / 255)

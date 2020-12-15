@@ -37,7 +37,7 @@ class CentralRole:
                     for k, kelement in enumerate(jelement.effects):  # エフェクト単位
                         print("エフェクト名: " + str(kelement.effectname))
                         print("エフェクト中間点: " + str(kelement.effectPoint))
-                        print("処理: " + str(kelement.procedurelist))
+                        print("処理: " + str(kelement.procedure))
                         print("固定設定: " + str(kelement.various_fixed))
 
             print("")

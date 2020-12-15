@@ -9,6 +9,7 @@ class CentralRole:
     def main(self, user_select):
         user_select_hold = ""
         now_directory = os.getcwd()
+
         for i in range(len(user_select)):
             if user_select[i-2: i+1] == "../":
                 os.chdir('../')

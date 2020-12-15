@@ -38,7 +38,7 @@ class effectElements:  # えらくない
     def __init__(self):
         self.effectname = None
         self.effectPoint = []
-        self.procedurelist = None  # インスタンス化したclassを詰め込む
+        self.procedure = None  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
 
         # 二つ以上エフェクトがあった場合どのように処理をするか
