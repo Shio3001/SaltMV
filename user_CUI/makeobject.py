@@ -91,35 +91,20 @@ class CentralRole:
         inp_in = str(sys.stdin.readline().rstrip())
         thislayer = operation_list["set"]["input_text"]["CentralRole"].main(inp_in, thislayer, thislayer_reobj_now, elements, operation_list)
 
-        """
-
-        placement_select = [-1, -1]
-
-        for i in range(2):
-            while placement_select[i] == -1:
-                if i == 0:
-                    print("上下の揃え位置を入力")
-                    print(" [ 0 ] 上揃え / [ 1 ] 中揃え / [ 2 ] 下揃え")
-
-                if i == 1:
-                    print("左右の揃え位置を入力")
-                    print(" [ 0 ] 左揃え / [ 1 ] 中揃え / [ 2 ] 右揃え")
-
-                try:
-                    user_select = int(sys.stdin.readline().rstrip())
-                    if 0 <= user_select <= 2:
-                        placement_select[i] = user_select
-                except:
-                    print("数字以外入れないで" + str(sys.exc_info()))
-        
-        """
-
         return thislayer, responselist[0]
 
     def shape(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         return thislayer, responselist[0]
 
     def effect(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
+        print("エフェクトを選択")
+        print(list(operation_list["plugin"]["effect"].keys()))
+        inp_plugin = str(sys.stdin.readline().rstrip())
+        if not inp_plugin in operation_list["plugin"]["effect"].keys():
+            print("返却")
+            return thislayer, responselist[1]
+
+        thislayer = operation_list["set"]["input_plugin"]["CentralRole"].main(thislayer, elements, operation_list, inp_plugin)
         return thislayer, responselist[0]
 
     def new_obj(self, thislayer, operation_list, all_elements, elements):

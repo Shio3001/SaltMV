@@ -77,6 +77,10 @@ class CentralRole:
         adjusted_draw = adjusted_draw[under[1]:, under[0]:, :]
         draw_size = (adjusted_draw.shape[1], adjusted_draw.shape[0])
 
+        if 0 in draw_size:
+            print("サイズが0を検知")
+            return export_draw
+
         draw_range = [int(draw_size[i]) if starting_point[i] + draw_size[i] <= editor[i] else int(editor[i] - starting_point[i]) for i in range(2)]
         print("描画範囲 : " + str(draw_range))
         print("開始地点 : " + str(starting_point))
@@ -142,7 +146,6 @@ class CentralRole:
         print(starting_point, draw_range)
 
         export_range = export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :]
-
         for i in range(3):
             adjusted_range[:, :, i] = (adjusted_range[:, :, i] - export_range[:, :, i]) * (adjusted_range[:, :, 3] / 255)
             # a = (重ねる色 - 背景色) * (アルファ値 / 255)
