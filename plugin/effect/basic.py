@@ -37,4 +37,6 @@ class CentralRole:
 
         self.starting_point = [whereabouts["x"], whereabouts["y"]]
 
+        print("仮座標決定 : " + str(self.starting_point))
+
         return draw, self.starting_point

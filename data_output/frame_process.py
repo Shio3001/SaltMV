@@ -66,8 +66,16 @@ class CentralRole:
             print(this_effect.procedure)
             adjusted_draw, starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor)
 
-        draw_size = (adjusted_draw.shape[1], adjusted_draw.shape[0])
         starting_point = list(map(int, starting_point))
+
+        under = [0, 0]
+
+        for i in range(2):
+            if starting_point[i] < 0:
+                under[i] = int(abs(0 - starting_point[i]))
+                starting_point[i] = 0
+        adjusted_draw = adjusted_draw[under[1]:, under[0]:, :]
+        draw_size = (adjusted_draw.shape[1], adjusted_draw.shape[0])
 
         draw_range = [int(draw_size[i]) if starting_point[i] + draw_size[i] <= editor[i] else int(editor[i] - starting_point[i]) for i in range(2)]
         print("描画範囲 : " + str(draw_range))
@@ -131,7 +139,7 @@ class CentralRole:
 
         print(starting_point, draw_range)
 
-        export_range = export_draw[starting_point[1]:draw_range[1], starting_point[0]:draw_range[0], :]
+        export_range = export_draw[starting_point[1]:starting_point[1] + draw_range[1], starting_point[0]:starting_point[0] + draw_range[0], :]
 
         for i in range(3):
             adjusted_range[:, :, i] = (adjusted_range[:, :, i] - export_range[:, :, i]) * (adjusted_range[:, :, 3] / 255)
@@ -140,5 +148,5 @@ class CentralRole:
 
         print(export_range.shape)
 
-        export_draw[starting_point[1]:draw_range[1], starting_point[0]:draw_range[0], :] = export_range
+        export_draw[starting_point[1]:starting_point[1] + draw_range[1], starting_point[0]:starting_point[0] + draw_range[0], :] = export_range
         return export_draw
