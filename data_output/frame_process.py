@@ -125,7 +125,7 @@ class CentralRole:
 
         print(this_effect)
 
-        draw_operation = operation_list["other"]["effect_auxiliary"]["Calculation"]
+        draw_operation = operation_list["useful"]["effect_auxiliary"]["Calculation"]
 
         adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, whereabouts, now_frame, editor, draw_operation)
 

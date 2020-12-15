@@ -133,7 +133,7 @@ class CentralRole:
     def export_video(self, responselist, all_elements, elements, operation_list):
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
-        user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
+        user_select = operation_list["useful"]["dircon"]["CentralRole"].main(user_select)
 
         operation_list["out"]["output_video_image"]["CentralRole"].type_video(copy.deepcopy(all_elements), operation_list, user_select)
 
@@ -142,7 +142,7 @@ class CentralRole:
     def export_image(self, responselist, all_elements, elements, operation_list):
         print("保存先を入力")
         user_select = str(sys.stdin.readline().rstrip())
-        user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
+        user_select = operation_list["useful"]["dircon"]["CentralRole"].main(user_select)
 
         print("書き出すフレームを入力")
         select_time = operation_list["CUI"]["timeselect"]["CentralRole"].main(all_elements)

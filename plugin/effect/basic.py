@@ -25,10 +25,9 @@ class InitialValue:
 class CentralRole:
     def __init__(self):
         self.starting_point = [0, 0]
-
         # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に画面サイズ情報, 第五引数に現在のフレームが入ってくる
-    def main(self, draw, whereabouts, now_frame, editor, draw_operation):
 
+    def main(self, draw, whereabouts, now_frame, editor, draw_operation):
         editor_size = {"x": editor[0], "y": editor[1]}
         draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
 

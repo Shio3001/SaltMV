@@ -35,7 +35,7 @@ class CentralRole:
 
         if user_select[-5:] != self.extension:
             user_select += self.extension
-        user_select = operation_list["other"]["dircon"]["CentralRole"].main(user_select)
+        user_select = operation_list["useful"]["dircon"]["CentralRole"].main(user_select)
         os.system("touch " + user_select)
         print(user_select)
 

@@ -44,7 +44,7 @@ if __name__ == "__main__":
     print("コマンドライン からの入力を確認")
 
 # 主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
-operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "other": {}, "plugin": {}}
+operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "useful": {}, "plugin": {}}
 operation_list["set"]["input_point"] = {"CentralRole": input_point.CentralRole()}  # 中間点を設定する
 operation_list["set"]["input_video_image"] = {"CentralRole": input_video_image.CentralRole()}  # 動画・画像の読み込みを行う
 operation_list["set"]["input_text"] = {"CentralRole": input_text.CentralRole()}  # テキストの読み込みを行う
@@ -61,19 +61,19 @@ operation_list["CUI"]["layerselect"] = {"CentralRole": layerselect.CentralRole()
 operation_list["CUI"]["seteditsize"] = {"CentralRole": seteditsize.CentralRole()}
 operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
-operation_list["other"]["dircon"] = {"CentralRole": dircon.CentralRole()}
-operation_list["other"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
+operation_list["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
+operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
 
-# otherには補助的な計算ファイルを挿入する
+# usefulには補助的な計算ファイルを挿入する
 # plugin > file
 
-plugin_path = operation_list["other"]["dircon"]["CentralRole"].main("plugin/")
+plugin_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin/")
 plugin_file = os.listdir(plugin_path)  # ファイル・ディレクトリ取得
 plugin_list = [f for f in plugin_file if os.path.isdir(os.path.join(plugin_path, f))]  # ディレクトリのみにする
 
 for plugin_name in plugin_list:
     operation_list["plugin"][str(plugin_name)] = {}  # プラグインの下のファイルによる連想配列生成
-    file_path = operation_list["other"]["dircon"]["CentralRole"].main("plugin/" + str(plugin_name) + "/")  # ファイル一覧
+    file_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin/" + str(plugin_name) + "/")  # ファイル一覧
     print(file_path)
 
     file_list = list(map(str, os.listdir(file_path)))
