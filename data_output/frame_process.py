@@ -53,7 +53,7 @@ class CentralRole:
 
         del draw_substantial
 
-        starting_point = []
+        starting_point = [0, 0]
 
         for this_effect in this_object.effects:  # エフェクト
             print(this_effect.effectPoint)
@@ -64,7 +64,10 @@ class CentralRole:
 
             print(this_effect.effectPoint)
             print(this_effect.procedure)
-            adjusted_draw, starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor)
+            adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor)
+            print("新規描画開始地点 : " + str(new_starting_point))
+            starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]
+            print("合算描画開始地点 : " + str(starting_point))
 
         starting_point = list(map(int, starting_point))
 
@@ -84,6 +87,10 @@ class CentralRole:
         draw_range = [int(draw_size[i]) if starting_point[i] + draw_size[i] <= editor[i] else int(editor[i] - starting_point[i]) for i in range(2)]
         print("描画範囲 : " + str(draw_range))
         print("開始地点 : " + str(starting_point))
+
+        if 0 != int(len([i for i in draw_range if i <= 0])):
+            print("範囲外の描画を検知")
+            return export_draw
 
         # if starting_point > editor
 
@@ -146,6 +153,8 @@ class CentralRole:
         print(starting_point, draw_range)
 
         export_range = export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :]
+        print("export : " + str(export_range.shape))
+        print("adjusted : " + str(adjusted_range.shape))
         for i in range(3):
             adjusted_range[:, :, i] = (adjusted_range[:, :, i] - export_range[:, :, i]) * (adjusted_range[:, :, 3] / 255)
             # a = (重ねる色 - 背景色) * (アルファ値 / 255)

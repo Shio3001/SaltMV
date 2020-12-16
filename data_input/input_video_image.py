@@ -20,6 +20,6 @@ class CentralRole:
         #thislayer.retention_object[thislayer_reobj_now].unique_property = copy.deepcopy(new_video_getlist)
         thislayer.retention_object[thislayer_reobj_now].document = inp_in
         thislayer.retention_object[thislayer_reobj_now].objectType = str(inp_type)
-        thislayer = operation_list["set"]["input_point"]["CentralRole"].effect_Initial_setting(thislayer, operation_list, elements, "basic")
+        #thislayer = operation_list["set"]["input_point"]["CentralRole"].effect_Initial_setting(thislayer, operation_list, elements, "basic")
 
         return thislayer, responselist[0]

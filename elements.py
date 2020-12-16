@@ -41,8 +41,4 @@ class effectElements:  # えらくない
         self.procedure = None  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
 
-        # 二つ以上エフェクトがあった場合どのように処理をするか
-        # 位置座標系ならTrue , ブラインドなどのエフェクトならば、Falseとなる
-        self.calculation_mode = False  # Trueで積 #Falseで重
-
         print("エフェクトを追加しました : effectElements [ Elements ]")

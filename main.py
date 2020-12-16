@@ -84,7 +84,6 @@ for plugin_name in plugin_list:
             import_data = importlib.import_module(path)
             operation_list["plugin"][str(plugin_name)][str(file_name.replace('.py', ''))] = import_data
 
-
 print(operation_list)
 
 os.system("mkdir " + "tmp")
