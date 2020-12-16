@@ -24,16 +24,10 @@ class InitialValue:
 class CentralRole:
     def __init__(self):
         self.starting_point = [0, 0]
-        # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に画面サイズ情報, 第五引数に現在のフレームが入ってくる
+        # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に現在のフレーム, 第五引数にエディタ情報, 操作一覧
 
-    def main(self, draw, whereabouts, now_frame, editor, draw_operation):
-        editor_size = {"x": editor[0], "y": editor[1]}
-        draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
-
-        for i in ["x", "y"]:
-            whereabouts[i] = draw_operation.middle_change(whereabouts[i], draw_size[i], editor_size[i])
-
-        self.starting_point = [whereabouts["x"], whereabouts["y"]]
+    def main(self, data):
+        self.starting_point = [data.position["x"], data.position["y"]]
 
         print("仮座標決定 : " + str(self.starting_point))
-        return draw, self.starting_point
+        return data.draw, self.starting_point

@@ -25,5 +25,5 @@ class CentralRole:
     def __init__(self):
         self.starting_point = 0
 
-    def main(self, draw, whereabouts, now_frame, editor, draw_operation):
-        return draw, self.starting_point
+    def main(self, data):
+        return data.draw, self.starting_point

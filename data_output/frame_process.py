@@ -65,6 +65,7 @@ class CentralRole:
             print(this_effect.effectPoint)
             print(this_effect.procedure)
             adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor)
+
             print("新規描画開始地点 : " + str(new_starting_point))
             starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]
             print("合算描画開始地点 : " + str(starting_point))
@@ -126,15 +127,21 @@ class CentralRole:
 
         print("前後の地点 : " + str(around_point))
 
-        whereabouts = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
-                                                                                             (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
-        print(whereabouts)
+        position = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
+                                                                                          (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
+        print(position)
 
         print(this_effect)
 
         draw_operation = operation_list["useful"]["effect_auxiliary"]["Calculation"]
 
-        adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, whereabouts, now_frame, editor, draw_operation)
+        data = pluginElements(adjusted_draw, position, now_frame, editor, draw_operation)
+        adjusted_draw, starting_point = this_effect.procedure.main(copy.deepcopy(data))
+        #adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, position, now_frame, editor, draw_operation)
+
+        editor_size = [editor[0], editor[1]]
+        draw_size = [adjusted_draw.shape[1], adjusted_draw.shape[0]]
+        starting_point = [draw_operation.middle_change(starting_point[i], draw_size[i], editor_size[i]) for i in range(2)]
 
         # ここに処理を描く adjusted_draw - > adjusted_draw
 
@@ -166,3 +173,15 @@ class CentralRole:
 
         export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :] = export_range
         return export_draw
+
+
+class pluginElements:
+    def __init__(self, adjusted_draw, position, now_frame, editor, draw_operation):
+        self.draw = adjusted_draw
+        self.position = position
+        self.now_frame = now_frame
+        self.editor = editor
+        self.draw_operation = draw_operation
+
+        self.editor_size = {"x": self.editor[0], "y": self.editor[1]}
+        self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}

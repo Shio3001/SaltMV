@@ -25,7 +25,7 @@ class CentralRole:
         time_interval = next_time - old_time
         already_passed = now_frame - old_time
 
-        whereabouts = ((distance_interval / time_interval) * already_passed) + old_point
-        print(whereabouts)
+        position = ((distance_interval / time_interval) * already_passed) + old_point
+        print(position)
 
-        return whereabouts
+        return position

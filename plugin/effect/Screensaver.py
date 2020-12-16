@@ -24,17 +24,14 @@ class CentralRole:
 
         self.direction = [1, 1]
         self.starting_point = [0, 0]
-        print("設定方向 : " + str(os.path.basename(__file__)).replace('.py', ''))
 
-        # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に画面サイズ情報, 第五引数に現在のフレームが入ってくる
+    def main(self, data):
 
-    def main(self, draw, whereabouts, now_frame, editor, draw_operation):
+        #editor_size = {"x": editor[0], "y": editor[1]}
+        #draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
+        speed = data.position["speed"]
 
-        editor_size = {"x": editor[0], "y": editor[1]}
-        draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
-        speed = whereabouts["speed"]
-
-        direction_range = [list(editor_size.values())[i] / 2 - list(draw_size.values())[i] / 2 for i in range(2)]
+        direction_range = [list(data.editor_size.values())[i] / 2 - list(data.draw_size.values())[i] / 2 for i in range(2)]
 
         print(direction_range)
 
@@ -52,8 +49,10 @@ class CentralRole:
         print("方向B : " + str(self.direction))
 
         #self.starting_point = [x + y for x, y in zip(self.starting_point, self.direction)]
-        self.starting_point = [self.starting_point[m] + self.direction[m] for m in range(2)]
-        send_starting_point = [draw_operation.middle_change(self.starting_point[k], list(draw_size.values())[k], list(editor_size.values())[k]) for k in range(2)]
+        self.starting_point = [self.starting_point[k] + self.direction[k] for k in range(2)]
+        #send_starting_point = [draw_operation.middle_change(self.starting_point[k], list(draw_size.values())[k], list(editor_size.values())[k]) for k in range(2)]
 
-        print("仮座標決定 : " + str(send_starting_point))
-        return draw, send_starting_point
+        print("仮座標決定 : " + str(self.starting_point))
+
+        # ここまでは計算中心0,0が真ん中でもいいけど、returnするときは左上を0,0にすることを忘れないように！ draw_operation.middle_changeで可能
+        return data.draw, self.starting_point
