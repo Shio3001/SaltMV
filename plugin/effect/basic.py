@@ -38,8 +38,8 @@ class CentralRole:
         data.draw[:, :, 3] *= alpha_draw
 
         # 拡大縮小
-        resize = (data.position["size_x"] * 0.01, data.position["size_y"] * 0.01)
-        data.draw = np.kron(np.eye(data.position["size_x"] * 0.01), data.draw)
+        # = (data.position["size_x"] * 0.01, data.position["size_y"] * 0.01)
+        #data.draw = np.kron(np.eye(data.position["size_x"] * 0.01), data.draw)
 
         # 回転
 

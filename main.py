@@ -80,7 +80,7 @@ plugin_list = [f for f in plugin_file if os.path.isdir(os.path.join(plugin_path,
 
 for plugin_name in plugin_list:
     operation_list["plugin"][str(plugin_name)] = {}  # プラグインの下のファイルによる連想配列生成
-    file_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin{0}" + str(plugin_name) + "{0}".format(slash))  # ファイル一覧
+    file_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin{0}{1}{0}".format(slash, plugin_name))  # ファイル一覧
     print(file_path)
 
     file_list = list(map(str, os.listdir(file_path)))
@@ -95,8 +95,9 @@ print(operation_list)
 
 os.system("mkdir " + "tmp")
 
-# run_mode = "CUI"
+#run_mode = "CUI"
 run_mode = "GUI"
+app_name = "NankokuMovieMaker"
 
 
 class CentralRole:
@@ -137,7 +138,7 @@ class CentralRole:
         # sys.exit()
 
     def main_GUI(self, main_user_GUI_CentralRole):
-        main_user_GUI_CentralRole.main(copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
+        main_user_GUI_CentralRole.main(copy.deepcopy(self.all_elements), elements, operation_list, app_name)  # 次の選択を担うファイルへ送信
 
 
 main_CentralRole = CentralRole()
