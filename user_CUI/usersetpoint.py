@@ -39,10 +39,10 @@ class CentralRole:
             except:
                 user_select = -1
 
-        print("中間点ではなく、各エフェクト固定設定を編集しますか？ [ true ] [ false ]")
+        print("中間点ではなく、各エフェクト固定設定を編集しますか？ [ y / n ]")
         user_select_Fixed = str(sys.stdin.readline().rstrip())
 
-        if user_select_Fixed == "true":
+        if user_select_Fixed == "y":
             various_fixed = thislayer.retention_object[userselect_object].effects[user_select].various_fixed
             various_fixed = self.edit_Fixed(various_fixed, operation_list)
             thislayer.retention_object[userselect_object].effects[user_select].various_fixed = various_fixed

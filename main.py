@@ -10,7 +10,8 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
-import main_user_CUI as main_user  # GUI処分 CUI中継操作
+import main_user_CUI  # GUI処分 CUI中継操作
+import main_user_GUI
 
 from auxiliary import directory_conversion as dircon
 from auxiliary import effect_auxiliary
@@ -67,20 +68,26 @@ operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.
 # usefulには補助的な計算ファイルを挿入する
 # plugin > file
 
-plugin_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin/")
+this_os = str(os.name)
+if this_os == "nt":
+    slash = "¥"
+else:
+    slash = "/"
+
+plugin_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin{0}".format(slash))
 plugin_file = os.listdir(plugin_path)  # ファイル・ディレクトリ取得
 plugin_list = [f for f in plugin_file if os.path.isdir(os.path.join(plugin_path, f))]  # ディレクトリのみにする
 
 for plugin_name in plugin_list:
     operation_list["plugin"][str(plugin_name)] = {}  # プラグインの下のファイルによる連想配列生成
-    file_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin/" + str(plugin_name) + "/")  # ファイル一覧
+    file_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin{0}" + str(plugin_name) + "{0}".format(slash))  # ファイル一覧
     print(file_path)
 
     file_list = list(map(str, os.listdir(file_path)))
 
     for file_name in file_list:
         if file_name[-3:] == ".py":
-            path = plugin_path.replace('/', '.') + str(plugin_name) + "." + file_name.replace('.py', '')  # /を.に、.pyを消去する
+            path = plugin_path.replace(slash, '.') + str(plugin_name) + "." + file_name.replace('.py', '')  # /を.に、.pyを消去する
             import_data = importlib.import_module(path)
             operation_list["plugin"][str(plugin_name)][str(file_name.replace('.py', ''))] = import_data
 
@@ -88,22 +95,34 @@ print(operation_list)
 
 os.system("mkdir " + "tmp")
 
+# run_mode = "CUI"
+run_mode = "GUI"
+
 
 class CentralRole:
     def __init__(self):
 
         self.all_elements = elements.AllElements()  # 全てを司るもの
 
-        self.main_user_CentralRole = main_user.CentralRole()  # ユーザー操作を司る
-
         self.responselist = ["終了", "問題なし", "問題あり"]  # main.pyに戻ってくる時の応答リスト
 
     def main(self):
+        if run_mode == "CUI":
+            main_user_CUI_CentralRole = main_user_CUI.CentralRole()  # ユーザー操作を司る
+            self.main_CUI(main_user_CUI_CentralRole)
+
+        if run_mode == "GUI":
+            main_user_GUI_CentralRole = main_user_GUI.CentralRole()  # ユーザー操作を司る
+            self.main_GUI(main_user_GUI_CentralRole)
+
+        return
+
+    def main_CUI(self, main_user_CUI_CentralRole):
 
         user_next = " "
 
         while user_next != self.responselist[0]:
-            self.all_elements, user_next = self.main_user_CentralRole.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
+            self.all_elements, user_next = main_user_CUI_CentralRole.usernextselect(self.responselist, copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
             print("")
             print("********************************")
 
@@ -116,6 +135,9 @@ class CentralRole:
             print("")
 
         # sys.exit()
+
+    def main_GUI(self, main_user_GUI_CentralRole):
+        main_user_GUI_CentralRole.main(copy.deepcopy(self.all_elements), elements, operation_list)  # 次の選択を担うファイルへ送信
 
 
 main_CentralRole = CentralRole()
