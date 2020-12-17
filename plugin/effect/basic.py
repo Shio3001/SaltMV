@@ -1,6 +1,6 @@
 # coding:utf-8
 import sys
-import numpy
+import numpy as np
 import os
 import copy
 
@@ -14,7 +14,7 @@ class InitialValue:
     def main(self, elements):
         setting_effect = elements.effectElements()
         setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effectPoint = [{"time": 0, "x": 0, "y": 0, " z_angle ": 0, " alpha ": 100, "size": 0}]
+        setting_effect.effectPoint = [{"time": 0, "x": 0, "y": 0, "z_angle": 0, "alpha": 100, "size": 0}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -28,6 +28,8 @@ class CentralRole:
 
     def main(self, data):
         self.starting_point = [data.position["x"], data.position["y"]]
+        alpha_draw = np.full(data.draw[:, :, 3].shape, data.position["alpha"] * 0.01)
+        data.draw = data.draw.astype('float32')
 
-        print("仮座標決定 : " + str(self.starting_point))
+        data.draw[:, :, 3] *= alpha_draw
         return data.draw, self.starting_point

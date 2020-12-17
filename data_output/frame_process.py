@@ -23,7 +23,6 @@ class CentralRole:
         export_draw = copy.deepcopy(export_draw_base)
 
         for this_layer in all_elements.layer_group:  # レイヤー
-            print("対象レイヤー [ A ] : " + str(this_layer))
             export_draw = self.apply_layer(objectdict, this_layer, export_draw, operation_list, now_frame, editor)
 
         return export_draw
@@ -32,12 +31,11 @@ class CentralRole:
     def apply_layer(self, objectdict, this_layer, export_draw, operation_list, now_frame, editor):
         for this_object in this_layer.retention_object:  # ie = i_elementsの訳 #オブジェクト
             if this_object.staend_property[0] <= now_frame <= this_object.staend_property[1]:
-                print("レイヤー : 出力対象フレーム")
                 export_draw = self.apply_object(objectdict, this_object, export_draw, operation_list, now_frame, editor)
                 continue
 
             else:
-                print("レイヤー : 除外フレーム")
+                pass
         return export_draw
 
     def apply_object(self, objectdict, this_object, export_draw, operation_list, now_frame, editor):
@@ -55,20 +53,19 @@ class CentralRole:
 
         starting_point = [0, 0]
 
+        draw_operation = operation_list["useful"]["effect_auxiliary"]["Calculation"]
+
         for this_effect in this_object.effects:  # エフェクト
-            print(this_effect.effectPoint)
 
             for i in range(len(this_effect.effectPoint)):
-                this_effect.effectPoint[i]["time"] += this_object.staend_property[0]
-                print("時系列加算")
+                this_effect.effectPoint[i]["time"] += this_object.staend_property[0]  # 時系列加算
 
-            print(this_effect.effectPoint)
-            print(this_effect.procedure)
-            adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor)
+            adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation)
+            starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]  # 新入りと古参を混ぜる
 
-            print("新規描画開始地点 : " + str(new_starting_point))
-            starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]
-            print("合算描画開始地点 : " + str(starting_point))
+        editor_size = [editor[0], editor[1]]
+        draw_size = [adjusted_draw.shape[1], adjusted_draw.shape[0]]
+        starting_point = [draw_operation.middle_change(starting_point[i], draw_size[i], editor_size[i]) for i in range(2)]
 
         starting_point = list(map(int, starting_point))
 
@@ -82,15 +79,11 @@ class CentralRole:
         draw_size = (adjusted_draw.shape[1], adjusted_draw.shape[0])
 
         if 0 in draw_size:
-            print("サイズが0を検知")
             return export_draw
 
         draw_range = [int(draw_size[i]) if starting_point[i] + draw_size[i] <= editor[i] else int(editor[i] - starting_point[i]) for i in range(2)]
-        print("描画範囲 : " + str(draw_range))
-        print("開始地点 : " + str(starting_point))
 
         if 0 != int(len([i for i in draw_range if i <= 0])):
-            print("範囲外の描画を検知")
             return export_draw
 
         # if starting_point > editor
@@ -101,7 +94,7 @@ class CentralRole:
         del adjusted_draw
         return draw
 
-    def apply_effect(self, objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor):
+    def apply_effect(self, objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation):
         # print(sys._getframe().f_code.co_name)
 
         # 前のやつと等しいか、前野より高かったら取得して
@@ -109,12 +102,10 @@ class CentralRole:
 
         this_point = this_effect.effectPoint
         this_point_number = 0
-        print("座標計算開始" + str(this_point))
         point_count = int(len(this_point))
         for i in range(point_count):
             if now_frame >= this_point[i]["time"]:
                 this_point_number = i
-                print(this_point_number)
                 break
 
         around_point = [{}, {}]
@@ -125,23 +116,16 @@ class CentralRole:
         else:
             around_point[1] = this_point[this_point_number + 1]  # 次の地点、に戻すために一をたす
 
-        print("前後の地点 : " + str(around_point))
-
         position = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
                                                                                           (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
-        print(position)
-
-        print(this_effect)
-
-        draw_operation = operation_list["useful"]["effect_auxiliary"]["Calculation"]
 
         data = pluginElements(adjusted_draw, position, now_frame, editor, draw_operation)
         adjusted_draw, starting_point = this_effect.procedure.main(copy.deepcopy(data))
-        #adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, position, now_frame, editor, draw_operation)
 
-        editor_size = [editor[0], editor[1]]
-        draw_size = [adjusted_draw.shape[1], adjusted_draw.shape[0]]
-        starting_point = [draw_operation.middle_change(starting_point[i], draw_size[i], editor_size[i]) for i in range(2)]
+        adjusted_draw = adjusted_draw.astype('uint8')
+
+        del data
+        #adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, position, now_frame, editor, draw_operation)
 
         # ここに処理を描く adjusted_draw - > adjusted_draw
 
@@ -157,19 +141,14 @@ class CentralRole:
 
         adjusted_range = adjusted_draw[0:draw_range[1], 0:draw_range[0], :]
 
-        print(starting_point, draw_range)
-
         export_range = export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :]
-        print("export : " + str(export_range.shape))
-        print("adjusted : " + str(adjusted_range.shape))
+
         for i in range(3):
             adjusted_range[:, :, i] = (adjusted_range[:, :, i] - export_range[:, :, i]) * (adjusted_range[:, :, 3] / 255)
             # a = (重ねる色 - 背景色) * (アルファ値 / 255)
         export_range[:, :, 0:3] += adjusted_range[:, :, 0:3]
         # 確定色 = 背景色 + a
         # 確定色 = 背景色 + (重ねる色 - 背景色) * (アルファ値 / 255)
-
-        print(export_range.shape)
 
         export_draw[starting_point[1]:change_end[1], starting_point[0]:change_end[0], :] = export_range
         return export_draw

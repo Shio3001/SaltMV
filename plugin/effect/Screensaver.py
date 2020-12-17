@@ -27,32 +27,26 @@ class CentralRole:
 
     def main(self, data):
 
-        #editor_size = {"x": editor[0], "y": editor[1]}
-        #draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
-        speed = data.position["speed"]
+        # editor_size = {"x": editor[0], "y": editor[1]}
+        # draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
+        speed = data.position["speed"] - 1
+
+        # self.direction = [d + speed if d < 0 else (speed * - 1) * d for d in self.direction]
 
         direction_range = [list(data.editor_size.values())[i] / 2 - list(data.draw_size.values())[i] / 2 for i in range(2)]
 
-        print(direction_range)
-
-        # self.direction =
-
-        print("方向A : " + str(self.direction))
-        print(self.starting_point)
+        speed_direction = [x + speed if x >= 0 else x + (speed * -1) for x in self.direction]
 
         for j in range(2):
-            if -1 * direction_range[j] < speed + self.direction[j] + self.starting_point[j] < direction_range[j]:
+            if -1 * direction_range[j] < speed_direction[j] + self.starting_point[j] < direction_range[j]:
                 pass
             else:
                 self.direction[j] *= -1
+                speed_direction[j] *= -1
 
-        print("方向B : " + str(self.direction))
-
-        #self.starting_point = [x + y for x, y in zip(self.starting_point, self.direction)]
-        self.starting_point = [self.starting_point[k] + self.direction[k] for k in range(2)]
-        #send_starting_point = [draw_operation.middle_change(self.starting_point[k], list(draw_size.values())[k], list(editor_size.values())[k]) for k in range(2)]
-
-        print("仮座標決定 : " + str(self.starting_point))
+        # self.starting_point = [x + y for x, y in zip(self.starting_point, speed_direction)]
+        self.starting_point = [self.starting_point[k] + speed_direction[k] for k in range(2)]
+        # send_starting_point = [draw_operation.middle_change(self.starting_point[k], list(draw_size.values())[k], list(editor_size.values())[k]) for k in range(2)]
 
         # ここまでは計算中心0,0が真ん中でもいいけど、returnするときは左上を0,0にすることを忘れないように！ draw_operation.middle_changeで可能
         return data.draw, self.starting_point

@@ -26,6 +26,5 @@ class CentralRole:
         already_passed = now_frame - old_time
 
         position = ((distance_interval / time_interval) * already_passed) + old_point
-        print(position)
 
         return position

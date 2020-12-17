@@ -35,11 +35,13 @@ class CentralRole:
 
         all_elements = self.get_media(all_elements)
         for now_frame in range(editor[3]):
-            print(str(now_frame) + "番目のフレームの出力")
+            print("\r進捗: {0} / {1} 進捗率: {2} %".format(now_frame + 1, editor[3], round(((now_frame + 1) / editor[3]) * 100)), end='')
+
             export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, now_frame, operation_list, editor)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
 
+        print("")
         print("書き出し終了")
         print("")
         elapsed_time = time.time() - start_time
