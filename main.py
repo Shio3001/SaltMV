@@ -44,6 +44,7 @@ import importlib
 if __name__ == "__main__":
     print("コマンドライン からの入力を確認")
 
+
 # 主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
 operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "useful": {}, "plugin": {}}
 operation_list["set"]["input_point"] = {"CentralRole": input_point.CentralRole()}  # 中間点を設定する
@@ -93,9 +94,9 @@ for plugin_name in plugin_list:
 
 print(operation_list)
 
-os.system("mkdir " + "tmp")
+#os.system("mkdir " + "tmp")
 
-run_mode = "CUI"
+#run_mode = "CUI"
 #run_mode = "GUI"
 app_name = "NankokuMovieMaker"
 
@@ -108,13 +109,17 @@ class CentralRole:
         self.responselist = ["終了", "問題なし", "問題あり"]  # main.pyに戻ってくる時の応答リスト
 
     def main(self):
-        if run_mode == "CUI":
+        if sys.argv[1] == "CUI":
             main_user_CUI_CentralRole = main_user_CUI.CentralRole()  # ユーザー操作を司る
             self.main_CUI(main_user_CUI_CentralRole)
 
-        if run_mode == "GUI":
+        elif sys.argv[1] == "GUI":
             main_user_GUI_CentralRole = main_user_GUI.CentralRole()  # ユーザー操作を司る
             self.main_GUI(main_user_GUI_CentralRole)
+
+        else:
+            main_user_CUI_CentralRole = main_user_CUI.CentralRole()
+            self.main_CUI(main_user_CUI_CentralRole)
 
         return
 
@@ -144,8 +149,5 @@ class CentralRole:
 main_CentralRole = CentralRole()
 main_CentralRole.main()
 
-os.system("rm -rf " + "tmp")
+#os.system("rm -rf " + "tmp")
 sys.exit()
-
-# まだ一回きりしか操作できないようになってる
-# git確認4
