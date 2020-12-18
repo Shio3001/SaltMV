@@ -95,8 +95,8 @@ print(operation_list)
 
 os.system("mkdir " + "tmp")
 
-#run_mode = "CUI"
-run_mode = "GUI"
+run_mode = "CUI"
+#run_mode = "GUI"
 app_name = "NankokuMovieMaker"
 
 

@@ -27,9 +27,9 @@ class CentralRole:
         addpoint = None
         # try:
         for i, ie in enumerate(thisobject.effects[user_select].effectPoint):
-            print(i)
-            print(thisobject.effects[user_select].effectPoint)
-            print(thisobject.effects[user_select].effectPoint[i])
+            # print(i)
+            # print(thisobject.effects[user_select].effectPoint)
+            # print(thisobject.effects[user_select].effectPoint[i])
             if thisobject.effects[user_select].effectPoint[i]["time"] >= maketime:
                 addpoint = copy.deepcopy(thisobject.effects[user_select].effectPoint[-1])  # 入れる予定の場所をもとに時間を検索
                 print("時間検索")
@@ -39,7 +39,7 @@ class CentralRole:
         if thisobject.effects[user_select].effectPoint[-1]["time"] < maketime:
             addpoint = copy.deepcopy(thisobject.effects[user_select].effectPoint[-1])
 
-        print(addpoint)
+        # print(addpoint)
         thisobject.effects[user_select].effectPoint.append(addpoint)  # 前のやつを複製
 
         del addpoint
@@ -57,8 +57,8 @@ class CentralRole:
         thisobject = thislayer.retention_object[-1]
         thisobject.staend_property = userselect_time  # 開始時間、終了時間を挿入
 
-        print(thisobject.staend_property)
-        print(type(thisobject.staend_property))
+        # print(thisobject.staend_property)
+        # print(type(thisobject.staend_property))
 
         thislayer.retention_object[-1] = thisobject
 

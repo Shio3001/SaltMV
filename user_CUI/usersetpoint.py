@@ -27,11 +27,11 @@ class CentralRole:
 
         while user_select == -1:
 
-            print("どのエフェクトを選択するのか入力 [ 数値 ] [ 0 から ] [ 0 は座標などの基礎情報 ]")
+            print("どのエフェクトを選択するのか入力 [ 数値 ] [ 1 から ]")
             print("現在" + str(int(len(thisobject.effects))) + "コ確認")
 
             try:
-                user_select = int(sys.stdin.readline().rstrip())
+                user_select = int(sys.stdin.readline().rstrip()) - 1
 
                 if user_select > int(len(thisobject.effects)) - 1:
                     print("それは存在しない")
@@ -74,7 +74,7 @@ class CentralRole:
         print("point設定 返却")
         thisobject.effects[user_select].effectPoint = sorted(thisobject.effects[user_select].effectPoint, key=lambda x: x["time"], reverse=False)
 
-        print(thisobject.effects[user_select].effectPoint)
+        # print(thisobject.effects[user_select].effectPoint)
 
         thislayer.retention_object[userselect_object] = copy.deepcopy(thisobject)
 
@@ -92,17 +92,18 @@ class CentralRole:
 
     def edit_Fixed(self, various_fixed, operation_list):
         various_fixed = self.editpoint(various_fixed, operation_list)
-        print(various_fixed)
+        # print(various_fixed)
         return various_fixed
 
     def editpoint(self, thisobject_effectPoint, operation_list):
 
         print("すでに作成済みのものを編集")
-        print(thisobject_effectPoint)
+
         user_select = ["0", "0"]
 
         while user_select[0] != "exit":
             print("編集するものを入力 [ 文字列 ] [ 確定は : exit ]")
+            print(thisobject_effectPoint)
             user_select[0] = str(sys.stdin.readline().rstrip())
 
             if user_select[0] == "exit":

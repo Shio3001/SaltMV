@@ -25,6 +25,6 @@ class CentralRole:
         time_interval = next_time - old_time
         already_passed = now_frame - old_time
 
-        position = ((distance_interval / time_interval) * already_passed) + old_point
+        position = int(((distance_interval / time_interval) * already_passed) + old_point)
 
         return position
