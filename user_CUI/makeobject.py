@@ -62,8 +62,8 @@ class CentralRole:
 
     def video(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         print("動画ファイルを入力...")
-        os.system("pwd")
-        os.system("ls")
+        os.getcwd()
+        os.listdir()
         inp_in = str(sys.stdin.readline().rstrip())
         thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].video_image(thislayer, thislayer_reobj_now, responselist, operation_list, elements, inp_in, "video")
 
@@ -77,8 +77,8 @@ class CentralRole:
 
     def image(self, thislayer, thislayer_reobj_now, responselist, operation_list, elements):
         print("画像ファイルを入力...")
-        os.system("pwd")
-        os.system("ls")
+        os.getcwd()
+        os.listdir()
         inp_in = str(sys.stdin.readline().rstrip())
         thislayer, edit_object_response = operation_list["set"]["input_video_image"]["CentralRole"].video_image(thislayer, thislayer_reobj_now, responselist, operation_list, elements, inp_in, "image")
 

@@ -73,10 +73,12 @@ operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.
 
 this_os = str(os.name)
 if this_os == "nt":
-    slash = "¥"
+    slash = "\\"
 else:
     slash = "/"
 
+print(slash)
+print(os.getcwd())
 plugin_path = "plugin"
 plugin_file = os.listdir(plugin_path)
 plugin_list = [p for p in plugin_file if os.path.isdir(os.path.join(plugin_path, p))]
@@ -89,12 +91,11 @@ for folder_name in plugin_list:
 
     for file_name in file_list:
         if file_name[-3:] == ".py":
-            path = plugin_path + slash + folder_name + slash
+            path = plugin_path + "." + folder_name + "." + file_name
             mainpath = os.getcwd()
-            sys.path.append(path)
-            import_data = importlib.import_module(file_name.replace('.py', ''))
+            import_data = importlib.import_module(path.replace('.py', ''))
             operation_list["plugin"][str(folder_name)][str(file_name.replace('.py', ''))] = import_data
-            sys.path.append(mainpath)
+            print(os.getcwd())
 
 print(operation_list)
 
