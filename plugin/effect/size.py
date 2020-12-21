@@ -1,10 +1,7 @@
 # coding:utf-8
 import sys
-import numpy as np
 import os
 import copy
-import cv2
-
 # 削除厳禁！
 
 
@@ -29,6 +26,6 @@ class CentralRole:
 
     def main(self, data):
         resize_position = (round(data.position["size_x"] * 0.01 * data.draw_size["x"]), round(data.position["size_y"] * 0.01 * data.draw_size["y"]))
-        data.draw = cv2.resize(data.draw, (resize_position))
+        data.draw = data.cv2.resize(data.draw, (resize_position))
 
         return data.draw, self.starting_point

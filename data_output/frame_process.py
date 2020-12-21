@@ -164,3 +164,6 @@ class pluginElements:
 
         self.editor_size = {"x": self.editor[0], "y": self.editor[1]}
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
+
+        self.cv2 = cv2
+        self.np = np

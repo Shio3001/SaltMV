@@ -4,6 +4,8 @@ import numpy as np
 import os
 import copy
 
+from pathlib import Path
+
 import cv2
 from PIL import Image, ImageDraw, ImageFilter
 import PIL.Image as Image
@@ -75,29 +77,27 @@ if this_os == "nt":
 else:
     slash = "/"
 
-plugin_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin{0}".format(slash))
-plugin_file = os.listdir(plugin_path)  # ファイル・ディレクトリ取得
-plugin_list = [f for f in plugin_file if os.path.isdir(os.path.join(plugin_path, f))]  # ディレクトリのみにする
+plugin_path = "plugin"
+plugin_file = os.listdir(plugin_path)
+plugin_list = [p for p in plugin_file if os.path.isdir(os.path.join(plugin_path, p))]
 
-for plugin_name in plugin_list:
-    operation_list["plugin"][str(plugin_name)] = {}  # プラグインの下のファイルによる連想配列生成
-    file_path = operation_list["useful"]["dircon"]["CentralRole"].main("plugin{0}{1}{0}".format(slash, plugin_name))  # ファイル一覧
-    print(file_path)
+for folder_name in plugin_list:
+    file_file = os.listdir(os.path.join(plugin_path, folder_name))
+    file_list = [f for f in file_file if os.path.isfile(os.path.join(plugin_path, folder_name, f))]
 
-    file_list = list(map(str, os.listdir(file_path)))
+    operation_list["plugin"][str(folder_name)] = {}
 
     for file_name in file_list:
         if file_name[-3:] == ".py":
-            path = plugin_path.replace(slash, '.') + str(plugin_name) + "." + file_name.replace('.py', '')  # /を.に、.pyを消去する
-            import_data = importlib.import_module(path)
-            operation_list["plugin"][str(plugin_name)][str(file_name.replace('.py', ''))] = import_data
+            path = plugin_path + slash + folder_name + slash
+            mainpath = os.getcwd()
+            sys.path.append(path)
+            import_data = importlib.import_module(file_name.replace('.py', ''))
+            operation_list["plugin"][str(folder_name)][str(file_name.replace('.py', ''))] = import_data
+            sys.path.append(mainpath)
 
 print(operation_list)
 
-#os.system("mkdir " + "tmp")
-
-#run_mode = "CUI"
-#run_mode = "GUI"
 app_name = "NankokuMovieMaker"
 
 
@@ -149,5 +149,5 @@ class CentralRole:
 main_CentralRole = CentralRole()
 main_CentralRole.main()
 
-#os.system("rm -rf " + "tmp")
+# os.system("rm -rf " + "tmp")
 sys.exit()

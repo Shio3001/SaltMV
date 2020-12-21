@@ -1,9 +1,7 @@
 # coding:utf-8
 import sys
-import numpy as np
 import os
 import copy
-import cv2
 
 # 削除厳禁！
 
@@ -32,7 +30,7 @@ class CentralRole:
         data.draw = data.draw.astype('float32')
 
         # 透明度
-        alpha_draw = np.full(data.draw[:, :, 3].shape, data.position["alpha"] * 0.01)
+        alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.position["alpha"] * 0.01)
         data.draw[:, :, 3] *= alpha_draw
 
         return data.draw, self.starting_point

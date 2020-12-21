@@ -1,9 +1,7 @@
 # coding:utf-8
 import sys
-import numpy as np
 import os
 import copy
-import cv2
 
 # 削除厳禁！
 
@@ -34,16 +32,16 @@ class CentralRole:
         rotate_list = [[self.rotate_z, data.position["rotate_z"]]]
 
         for i in rotate_list:
-            data.draw = i[0](data.draw, draw_size, center, i[1])
+            data.draw = i[0](data, data.draw, draw_size, center, i[1])
 
         return data.draw, self.starting_point
 
-    def rotate_z(self, draw, draw_size, center, angle):
+    def rotate_z(self, data, draw, draw_size, center, angle):
 
         # getRotationMatrix2D関数を使用
-        trans = cv2.getRotationMatrix2D(center, angle, 1.0)
+        trans = data.cv2.getRotationMatrix2D(center, angle, 1.0)
         # アフィン変換
-        draw = cv2.warpAffine(draw, trans, draw_size)
+        draw = data.cv2.warpAffine(draw, trans, draw_size)
 
         return draw
 
