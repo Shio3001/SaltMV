@@ -16,12 +16,14 @@ class CentralRole:
         pass
 
     def main(self, all_elements, elements, internal_operation, app_name):
-        main_window = tk.Tk()
-        display = [main_window.winfo_screenwidth(), main_window.winfo_screenheight()]
-        main_window_size = tuple(map(int, (display[0] * 0.4, display[0] * 0.4)))
+        #main_window = tk.Tk()
+        #display = [main_window.winfo_screenwidth(), main_window.winfo_screenheight()]
+        #main_window_size = tuple(map(int, (display[0] * 0.4, display[0] * 0.4)))
+
+        main_window = send_data(None)
 
         def window_exit():
-            main_window.destroy()
+            main_window.window.destroy()
 
         def project_new():
             pass
@@ -41,14 +43,20 @@ class CentralRole:
             ("環境設定", [("基本設定", window_exit)])
         ]
 
+        display_size = main_window.display_size_get()
+        main_window.window_title_set("メインウインドウ")
+        size = [500, 500]
+        main_window.window_size_set(size)
+        main_window.menubar_set(main_menubar_list)
+
         expansion_keys = internal_operation["plugin"]["expansion"].keys()
         expansion_list = {}
 
         for key in list(expansion_keys):
             print(key)
-            expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_data(main_window)).main()
+            expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_data(main_window.window)).main()
 
-        main_window.mainloop()
+        main_window.window.mainloop()
 
         print("GUI終了")
 
