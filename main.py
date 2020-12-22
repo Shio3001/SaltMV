@@ -71,6 +71,9 @@ operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.
 # usefulには補助的な計算ファイルを挿入する
 # plugin > file
 
+plugin_path = "plugin"
+#pathの指定方法は¥とかじゃなくて..でやれ
+
 this_os = str(os.name)
 if this_os == "nt":
     slash = "\\"
@@ -79,7 +82,8 @@ else:
 
 print(slash)
 print(os.getcwd())
-plugin_path = "plugin"
+
+
 plugin_file = os.listdir(plugin_path)
 plugin_list = [p for p in plugin_file if os.path.isdir(os.path.join(plugin_path, p))]
 
