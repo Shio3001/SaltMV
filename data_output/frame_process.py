@@ -1,9 +1,8 @@
 # coding:utf-8
 import sys
-import numpy as np
 import os
 import copy
-
+import numpy as np
 import cv2
 
 # オブジェクトのサイズを1/2したものを座標から引いて、でてきた座標に 640 , 360(これは画面サイズの半分)をたす
@@ -120,7 +119,7 @@ class CentralRole:
                                                                                           (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
 
         data = pluginElements(adjusted_draw, position, now_frame, editor, draw_operation)
-        adjusted_draw, starting_point = this_effect.procedure.main(copy.deepcopy(data))
+        adjusted_draw, starting_point = this_effect.procedure.main(data)
 
         adjusted_draw = adjusted_draw.astype('uint8')
 

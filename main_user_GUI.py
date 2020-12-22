@@ -14,7 +14,7 @@ class CentralRole:
         expansion_keys = internal_operation["plugin"]["expansion"].keys()
         expansion_list = {}
 
-        base_data = {"操作": internal_operation, "記録": all_elements}
+        base_data = {"操作": internal_operation, "記録": all_elements, "基本": elements}
         send_main = SendData(None, base_data)
         expansion_list["main"] = internal_operation["plugin"]["expansion"]["main"].InitialValue(send_main).main()
 

@@ -3,17 +3,16 @@ import sys
 import os
 import copy
 
-
-from PIL import Image, ImageDraw, ImageFilter, ImageTk
-import PIL.Image as Image
-import PIL.ImageDraw as ImageDraw
-import PIL.ImageFont as ImageFont
+import cv2
+from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 
 
 class InitialValue:
     def __init__(self, data):
         self.main_window = data
-        self.main_ope = data.base_data["操作"]
+        self.basic_ope = data.base_data["操作"]
+        self.all_elements = data.base_data["記録"]
+        self.elements = data.base_data["基本"]
 
     def main(self):
 
@@ -33,11 +32,24 @@ class InitialValue:
             pass
 
         def preview():
-            select_time = 100
-            this_preview = self.main_window.internal_operation["out"]["output_video_image"]["CentralRole"].type_preview(
-                copy.deepcopy(self.main_ope.all_elements), self.main_ope.self.internal_operation, select_time)
+            user_select = "/Users/maruyama/Programs/test1222/1434.json"
+            self.all_elements, self.save_location = self.basic_ope["save"]["make_save"]["CentralRole"].input(self.all_elements, self.elements, self.basic_ope, user_select)
 
-            canvas.create_image(20, 20, anchor="nw", image=this_preview)
+            select_time = 100
+            this_preview = self.basic_ope["out"]["output_video_image"]["CentralRole"].type_preview(
+                copy.deepcopy(self.all_elements), self.basic_ope, select_time)
+
+            this_preview = cv2.resize(this_preview, (320, 180))
+            self.this_preview_tk = ImageTk.PhotoImage(image=Image.fromarray(this_preview), master=self.main_window.window)
+
+            #preview_label = Label(self.main_window.window)
+            # preview_label.configure(image=this_preview)
+            #Label(self.main_window.window, image=this_preview).pack()
+
+            canvas = self.main_window.tk.Canvas(self.main_window.window, width=320, height=180)
+            canvas.pack()
+            canvas.create_image(0, 0, anchor=self.main_window.tk.NW, image=self.this_preview_tk)
+            # canvas.pack()
 
         main_menubar_list = [
             ("ファイル", [("終了", window_exit), ("新規", project_new), ("開く", project_open), ("保存", project_save), ("上書き", project_overwrite_save)]),
@@ -51,9 +63,6 @@ class InitialValue:
         size = [500, 500]
         self.main_window.window_size_set(size)
         self.main_window.menubar_set(main_menubar_list)
-
-        canvas = self.main_window.tk.Canvas(self.main_window.window, width=320, height=180)
-        canvas.pack()
 
         return self.main_window
 

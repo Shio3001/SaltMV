@@ -5,10 +5,6 @@ import os
 import copy
 
 import cv2
-from PIL import Image, ImageDraw, ImageFilter, ImageTk
-import PIL.Image as Image
-import PIL.ImageDraw as ImageDraw
-import PIL.ImageFont as ImageFont
 
 
 import cv2
@@ -89,9 +85,16 @@ class CentralRole:
         editor = all_elements.editor_info
         export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
         all_elements = self.get_media(all_elements)
+
+        start_time = time.time()
+
         export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(select_time), operation_list, editor)
-        this_preview = ImageTk.PhotoImage(image=Image.fromarray(export_draw))
-        return this_preview
+        export_draw = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_BGRA2RGB)
+
+        elapsed_time = time.time() - start_time
+        print("処理時間 : " + str(elapsed_time) + "秒")
+
+        return export_draw
 
     def get_media(self, all_elements):
 
