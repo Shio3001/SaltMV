@@ -5,69 +5,38 @@ import os
 import copy
 import tkinter as tk
 
-from PIL import Image, ImageDraw, ImageFilter, ImageTk
-import PIL.Image as Image
-import PIL.ImageDraw as ImageDraw
-import PIL.ImageFont as ImageFont
-
 
 class CentralRole:
     def __init__(self):
         pass
 
     def main(self, all_elements, elements, internal_operation, app_name):
-        #main_window = tk.Tk()
-        #display = [main_window.winfo_screenwidth(), main_window.winfo_screenheight()]
-        #main_window_size = tuple(map(int, (display[0] * 0.4, display[0] * 0.4)))
-
-        main_window = send_data(None)
-
-        def window_exit():
-            main_window.window.destroy()
-
-        def project_new():
-            pass
-
-        def project_open():
-            pass
-
-        def project_save():
-            pass
-
-        def project_overwrite_save():
-            pass
-
-        main_menubar_list = [
-            ("ファイル", [("終了", window_exit), ("新規", project_new), ("開く", project_open), ("保存", project_save), ("上書き", project_overwrite_save)]),
-            ("ウインドウ", [("タイムライン", window_exit)]),
-            ("環境設定", [("基本設定", window_exit)])
-        ]
-
-        display_size = main_window.display_size_get()
-        main_window.window_title_set("メインウインドウ")
-        size = [500, 500]
-        main_window.window_size_set(size)
-        main_window.menubar_set(main_menubar_list)
-
         expansion_keys = internal_operation["plugin"]["expansion"].keys()
         expansion_list = {}
 
+        base_data = {"操作": internal_operation, "記録": all_elements}
+        send_main = SendData(None, base_data)
+        expansion_list["main"] = internal_operation["plugin"]["expansion"]["main"].InitialValue(send_main).main()
+
         for key in list(expansion_keys):
             print(key)
-            expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_data(main_window.window)).main()
+            if key != "main":
+                send_sub = SendData(expansion_list["main"].window, base_data)
+                expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_sub).main()
 
-        main_window.window.mainloop()
+        expansion_list["main"].window.mainloop()
 
         print("GUI終了")
 
 
-class send_data:
-    def __init__(self, main_window):
+class SendData:
+    def __init__(self, main_window, base_data):
         self.tk = tk
         self.menubar_list = {}
         self.window_size = [100, 100]
         self.window_name = "tkinter"
         self.main_window = main_window
+        self.base_data = base_data
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)

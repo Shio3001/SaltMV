@@ -5,6 +5,13 @@ import os
 import copy
 
 import cv2
+from PIL import Image, ImageDraw, ImageFilter, ImageTk
+import PIL.Image as Image
+import PIL.ImageDraw as ImageDraw
+import PIL.ImageFont as ImageFont
+
+
+import cv2
 import time
 
 
@@ -77,6 +84,14 @@ class CentralRole:
         print("処理時間 : " + str(elapsed_time) + "秒")
 
         return
+
+    def type_preview(self, all_elements, operation_list, select_time):  # プレビュー出力
+        editor = all_elements.editor_info
+        export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
+        all_elements = self.get_media(all_elements)
+        export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(select_time), operation_list, editor)
+        this_preview = ImageTk.PhotoImage(image=Image.fromarray(export_draw))
+        return this_preview
 
     def get_media(self, all_elements):
 
