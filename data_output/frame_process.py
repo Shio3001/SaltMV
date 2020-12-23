@@ -30,14 +30,14 @@ class CentralRole:
     def apply_layer(self, objectdict, this_layer, export_draw, operation_list, now_frame, editor):
         for this_object in this_layer.retention_object:  # ie = i_elementsの訳 #オブジェクト
             if this_object.staend_property[0] <= now_frame <= this_object.staend_property[1]:
-                export_draw = self.apply_object(objectdict, this_object, export_draw, operation_list, now_frame, editor)
+                export_draw = self.apply_object(objectdict, this_object, export_draw, operation_list, now_frame, editor, this_object.staend_property)
                 continue
 
             else:
                 pass
         return export_draw
 
-    def apply_object(self, objectdict, this_object, export_draw, operation_list, now_frame, editor):
+    def apply_object(self, objectdict, this_object, export_draw, operation_list, now_frame, editor, staend_property):
         # print(sys._getframe().f_code.co_name)
         # 位置以外の、オブジェクト生成はここでやれ
 
@@ -59,7 +59,7 @@ class CentralRole:
             for i in range(len(this_effect.effectPoint)):
                 this_effect.effectPoint[i]["time"] += this_object.staend_property[0]  # 時系列加算
 
-            adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation)
+            adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation, staend_property)
             starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]  # 新入りと古参を混ぜる
 
         editor_size = [editor[0], editor[1]]
@@ -93,7 +93,7 @@ class CentralRole:
         del adjusted_draw
         return draw
 
-    def apply_effect(self, objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation):
+    def apply_effect(self, objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation, staend_property):
         # print(sys._getframe().f_code.co_name)
 
         # 前のやつと等しいか、前野より高かったら取得して
@@ -115,15 +115,22 @@ class CentralRole:
         else:
             around_point[1] = this_point[this_point_number + 1]  # 次の地点、に戻すために一をたす
 
-        position = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
-                                                                                          (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
+        starting_point = [0, 0]
 
-        data = pluginElements(adjusted_draw, position, now_frame, editor, draw_operation)
-        adjusted_draw, starting_point = this_effect.procedure.main(data)
+        loop_this_effect = copy.deepcopy(this_effect)
+
+        for loop_now_frame in range(staend_property[0], now_frame + 1):
+            position = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
+                                                                                              (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
+
+            data = pluginElements(adjusted_draw, position, loop_now_frame, editor, draw_operation, staend_property)
+            adjusted_draw, starting_point = loop_this_effect.procedure.main(data)
+            del data
+
+        del loop_this_effect
 
         adjusted_draw = adjusted_draw.astype('uint8')
 
-        del data
         #adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, position, now_frame, editor, draw_operation)
 
         # ここに処理を描く adjusted_draw - > adjusted_draw
@@ -154,7 +161,7 @@ class CentralRole:
 
 
 class pluginElements:
-    def __init__(self, adjusted_draw, position, now_frame, editor, draw_operation):
+    def __init__(self, adjusted_draw, position, now_frame, editor, draw_operation, staend_property):
         self.draw = adjusted_draw
         self.position = position
         self.now_frame = now_frame
@@ -163,6 +170,7 @@ class pluginElements:
 
         self.editor_size = {"x": self.editor[0], "y": self.editor[1]}
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
+        self.staend_property = staend_property
 
         self.cv2 = cv2
         self.np = np
