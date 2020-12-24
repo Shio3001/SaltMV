@@ -35,7 +35,7 @@ class InitialValue:
             pass
 
         def preview():
-            user_select = "/Users/maruyama/Programs/test1223/1010.json"
+            user_select = "../test1224/1120"
             self.all_elements, _ = self.basic_ope["save"]["make_save"]["CentralRole"].input(self.all_elements, self.elements, self.basic_ope, user_select)
 
             select_time = 500
