@@ -45,7 +45,4 @@ class CentralRole:
 
         # self.starting_point = [x + y for x, y in zip(self.starting_point, speed_direction)]
         self.starting_point = [self.starting_point[k] + speed_direction[k] for k in range(2)]
-    # send_starting_point = [draw_operation.middle_change(self.starting_point[k], list(draw_size.values())[k], list(editor_size.values())[k]) for k in range(2)]
-
-        # ここまでは計算中心0,0が真ん中でもいいけど、returnするときは左上を0,0にすることを忘れないように！ draw_operation.middle_changeで可能
         return data.draw, self.starting_point

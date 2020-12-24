@@ -6,7 +6,6 @@ import numpy as np
 import cv2
 
 # オブジェクトのサイズを1/2したものを座標から引いて、でてきた座標に 640 , 360(これは画面サイズの半分)をたす
-# ../Nankoku_Workspace/1211/927
 
 
 class CentralRole:
@@ -60,7 +59,7 @@ class CentralRole:
                 this_effect.effectPoint[i]["time"] += this_object.staend_property[0]  # 時系列加算
 
             adjusted_draw, new_starting_point = self.apply_effect(objectdict, this_effect, adjusted_draw, operation_list, now_frame, editor, draw_operation, staend_property)
-            starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]  # 新入りと古参を混ぜる
+            starting_point = [x + y for (x, y) in zip(starting_point, new_starting_point)]  # 新しいのと古いのを混ぜる
 
         editor_size = [editor[0], editor[1]]
         draw_size = [adjusted_draw.shape[1], adjusted_draw.shape[0]]
@@ -119,13 +118,12 @@ class CentralRole:
 
         loop_this_effect = copy.deepcopy(this_effect)
 
-        for loop_now_frame in range(staend_property[0], now_frame + 1):
-            position = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
-                                                                                              (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
+        if loop_this_effect.export_loop is True:
+            for loop_now_frame in range(staend_property[0], now_frame + 1):
+                adjusted_draw, starting_point = self.loop_effect(operation_list, loop_this_effect, adjusted_draw, loop_now_frame, editor, draw_operation, staend_property, around_point)
 
-            data = pluginElements(adjusted_draw, position, loop_now_frame, editor, draw_operation, staend_property)
-            adjusted_draw, starting_point = loop_this_effect.procedure.main(data)
-            del data
+        if loop_this_effect.export_loop is False:
+            adjusted_draw, starting_point = self.loop_effect(operation_list, loop_this_effect, adjusted_draw, now_frame, editor, draw_operation, staend_property, around_point)
 
         del loop_this_effect
 
@@ -134,6 +132,16 @@ class CentralRole:
         #adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, position, now_frame, editor, draw_operation)
 
         # ここに処理を描く adjusted_draw - > adjusted_draw
+
+        return adjusted_draw, starting_point
+
+    def loop_effect(self, operation_list, loop_this_effect, adjusted_draw, now_frame, editor, draw_operation, staend_property, around_point):
+        position = {str(j): operation_list["out"]["current_location"]["CentralRole"].main((around_point[0]["time"], around_point[1]["time"]),
+                                                                                          (around_point[0][str(j)], around_point[1][str(j)]), now_frame) for j in list(around_point[0].keys()) if j != "time"}
+
+        data = pluginElements(adjusted_draw, position, now_frame, editor, draw_operation, staend_property)
+        adjusted_draw, starting_point = loop_this_effect.procedure.main(data)
+        del data
 
         return adjusted_draw, starting_point
 

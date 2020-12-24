@@ -72,7 +72,7 @@ operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.
 # plugin > file
 
 plugin_path = "plugin"
-#pathの指定方法は¥とかじゃなくて..でやれ
+# pathの指定方法は¥とかじゃなくて..でやれ
 
 this_os = str(os.name)
 if this_os == "nt":
@@ -114,6 +114,7 @@ class CentralRole:
         self.responselist = ["終了", "問題なし", "問題あり"]  # main.pyに戻ってくる時の応答リスト
 
     def main(self):
+
         if sys.argv[1] == "CUI":
             main_user_CUI_CentralRole = main_user_CUI.CentralRole()  # ユーザー操作を司る
             self.main_CUI(main_user_CUI_CentralRole)

@@ -48,6 +48,7 @@ class CentralRole:
         elapsed_time = time.time() - start_time
         print("処理時間 : " + str(elapsed_time) + "秒")
         print("1フレームあたり平均処理時間" + str(elapsed_time / editor[3]) + "秒")
+        print("{0}fps 1フレーム{1}".format(editor[2], 1 / editor[2]))
         print("")
 
         writer.release()
