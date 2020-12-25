@@ -14,7 +14,9 @@ class CentralRole:
         expansion_keys = internal_operation["plugin"]["expansion"].keys()
         expansion_list = {}
 
-        base_data = {"操作": internal_operation, "記録": all_elements, "基本": elements}
+        GUI_UI = internal_operation["plugin"]["GUI_UI"]
+
+        base_data = [internal_operation, all_elements, elements, GUI_UI]
         send_main = SendData(None, base_data)
         expansion_list["main"] = internal_operation["plugin"]["expansion"]["main"].InitialValue(send_main).main()
 
@@ -24,9 +26,12 @@ class CentralRole:
                 send_sub = SendData(expansion_list["main"].window, base_data)
                 expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_sub).main()
 
+        print(expansion_list)
         expansion_list["main"].window.mainloop()
 
         print("GUI終了")
+
+        return
 
 
 class SendData:
@@ -36,7 +41,11 @@ class SendData:
         self.window_size = [100, 100]
         self.window_name = "tkinter"
         self.main_window = main_window
-        self.base_data = base_data
+        self.operation = base_data[0]
+        self.all_elements = base_data[1]
+        self.elements = base_data[2]
+        print(base_data[3].keys())
+        self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window)) for key in list(base_data[3].keys())}
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
@@ -76,3 +85,9 @@ class SendData:
             print("終了")
 
         self.window.mainloop()
+
+
+class send_UI_data:
+    def __init__(self, window):
+        self.window = window
+        self.tk = tk

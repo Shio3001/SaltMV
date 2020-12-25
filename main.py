@@ -12,6 +12,9 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
+import importlib
+import datetime
+
 import main_user_CUI  # GUI処分 CUI中継操作
 import main_user_GUI
 
@@ -41,7 +44,9 @@ from data_output import obj_substantial
 from doc_save import make_save
 
 import elements
-import importlib
+
+start_time = datetime.datetime.now()
+
 
 if __name__ == "__main__":
     print("コマンドライン からの入力を確認")
@@ -155,5 +160,14 @@ class CentralRole:
 main_CentralRole = CentralRole()
 main_CentralRole.main()
 
+exit_time = datetime.datetime.now()
+
+operation_time = exit_time - start_time
+print("開始時間 {0} , 終了時間 : {1} , 操作時間: {2}".format(start_time, exit_time, operation_time))
+
+del operation_list
+del main_CentralRole
+
 # os.system("rm -rf " + "tmp")
+print("main 終了")
 sys.exit()

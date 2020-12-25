@@ -10,9 +10,11 @@ from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 class InitialValue:
     def __init__(self, data):
         self.main_window = data
-        self.basic_ope = data.base_data["操作"]
-        self.all_elements = data.base_data["記録"]
-        self.elements = data.base_data["基本"]
+        self.basic_ope = data.operation
+        self.all_elements = data.all_elements
+        self.elements = data.elements
+        self.GUI_UI = data.GUI_UI
+        self.tk = data.tk
 
         self.canvas = self.main_window.tk.Canvas(self.main_window.window, width=640, height=360)
         self.canvas.place(x=0, y=0)
@@ -47,6 +49,7 @@ class InitialValue:
 
             self.canvas.pack()
             self.canvas.create_image(320, 180, image=self.this_preview_tk)
+
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()
 
@@ -63,8 +66,11 @@ class InitialValue:
         self.main_window.window_size_set(size)
         self.main_window.menubar_set(main_menubar_list)
 
+        test = self.GUI_UI["button"].UI_set(text="てすと", position=(10, 10), size=(200, 100))
+
+        del test
+
+        #test = self.tk.Entry()
+        #test.place(x=90, y=70, width=150, height=30)
+
         return self.main_window
-
-
-class CentralRole:
-    pass

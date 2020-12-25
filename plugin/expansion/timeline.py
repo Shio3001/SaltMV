@@ -26,11 +26,6 @@ class InitialValue:
 
         return self.timeline
 
-        # timeline_window_size = tuple(map(int, (display[0] * 0.55, display[1] * 0.8)))
-        # timeline_window = tk.Toplevel(main_window)
-        # timeline_menubar_list = [("タイムライン", (["閉じる", self.exit]))]
-        # timeline_window = data.GUI_operation.window_set(timeline_window, "タイムライン", timeline_window_size, timeline_menubar_list)
-
 
 class CentralRole:
     pass
