@@ -10,14 +10,11 @@ from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 class InitialValue:
     def __init__(self, data):
         self.main_window = data
-        self.basic_ope = data.operation
-        self.all_elements = data.all_elements
-        self.elements = data.elements
-        self.GUI_UI = data.GUI_UI
-        self.tk = data.tk
-
-        self.canvas = self.main_window.tk.Canvas(self.main_window.window, width=640, height=360)
-        self.canvas.place(x=0, y=0)
+        self.basic_ope = self.main_window.operation
+        self.all_elements = self.main_window.all_elements
+        self.elements = self.main_window.elements
+        self.GUI_UI = self.main_window.GUI_UI
+        self.tk = self.main_window.tk
 
     def main(self):
 
@@ -47,6 +44,8 @@ class InitialValue:
             this_preview = cv2.resize(this_preview, (640, 360))
             self.this_preview_tk = ImageTk.PhotoImage(image=Image.fromarray(this_preview), master=self.main_window.window)
 
+            self.canvas = self.main_window.tk.Canvas(self.main_window.window, highlightthickness=0, width=640, height=360)
+            self.canvas.place(x=0, y=0)
             self.canvas.pack()
             self.canvas.create_image(320, 180, image=self.this_preview_tk)
 
@@ -66,7 +65,7 @@ class InitialValue:
         self.main_window.window_size_set(size)
         self.main_window.menubar_set(main_menubar_list)
 
-        test = self.GUI_UI["button"].UI_set(text="てすと", position=(10, 10), size=(200, 100))
+        test = self.GUI_UI["button"].UI_set(text="てすと", position=(200, 100), size=(100, 30))
 
         del test
 

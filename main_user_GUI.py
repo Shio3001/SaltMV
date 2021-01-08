@@ -5,6 +5,9 @@ import os
 import copy
 import tkinter as tk
 
+GUI_main_name = "GUI_main"
+GUI_base_Color = "#1a1a1a"
+
 
 class CentralRole:
     def __init__(self):
@@ -18,15 +21,16 @@ class CentralRole:
 
         base_data = [internal_operation, all_elements, elements, GUI_UI]
         send_main = SendData(None, base_data)
-        expansion_list["main"] = internal_operation["plugin"]["expansion"]["main"].InitialValue(send_main).main()
+        expansion_list["main"] = internal_operation["plugin"]["expansion"][GUI_main_name].InitialValue(send_main).main()
 
         for key in list(expansion_keys):
             print(key)
-            if key != "main":
+            if key != GUI_main_name:
                 send_sub = SendData(expansion_list["main"].window, base_data)
                 expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_sub).main()
 
         print(expansion_list)
+
         expansion_list["main"].window.mainloop()
 
         print("GUI終了")
@@ -51,6 +55,8 @@ class SendData:
             self.window = tk.Toplevel(self.main_window)
         else:
             self.window = tk.Tk()
+
+        self.window.configure(bg=GUI_base_Color)
 
     def display_size_get(self):
         self.display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
@@ -91,3 +97,17 @@ class send_UI_data:
     def __init__(self, window):
         self.window = window
         self.tk = tk
+
+        print("パーツ初期設定")
+
+    def new_canvas(self, width_size=10, height_size=10):
+        self.canvas = tk.Canvas(self.window, highlightthickness=0, width=width_size, height=height_size)  # Canvasの作成
+        print(type(self.canvas))
+        return self.canvas
+
+    def full_canvas(self, color="#ffffff"):
+        pass
+
+    def for_Button_canvas(self):
+        pass
+        # return self.canvas

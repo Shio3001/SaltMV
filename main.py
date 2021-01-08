@@ -120,17 +120,17 @@ class CentralRole:
 
     def main(self):
 
-        if sys.argv[1] == "CUI":
+        if len(sys.argv) == 1:
+            main_user_CUI_CentralRole = main_user_CUI.CentralRole()
+            self.main_CUI(main_user_CUI_CentralRole)
+
+        elif sys.argv[1] == "CUI":
             main_user_CUI_CentralRole = main_user_CUI.CentralRole()  # ユーザー操作を司る
             self.main_CUI(main_user_CUI_CentralRole)
 
         elif sys.argv[1] == "GUI":
             main_user_GUI_CentralRole = main_user_GUI.CentralRole()  # ユーザー操作を司る
             self.main_GUI(main_user_GUI_CentralRole)
-
-        else:
-            main_user_CUI_CentralRole = main_user_CUI.CentralRole()
-            self.main_CUI(main_user_CUI_CentralRole)
 
         return
 
