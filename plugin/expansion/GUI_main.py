@@ -37,7 +37,7 @@ class InitialValue:
             user_select = "../test1224/1120"
             self.all_elements, _ = self.basic_ope["save"]["make_save"]["CentralRole"].input(self.all_elements, self.elements, self.basic_ope, user_select)
 
-            select_time = 500
+            select_time = 550
             this_preview = self.basic_ope["out"]["output_video_image"]["CentralRole"].type_preview(
                 copy.deepcopy(self.all_elements), self.basic_ope, select_time)
 
@@ -65,9 +65,19 @@ class InitialValue:
         self.main_window.window_size_set(size)
         self.main_window.menubar_set(main_menubar_list)
 
-        test = self.GUI_UI["button"].UI_set(text="てすと", position=(200, 100), size=(100, 30))
+        pos = [0, 0]
 
+        def test1(self):
+            pos[0] += 10
+            print(pos)
+
+        def test2(self):
+            print("mi")
+
+        test = self.GUI_UI["button"].UI_set(text="てすと", position=pos, size=(100, 30), user_event="Button-2", processing=test1)
+        test2 = self.GUI_UI["button"].UI_set(text="てすと2", position=(500, 200), size=(200, 30), user_event="Button-1", processing=test2)
         del test
+        del test2
 
         #test = self.tk.Entry()
         #test.place(x=90, y=70, width=150, height=30)

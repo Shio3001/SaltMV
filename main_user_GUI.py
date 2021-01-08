@@ -49,7 +49,7 @@ class SendData:
         self.all_elements = base_data[1]
         self.elements = base_data[2]
         print(base_data[3].keys())
-        self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window)) for key in list(base_data[3].keys())}
+        self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window, self.operation)) for key in list(base_data[3].keys())}
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
@@ -94,20 +94,56 @@ class SendData:
 
 
 class send_UI_data:
-    def __init__(self, window):
+    def __init__(self, window, operation):
         self.window = window
         self.tk = tk
 
+        self.canvas_size = [10, 10]
+        self.canvas = None
+
+        self.position = [0, 0]
+        self.operation = operation
+
         print("パーツ初期設定")
 
-    def new_canvas(self, width_size=10, height_size=10):
-        self.canvas = tk.Canvas(self.window, highlightthickness=0, width=width_size, height=height_size)  # Canvasの作成
-        print(type(self.canvas))
-        return self.canvas
+    def new_canvas(self, width_size=None, height_size=None, width_position=None, height_position=None):
+
+        if not width_size is None:
+            self.canvas_size[0] = width_size
+        if not height_size is None:
+            self.canvas_size[1] = height_size
+        if not width_position is None:
+            self.position[0] = width_position
+        if not height_position is None:
+            self.position[1] = height_position
+
+        del self.canvas
+
+        self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])  # Canvasの作成
+        self.canvas.place(x=self.position[0], y=self.position[1])
 
     def full_canvas(self, color="#ffffff"):
-        pass
+        self.__canvas_authenticity()
+        self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill='green', outline="")  # 塗りつぶし
 
-    def for_Button_canvas(self):
-        pass
-        # return self.canvas
+    def for_Button_canvas(self, processing, user_event):
+        if processing is None:
+            return
+
+        self.__canvas_authenticity()
+        self.canvas.bind('<{0}>'.format(user_event), processing)
+
+    def text_canvas(self, text="テキスト未指定"):
+        self.__canvas_authenticity()
+        canvas_center = [s / 2 for s in self.canvas_size]
+        self.canvas.create_text(canvas_center[0], canvas_center[1], text=text)
+
+    #ユーザー用 ----ここから上
+    #処理用    ----ここから下
+
+    def __canvas_authenticity(self):
+        if str(type(self.canvas)) == "<class 'tkinter.Canvas'>":
+            return True
+        else:
+            print("canvasが設定されていません")
+            return False
