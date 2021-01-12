@@ -49,14 +49,21 @@ class SendData:
         self.all_elements = base_data[1]
         self.elements = base_data[2]
         print(base_data[3].keys())
-        self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window, self.operation)) for key in list(base_data[3].keys())}
+
+        # self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window, self.operation)) for key in list(base_data[3].keys())}
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
         else:
             self.window = tk.Tk()
 
+        self.GUI_UI = base_data[3]
+        self.UI_operation = send_UI_data
+
         self.window.configure(bg=GUI_base_Color)
+
+    def new_UI_obj(self, UI_name="button"):
+        return self.GUI_UI[UI_name](self.UI_operation)
 
     def display_size_get(self):
         self.display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
@@ -97,14 +104,76 @@ class send_UI_data:
     def __init__(self, window, operation):
         self.window = window
         self.tk = tk
-
-        self.canvas_size = [10, 10]
-        self.canvas = None
-
-        self.position = [0, 0]
         self.operation = operation
 
+        self.canvas = None
+
+        self.canvas_size = [10, 10]
+        self.canvas_position = [0, 0]
+
+        self.canvas_color = "#ffffff"
+
+        self.text = None
+        self.text_position = [0, 0]
+
+        self.event_key = None
+        self.event_processing = None
+
         print("パーツ初期設定")
+
+    def canvas_update(self):
+        del self.canvas
+        self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
+        self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
+        self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし
+        if not self.text is None:
+            canvas_center = [s / 2 for s in self.canvas_size]
+            self.canvas.create_text(canvas_center[0], canvas_center[1], text=self.text)
+
+        if not self.event_key is None and not self.event_processing is None:
+            self.canvas.bind('<{0}>'.format(self.event_key), self.event_processing)
+
+    def canvas_for_button(self, processing=None, user_event=None):
+        if processing is None:
+            return
+
+        if not user_event is None:
+            self.event_key = user_event
+            self.event_processing = processing
+
+    def edit_canvas_position(self, width_position=None, height_position=None):
+        if not width_position is None:
+            self.canvas_position[0] = width_position
+        if not height_position is None:
+            self.canvas_position[1] = height_position
+
+    def edit_canvas_size(self, width_size=None, height_size=None):
+        if not width_size is None:
+            self.canvas_size[0] = width_size
+        if not height_size is None:
+            self.canvas_size[1] = height_size
+
+    def edit_canvas_text(self, text=None, width_text_position=None, height_text_position=None):
+        self.text = text
+        self.text_position = [width_text_position, height_text_position]
+
+    def edit_canvas_color(self, color=None):
+        if not color is None:
+            self.canvas_color = color
+
+    # def canvas_update(self):
+        # self.canvas.create_rectangle(self.canvas_position[0], self.canvas_position[1], self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし
+
+    """
+    def place_canvas(self, width_position=None, height_position=None):
+
+        
+
+    def size_canvas(self)
+
+    """
+
+    """
 
     def new_canvas(self, width_size=None, height_size=None, width_position=None, height_position=None):
 
@@ -138,8 +207,10 @@ class send_UI_data:
         canvas_center = [s / 2 for s in self.canvas_size]
         self.canvas.create_text(canvas_center[0], canvas_center[1], text=text)
 
-    #ユーザー用 ----ここから上
-    #処理用    ----ここから下
+    # ユーザー用 ----ここから上
+
+    """
+    # 処理用    ----ここから下
 
     def __canvas_authenticity(self):
         if str(type(self.canvas)) == "<class 'tkinter.Canvas'>":

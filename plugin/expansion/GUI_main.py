@@ -34,6 +34,7 @@ class InitialValue:
             pass
 
         def preview():
+            """
             user_select = "../test1224/1120"
             self.all_elements, _ = self.basic_ope["save"]["make_save"]["CentralRole"].input(self.all_elements, self.elements, self.basic_ope, user_select)
 
@@ -48,6 +49,8 @@ class InitialValue:
             self.canvas.place(x=0, y=0)
             self.canvas.pack()
             self.canvas.create_image(320, 180, image=self.this_preview_tk)
+
+            """
 
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()
@@ -65,19 +68,20 @@ class InitialValue:
         self.main_window.window_size_set(size)
         self.main_window.menubar_set(main_menubar_list)
 
-        pos = [0, 0]
+        self.GUI_UI
 
-        def test1(self):
-            pos[0] += 10
-            print(pos)
+        def test1(event):
+            #self.test1_obj.canvas_position[0] += 10
+            # self.test1_obj.canvas_update()
+            print("a")
 
-        def test2(self):
-            print("mi")
+        def test2(event):
+            print("b")
 
-        test = self.GUI_UI["button"].UI_set(text="てすと", position=pos, size=(100, 30), user_event="Button-2", processing=test1)
-        test2 = self.GUI_UI["button"].UI_set(text="てすと2", position=(500, 200), size=(200, 30), user_event="Button-1", processing=test2)
-        del test
-        del test2
+        #self.test1_obj = self.GUI_UI["button"].UI_set(text="てすと1", position=(20, 10), size=(100, 30), user_event="Button-2", processing=test1)
+        #self.test2_obj = self.GUI_UI["button"].UI_set(text="てすと2", position=(20, 50), size=(100, 30), user_event="Button-1", processing=test2)
+        #del self.test
+        #del self.test2
 
         #test = self.tk.Entry()
         #test.place(x=90, y=70, width=150, height=30)
