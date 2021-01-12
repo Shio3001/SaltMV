@@ -20,13 +20,13 @@ class CentralRole:
         GUI_UI = internal_operation["plugin"]["GUI_UI"]
 
         base_data = [internal_operation, all_elements, elements, GUI_UI]
-        send_main = SendData(None, base_data)
+        send_main = SendWindowData(None, base_data)
         expansion_list["main"] = internal_operation["plugin"]["expansion"][GUI_main_name].InitialValue(send_main).main()
 
         for key in list(expansion_keys):
             print(key)
             if key != GUI_main_name:
-                send_sub = SendData(expansion_list["main"].window, base_data)
+                send_sub = SendWindowData(expansion_list["main"].window, base_data)
                 expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_sub).main()
 
         print(expansion_list)
@@ -38,7 +38,7 @@ class CentralRole:
         return
 
 
-class SendData:
+class SendWindowData:  # window生成のためのデータ
     def __init__(self, main_window, base_data):
         self.tk = tk
         self.menubar_list = {}
@@ -57,13 +57,10 @@ class SendData:
         else:
             self.window = tk.Tk()
 
-        self.GUI_UI = base_data[3]
-        self.UI_operation = send_UI_data
+        self.GUI_UI_parts = base_data[3]
+        self.UI_operation = SendUIData(self.window, self.operation)
 
         self.window.configure(bg=GUI_base_Color)
-
-    def new_UI_obj(self, UI_name="button"):
-        return self.GUI_UI[UI_name](self.UI_operation)
 
     def display_size_get(self):
         self.display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
@@ -100,7 +97,7 @@ class SendData:
         self.window.mainloop()
 
 
-class send_UI_data:
+class SendUIData:  # パーツひとつあたりのためのclass
     def __init__(self, window, operation):
         self.window = window
         self.tk = tk

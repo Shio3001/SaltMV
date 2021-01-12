@@ -13,8 +13,10 @@ class InitialValue:
         self.basic_ope = self.main_window.operation
         self.all_elements = self.main_window.all_elements
         self.elements = self.main_window.elements
-        self.GUI_UI = self.main_window.GUI_UI
         self.tk = self.main_window.tk
+
+        self.GUI_UI_parts = self.main_window.GUI_UI_parts  # パーツひとつひとつのデータ
+        self.UI_operation = self.main_window.UI_operation  # パーツを整形するためのデータ
 
     def main(self):
 
@@ -68,7 +70,8 @@ class InitialValue:
         self.main_window.window_size_set(size)
         self.main_window.menubar_set(main_menubar_list)
 
-        self.GUI_UI
+        self.UI_operation.canvas_size = [100, 100]
+        test_button = self.GUI_UI_parts["button"].parts().UI_set(self.UI_operation)
 
         def test1(event):
             #self.test1_obj.canvas_position[0] += 10
@@ -77,6 +80,8 @@ class InitialValue:
 
         def test2(event):
             print("b")
+
+        test_button.canvas_for_button(processing=test1, user_event="Button-1")
 
         #self.test1_obj = self.GUI_UI["button"].UI_set(text="てすと1", position=(20, 10), size=(100, 30), user_event="Button-2", processing=test1)
         #self.test2_obj = self.GUI_UI["button"].UI_set(text="てすと2", position=(20, 50), size=(100, 30), user_event="Button-1", processing=test2)
