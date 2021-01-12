@@ -119,7 +119,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("パーツ初期設定")
 
     def canvas_update(self):
-        del self.canvas
+
+        if not self.canvas is None:
+            self.canvas.destroy()
+
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
         self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
         self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし
@@ -138,11 +141,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.event_key = user_event
             self.event_processing = processing
 
+        self.canvas_update()
+
     def edit_canvas_position(self, width_position=None, height_position=None):
         if not width_position is None:
             self.canvas_position[0] = width_position
         if not height_position is None:
             self.canvas_position[1] = height_position
+
+        self.canvas_update()
 
     def edit_canvas_size(self, width_size=None, height_size=None):
         if not width_size is None:
@@ -150,13 +157,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not height_size is None:
             self.canvas_size[1] = height_size
 
+        self.canvas_update()
+
     def edit_canvas_text(self, text=None, width_text_position=None, height_text_position=None):
         self.text = text
         self.text_position = [width_text_position, height_text_position]
 
+        self.canvas_update()
+
     def edit_canvas_color(self, color=None):
         if not color is None:
             self.canvas_color = color
+
+        self.canvas_update()
 
     # def canvas_update(self):
         # self.canvas.create_rectangle(self.canvas_position[0], self.canvas_position[1], self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし

@@ -71,12 +71,14 @@ class InitialValue:
         self.main_window.menubar_set(main_menubar_list)
 
         self.UI_operation.canvas_size = [100, 100]
+        self.UI_operation.canvas_position = [0, 0]
         test_button = self.GUI_UI_parts["button"].parts().UI_set(self.UI_operation)
 
         def test1(event):
             #self.test1_obj.canvas_position[0] += 10
             # self.test1_obj.canvas_update()
-            print("a")
+            print(test_button.canvas_position)
+            test_button.edit_canvas_position(width_position=test_button.canvas_position[0] + 20)
 
         def test2(event):
             print("b")
