@@ -6,7 +6,8 @@ import copy
 import tkinter as tk
 
 GUI_main_name = "GUI_main"
-GUI_base_Color = "#1a1a1a"
+GUI_base_color = "#1a1a1a"
+GUI_alpha_color = "#000000"
 
 
 class CentralRole:
@@ -58,9 +59,13 @@ class SendWindowData:  # window生成のためのデータ
             self.window = tk.Tk()
 
         self.GUI_UI_parts = base_data[3]
-        self.UI_operation = SendUIData(self.window, self.operation)
+        # self.UI_operation =
 
-        self.window.configure(bg=GUI_base_Color)
+        self.window.configure(bg=GUI_base_color)
+
+    def new_parts(self, parts_name=None):
+        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window, self.operation))
+        return new_parts_obj
 
     def display_size_get(self):
         self.display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
@@ -108,7 +113,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_size = [10, 10]
         self.canvas_position = [0, 0]
 
-        self.canvas_color = "#ffffff"
+        self.canvas_color = GUI_alpha_color
 
         self.text = None
         self.text_position = [0, 0]
@@ -116,12 +121,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.event_key = None
         self.event_processing = None
 
+        self.processing = self.template
+        self.user_event = "Button-1"
+
         print("パーツ初期設定")
+
+    def template(self, event):
+        print("関数が指定されていません")
 
     def canvas_update(self):
 
         if not self.canvas is None:
             self.canvas.destroy()
+            print("パーツ更新のため削除")
 
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
         self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
@@ -135,12 +147,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def canvas_for_button(self, processing=None, user_event=None):
         if processing is None:
+            self.processing = self.template
             return
 
         if not user_event is None:
             self.event_key = user_event
             self.event_processing = processing
-
         self.canvas_update()
 
     def edit_canvas_position(self, width_position=None, height_position=None):
@@ -148,7 +160,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_position[0] = width_position
         if not height_position is None:
             self.canvas_position[1] = height_position
-
         self.canvas_update()
 
     def edit_canvas_size(self, width_size=None, height_size=None):
@@ -156,70 +167,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_size[0] = width_size
         if not height_size is None:
             self.canvas_size[1] = height_size
-
         self.canvas_update()
 
     def edit_canvas_text(self, text=None, width_text_position=None, height_text_position=None):
         self.text = text
         self.text_position = [width_text_position, height_text_position]
-
         self.canvas_update()
 
     def edit_canvas_color(self, color=None):
         if not color is None:
             self.canvas_color = color
-
         self.canvas_update()
 
-    # def canvas_update(self):
-        # self.canvas.create_rectangle(self.canvas_position[0], self.canvas_position[1], self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし
-
-    """
-    def place_canvas(self, width_position=None, height_position=None):
-
-        
-
-    def size_canvas(self)
-
-    """
-
-    """
-
-    def new_canvas(self, width_size=None, height_size=None, width_position=None, height_position=None):
-
-        if not width_size is None:
-            self.canvas_size[0] = width_size
-        if not height_size is None:
-            self.canvas_size[1] = height_size
-        if not width_position is None:
-            self.position[0] = width_position
-        if not height_position is None:
-            self.position[1] = height_position
-
-        del self.canvas
-
-        self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])  # Canvasの作成
-        self.canvas.place(x=self.position[0], y=self.position[1])
-
-    def full_canvas(self, color="#ffffff"):
-        self.__canvas_authenticity()
-        self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill='green', outline="")  # 塗りつぶし
-
-    def for_Button_canvas(self, processing, user_event):
-        if processing is None:
-            return
-
-        self.__canvas_authenticity()
-        self.canvas.bind('<{0}>'.format(user_event), processing)
-
-    def text_canvas(self, text="テキスト未指定"):
-        self.__canvas_authenticity()
-        canvas_center = [s / 2 for s in self.canvas_size]
-        self.canvas.create_text(canvas_center[0], canvas_center[1], text=text)
-
-    # ユーザー用 ----ここから上
-
-    """
     # 処理用    ----ここから下
 
     def __canvas_authenticity(self):
