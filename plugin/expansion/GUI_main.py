@@ -71,24 +71,26 @@ class InitialValue:
         self.main_window.menubar_set(main_menubar_list)
 
         test_button = self.main_window.new_parts(parts_name="button")
-        test_button2 = self.main_window.new_parts(parts_name="button")
 
         def test1(event):
-            #self.test1_obj.canvas_position[0] += 10
-            # self.test1_obj.canvas_update()
-            print(test_button.canvas_position)
             test_button.edit_canvas_position(width_position=test_button.canvas_position[0] + 20)
 
-        def test2(event):
-            print("b")
-
         test_button.edit_canvas_size(width_size=100, height_size=100)
+        test_button.canvas_for_button(processing=test1, user_event="Button-1")
+
+        def test2(event):
+            test_box.edit_textbox_position(height_position=test_box.canvas_position[1] + 10)
+
+        test_button2 = self.main_window.new_parts(parts_name="button")
         test_button2.edit_canvas_size(width_size=200, height_size=200)
-
-        #test_button.canvas_for_button(processing=test1, user_event="Button-1")
-        #test_button2.canvas_for_button(processing=test2, user_event="Button-2")
-
         test_button2.edit_canvas_position(height_position=test_button2.canvas_position[1] + 150)
+        test_button2.edit_canvas_text(text="あああああ")
+        test_button2.canvas_for_button(processing=test2, user_event="Button-1")
+
+        test_box = self.main_window.new_parts(parts_name="textbox")
+        test_box2 = self.main_window.new_parts(parts_name="textbox")
+        test_box2.edit_textbox_position(width_position=200, height_position=200)
+        #test_button2.canvas_for_button(processing=test2, user_event="Button-2")
 
         #self.test1_obj = self.GUI_UI["button"].UI_set(text="てすと1", position=(20, 10), size=(100, 30), user_event="Button-2", processing=test1)
         #self.test2_obj = self.GUI_UI["button"].UI_set(text="てすと2", position=(20, 50), size=(100, 30), user_event="Button-1", processing=test2)

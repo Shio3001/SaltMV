@@ -104,6 +104,8 @@ class SendWindowData:  # window生成のためのデータ
 
 class SendUIData:  # パーツひとつあたりのためのclass
     def __init__(self, window, operation):
+        # canvas系：文字入力なし 表示だけ
+        # textbox系：文字入力あり 入力あり
         self.window = window
         self.tk = tk
         self.operation = operation
@@ -115,7 +117,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas_color = GUI_alpha_color
 
-        self.text = None
+        self.text = ""
         self.text_position = [0, 0]
 
         self.event_key = None
@@ -179,7 +181,31 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_color = color
         self.canvas_update()
 
-    # 処理用    ----ここから下
+    def textbox_update(self):
+        if not self.canvas is None:
+            _ = self.textbox_text_get()
+            self.canvas.destroy()
+            print("パーツ更新のため削除")
+            print(self.text)
+
+        self.canvas = tk.Entry()
+        self.canvas = self.tk.Entry(width=self.canvas_size[0], highlightthickness=0, relief="flat")
+        self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
+
+        self.canvas.insert(0, self.text)
+
+        # self.text_box.bind("<Key>", self.textbox_text_event)
+
+    def textbox_text_get(self):
+        self.text = self.canvas.get()
+        return self.text
+
+    def edit_textbox_position(self, width_position=None, height_position=None):
+        if not width_position is None:
+            self.canvas_position[0] = width_position
+        if not height_position is None:
+            self.canvas_position[1] = height_position
+        self.textbox_update()
 
     def __canvas_authenticity(self):
         if str(type(self.canvas)) == "<class 'tkinter.Canvas'>":
