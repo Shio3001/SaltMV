@@ -79,7 +79,7 @@ class InitialValue:
         test_button.canvas_for_button(processing=test1, user_event="Button-1")
 
         def test2(event):
-            test_box.edit_textbox_position(height_position=test_box.canvas_position[1] + 10)
+            test_box[0].edit_textbox_position(height_position=test_box.canvas_position[1] + 10)
 
         test_button2 = self.main_window.new_parts(parts_name="button")
         test_button2.edit_canvas_size(width_size=200, height_size=200)
@@ -89,7 +89,7 @@ class InitialValue:
 
         test_box = self.main_window.new_parts(parts_name="textbox")
         test_box2 = self.main_window.new_parts(parts_name="textbox")
-        test_box2.edit_textbox_position(width_position=200, height_position=200)
+        test_box2[1].edit_textbox_position(width_position=200, height_position=200)
         #test_button2.canvas_for_button(processing=test2, user_event="Button-2")
 
         #self.test1_obj = self.GUI_UI["button"].UI_set(text="てすと1", position=(20, 10), size=(100, 30), user_event="Button-2", processing=test1)
