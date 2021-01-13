@@ -64,7 +64,7 @@ class SendWindowData:  # window生成のためのデータ
         self.window.configure(bg=GUI_base_color)
 
     def new_parts(self, parts_name=None):
-        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window, self.operation))
+        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window))
         return new_parts_obj
 
     def display_size_get(self):
@@ -103,12 +103,11 @@ class SendWindowData:  # window生成のためのデータ
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, operation):
+    def __init__(self, window):
         # canvas系：文字入力なし 表示だけ
         # textbox系：文字入力あり 入力あり
         self.window = window
         self.tk = tk
-        self.operation = operation
 
         self.canvas = None
 
@@ -126,13 +125,16 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.processing = self.template
         self.user_event = "Button-1"
 
+        self.mouse_position = [0, 0]
+
+        self.numerical = {}
+
         print("パーツ初期設定")
 
     def template(self, event):
         print("関数が指定されていません")
 
     def canvas_update(self):
-
         if not self.canvas is None:
             self.canvas.destroy()
             print("パーツ更新のため削除")
@@ -144,7 +146,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             canvas_center = [s / 2 for s in self.canvas_size]
             self.canvas.create_text(canvas_center[0], canvas_center[1], text=self.text)
 
-        if not self.event_key is None and not self.event_processing is None:
+        if not self.event_key is None and not self.event_processing is None:  # canvasのボタン化
             self.canvas.bind('<{0}>'.format(self.event_key), self.event_processing)
 
     def canvas_for_button(self, processing=None, user_event=None):
@@ -213,3 +215,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         else:
             print("canvasが設定されていません")
             return False
+
+    def __mouse_position_get(self, event):
+        self.mouse_position = [event.x, event.y]
