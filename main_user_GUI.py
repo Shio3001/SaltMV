@@ -147,7 +147,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         for data in list(self.view_data.values()):
             print(data)
             if data.fill == True:
-                self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=data.color, outline="")  # 塗りつぶし
+                self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし
             else:
                 self.canvas.create_rectangle(data.position[0], data.position[1], data.size[0], data.size[1], fill=data.color, outline="")  # 塗りつぶし
 
@@ -185,6 +185,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def edit_canvas_text(self, text=None, width_text_position=None, height_text_position=None):
         self.text = text
         self.text_position = [width_text_position, height_text_position]
+        self.canvas_update()
+
+    def edit_canvas_color(self, color=None):
+        if not color is None:
+            self.canvas_color = color
         self.canvas_update()
 
     def edit_view_new(self, name):
