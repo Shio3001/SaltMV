@@ -129,6 +129,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.view_data = {}
 
+        self.motion_history = []
         self.mouse_motion = {"catch": False}
         self.mouse_touch = {"cursor": None}
 
@@ -301,6 +302,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def notion_andkey(self, name):  # マウスが動いたときのeventを設定
         self.notion_key = name
 
+    def get_mouse_position(self):
+        # motion_history_difference
+        x = self.motion_history[-2]["x"] - self.motion_history[-1]["x"]
+        y = self.motion_history[-2]["y"] - self.motion_history[-1]["y"]
+        return self.mouse_motion, self.mouse_touch, (x, y)
+
     def __mouse_position_get(self, event):
         #self.mouse_position = [event.x, event.y, event.x + self.position[0], event.y + self.position[1]]
         # print(self.mouse_position)
@@ -341,6 +348,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if under - tolerance <= self.mouse_motion["y"] <= under + tolerance:
             self.mouse_touch["under"] = True
+
+        self.motion_history.append(self.mouse_motion)
+
+        now_history = int(len(self.motion_history))
+        if now_history >= 3:
+            del self.motion_history[0:2]
+            print(now_history)
 
         print(self.mouse_motion)
         print(self.mouse_touch)
