@@ -129,7 +129,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.view_data = {}
 
-        self.mouse_detection = MouseDetectionData()
+        self.mouse_motion = {"catch": False}
+        self.mouse_canvas_touch = {}
 
         print("パーツ初期設定")
 
@@ -155,6 +156,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if not self.event_key is None and not self.event_processing is None:  # canvasのボタン化
             self.canvas.bind('<{0}>'.format(self.event_key), self.event_processing)
+
+        if self.mouse_motion["catch"] == True:
+            self.canvas.bind("<Motion>", self.__mouse_position_get)
 
     def canvas_for_button(self, processing=None, user_event=None):
         if processing is None:
@@ -183,6 +187,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def edit_canvas_text(self, text=None, width_text_position=None, height_text_position=None):
         self.text = text
         self.text_position = [width_text_position, height_text_position]
+        self.canvas_update()
+
+    def set_mouse_motion(self, select):
+        #self.canvas.bind("<Motion>", motion)
+        self.mouse_motion["catch"] = select
+        print("追加 ", self.mouse_motion["catch"])
         self.canvas_update()
 
     """
@@ -235,6 +245,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas.insert(0, self.text)
 
+        if self.mouse_motion["catch"] == True:
+            self.canvas.bind("<Motion>", self.__mouse_position_get)
         # self.text_box.bind("<Key>", self.textbox_text_event)
 
     def textbox_text_get(self):
@@ -256,7 +268,33 @@ class SendUIData:  # パーツひとつあたりのためのclass
             return False
 
     def __mouse_position_get(self, event):
-        self.mouse_position = [event.x, event.y]
+        #self.mouse_position = [event.x, event.y, event.x + self.canvas_position[0], event.y + self.canvas_position[1]]
+        # print(self.mouse_position)
+        self.mouse_motion["canvas_x"] = int(event.x)
+        self.mouse_motion["canvas_y"] = int(event.y)
+        self.mouse_motion["window_x"] = int(self.canvas_position[0] + event.x)
+        self.mouse_motion["window_y"] = int(self.canvas_position[1] + event.y)
+
+        self.mouse_canvas_touch["touch_left"] = False  # 左
+        self.mouse_canvas_touch["touch_right"] = False  # 右
+        self.mouse_canvas_touch["touch_top"] = False
+        self.mouse_canvas_touch["touch_under"] = False
+
+        if 0 <= self.mouse_motion["canvas_x"] <= 0+1:
+            self.mouse_canvas_touch["touch_left"] = True
+
+        if self.canvas_size[0] - 1 <= self.mouse_motion["canvas_x"] <= self.canvas_size[0]:
+            self.mouse_canvas_touch["touch_right"] = True
+
+        if 0 <= self.mouse_motion["canvas_y"] <= 0 + 1:
+            self.mouse_canvas_touch["touch_top"] = True
+
+        if self.canvas_size[1] - 1 <= self.mouse_motion["canvas_y"] <= self.canvas_size[1]:
+            self.mouse_canvas_touch["touch_under"] = True
+
+        print(self.mouse_motion)
+        print(self.mouse_canvas_touch)
+        print()
 
     # def mouse_position_decision(self):
     #
@@ -268,13 +306,5 @@ class PartsViewData:
         self.position = [0, 0]
         self.size = [0, 0]
         self.fill = False
-
-
-class MouseDetectionData:
-    def __init__(self):
-        self.canvas_area_range = False
-        self.canvas_edge = None
-        self.view_area_range = {}
-        self.view_edge = {}
 
 # classひとつひとつに描画するデータを差し込み、classの数forかなにかでまわして描画していく作戦s
