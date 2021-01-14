@@ -9,8 +9,9 @@ class parts:
         data.edit_canvas_position(width_position=100, height_position=200)
         data.edit_canvas_size(width_size=100, height_size=300)
         data.edit_view_color("a", color="#0000ff")
-        data.canvas_for_button(processing=data.processing, user_event=data.user_event)
-        data.set_mouse_motion(True)
+        data.canvas_for_event(processing=data.processing, user_event=data.user_event)
+        # data.set_mouse_motion(True)
+        # data.set_cursor("none")
 
         print("追加")
 
