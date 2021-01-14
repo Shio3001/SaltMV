@@ -114,7 +114,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_size = [10, 10]
         self.canvas_position = [0, 0]
 
-        self.canvas_color = GUI_alpha_color
+        #self.canvas_color = GUI_alpha_color
 
         self.text = ""
         self.text_position = [0, 0]
@@ -129,6 +129,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.view_data = {}
 
+        self.mouse_detection = MouseDetectionData()
+
         print("パーツ初期設定")
 
     def template(self, event):
@@ -141,13 +143,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
         self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
-
-        print(self.view_data)
-
         for data in list(self.view_data.values()):
-            print(data)
             if data.fill == True:
-                self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=self.canvas_color, outline="")  # 塗りつぶし
+                self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=data.color, outline="")  # 塗りつぶし
             else:
                 self.canvas.create_rectangle(data.position[0], data.position[1], data.size[0], data.size[1], fill=data.color, outline="")  # 塗りつぶし
 
@@ -187,10 +185,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.text_position = [width_text_position, height_text_position]
         self.canvas_update()
 
+    """
     def edit_canvas_color(self, color=None):
         if not color is None:
             self.canvas_color = color
         self.canvas_update()
+    """
 
     def edit_view_new(self, name):
         self.view_data[name] = PartsViewData()
@@ -215,11 +215,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.view_data[name].size[1] = height_size
         self.canvas_update()
 
-    def set_view_fill_on(self, name):
-        self.view_data[name].fill = True
-
-    def set_view_fill_off(self, name):
-        self.view_data[name].fill = False
+    def set_view_fill(self, name, fill_select):
+        self.view_data[name].fill = fill_select
+        self.canvas_update()
 
     def disclosure(self):  # canvasに書かれている描画keyを開示
         print(list(self.view_data.keys()))
@@ -260,6 +258,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def __mouse_position_get(self, event):
         self.mouse_position = [event.x, event.y]
 
+    # def mouse_position_decision(self):
+    #
+
 
 class PartsViewData:
     def __init__(self):
@@ -267,5 +268,13 @@ class PartsViewData:
         self.position = [0, 0]
         self.size = [0, 0]
         self.fill = False
+
+
+class MouseDetectionData:
+    def __init__(self):
+        self.canvas_area_range = False
+        self.canvas_edge = None
+        self.view_area_range = {}
+        self.view_edge = {}
 
 # classひとつひとつに描画するデータを差し込み、classの数forかなにかでまわして描画していく作戦s

@@ -87,7 +87,7 @@ class InitialValue:
         # test_button2.edit_canvas_text(text="あああああ")
         #test_button2.canvas_for_button(processing=test2, user_event="Button-1")
 
-        #test_box = self.main_window.new_parts(parts_name="textbox")
+        test_box = self.main_window.new_parts(parts_name="textbox")
         #test_box2 = self.main_window.new_parts(parts_name="textbox")
         #test_box2.edit_textbox_position(width_position=200, height_position=200)
 
