@@ -119,8 +119,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.text = ""
         self.text_position = [0, 0]
 
-        self.event_key = None
-        self.event_processing = None
+        self.event_key = []
+        self.event_processing = []
 
         self.processing = self.template
         self.user_event = "Button-1"
@@ -130,6 +130,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.view_data = {}
 
         self.motion_history = []
+
         self.mouse_motion = {"catch": False}
         self.mouse_touch = {"cursor": None}
 
@@ -140,19 +141,20 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("パーツ初期設定")
 
     def template(self, event):
-        print("関数が指定されていません")
+        # print("関数が指定されていません")
+        pass
 
     # canvasのため
 
     def canvas_update(self):
         if not self.canvas is None:
             self.canvas.destroy()
-            print("パーツ更新のため削除")
+            # print("パーツ更新のため削除")
 
         this_cursor = None
 
         if not True in self.mouse_touch.values():
-            print("もどす")
+            # print("もどす")
             this_cursor = self.cursor_default
 
         else:
@@ -160,6 +162,22 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1], cursor=this_cursor)
         self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
+
+        self.paint()
+
+        # if not self.event_key is None and not self.event_processing is None:  # canvasのボタン化
+
+        for k, p in zip(self.event_key, self.event_processing):
+            self.canvas.bind('<{0}>'.format(k), p)
+
+        # if self.mouse_motion["catch"] == True:
+        #    self.canvas.bind("<Motion>", self.__mouse_position_get)
+
+        # if True in self.mouse_touch.values():
+
+    def paint(self):
+        self.canvas.delete("all")
+
         for data in list(self.view_data.values()):
             if data.fill == True:
                 self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=data.color, outline="")  # 塗りつぶし
@@ -170,22 +188,24 @@ class SendUIData:  # パーツひとつあたりのためのclass
             canvas_center = [s / 2 for s in self.canvas_size]
             self.canvas.create_text(canvas_center[0], canvas_center[1], text=self.text)
 
-        if not self.event_key is None and not self.event_processing is None:  # canvasのボタン化
-            self.canvas.bind('<{0}>'.format(self.event_key), self.event_processing)
+    def canvas_change_size(self):
+        self.canvas.config(width=self.canvas_size[0])
+        self.canvas.config(height=self.canvas_size[1])
 
-        # if self.mouse_motion["catch"] == True:
-        #    self.canvas.bind("<Motion>", self.__mouse_position_get)
+        self.paint()
 
-        # if True in self.mouse_touch.values():
+    def canvas_change_position(self):
+        self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
+        self.paint()
 
     def canvas_for_event(self, processing=None, user_event=None):
-        if processing is None:
-            self.processing = self.template
-            return
+        # if processing is None:
+        #    self.event_processing.self.template
+        #    return
 
         if not user_event is None:
-            self.event_key = user_event
-            self.event_processing = processing
+            self.event_key.append(user_event)
+            self.event_processing.append(processing)
         self.canvas_update()
 
     def edit_canvas_position(self, width_position=None, height_position=None):
@@ -193,14 +213,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_position[0] = width_position
         if not height_position is None:
             self.canvas_position[1] = height_position
-        self.canvas_update()
+        self.canvas_change_position()
 
     def edit_canvas_size(self, width_size=None, height_size=None):
         if not width_size is None:
             self.canvas_size[0] = width_size
         if not height_size is None:
             self.canvas_size[1] = height_size
-        self.canvas_update()
+        self.canvas_change_size()
 
     def edit_canvas_text(self, text=None, width_text_position=None, height_text_position=None):
         self.text = text
@@ -263,8 +283,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not self.canvas is None:
             _ = self.textbox_text_get()
             self.canvas.destroy()
-            print("パーツ更新のため削除")
-            print(self.text)
+            # print("パーツ更新のため削除")
+            # print(self.text)
 
         self.canvas = tk.Entry()
         self.canvas = self.tk.Entry(width=self.canvas_size[0], highlightthickness=0, relief="flat")
@@ -303,18 +323,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.notion_key = name
 
     def get_mouse_position(self):
-        # motion_history_difference
-        x = self.motion_history[-2]["x"] - self.motion_history[-1]["x"]
-        y = self.motion_history[-2]["y"] - self.motion_history[-1]["y"]
-        return self.mouse_motion, self.mouse_touch, (x, y)
+        return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch)
 
     def __mouse_position_get(self, event):
         #self.mouse_position = [event.x, event.y, event.x + self.position[0], event.y + self.position[1]]
         # print(self.mouse_position)
-        """
-        self.mouse_motion["x"] = int(event.x)
-        self.mouse_motion["y"] = int(event.y)
-        """
 
         # winfo_pointer は 画面左上からの絶対的なマウスの位置
         # winfo_root は画面左上からの絶対的なwindowの位置
@@ -349,18 +362,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if under - tolerance <= self.mouse_motion["y"] <= under + tolerance:
             self.mouse_touch["under"] = True
 
-        self.motion_history.append(self.mouse_motion)
-
-        now_history = int(len(self.motion_history))
-        if now_history >= 3:
-            del self.motion_history[0:2]
-            print(now_history)
-
-        print(self.mouse_motion)
-        print(self.mouse_touch)
-        print()
-
-        self.canvas_update()
+        # self.canvas_update()
 
     # def mouse_position_decision(self):
     #
