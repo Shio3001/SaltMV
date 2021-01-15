@@ -323,6 +323,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def notion_andkey(self, name):  # マウスが動いたときのeventを設定
         self.notion_key = name
 
+    def get_canvas_position(self):
+        return copy.deepcopy(self.canvas_position), copy.deepcopy(self.canvas_size)
+
     def get_mouse_position(self):
         return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch), copy.deepcopy(self.canvas_within)
 
