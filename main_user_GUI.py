@@ -133,6 +133,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.mouse_motion = {"catch": False}
         self.mouse_touch = {"cursor": None}
+        self.canvas_within = False
 
         self.cursor_default = "arrow"
         self.cursor_event = ""
@@ -323,7 +324,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.notion_key = name
 
     def get_mouse_position(self):
-        return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch)
+        return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch), copy.deepcopy(self.canvas_within)
 
     def __mouse_position_get(self, event):
         #self.mouse_position = [event.x, event.y, event.x + self.position[0], event.y + self.position[1]]
@@ -362,10 +363,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if under - tolerance <= self.mouse_motion["y"] <= under + tolerance:
             self.mouse_touch["under"] = True
 
-        # self.canvas_update()
+        if self.canvas_position[0] <= self.mouse_motion["x"] <= self.canvas_position[0] + self.canvas_size[0] and self.canvas_position[1] <= self.mouse_motion["y"] <= self.canvas_position[1] + self.canvas_size[1]:
+            self.canvas_within = True
+        else:
+            self.canvas_within = False
 
-    # def mouse_position_decision(self):
-    #
+            # self.canvas_update()
+
+            # def mouse_position_decision(self):
+            #
 
 
 class PartsViewData:

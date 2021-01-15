@@ -5,13 +5,10 @@ class parts:
     def UI_set(self, UI_operation):
         data = UI_operation
 
-        data.button_first = [None, None]
-
         def telescopic(self):
-            motion, touch = data.get_mouse_position()
-            print(data.button_first)
+            motion, touch, canvas_within = data.get_mouse_position()
 
-            if data.button_first[1]["left"] == True:
+            if data.first_touch["left"] == True:
                 #trace = [data.canvas_size[0] - motion["x"], data.canvas_size[1] + motion["y"]]
                 # print(trace)
 
@@ -22,18 +19,22 @@ class parts:
                 data.edit_canvas_size(width_size=data.canvas_size[0] + shrinked_length)
                 #data.edit_canvas_size(width_size=trace[0] - data.canvas_position[0])
 
-            if data.button_first[1]["right"] == True:
+            elif data.first_touch["right"] == True:
                 trace = [motion["x"] - data.canvas_position[0], motion["y"] - data.canvas_position[1]]
                 print(trace)
                 data.edit_canvas_size(width_size=trace[0])
 
+            elif data.first_canvas_within == True and not True in list(data.first_touch.values()):
+                data.edit_canvas_position(width_position=motion["x"] - data.mouse_misalignment)
+
         def telescopic1(self):
-            motion, touch = data.get_mouse_position()
+            data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position()
+
+            data.mouse_misalignment = data.first_motion["x"] - data.canvas_position[0]
             # print("押す")
-            data.button_first = [motion, touch]
 
         def telescopic2(self):
-            del data.button_first
+            del data.first_motion, data.first_touch, data.first_canvas_within
 
         data.edit_view_new("base")
         data.set_view_fill("base", True)
