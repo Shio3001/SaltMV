@@ -89,7 +89,6 @@ class InitialValue:
 
         test_box = self.main_window.new_parts(parts_name="textbox")
 
-        test_var = self.main_window.new_parts(parts_name="timeline_var")
         #test_box2 = self.main_window.new_parts(parts_name="textbox")
         #test_box2.edit_textbox_position(width_position=200, height_position=200)
 

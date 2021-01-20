@@ -24,6 +24,8 @@ class InitialValue:
         self.timeline.menubar_set(timeline_menubar_list)
         print(display_size)
 
+        test_var = self.timeline.new_parts(parts_name="timeline_var")
+
         return self.timeline
 
 
