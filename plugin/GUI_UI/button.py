@@ -3,7 +3,7 @@ class parts:
         data = UI_operation
 
         data.edit_view_new("a")
-        data.set_view_fill("a", True)
+        data.edit_view_fill("a", True)
 
         data.edit_canvas_text(text="これはてすと")
         data.edit_canvas_position(width_position=100, height_position=200)

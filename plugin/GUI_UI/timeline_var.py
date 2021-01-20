@@ -7,12 +7,17 @@ class parts:
 
         data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, None
 
+        data.timeline_height = 10
+
+        def edit_timeline_height(size):
+            data.timeline_height = size
+            data.edit_canvas_size(height_size=data.timeline_height)
+
+        data.edit_timeline_height = edit_timeline_height
+
         def click_drag(self):
             motion, touch, canvas_within = data.get_mouse_position()
-
             minimum_limit = 10  # 長さの最低数値
-            # print(data.canvas_size)
-
             print(motion["x"])
 
             if data.first_touch["left"] == True and data.first_canvas_within["y"] == True:
@@ -30,9 +35,16 @@ class parts:
 
             if data.first_canvas_within["xy"] == True and data.first_touch["left"] == False and data.first_touch["right"] == False:
                 data.edit_canvas_position(width_position=motion["x"] - data.mouse_misalignment)
+                if canvas_within["xy"] == False:
+                    print("段を変更")
+                    change_layer_distance = data.timeline_height + 5
+                    if motion["y"] - data.canvas_position[1] < 0:
+                        change_layer_distance *= -1
+                    data.edit_canvas_position(height_position=data.canvas_position[1] + change_layer_distance)
+
                 # バーの移動
 
-            canvas_log = data.get_canvas_position()
+            canvas_log = data.get_canvas_data()
 
             # 既定値より短くなったときの対応
             if canvas_log["size"][0] <= minimum_limit:
@@ -49,16 +61,19 @@ class parts:
             # print("押す")
 
         def click_finish(self):
-            data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, None
+            data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, {}
             data.set_cursor()
             print("終了")
 
         def motion(self):
             _, this_touch, this_within = data.get_mouse_position()
             print(data.first_touch, this_touch)
-            target = [data.first_touch.get("left"), data.first_touch.get("right"), this_touch.get("left"), this_touch.get("right")]
+            target = [this_touch.get("left"), this_touch.get("right")]
 
             print("移動検知")
+
+            if this_within["xy"] == True and not True in target:
+                data.set_cursor(name="openhand")
 
             if True in target and this_within["y"] == True:
                 data.set_cursor(name="resizeleftright")
@@ -67,16 +82,17 @@ class parts:
                 data.set_cursor()
 
         data.edit_view_new("base")
-        data.set_view_fill("base", True)
+        data.edit_view_fill("base", True)
 
         data.edit_canvas_text(text="動画")
-        data.edit_canvas_position(width_position=10, height_position=20)
-        data.edit_canvas_size(width_size=100, height_size=30)
+        data.edit_canvas_position(width_position=10, height_position=10 + data.timeline_height)
+        data.edit_canvas_size(width_size=100, height_size=data.timeline_height)
         data.edit_view_color("base", color="#ffe44d")
         data.window_for_event(processing=motion, user_event="Motion")
         data.window_for_event(processing=click_drag, user_event="B1-Motion")
         data.window_for_event(processing=click_start, user_event="Button-1")
         data.window_for_event(processing=click_finish, user_event="ButtonRelease-1")
+        # 同じイベントを指定することはできないので注意を
         data.set_mouse_motion(True)
 
         print("追加")
