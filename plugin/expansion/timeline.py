@@ -37,6 +37,9 @@ class InitialValue:
             test_frame[i].edit_canvas_position(height_position=i * timeline_height)
             # test_frame[i].edit_canvas_size(height_size=5)
 
+        test_nowtime = self.timeline.new_parts(parts_name="timeline_nowtime")
+        test_nowtime.edit_canvas_position(width_position=100)
+
         return self.timeline
 
 

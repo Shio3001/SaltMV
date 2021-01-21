@@ -2,7 +2,7 @@ class parts:
     def UI_set(self, UI_operation):
         data = UI_operation
 
-        def view():
+        def view(event):
             canvas_log = data.get_window_data()
             # print(canvas_log)
             data.edit_canvas_size(width_size=canvas_log["size"][0], height_size=1)
