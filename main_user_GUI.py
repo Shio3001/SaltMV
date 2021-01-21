@@ -49,6 +49,9 @@ class SendWindowData:  # window生成のためのデータ
         self.operation = base_data[0]
         self.all_elements = base_data[1]
         self.elements = base_data[2]
+
+        self.window_bind = PrgBind()
+
         print(base_data[3].keys())
 
         # self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window, self.operation)) for key in list(base_data[3].keys())}
@@ -64,7 +67,7 @@ class SendWindowData:  # window生成のためのデータ
         self.window.configure(bg=GUI_base_color)
 
     def new_parts(self, parts_name=None):
-        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window, self.operation))
+        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window, self.operation, self.window_bind))
         return new_parts_obj
 
     def display_size_get(self):
@@ -103,7 +106,7 @@ class SendWindowData:  # window生成のためのデータ
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, operation):
+    def __init__(self, window, operation, window_bind):
         # canvas系：文字入力なし 表示だけ
         # textbox系：文字入力あり 入力あり
         self.window = window
@@ -128,7 +131,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.event_window_processing = []
 
         self.processing = self.template
-        self.user_event = "Button-1"
+        self.user_event = "Button-2"
 
         self.mouse_position = [0, 0]
         self.view_data = {}
@@ -140,10 +143,44 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.window_event_data = {}
 
+        self.prg_dict = {}
+
+        self.window_bind = window_bind
+        self.canvas_bind = PrgBind()
+
+        #self.window_event = PrgAggregate()
+        #self.canvas_event = PrgAggregate()
+
         print("パーツ初期設定")
 
-    def template(self, event):
+    def template(self):
         print("関数が指定されていません")
+
+    def window_event_del(self, key):
+        key_index = self.event_window_key.index(key)
+
+        print("削除前:{0} ".format(self.event_window_key))
+
+        del self.event_window_key[key_index]
+        del self.event_window_processing[key_index]
+
+        print("削除:{0} 番号:{1}".format(key, key_index))
+        print("key:{0} prg:{1}".format(self.event_window_key, self.event_window_processing))
+
+        self.canvas_update()
+
+    def canvas_event_del(self, key):
+
+        print("削除前:{0} ".format(self.event_canvas_key))
+
+        key_index = self.event_canvas_key.index(key)
+        del self.event_canvas_key[key_index]
+        del self.event_canvas_processing[key_index]
+
+        print("削除:{0} 番号:{1}".format(key, key_index))
+        print("key:{0} prg:{1}".format(self.event_canvas_key, self.event_canvas_processing))
+
+        self.canvas_update()
 
     def canvas_update(self):
         if not self.canvas is None:
@@ -155,17 +192,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.paint()
 
-        print()
-        print(self.event_window_key)
-
         for k, p in zip(self.event_window_key, self.event_window_processing):
-            print("関数を登録します")
+            print("WINDOW 関数を登録します", k, p)
+            self.window_bind.add({k: p})
 
-            self.operation["useful"]["prg_aggregation"]["CentralRole"].add({k: p})
+        self.window = self.window_bind.bind(self.window)
 
-            #prg_run = self.operation["useful"]["prg_aggregation"]["CentralRole"].run(k)
+        for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
+            print("CANVAS 関数を登録します", k, p)
+            self.canvas_bind.add({k: p})
 
-        self.window = self.operation["useful"]["prg_aggregation"]["CentralRole"].bind(self.window)
+        self.canvas = self.canvas_bind.bind(self.canvas)
 
         """
 
@@ -381,5 +418,38 @@ class PartsViewData:
         self.position = [0, 0]
         self.size = [0, 0]
         self.fill = False
+
+
+class PrgBind:
+    def __init__(self):
+        self.prg_dict = {}
+
+    def add(self, prg_data):
+        for k, p in zip(list(prg_data.keys()), list(prg_data.values())):
+            if k in list(self.prg_dict.keys()):
+                self.prg_dict[k].append(p)
+            else:
+                self.prg_dict[k] = [p]
+
+    def bind(self, widget):
+        for k in list(self.prg_dict.keys()):
+            prg_data = PrgRun(self.prg_dict, k).run
+            widget.bind('<{0}>'.format(k), prg_data)
+
+        return widget
+
+
+class PrgRun:
+    def __init__(self, prg_list, name):
+        self.prg_list = prg_list
+        self.prg_name = name
+
+    def run(self, event):
+
+        prg_data = list(self.prg_list[self.prg_name])
+
+        for p in prg_data:
+            p()
+
 
 # classひとつひとつに描画するデータを差し込み、classの数forかなにかでまわして描画していく作戦s

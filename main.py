@@ -73,7 +73,7 @@ operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 operation_list["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
 operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
-operation_list["useful"]["prg_aggregation"] = {"CentralRole": prg_aggregation.CentralRole()}
+#operation_list["useful"]["prg_aggregation"] = {"CentralRole": prg_aggregation.CentralRole()}
 
 # usefulには補助的な計算ファイルを挿入する
 # plugin > file

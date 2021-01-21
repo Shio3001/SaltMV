@@ -4,7 +4,7 @@ class parts:
 
         def view():
             canvas_log = data.get_window_data()
-            print(canvas_log)
+            # print(canvas_log)
             data.edit_canvas_size(width_size=canvas_log["size"][0], height_size=1)
 
         data.edit_view_new("base")

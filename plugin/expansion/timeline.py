@@ -31,7 +31,7 @@ class InitialValue:
 
         test_frame = []
 
-        for i in range(20):
+        for i in range(100):
             test_frame.append(None)
             test_frame[i] = self.timeline.new_parts(parts_name="timeline_frame")
             test_frame[i].edit_canvas_position(height_position=i * timeline_height)

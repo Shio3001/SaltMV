@@ -72,10 +72,12 @@ class InitialValue:
 
         test_button = self.main_window.new_parts(parts_name="button")
 
-        def test1(event):
+        def test1():
             test_button.edit_canvas_position(width_position=test_button.canvas_position[0] + 20)
 
         #test_button.edit_canvas_size(width_size=100, height_size=100)
+        test_button.canvas_event_del(test_button.user_event)
+
         test_button.canvas_for_event(processing=test1, user_event="Button-1")
 
         test_box = self.main_window.new_parts(parts_name="textbox")

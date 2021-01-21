@@ -39,7 +39,7 @@ class parts:
                 data.edit_canvas_position(width_position=motion["x"] - data.mouse_misalignment)
                 if canvas_within["xy"] == False:
                     print("段を変更")
-                    change_layer_distance = data.timeline_height + 5
+                    change_layer_distance = data.timeline_height
                     if motion["y"] - data.canvas_position[1] < 0:
                         change_layer_distance *= -1
                     data.edit_canvas_position(height_position=data.canvas_position[1] + change_layer_distance)
