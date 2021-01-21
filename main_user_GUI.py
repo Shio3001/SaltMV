@@ -64,7 +64,7 @@ class SendWindowData:  # window生成のためのデータ
         self.window.configure(bg=GUI_base_color)
 
     def new_parts(self, parts_name=None):
-        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window))
+        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(SendUIData(self.window, self.operation))
         return new_parts_obj
 
     def display_size_get(self):
@@ -102,18 +102,8 @@ class SendWindowData:  # window生成のためのデータ
         self.window.mainloop()
 
 
-class ProcessingCollect:
-    def __init__(self, event_data):
-        self.event_data = event_data
-        #self.processing_list = []
-
-    def processing(self):
-        for k in self.event_data:
-            print(k)
-
-
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window):
+    def __init__(self, window, operation):
         # canvas系：文字入力なし 表示だけ
         # textbox系：文字入力あり 入力あり
         self.window = window
@@ -121,10 +111,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas = None
 
+        self.operation = operation
+
         self.canvas_size = [10, 10]
         self.canvas_position = [0, 0]
 
-        #self.canvas_color = GUI_alpha_color
+        # self.canvas_color = GUI_alpha_color
 
         self.text = ""
         self.text_position = [0, 0]
@@ -163,17 +155,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.paint()
 
+        print()
+        print(self.event_window_key)
+
         for k, p in zip(self.event_window_key, self.event_window_processing):
             print("関数を登録します")
 
-            if not k in list(self.window_event_data.keys()):
-                self.window_event_data[k] = []
+            self.operation["useful"]["prg_aggregation"]["CentralRole"].add({k: p})
 
-            self.window_event_data[k].append(p)
+            #prg_run = self.operation["useful"]["prg_aggregation"]["CentralRole"].run(k)
 
-        pro = ProcessingCollect(self.window_event_data)
-
-        #print(k, self.window_event_data)
+        self.window = self.operation["useful"]["prg_aggregation"]["CentralRole"].bind(self.window)
 
         """
 

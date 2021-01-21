@@ -15,10 +15,12 @@ class parts:
 
         data.edit_timeline_height = edit_timeline_height
 
-        def click_drag(self):
+        def click_drag():
             motion, touch, canvas_within = data.get_mouse_position()
             minimum_limit = 10  # 長さの最低数値
             print(motion["x"])
+
+            print(motion, touch, canvas_within)
 
             if data.first_touch["left"] == True and data.first_canvas_within["y"] == True:
                 shrinked_length = data.canvas_position[0]
@@ -54,18 +56,18 @@ class parts:
                     log_position = canvas_log["position"][0] + canvas_log["size"][0] - minimum_limit
                     data.edit_canvas_position(width_position=log_position)
 
-        def click_start(self):
+        def click_start():
             print("開始")
             data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position()
             data.mouse_misalignment = data.first_motion["x"] - data.canvas_position[0]
             # print("押す")
 
-        def click_finish(self):
+        def click_finish():
             data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, {}
             data.set_cursor()
             print("終了")
 
-        def motion(self):
+        def motion():
             _, this_touch, this_within = data.get_mouse_position()
             print(data.first_touch, this_touch)
             target = [this_touch.get("left"), this_touch.get("right")]

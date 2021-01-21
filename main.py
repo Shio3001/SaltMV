@@ -20,6 +20,7 @@ import main_user_GUI
 
 from auxiliary import directory_conversion as dircon
 from auxiliary import effect_auxiliary
+from auxiliary import program_aggregation as prg_aggregation
 
 # set
 from user_CUI.Visualization import printlayer
@@ -72,6 +73,7 @@ operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 operation_list["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
 operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
+operation_list["useful"]["prg_aggregation"] = {"CentralRole": prg_aggregation.CentralRole()}
 
 # usefulには補助的な計算ファイルを挿入する
 # plugin > file
