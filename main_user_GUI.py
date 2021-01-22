@@ -93,9 +93,24 @@ class SendWindowData:  # window生成のためのデータ
         self.window.config(menu=window_menubar)
         for bar in self.menubar_list:
             window_menubar_bar = tk.Menu(window_menubar, tearoff=0)
-            window_menubar.add_cascade(label=bar[0], menu=window_menubar_bar)
-            for tab in bar[1]:
-                window_menubar_bar.add_command(label=tab[0], command=tab[1])
+
+            main_bar = ""
+            bar_name = []
+            bar_prg = []
+            for i, content in enumerate(bar):
+                if i == 0:
+                    main_bar = content
+                elif i % 2 == 0:
+                    bar_prg.append(content)
+                    #print("bar偶数情報", content, i)
+                elif (i + 1) % 2 == 0:
+                    bar_name.append(content)
+                    #print("bar奇数情報", content, i)
+
+            window_menubar.add_cascade(label=main_bar, menu=window_menubar_bar)
+
+            for n, p in zip(bar_name, bar_prg):
+                window_menubar_bar.add_command(label=n, command=p)
 
     def main(self):
         def window_exit():
@@ -201,6 +216,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
             self.canvas.bind("<{0}>".format(k), p, "+")
+
         """
 
         for k, p in zip(self.event_window_key, self.event_window_processing):
@@ -383,8 +399,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch), copy.deepcopy(self.canvas_within)
 
     def mouse_position_get(self):
-        print("イベント発火")
-
         self.mouse_motion["x"] = self.window.winfo_pointerx() - self.window.winfo_rootx()
         self.mouse_motion["y"] = self.window.winfo_pointery() - self.window.winfo_rooty()
 
@@ -392,6 +406,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.mouse_touch["right"] = False  # 右
         self.mouse_touch["top"] = False
         self.mouse_touch["under"] = False
+
+        self.mouse_touch["left_inside"] = False  # 左
+        self.mouse_touch["right_inside"] = False  # 右
+        self.mouse_touch["top_inside"] = False
+        self.mouse_touch["under_inside"] = False
 
         left = self.canvas_position[0]
         right = self.canvas_size[0] + self.canvas_position[0]
@@ -412,17 +431,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if under - tolerance <= self.mouse_motion["y"] <= under + tolerance:
             self.mouse_touch["under"] = True
 
-        for i, j in zip([0, 1], ["x", "y"]):
-            if self.canvas_position[i] <= self.mouse_motion[j] <= self.canvas_position[i] + self.canvas_size[i]:
-                self.canvas_within[j] = True
-                print(j, True)
-            else:
-                self.canvas_within[j] = False
+        if not self.canvas is None:
+            for i, j in zip([0, 1], ["x", "y"]):
+                if self.canvas_position[i] <= self.mouse_motion[j] <= self.canvas_position[i] + self.canvas_size[i]:
+                    self.canvas_within[j] = True
+                    print(j, True)
+                else:
+                    self.canvas_within[j] = False
 
-        if self.canvas_within["x"] == True and self.canvas_within["y"] == True:
-            self.canvas_within["xy"] = True
-        else:
-            self.canvas_within["xy"] = False
+            if self.canvas_within["x"] == True and self.canvas_within["y"] == True:
+                self.canvas_within["xy"] = True
+            else:
+                self.canvas_within["xy"] = False
 
 
 class PartsViewData:

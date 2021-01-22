@@ -9,7 +9,7 @@ class parts:
 
         data.edit_view_new("base")
         data.edit_view_fill("base", True)
-        data.edit_view_color("base", color="#ffe44d")
+        data.edit_view_color("base", color="#c0c0c0")
 
         data.window_for_event(processing=view, user_event="Configure")
 

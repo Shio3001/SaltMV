@@ -57,12 +57,7 @@ class InitialValue:
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()
 
-        main_menubar_list = [
-            ("ファイル", [("終了", window_exit), ("新規", project_new), ("開く", project_open), ("保存", project_save), ("上書き", project_overwrite_save)]),
-            ("ウインドウ", [("タイムライン", window_exit)]),
-            ("環境設定", [("基本設定", window_exit)]),
-            ("動作確認", [("プレビュー", preview)])
-        ]
+        main_menubar_list = [("ファイル", "終了", window_exit, "新規", project_new, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save)]
 
         display_size = self.main_window.display_size_get()
         self.main_window.window_title_set("メインウインドウ")

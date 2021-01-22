@@ -20,7 +20,7 @@ import main_user_GUI
 
 from auxiliary import directory_conversion as dircon
 from auxiliary import effect_auxiliary
-from auxiliary import program_aggregation as prg_aggregation
+#from auxiliary import program_aggregation as prg_aggregation
 
 # set
 from user_CUI.Visualization import printlayer
