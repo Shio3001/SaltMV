@@ -97,6 +97,7 @@ class SendWindowData:  # window生成のためのデータ
             main_bar = ""
             bar_name = []
             bar_prg = []
+            # 奇数と偶数逆じゃん!とおもったら配列は0からはじまりました
             for i, content in enumerate(bar):
                 if i == 0:
                     main_bar = content
@@ -150,6 +151,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.mouse_position = [0, 0]
         self.view_data = {}
+        self.view_within = {}
         self.motion_history = []
 
         self.mouse_motion = {"catch": False}
@@ -253,14 +255,47 @@ class SendUIData:  # パーツひとつあたりのためのclass
     # def function_registration(self):
     #    return
 
+    def make_blank_space(self, data, view_position, view_size, blank_limitline):
+
+        # 左、上,右,下
+
+        print("限界線", blank_limitline)
+        print("限界線修正前", view_position, view_size)
+
+        for i in [0, 1]:  # 余白を作る
+            if view_position[i] < blank_limitline[0][i]:
+                view_size[i] -= blank_limitline[0][i] - view_position[i]
+                view_position[i] = blank_limitline[0][i]
+
+                print("座標修正", view_position)
+
+            if view_position[i] + view_size[i] > blank_limitline[1][i]:
+                view_size[i] = blank_limitline[1][i] - view_position[i]
+
+                print("サイズ修正", view_size)
+
+        print("限界線修正後", view_position, view_size)
+        print()
+
+        return view_position, view_size
+
     def paint(self):
         self.canvas.delete("all")
 
         for data in list(self.view_data.values()):
+
+            view_position = copy.deepcopy(data.position)
+            view_size = copy.deepcopy(data.size)
+
+            blank_limitline = [data.blank_space, [self.canvas_size[i] - data.blank_space[i] for i in [0, 1]]]
+
+            if data.blank_space != [0, 0]:
+                view_position, view_size = self.make_blank_space(data, view_position, view_size, blank_limitline)
+
             if data.fill == True:
-                self.canvas.create_rectangle(0, 0, self.canvas_size[0], self.canvas_size[1], fill=data.color, outline="")  # 塗りつぶし
+                self.canvas.create_rectangle(0 + data.blank_space[0], 0 + data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], fill=data.color, outline="", width=0)  # 塗りつぶし
             else:
-                self.canvas.create_rectangle(data.position[0], data.position[1], data.size[0], data.size[1], fill=data.color, outline="")  # 塗りつぶし
+                self.canvas.create_rectangle(view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1], fill=data.color, outline="", width=0)  # 塗りつぶし
 
         if not self.text is None:
             canvas_center = [s / 2 for s in self.canvas_size]
@@ -315,30 +350,39 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def edit_view_new(self, name):
         self.view_data[name] = PartsViewData()
+        self.canvas_update()
         self.disclosure()
 
     def edit_view_color(self, name, color=None):
         if not color is None:
             self.view_data[name].color = color
-        self.canvas_update()
+        self.paint()
 
     def edit_view_position(self, name, width_position=None, height_position=None):
         if not width_position is None:
             self.view_data[name].position[0] = width_position
         if not height_position is None:
             self.view_data[name].position[1] = height_position
-        self.canvas_update()
+        self.paint()
 
     def edit_view_size(self, name, width_size=None, height_size=None):
         if not width_size is None:
             self.view_data[name].size[0] = width_size
         if not height_size is None:
             self.view_data[name].size[1] = height_size
-        self.canvas_update()
+        self.paint()
 
     def edit_view_fill(self, name, fill_select):
         self.view_data[name].fill = fill_select
-        self.canvas_update()
+        self.view_data[name].size = self.canvas_size
+        self.paint()
+
+    def edit_view_blank_space(self, name, width_size=None, height_size=None):
+        if not width_size is None:
+            self.view_data[name].blank_space[0] = width_size
+        if not height_size is None:
+            self.view_data[name].blank_space[1] = height_size
+        self.paint()
 
     def disclosure(self):  # canvasに書かれている描画keyを開示
         print(list(self.view_data.keys()))
@@ -398,6 +442,20 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.mouse_position_get()
         return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch), copy.deepcopy(self.canvas_within)
 
+    def get_view_position(self):  # 長方形など四角形(0°)のときのみしかつかえません、あしからず
+        for k, d in zip(list(self.view_data.keys()), list(self.view_data.values())):
+            print(d.position)
+            print(d.size)
+            touch_xy = [(d.position[i] + self.canvas_position[i]) <= self.mouse_motion[ixy] <= (d.position[i] + d.size[i] + self.canvas_position[i]) for i, ixy in zip([0, 1], ["x", "y"])]
+            if sum(touch_xy) == 2:
+                self.view_within[k] = True
+            else:
+                self.view_within[k] = False
+
+            print(sum(touch_xy))
+
+        return self.view_within
+
     def mouse_position_get(self):
         self.mouse_motion["x"] = self.window.winfo_pointerx() - self.window.winfo_rootx()
         self.mouse_motion["y"] = self.window.winfo_pointery() - self.window.winfo_rooty()
@@ -451,6 +509,7 @@ class PartsViewData:
         self.position = [0, 0]
         self.size = [0, 0]
         self.fill = False
+        self.blank_space = [0, 0]
 
 
 # classひとつひとつに描画するデータを差し込み、classの数forかなにかでまわして描画していく作戦s

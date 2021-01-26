@@ -7,7 +7,7 @@ class parts:
 
         data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, None
 
-        data.timeline_height = 10
+        data.timeline_height = 30
 
         def edit_timeline_height(size):
             data.timeline_height = size
@@ -77,7 +77,7 @@ class parts:
             if this_within["xy"] == True and not True in target:
                 data.set_cursor(name="openhand")
 
-            if True in target and this_within["y"] == True:
+            elif True in target and this_within["y"] == True:
                 data.set_cursor(name="resizeleftright")
                 print("カーソル変更")
             else:
@@ -87,7 +87,7 @@ class parts:
         data.edit_view_fill("base", True)
 
         data.edit_canvas_text(text="動画")
-        data.edit_canvas_position(width_position=10, height_position=10 + data.timeline_height)
+        data.edit_canvas_position(width_position=10, height_position=data.timeline_height)
         data.edit_canvas_size(width_size=100, height_size=data.timeline_height)
         data.edit_view_color("base", color="#ffe44d")
         data.window_for_event(processing=motion, user_event="Motion")
