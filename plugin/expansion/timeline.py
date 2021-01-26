@@ -77,7 +77,7 @@ class InitialValue:
         # シークバーを移動させる時、他のオブジェクトに干渉していないか
         def timeline_seekbar_click(evet):
 
-            print("barの数: {0}".format(len(timeline_bar)))
+            #print("barの数: {0}".format(len(timeline_bar)))
 
             this_motion, this_touch, this_within = timeline_seekbar.get_mouse_position()
 
@@ -85,7 +85,7 @@ class InitialValue:
                 bar_touch = tlb_one.first_touch
                 bar_within = tlb_one.first_canvas_within
 
-                print(tlb_one.get_view_position())
+                # print(tlb_one.get_view_position())
 
                 if bar_within["xy"] or bar_touch["left"] or bar_touch["right"]:
                     return

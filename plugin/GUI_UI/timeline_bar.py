@@ -18,9 +18,9 @@ class parts:
         def click_drag(event):
             motion, touch, canvas_within = data.get_mouse_position()
             minimum_limit = 10  # 長さの最低数値
-            print(motion["x"])
+            # print(motion["x"])
 
-            print(motion, touch, canvas_within)
+            #print(motion, touch, canvas_within)
 
             if data.first_touch["left"] == True and data.first_canvas_within["y"] == True:
                 shrinked_length = data.canvas_position[0]
@@ -38,7 +38,7 @@ class parts:
             if data.first_canvas_within["xy"] == True and data.first_touch["left"] == False and data.first_touch["right"] == False:
                 data.edit_canvas_position(width_position=motion["x"] - data.mouse_misalignment)
                 if canvas_within["xy"] == False:
-                    print("段を変更")
+                    # print("段を変更")
                     change_layer_distance = data.timeline_height
                     if motion["y"] - data.canvas_position[1] < 0:
                         change_layer_distance *= -1
@@ -57,7 +57,7 @@ class parts:
                     data.edit_canvas_position(width_position=log_position)
 
         def click_start(event):
-            print("開始")
+            # print("開始")
             data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position()
             data.mouse_misalignment = data.first_motion["x"] - data.canvas_position[0]
             # print("押す")
@@ -65,21 +65,21 @@ class parts:
         def click_finish(event):
             data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, {}
             data.set_cursor()
-            print("終了")
+            # print("終了")
 
         def motion(event):
             _, this_touch, this_within = data.get_mouse_position()
             print(data.first_touch, this_touch)
             target = [this_touch.get("left"), this_touch.get("right")]
 
-            print("移動検知")
+            # print("移動検知")
 
             if this_within["xy"] == True and not True in target:
                 data.set_cursor(name="openhand")
 
             elif True in target and this_within["y"] == True:
                 data.set_cursor(name="resizeleftright")
-                print("カーソル変更")
+                # print("カーソル変更")
             else:
                 data.set_cursor()
 

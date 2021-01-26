@@ -419,7 +419,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if str(type(self.canvas)) == "<class 'tkinter.Canvas'>":
             return True
         else:
-            print("canvasが設定されていません")
+            # print("canvasが設定されていません")
             return False
 
     def set_cursor(self, name=None):  # マウスのcursorをnameに入ってるものに変更する
@@ -444,15 +444,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def get_view_position(self):  # 長方形など四角形(0°)のときのみしかつかえません、あしからず
         for k, d in zip(list(self.view_data.keys()), list(self.view_data.values())):
-            print(d.position)
-            print(d.size)
+            # print(d.position)
+            # print(d.size)
             touch_xy = [(d.position[i] + self.canvas_position[i]) <= self.mouse_motion[ixy] <= (d.position[i] + d.size[i] + self.canvas_position[i]) for i, ixy in zip([0, 1], ["x", "y"])]
             if sum(touch_xy) == 2:
                 self.view_within[k] = True
             else:
                 self.view_within[k] = False
 
-            print(sum(touch_xy))
+            # print(sum(touch_xy))
 
         return self.view_within
 
@@ -493,7 +493,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             for i, j in zip([0, 1], ["x", "y"]):
                 if self.canvas_position[i] <= self.mouse_motion[j] <= self.canvas_position[i] + self.canvas_size[i]:
                     self.canvas_within[j] = True
-                    print(j, True)
+                    #print(j, True)
                 else:
                     self.canvas_within[j] = False
 
