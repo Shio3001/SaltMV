@@ -72,7 +72,7 @@ class InitialValue:
         timeline_bar[1].edit_view_color("base", color="#1e90ff")
         timeline_bar[1].edit_canvas_text(text="画像")
 
-        timeline_scroll = self.timeline.new_parts(parts_name="scroll")
+        timeline_scroll = self.timeline.new_parts(parts_name="scroll_y")
 
         # シークバーを移動させる時、他のオブジェクトに干渉していないか
         def timeline_seekbar_click(evet):
@@ -93,6 +93,7 @@ class InitialValue:
             scrollbar_touch = timeline_scroll.first_touch
             scrollbar_within = timeline_scroll.first_canvas_within
 
+            # if scrollbar_within["xy"] or scrollbar_touch["left"] or scrollbar_touch["right"]:
             if scrollbar_within["xy"] or scrollbar_touch["left"] or scrollbar_touch["right"]:
                 return
 
