@@ -25,8 +25,8 @@ class CentralRole:
         data.edit_view_size("a2", width_size=xy_size[0], height_size=xy_size[1])
         #data.edit_view_fill("a2", True)
 
-        data.edit_view_color("a1", color="#a9a9a9")
-        data.edit_view_color("a2", color="#d3d3d3")
+        data.edit_view_color("a1", color="#808080")
+        data.edit_view_color("a2", color="#4169e1")
 
         data.edit_canvas_position(width_position=300, height_position=50)
         data.edit_canvas_size(width_size=xy_size[0], height_size=xy_size[1])
@@ -36,10 +36,24 @@ class CentralRole:
         data.blank_space = 10
         data.mouse_misalignment = 0
 
-        data.scrollbar_size = [0.25, data.canvas_size[direction_int] - (data.blank_space * 2)]  # 割合 , 最大サイズ
-        data.scrollbar_position = [0, data.blank_space, data.canvas_size[direction_int] - data.blank_space - (data.scrollbar_size[1] * data.scrollbar_size[0])]  # 割合, 左側限界座標 , 右側限界座標 (めり込まないようにサイズ分だけ引き算してる)
+        data.scrollbar_size = [0.25, 0]  # 割合 , 最大サイズ
+        data.scrollbar_position = [0, 0, 0]  # 割合, 左側限界座標 , 右側限界座標 (めり込まないようにサイズ分だけ引き算してる)
 
         data.start_distance = 0
+
+        def set_size_position():
+            data.scrollbar_size[1] = data.canvas_size[direction_int] - (data.blank_space * 2)
+            data.scrollbar_position[1] = data.blank_space
+            data.scrollbar_position[2] = data.canvas_size[direction_int] - data.blank_space - (data.scrollbar_size[1] * data.scrollbar_size[0])
+
+        data.set_size_position = set_size_position
+        data.set_size_position()
+
+        def change_size_position():  # 外部からの更新
+            data.set_size_position()
+            scroll_drow()
+
+        data.change_size_position = change_size_position
 
         def scroll_drow():
             size = data.scrollbar_size[1] * data.scrollbar_size[0]
