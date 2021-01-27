@@ -129,10 +129,6 @@ class CentralRole:
 
         adjusted_draw = adjusted_draw.astype('uint8')
 
-        #adjusted_draw, starting_point = this_effect.procedure.main(adjusted_draw, position, now_frame, editor, draw_operation)
-
-        # ここに処理を描く adjusted_draw - > adjusted_draw
-
         return adjusted_draw, starting_point
 
     def loop_effect(self, operation_list, loop_this_effect, adjusted_draw, now_frame, editor, draw_operation, staend_property, around_point):

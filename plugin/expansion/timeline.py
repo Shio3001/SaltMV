@@ -46,7 +46,7 @@ class InitialValue:
         timeline_bar[1].edit_canvas_text(text="画像")
 
         timeline_scroll_x = self.timeline.new_parts(parts_name="scroll_x")
-        #timeline_scroll_y = self.timeline.new_parts(parts_name="scroll_y")
+        timeline_scroll_y = self.timeline.new_parts(parts_name="scroll_y")
 
         timeline_time_percentage = self.timeline.new_parts(parts_name="percentage")
 
@@ -103,10 +103,14 @@ class InitialValue:
             print(timeline_scroll_x.scrollbar_position)
 
             canvas_log = timeline_scroll_x.get_window_data()
-            timeline_scroll_x.edit_canvas_size(width_size=canvas_log["size"][0] - 100)
+            timeline_scroll_x.edit_canvas_size(width_size=canvas_log["size"][0] - 100 - 20)
             timeline_scroll_x.edit_canvas_position(width_position=100, height_position=canvas_log["size"][1] - timeline_scroll_x.canvas_size[1])
 
             timeline_scroll_x.change_size_position()
+
+            timeline_scroll_y.edit_canvas_size(height_size=canvas_log["size"][1] - timeline_height - 20)
+            timeline_scroll_y.edit_canvas_position(width_position=canvas_log["size"][0] - timeline_scroll_y.canvas_size[0], height_position=timeline_height)
+            timeline_scroll_y.change_size_position()
 
             print(timeline_scroll_x.scrollbar_position)
 
