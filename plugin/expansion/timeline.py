@@ -16,6 +16,8 @@ class InitialValue:
         # timeline_menubar_list = [
         #    ("ウインドウ", [("閉じる", exit)])
         # ]
+        menubar_list = [("ファイル", "閉じる", exit), ("新規", "動画", exit)]
+        self.timeline.menubar_set(menubar_list)
 
         display_size = self.timeline.display_size_get()
         self.timeline.window_title_set("タイムライン")
@@ -114,7 +116,7 @@ class InitialValue:
 
             print(timeline_scroll_x.scrollbar_position)
 
-        self.timeline.window.bind("<Configure>", window_size_change_event, "+")
+        self.timeline.window_event(processing=window_size_change_event, user_event="Configure")
 
         return self.timeline
 

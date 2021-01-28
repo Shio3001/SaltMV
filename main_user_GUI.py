@@ -3,7 +3,6 @@ import sys
 import numpy as np
 import os
 import copy
-import tkinter as tk
 
 GUI_main_name = "GUI_main"
 GUI_base_color = "#1a1a1a"
@@ -15,12 +14,14 @@ class CentralRole:
         pass
 
     def main(self, all_elements, elements, internal_operation, app_name):
+
         expansion_keys = internal_operation["plugin"]["expansion"].keys()
         expansion_list = {}
 
         GUI_UI = internal_operation["plugin"]["GUI_UI"]
 
         base_data = [internal_operation, all_elements, elements, GUI_UI, GUI_base_color, GUI_alpha_color]
+
         send_main = internal_operation["plugin"]["other"]["window_data"].SendWindowData(None, base_data)
         expansion_list["main"] = internal_operation["plugin"]["expansion"][GUI_main_name].InitialValue(send_main).main()
 
@@ -30,10 +31,9 @@ class CentralRole:
                 send_sub = internal_operation["plugin"]["other"]["window_data"].SendWindowData(expansion_list["main"].window, base_data)
                 expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_sub).main()
 
-        print(expansion_list)
-
+        print("mainloop開始")
         expansion_list["main"].window.mainloop()
+        print("mainloop終了")
 
         print("GUI終了")
-
         return

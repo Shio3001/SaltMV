@@ -32,6 +32,16 @@ class SendWindowData:  # window生成のためのデータ
 
         self.window.configure(bg=self.GUI_base_color)
 
+    def window_open_close(self, select):
+        if select == True:
+            self.window.deiconify()
+        if select == False:
+            self.window.withdraw()
+
+    def window_event(self, processing=None, user_event=None):
+        if not processing is None and not user_event is None:
+            self.window.bind("<{0}>".format(user_event), processing, "+")
+
     def new_parts(self, parts_name=None):
         new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(self.operation["plugin"]["other"]["UI_data"].SendUIData(self.window, self.operation, self.GUI_base_color, self.GUI_alpha_color))
         return new_parts_obj
@@ -57,8 +67,8 @@ class SendWindowData:  # window生成のためのデータ
 
         window_menubar = tk.Menu(self.window)
         self.window.config(menu=window_menubar)
+
         for bar in self.menubar_list:
-            window_menubar_bar = tk.Menu(window_menubar, tearoff=0)
 
             main_bar = ""
             bar_name = []
@@ -74,14 +84,14 @@ class SendWindowData:  # window生成のためのデータ
                     bar_name.append(content)
                     #print("bar奇数情報", content, i)
 
-            window_menubar.add_cascade(label=main_bar, menu=window_menubar_bar)
+            pull_down = tk.Menu(window_menubar, tearoff=0)
 
             for n, p in zip(bar_name, bar_prg):
-                window_menubar_bar.add_command(label=n, command=p)
+                pull_down.add_command(label=n, command=p)
+                print("メニューバー登録 {0} {1}".format(n, p))
 
-    def main(self):
-        def window_exit():
-            self.window.destroy()
-            print("終了")
+            window_menubar.add_cascade(label=main_bar, menu=pull_down)  # それぞれ
 
-        self.window.mainloop()
+        print("バー設定終了{0}".format(self.window))
+
+        # self.window.mainloop()

@@ -36,34 +36,18 @@ class InitialValue:
             pass
 
         def preview():
-            """
-            user_select = "../test1224/1120"
-            self.all_elements, _ = self.basic_ope["save"]["make_save"]["CentralRole"].input(self.all_elements, self.elements, self.basic_ope, user_select)
-
-            select_time = 550
-            this_preview = self.basic_ope["out"]["output_video_image"]["CentralRole"].type_preview(
-                copy.deepcopy(self.all_elements), self.basic_ope, select_time)
-
-            this_preview = cv2.resize(this_preview, (640, 360))
-            self.this_preview_tk = ImageTk.PhotoImage(image=Image.fromarray(this_preview), master=self.main_window.window)
-
-            self.canvas = self.main_window.tk.Canvas(self.main_window.window, highlightthickness=0, width=640, height=360)
-            self.canvas.place(x=0, y=0)
-            self.canvas.pack()
-            self.canvas.create_image(320, 180, image=self.this_preview_tk)
-
-            """
+            pass
 
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()
 
-        main_menubar_list = [("ファイル", "終了", window_exit, "新規", project_new, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save)]
+        main_menubar_list = [("ファイル", "終了", window_exit, "新規作成", project_new, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save)]
+        self.main_window.menubar_set(main_menubar_list)
 
         display_size = self.main_window.display_size_get()
         self.main_window.window_title_set("メインウインドウ")
         size = [640, 360]
         self.main_window.window_size_set(size)
-        self.main_window.menubar_set(main_menubar_list)
 
         test_button = self.main_window.new_parts(parts_name="button")
 
