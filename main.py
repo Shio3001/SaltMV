@@ -20,7 +20,7 @@ import main_user_GUI
 
 from auxiliary import directory_conversion as dircon
 from auxiliary import effect_auxiliary
-#from auxiliary import program_aggregation as prg_aggregation
+# from auxiliary import program_aggregation as prg_aggregation
 
 # set
 from user_CUI.Visualization import printlayer
@@ -46,12 +46,34 @@ from doc_save import make_save
 
 import elements
 
+# pyhton pluginテスト
+
+"""
+from plugin.effect import position
+from plugin.effect import text
+from plugin.effect import alpha
+from plugin.effect import rotate
+from plugin.effect import size
+from plugin.effect import Screensaver
+
+from plugin.expansion import timeline
+from plugin.expansion import GUI_main
+
+from plugin.GUI_UI import button
+from plugin.GUI_UI import textbox
+from plugin.GUI_UI import percentage
+from plugin.GUI_UI import scroll_x
+from plugin.GUI_UI import scroll_y
+from plugin.GUI_UI import shape
+from plugin.GUI_UI import timeline_bar
+from plugin.GUI_UI import timeline_frame
+from plugin.GUI_UI import timeline_nowtime
+from plugin.other import scroll
+from plugin.other import UI_data
+from plugin.other import window_data
+# おわり
+"""
 start_time = datetime.datetime.now()
-
-
-if __name__ == "__main__":
-    print("コマンドライン からの入力を確認")
-
 
 # 主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
 operation_list = {"set": {}, "out": {}, "CUI": {}, "save": {}, "useful": {}, "plugin": {}}
@@ -73,12 +95,40 @@ operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 operation_list["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
 operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
-#operation_list["useful"]["prg_aggregation"] = {"CentralRole": prg_aggregation.CentralRole()}
+# operation_list["useful"]["prg_aggregation"] = {"CentralRole": prg_aggregation.CentralRole()}
 
+"""
+operation_list["plugin"]["effect"] = {}
+operation_list["plugin"]["expansion"] = {}
+operation_list["plugin"]["GUI_UI"] = {}
+operation_list["plugin"]["other"] = {}
+
+operation_list["plugin"]["effect"]["position"] = position
+operation_list["plugin"]["effect"]["text"] = text
+operation_list["plugin"]["effect"]["alpha"] = alpha
+operation_list["plugin"]["effect"]["rotate"] = rotate
+operation_list["plugin"]["effect"]["size"] = size
+operation_list["plugin"]["effect"]["Screensaver"] = Screensaver
+operation_list["plugin"]["expansion"]["timeline"] = timeline
+operation_list["plugin"]["expansion"]["GUI_main"] = GUI_main
+operation_list["plugin"]["GUI_UI"]["button"] = button
+operation_list["plugin"]["GUI_UI"]["textbox"] = textbox
+operation_list["plugin"]["GUI_UI"]["percentage"] = percentage
+operation_list["plugin"]["GUI_UI"]["scroll_x"] = scroll_x
+operation_list["plugin"]["GUI_UI"]["scroll_y"] = scroll_y
+operation_list["plugin"]["GUI_UI"]["shape"] = shape
+operation_list["plugin"]["GUI_UI"]["timeline_bar"] = timeline_bar
+operation_list["plugin"]["GUI_UI"]["timeline_frame"] = timeline_frame
+operation_list["plugin"]["GUI_UI"]["timeline_nowtime"] = timeline_nowtime
+operation_list["plugin"]["other"]["scroll"] = scroll
+operation_list["plugin"]["other"]["UI_data"] = UI_data
+operation_list["plugin"]["other"]["window_data"] = window_data
+"""
 # usefulには補助的な計算ファイルを挿入する
 # plugin > file
 
-plugin_path = "plugin"
+# plugin_path = "plugin"
+
 # pathの指定方法は¥とかじゃなくて..でやれ
 
 this_os = str(os.name)
@@ -87,26 +137,54 @@ if this_os == "nt":
 else:
     slash = "/"
 
-print(slash)
-print(os.getcwd())
 
+log = open("log.txt", mode='w')
 
-plugin_file = os.listdir(plugin_path)
-plugin_list = [p for p in plugin_file if os.path.isdir(os.path.join(plugin_path, p))]
+now_path = os.getcwd()
+py_path = (os.path.abspath(__file__)).replace('main.py', '')
+plugin_path = os.path.join(py_path.replace('main.py', ''), "plugin")
 
-for folder_name in plugin_list:
-    file_file = os.listdir(os.path.join(plugin_path, folder_name))
-    file_list = [f for f in file_file if os.path.isfile(os.path.join(plugin_path, folder_name, f))]
+log.write("{0} \n".format(now_path))
+log.write("{0} \n".format(py_path))
+log.write("{0} \n".format(plugin_path))
+log.write("\n")
 
-    operation_list["plugin"][str(folder_name)] = {}
+plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全取得
+plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
 
-    for file_name in file_list:
+for plugin_folder_name in plugin_folder:  # Folder分だけまわす
+
+    pl_section_inside = os.listdir(os.path.join(plugin_path, plugin_folder_name))  # pluginfolder内のアイテムを全取得
+    pl_section_inside_list = [f for f in pl_section_inside if os.path.isfile(os.path.join(plugin_path, plugin_folder_name, f))]
+
+    operation_list["plugin"][str(plugin_folder_name)] = {}
+
+    for file_name in pl_section_inside_list:
         if file_name[-3:] == ".py":
-            path = plugin_path + "." + folder_name + "." + file_name
-            mainpath = os.getcwd()
-            import_data = importlib.import_module(path.replace('.py', ''))
-            operation_list["plugin"][str(folder_name)][str(file_name.replace('.py', ''))] = import_data
-            print(os.getcwd())
+            # path = (plugin_folder_name + "." + file_name.replace('.py', '')).replace(plugin_path, '')
+            # print("path {0}".format(path))
+            #path = os.path.relpath(os.path.join(plugin_path, plugin_folder_name, file_name)).replace(".py", '').replace(slash, '.')
+
+            # plugin_path_relative =
+            file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
+            path = os.path.relpath(file_path, py_path)
+
+            log.write("\n")
+            log.write("p : {0}\n".format(file_path))
+            log.write("p : {0}\n".format(path))
+            log.write("\n")
+
+            #print(file_path, path, py_path)
+
+            path_dot = path.replace('.py', '').replace(slash, '.')
+            # print(path_dot)
+
+            import_data = importlib.import_module(path_dot, py_path)
+            operation_list["plugin"][str(plugin_folder_name)][str(file_name.replace('.py', ''))] = import_data
+            print(operation_list)
+
+log.close()
+
 
 print(operation_list)
 
@@ -122,15 +200,24 @@ class CentralRole:
 
     def main(self):
 
-        if len(sys.argv) == 1:
-            main_user_CUI_CentralRole = main_user_CUI.CentralRole()
-            self.main_CUI(main_user_CUI_CentralRole)
+        read_time = datetime.datetime.now() - start_time
+        print("読込時間: {0}".format(read_time))
 
-        elif sys.argv[1] == "CUI":
-            main_user_CUI_CentralRole = main_user_CUI.CentralRole()  # ユーザー操作を司る
-            self.main_CUI(main_user_CUI_CentralRole)
+        if __name__ == "__main__":
+            print("コマンドライン からの入力を確認")
+            if len(sys.argv) == 1:
+                main_user_CUI_CentralRole = main_user_CUI.CentralRole()
+                self.main_CUI(main_user_CUI_CentralRole)
 
-        elif sys.argv[1] == "GUI":
+            elif sys.argv[1] == "CUI":
+                main_user_CUI_CentralRole = main_user_CUI.CentralRole()  # ユーザー操作を司る
+                self.main_CUI(main_user_CUI_CentralRole)
+
+            elif sys.argv[1] == "GUI":
+                main_user_GUI_CentralRole = main_user_GUI.CentralRole()  # ユーザー操作を司る
+                self.main_GUI(main_user_GUI_CentralRole)
+
+        else:
             main_user_GUI_CentralRole = main_user_GUI.CentralRole()  # ユーザー操作を司る
             self.main_GUI(main_user_GUI_CentralRole)
 

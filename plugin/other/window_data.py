@@ -86,11 +86,11 @@ class SendWindowData:  # window生成のためのデータ
 
             pull_down = tk.Menu(window_menubar, tearoff=0)
 
+            window_menubar.add_cascade(label=main_bar, menu=pull_down)  # それぞれ
+
             for n, p in zip(bar_name, bar_prg):
                 pull_down.add_command(label=n, command=p)
                 print("メニューバー登録 {0} {1}".format(n, p))
-
-            window_menubar.add_cascade(label=main_bar, menu=pull_down)  # それぞれ
 
         print("バー設定終了{0}".format(self.window))
 

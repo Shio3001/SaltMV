@@ -10,13 +10,13 @@ class InitialValue:
 
     def main(self):
 
-        def exit():
+        def timeline_exit():
             self.timeline.window.destroy()
 
         # timeline_menubar_list = [
         #    ("ウインドウ", [("閉じる", exit)])
         # ]
-        menubar_list = [("ファイル", "閉じる", exit), ("新規", "動画", exit)]
+        menubar_list = [("ファイル", "閉じる", timeline_exit), ("新規", "動画", timeline_exit)]
         self.timeline.menubar_set(menubar_list)
 
         display_size = self.timeline.display_size_get()
