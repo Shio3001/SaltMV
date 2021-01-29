@@ -3,7 +3,7 @@ import copy
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, operation,GUI_base_color,GUI_alpha_color):
+    def __init__(self, window, operation, GUI_base_color, GUI_alpha_color):
         # canvas系：文字入力なし 表示だけ
         # textbox系：文字入力あり 入力あり
         self.window = window
@@ -52,29 +52,29 @@ class SendUIData:  # パーツひとつあたりのためのclass
         #self.window_event = PrgAggregate()
         #self.canvas_event = PrgAggregate()
 
-        print("パーツ初期設定")
+        self.operation["log"].write("パーツ初期設定")
 
     def template(self):
-        print("関数が指定されていません")
+        self.operation["log"].write("関数が指定されていません")
 
     def window_event_del(self, key):
         key_index = self.event_window_key.index(key)
 
-        print("削除前:{0} ".format(self.event_window_key))
+        self.operation["log"].write("削除前:{0} ".format(self.event_window_key))
 
         #self.window.unbind("{0}".format(key_index), self.event_window_processing[key_index])
 
         del self.event_window_key[key_index]
         del self.event_window_processing[key_index]
 
-        print("削除:{0} 番号:{1}".format(key, key_index))
-        print("key:{0} prg:{1}".format(self.event_window_key, self.event_window_processing))
+        self.operation["log"].write("削除:{0} 番号:{1}".format(key, key_index))
+        self.operation["log"].write("key:{0} prg:{1}".format(self.event_window_key, self.event_window_processing))
 
         self.canvas_update()
 
     def canvas_event_del(self, key):
 
-        print("削除前:{0} ".format(self.event_canvas_key))
+        self.operation["log"].write("削除前:{0} ".format(self.event_canvas_key))
 
         key_index = self.event_canvas_key.index(key)
 
@@ -82,15 +82,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
         del self.event_canvas_key[key_index]
         del self.event_canvas_processing[key_index]
 
-        print("削除:{0} 番号:{1}".format(key, key_index))
-        print("key:{0} prg:{1}".format(self.event_canvas_key, self.event_canvas_processing))
+        self.operation["log"].write("削除:{0} 番号:{1}".format(key, key_index))
+        self.operation["log"].write("key:{0} prg:{1}".format(self.event_canvas_key, self.event_canvas_processing))
 
         self.canvas_update()
 
     def canvas_update(self):
         if not self.canvas is None:
             self.canvas.destroy()
-            # print("パーツ更新のため削除")
+            # self.operation["log"].write("パーツ更新のため削除")
 
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
         self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
@@ -103,16 +103,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
         for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
             self.canvas.bind("<{0}>".format(k), p, "+")
 
+        self.operation["log"].write("キャンバス設置")
+
         """
 
         for k, p in zip(self.event_window_key, self.event_window_processing):
-            print("WINDOW 関数を登録します", k, p)
+            self.operation["log"].write("WINDOW 関数を登録します", k, p)
             self.window_bind.add({k: p})
 
         self.window = self.window_bind.bind(self.window)
 
         for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
-            print("CANVAS 関数を登録します", k, p)
+            self.operation["log"].write("CANVAS 関数を登録します", k, p)
             self.canvas_bind.add({k: p})
 
         self.canvas = self.canvas_bind.bind(self.canvas)
@@ -121,15 +123,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         """
 
-        print("window_event : {0} {1}".format(self.event_window_key, self.event_window_processing))
-        print("canvas_event : {0} {1}".format(self.event_canvas_key, self.event_canvas_processing))
+        self.operation["log"].write("window_event : {0} {1}".format(self.event_window_key, self.event_window_processing))
+        self.operation["log"].write("canvas_event : {0} {1}".format(self.event_canvas_key, self.event_canvas_processing))
 
         for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
-            print("event <canvas>")
+            self.operation["log"].write("event <canvas>")
             self.canvas.bind('<{0}>'.format(k), p)
 
         for k, p in zip(self.event_window_key, self.event_window_processing):
-            print("event <window>")
+            self.operation["log"].write("event <window>")
             self.window.bind('<{0}>'.format(k), p)
 
         """
@@ -143,23 +145,23 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         # 左、上,右,下
 
-        print("限界線", blank_limitline)
-        print("限界線修正前", view_position, view_size)
+        self.operation["log"].write("限界線", blank_limitline)
+        self.operation["log"].write("限界線修正前", view_position, view_size)
 
         for i in [0, 1]:  # 余白を作る
             if view_position[i] < blank_limitline[0][i]:
                 view_size[i] -= blank_limitline[0][i] - view_position[i]
                 view_position[i] = blank_limitline[0][i]
 
-                print("座標修正", view_position)
+                self.operation["log"].write("座標修正", view_position)
 
             if view_position[i] + view_size[i] > blank_limitline[1][i]:
                 view_size[i] = blank_limitline[1][i] - view_position[i]
 
-                print("サイズ修正", view_size)
+                self.operation["log"].write("サイズ修正", view_size)
 
-        print("限界線修正後", view_position, view_size)
-        print()
+        self.operation["log"].write("限界線修正後", view_position, view_size)
+        self.operation["log"].write()
 
         return view_position, view_size
 
@@ -269,7 +271,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.paint()
 
     def disclosure(self):  # canvasに書かれている描画keyを開示
-        print(list(self.view_data.keys()))
+        self.operation["log"].write(list(self.view_data.keys()))
 
     # テキストボックスのため
 
@@ -277,8 +279,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not self.canvas is None:
             _ = self.textbox_text_get()
             self.canvas.destroy()
-            # print("パーツ更新のため削除")
-            # print(self.text)
+            # self.operation["log"].write("パーツ更新のため削除")
+            # self.operation["log"].write(self.text)
 
         self.canvas = tk.Entry()
         self.canvas = self.tk.Entry(width=self.canvas_size[0], highlightthickness=0, relief="flat")
@@ -303,7 +305,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if str(type(self.canvas)) == "<class 'tkinter.Canvas'>":
             return True
         else:
-            # print("canvasが設定されていません")
+            # self.operation["log"].write("canvasが設定されていません")
             return False
 
     def set_cursor(self, name=None):  # マウスのcursorをnameに入ってるものに変更する
@@ -328,15 +330,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def get_view_position(self):  # 長方形など四角形(0°)のときのみしかつかえません、あしからず
         for k, d in zip(list(self.view_data.keys()), list(self.view_data.values())):
-            # print(d.position)
-            # print(d.size)
+            # self.operation["log"].write(d.position)
+            # self.operation["log"].write(d.size)
             touch_xy = [(d.position[i] + self.canvas_position[i]) <= self.mouse_motion[ixy] <= (d.position[i] + d.size[i] + self.canvas_position[i]) for i, ixy in zip([0, 1], ["x", "y"])]
             if sum(touch_xy) == 2:
                 self.view_within[k] = True
             else:
                 self.view_within[k] = False
 
-            # print(sum(touch_xy))
+            # self.operation["log"].write(sum(touch_xy))
 
         return self.view_within
 
@@ -377,7 +379,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             for i, j in zip([0, 1], ["x", "y"]):
                 if self.canvas_position[i] <= self.mouse_motion[j] <= self.canvas_position[i] + self.canvas_size[i]:
                     self.canvas_within[j] = True
-                    #print(j, True)
+                    #self.operation["log"].write(j, True)
                 else:
                     self.canvas_within[j] = False
 

@@ -39,7 +39,8 @@ class parts:
                 data.scrollbar_size[0] = 1
 
             data.edit_view_size("a2", width_size=size)
-            print("{0} %".format(round(data.scrollbar_size[0] * 100)))
+
+            data.operation["log"].write("{0} %".format(round(data.scrollbar_size[0] * 100)))
             #data.edit_view_position("a2", width_position=position)
 
         data.draw = draw

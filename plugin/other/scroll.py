@@ -97,7 +97,7 @@ class CentralRole:
 
             scroll_drow()
 
-            print("{0} %".format(round(data.scrollbar_position[0] * 100)))
+            data.operation["log"].write("{0} %".format(round(data.scrollbar_position[0] * 100)))
 
         data.scroll = scroll
 
@@ -109,7 +109,7 @@ class CentralRole:
             else:
                 data.start_distance = data.view_data["a2"].size[direction_int] / 2
 
-            print("距離 : ", data.start_distance)
+            data.operation["log"].write("距離 : ", data.start_distance)
 
             if data.first_canvas_within["xy"] == True:
                 data.scroll(data.first_motion[direction_str])

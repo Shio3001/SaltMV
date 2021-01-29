@@ -31,9 +31,9 @@ class CentralRole:
                 send_sub = internal_operation["plugin"]["other"]["window_data"].SendWindowData(expansion_list["main"].window, base_data)
                 expansion_list[key] = internal_operation["plugin"]["expansion"][key].InitialValue(send_sub).main()
 
-        print("mainloop開始")
+        internal_operation["log"].write("mainloop開始")
         expansion_list["main"].window.mainloop()
-        print("mainloop終了")
+        internal_operation["log"].write("mainloop終了")
 
         print("GUI終了")
         return

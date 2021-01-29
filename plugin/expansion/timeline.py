@@ -7,8 +7,11 @@ import copy
 class InitialValue:
     def __init__(self, data):
         self.timeline = data
+        self.basic_ope = self.timeline.operation
 
     def main(self):
+
+        self.basic_ope["log"].write("タイムライン起動")
 
         def timeline_exit():
             self.timeline.window.destroy()
@@ -24,7 +27,7 @@ class InitialValue:
         size = [1000, 400]
         self.timeline.window_size_set(size)
         # self.timeline.menubar_set(timeline_menubar_list)
-        print(display_size)
+        self.basic_ope["log"].write(display_size)
 
         timeline_height = 30
 
@@ -62,7 +65,7 @@ class InitialValue:
                 bar_touch = tlb_one.first_touch
                 bar_within = tlb_one.first_canvas_within
 
-                # print(tlb_one.get_view_position())
+                # self.basic_ope["log"].write(tlb_one.get_view_position())
 
                 if bar_within["xy"] or bar_touch["left"] or bar_touch["right"]:
                     return
@@ -102,7 +105,7 @@ class InitialValue:
             ui_parts[1].edit_canvas_position(width_position=0, height_position=timeline_height)
             ui_parts[1].edit_canvas_size(width_size=100, height_size=canvas_log["size"][1] - timeline_height)
 
-            print(timeline_scroll_x.scrollbar_position)
+            # self.basic_ope["log"].write(timeline_scroll_x.scrollbar_position)
 
             canvas_log = timeline_scroll_x.get_window_data()
             timeline_scroll_x.edit_canvas_size(width_size=canvas_log["size"][0] - 100 - 20)
@@ -114,7 +117,7 @@ class InitialValue:
             timeline_scroll_y.edit_canvas_position(width_position=canvas_log["size"][0] - timeline_scroll_y.canvas_size[0], height_position=timeline_height)
             timeline_scroll_y.change_size_position()
 
-            print(timeline_scroll_x.scrollbar_position)
+            # self.basic_ope["log"].write(timeline_scroll_x.scrollbar_position)
 
         self.timeline.window_event(processing=window_size_change_event, user_event="Configure")
 

@@ -20,6 +20,8 @@ class InitialValue:
 
     def main(self):
 
+        self.basic_ope["log"].write("メイン画面起動")
+
         def window_exit():
             self.main_window.window.destroy()
 
