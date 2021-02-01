@@ -59,44 +59,43 @@ class InitialValue:
 
         # シークバーを移動させる時、他のオブジェクトに干渉していないか
         def timeline_seekbar_click(evet):
-            this_motion, this_touch, this_within = timeline_seekbar.get_mouse_position()
+            this_motion, _, _ = timeline_seekbar.get_mouse_position()
 
-            for tlb_one in timeline_bar:
-                bar_touch = tlb_one.first_touch
-                bar_within = tlb_one.first_canvas_within
+            parts = []
+            parts.extend(timeline_bar)  # list
+            parts.append(timeline_scroll_x)
+            parts.append(timeline_scroll_y)
+            parts.append(timeline_time_percentage)
 
-                # self.basic_ope["log"].write(tlb_one.get_view_position())
-
-                if bar_within["xy"] or bar_touch["left"] or bar_touch["right"]:
+            for r in parts:
+                if r.first_canvas_within["xy"] or r.first_touch["left"] or r.first_touch["right"]:
+                    basic_ope["log"].write("timeline_seekbar 返却")
                     return
-
-            scrollbar_touch = timeline_scroll_x.first_touch
-            scrollbar_within = timeline_scroll_x.first_canvas_within
-
-            # if scrollbar_within["xy"] or scrollbar_touch["left"] or scrollbar_touch["right"]:
-            if scrollbar_within["xy"] or scrollbar_touch["left"] or scrollbar_touch["right"]:
-                return
-
-            percentage_touch = timeline_time_percentage.first_touch
-            percentage_within = timeline_time_percentage.first_canvas_within
-
-            if percentage_within["xy"] or percentage_touch["left"] or percentage_touch["right"]:
-                return
 
             timeline_seekbar.edit_canvas_position(width_position=this_motion["x"])
 
         timeline_seekbar.window_for_event(processing=timeline_seekbar_click, user_event="B1-Motion")
         timeline_seekbar.window_for_event(processing=timeline_seekbar_click, user_event="Button-1")
 
-        test_frame = []
+        layer_frame = []
+        layer_label = []
 
         for i in range(20):
-            test_frame.append(None)
-            test_frame[i] = self.timeline.new_parts(parts_name="timeline_frame")
-            test_frame[i].edit_canvas_position(height_position=timeline_height + i * timeline_height)
+            layer_frame.append(None)
+            layer_frame[i] = self.timeline.new_parts(parts_name="timeline_frame")
+            layer_frame[i].edit_canvas_position(height_position=timeline_height + i * timeline_height)
+
+            layer_label.append(None)
+            layer_label[i] = self.timeline.new_parts(parts_name="timeline_layer_label")
+            layer_label[i].edit_canvas_position(width_position=30, height_position=timeline_height + timeline_height / 2 + i * timeline_height)
+            layer_label[i].layer_label_number(i + 1)
+
             # test_frame[i].edit_canvas_size(height_size=5)
 
+        basic_ope = self.basic_ope
+
         def window_size_change_event(self):
+
             canvas_log = ui_parts[0].get_window_data()
             ui_parts[0].edit_canvas_position(width_position=0, height_position=0)
             ui_parts[0].edit_canvas_size(width_size=canvas_log["size"][0], height_size=timeline_height)
@@ -105,7 +104,7 @@ class InitialValue:
             ui_parts[1].edit_canvas_position(width_position=0, height_position=timeline_height)
             ui_parts[1].edit_canvas_size(width_size=100, height_size=canvas_log["size"][1] - timeline_height)
 
-            # self.basic_ope["log"].write(timeline_scroll_x.scrollbar_position)
+            basic_ope["log"].write(timeline_scroll_x.scrollbar_position)
 
             canvas_log = timeline_scroll_x.get_window_data()
             timeline_scroll_x.edit_canvas_size(width_size=canvas_log["size"][0] - 100 - 20)
@@ -117,9 +116,10 @@ class InitialValue:
             timeline_scroll_y.edit_canvas_position(width_position=canvas_log["size"][0] - timeline_scroll_y.canvas_size[0], height_position=timeline_height)
             timeline_scroll_y.change_size_position()
 
-            # self.basic_ope["log"].write(timeline_scroll_x.scrollbar_position)
+            basic_ope["log"].write(timeline_scroll_x.scrollbar_position)
 
         self.timeline.window_event(processing=window_size_change_event, user_event="Configure")
+        self.basic_ope["log"].stop(False)
 
         return self.timeline
 

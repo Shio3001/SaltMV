@@ -71,16 +71,8 @@ operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 operation_list["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
 operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
-# operation_list["useful"]["prg_aggregation"] = {"CentralRole": prg_aggregation.CentralRole()}
 
-# usefulには補助的な計算ファイルを挿入する
-# plugin > file
-
-# plugin_path = "plugin"
-
-# pathの指定方法は¥とかじゃなくて..でやれ
-
-this_os = str(os.name)
+this_os = str(os.name)  # windowsか判定
 if this_os == "nt":
     slash = "\\"
 else:
@@ -193,15 +185,22 @@ class CentralRole:
 main_CentralRole = CentralRole()
 main_CentralRole.main()
 
+
+operation_list["log"].stop(True)
+
+
 exit_time = datetime.datetime.now()
 
 operation_time = exit_time - start_time
 operation_list["log"].write("開始時間 {0} , 終了時間 : {1} , 操作時間: {2}".format(start_time, exit_time, operation_time))
 
+
+# os.system("rm -rf " + "tmp")
+
+operation_list["log"].write("main 終了")
+operation_list["log"].end()
+
 del operation_list
 del main_CentralRole
 
-# os.system("rm -rf " + "tmp")
-operation_list["log"].end()
-operation_list["log"].write("main 終了")
 sys.exit()

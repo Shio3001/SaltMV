@@ -1,5 +1,6 @@
 import tkinter as tk
 import copy
+import os
 
 
 class SendWindowData:  # window生成のためのデータ
@@ -66,7 +67,6 @@ class SendWindowData:  # window生成のためのデータ
             self.menubar_list = send
 
         window_menubar = tk.Menu(self.window)
-        self.window.config(menu=window_menubar)
 
         for bar in self.menubar_list:
 
@@ -90,8 +90,11 @@ class SendWindowData:  # window生成のためのデータ
 
             for n, p in zip(bar_name, bar_prg):
                 pull_down.add_command(label=n, command=p)
-                print("メニューバー登録 {0} {1}".format(n, p))
+                self.operation["log"].write("メニューバー登録 {0} {1}".format(n, p))
 
-        print("バー設定終了{0}".format(self.window))
+        self.operation["log"].write("バー設定終了{0}".format(self.window))
+
+        self.window.config(menu=window_menubar)
+        self.window.update()
 
         # self.window.mainloop()

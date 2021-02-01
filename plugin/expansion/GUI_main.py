@@ -63,4 +63,9 @@ class InitialValue:
 
         test_box = self.main_window.new_parts(parts_name="textbox")
 
+        def window_size_change_event(self):
+            pass
+
+        self.main_window.window_event(processing=window_size_change_event, user_event="Motion")
+
         return self.main_window

@@ -46,11 +46,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
 
-        #self.window_bind = window_bind
-        #self.canvas_bind = PrgBind()
+        # self.window_bind = window_bind
+        # self.canvas_bind = PrgBind()
 
-        #self.window_event = PrgAggregate()
-        #self.canvas_event = PrgAggregate()
+        # self.window_event = PrgAggregate()
+        # self.canvas_event = PrgAggregate()
 
         self.operation["log"].write("パーツ初期設定")
 
@@ -62,7 +62,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation["log"].write("削除前:{0} ".format(self.event_window_key))
 
-        #self.window.unbind("{0}".format(key_index), self.event_window_processing[key_index])
+        # self.window.unbind("{0}".format(key_index), self.event_window_processing[key_index])
 
         del self.event_window_key[key_index]
         del self.event_window_processing[key_index]
@@ -78,7 +78,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         key_index = self.event_canvas_key.index(key)
 
-        #self.window.unbind("{0}".format(key_index), self.event_canvas_processing[key_index])
+        # self.window.unbind("{0}".format(key_index), self.event_canvas_processing[key_index])
         del self.event_canvas_key[key_index]
         del self.event_canvas_processing[key_index]
 
@@ -92,9 +92,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas.destroy()
             # self.operation["log"].write("パーツ更新のため削除")
 
+        print("c1", self.canvas)
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
-        self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
-
+        # self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
+        print("c2", self.canvas)
+        self.canvas_change_position()
         self.paint()
 
         for k, p in zip(self.event_window_key, self.event_window_processing):
@@ -104,42 +106,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas.bind("<{0}>".format(k), p, "+")
 
         self.operation["log"].write("キャンバス設置")
-
-        """
-
-        for k, p in zip(self.event_window_key, self.event_window_processing):
-            self.operation["log"].write("WINDOW 関数を登録します", k, p)
-            self.window_bind.add({k: p})
-
-        self.window = self.window_bind.bind(self.window)
-
-        for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
-            self.operation["log"].write("CANVAS 関数を登録します", k, p)
-            self.canvas_bind.add({k: p})
-
-        self.canvas = self.canvas_bind.bind(self.canvas)
-
-        """
-
-        """
-
-        self.operation["log"].write("window_event : {0} {1}".format(self.event_window_key, self.event_window_processing))
-        self.operation["log"].write("canvas_event : {0} {1}".format(self.event_canvas_key, self.event_canvas_processing))
-
-        for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
-            self.operation["log"].write("event <canvas>")
-            self.canvas.bind('<{0}>'.format(k), p)
-
-        for k, p in zip(self.event_window_key, self.event_window_processing):
-            self.operation["log"].write("event <window>")
-            self.window.bind('<{0}>'.format(k), p)
-
-        """
-
-        # if True in self.mouse_touch.values():
-
-    # def function_registration(self):
-    #    return
 
     def make_blank_space(self, data, view_position, view_size, blank_limitline):
 
@@ -166,6 +132,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return view_position, view_size
 
     def paint(self):
+
+        if self.__canvas_authenticity() == "Entry":
+            return
+
         self.canvas.delete("all")
 
         for data in list(self.view_data.values()):
@@ -179,13 +149,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 view_position, view_size = self.make_blank_space(data, view_position, view_size, blank_limitline)
 
             if data.fill == True:
-                self.canvas.create_rectangle(0 + data.blank_space[0], 0 + data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], fill=data.color, outline="", width=0)  # 塗りつぶし
+                self.__view_paint(data.color, data.blank_space[0], data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1])
             else:
-                self.canvas.create_rectangle(view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1], fill=data.color, outline="", width=0)  # 塗りつぶし
+                self.__view_paint(data.color, view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1])
 
         if not self.text is None:
             canvas_center = [s / 2 for s in self.canvas_size]
             self.canvas.create_text(canvas_center[0], canvas_center[1], text=self.text)
+
+    def __view_paint(self, color, x, y, size_x, size_y):  # 塗りつぶし
+        self.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0)  # 塗りつぶし
+        # self.canvas.create_rectangle(0 + data.blank_space[0], 0 + data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], fill=data.color, outline="", width=0)  # 塗りつぶし
+        # self.canvas.create_rectangle(view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1], fill=data.color, outline="", width=0)  # 塗りつぶし
+        return
 
     def canvas_change_size(self):
         self.canvas.config(width=self.canvas_size[0])
@@ -210,6 +186,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_update()
 
     def edit_canvas_position(self, width_position=None, height_position=None):
+        _ = self.__canvas_authenticity()
         if not width_position is None:
             self.canvas_position[0] = width_position
         if not height_position is None:
@@ -217,6 +194,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_change_position()
 
     def edit_canvas_size(self, width_size=None, height_size=None):
+        _ = self.__canvas_authenticity()
         if not width_size is None:
             self.canvas_size[0] = width_size
         if not height_size is None:
@@ -279,12 +257,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not self.canvas is None:
             _ = self.textbox_text_get()
             self.canvas.destroy()
-            # self.operation["log"].write("パーツ更新のため削除")
-            # self.operation["log"].write(self.text)
 
         self.canvas = tk.Entry()
         self.canvas = self.tk.Entry(width=self.canvas_size[0], highlightthickness=0, relief="flat")
-        self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
+        self.canvas_change_position()
 
         self.canvas.insert(0, self.text)
 
@@ -292,21 +268,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.text = self.canvas.get()
         return self.text
 
-    def edit_textbox_position(self, width_position=None, height_position=None):
-        if not width_position is None:
-            self.canvas_position[0] = width_position
-        if not height_position is None:
-            self.canvas_position[1] = height_position
-        self.textbox_update()
-
-    # 共通処理
-
     def __canvas_authenticity(self):  # キャンバスかどうかを確認
         if str(type(self.canvas)) == "<class 'tkinter.Canvas'>":
-            return True
+            self.operation["log"].write("Canvas")
+            return "Canvas"
+
+        elif str(type(self.canvas)) == "<class 'tkinter.Entry'>":
+            self.operation["log"].write("Entry")
+            return "Entry"
+
         else:
-            # self.operation["log"].write("canvasが設定されていません")
-            return False
+            self.operation["log"].write("canvasが設定されていません")
+            self.canvas_update()
+            return None
 
     def set_cursor(self, name=None):  # マウスのcursorをnameに入ってるものに変更する
         if name is None:
@@ -379,7 +353,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             for i, j in zip([0, 1], ["x", "y"]):
                 if self.canvas_position[i] <= self.mouse_motion[j] <= self.canvas_position[i] + self.canvas_size[i]:
                     self.canvas_within[j] = True
-                    #self.operation["log"].write(j, True)
+                    # self.operation["log"].write(j, True)
                 else:
                     self.canvas_within[j] = False
 
@@ -390,8 +364,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
 
 class PartsViewData:
-    def __init__(self, GUI_alpha_color):
-        self.color = GUI_alpha_color
+    def __init__(self, color):
+        self.color = color
         self.position = [0, 0]
         self.size = [0, 0]
         self.fill = False
