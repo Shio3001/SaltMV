@@ -298,7 +298,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def get_canvas_data(self):  # canvasのwindow内相対位置を返却
         return {"position": copy.deepcopy(self.canvas_position), "size": copy.deepcopy(self.canvas_size)}
 
-    def get_mouse_position(self):  # mouseのwindow内相対位置を返却
+    def get_mouse_position(self, reset=None):  # mouseのwindow内相対位置を返却
+
+        if reset == True:
+            self.__mouse_data_set()
+
         self.mouse_position_get()
         return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch), copy.deepcopy(self.canvas_within)
 
@@ -316,10 +320,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         return self.view_within
 
-    def mouse_position_get(self):
+    def __mouse_data_set(self):
         self.mouse_motion["x"] = self.window.winfo_pointerx() - self.window.winfo_rootx()
         self.mouse_motion["y"] = self.window.winfo_pointery() - self.window.winfo_rooty()
-
         self.mouse_touch["left"] = False  # 左
         self.mouse_touch["right"] = False  # 右
         self.mouse_touch["top"] = False
@@ -330,6 +333,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.mouse_touch["top_inside"] = False
         self.mouse_touch["under_inside"] = False
 
+        self.canvas_within = {"x": False, "y": False, "xy": False}
+
+    def mouse_position_get(self):
+
+        self.__mouse_data_set()
         left = self.canvas_position[0]
         right = self.canvas_size[0] + self.canvas_position[0]
         top = self.canvas_position[1]

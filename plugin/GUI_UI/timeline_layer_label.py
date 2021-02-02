@@ -5,5 +5,9 @@ class parts:
         def layer_label_number(n):
             data.edit_canvas_text(text="layer {0}".format(n))
 
+        data.edit_view_new("base")
+        data.edit_view_fill("base", True)
+        data.edit_view_color("base", color="#c0c0c0")
+
         data.layer_label_number = layer_label_number
         return data

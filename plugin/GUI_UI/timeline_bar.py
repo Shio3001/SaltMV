@@ -63,7 +63,7 @@ class parts:
             # data.operation["log"].write("押す")
 
         def click_finish(event):
-            data.first_motion, data.first_touch, data.first_canvas_within = {}, {}, {}
+            data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position(reset=True)
             data.set_cursor()
             # data.operation["log"].write("終了")
 
@@ -94,9 +94,8 @@ class parts:
         data.window_for_event(processing=click_drag, user_event="B1-Motion")
         data.window_for_event(processing=click_start, user_event="Button-1")
         data.window_for_event(processing=click_finish, user_event="ButtonRelease-1")
-        # 同じイベントを指定することはできないので注意を
         data.set_mouse_motion(True)
 
-        data.operation["log"].write("追加")
+        data.operation["log"].write("メディアオブジェクト追加")
 
         return data  # ボタンのベースを生成
