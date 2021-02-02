@@ -101,7 +101,6 @@ class InitialValue:
         basic_ope = self.basic_ope
 
         def window_size_change_event(self):
-
             canvas_log = ui_parts["parts0"].get_window_data()
             ui_parts["parts0"].edit_canvas_position(width_position=0, height_position=0)
             ui_parts["parts0"].edit_canvas_size(width_size=canvas_log["size"][0], height_size=timeline_height)

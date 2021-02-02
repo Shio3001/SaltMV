@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import os
 import copy
-
+from PIL import Image, ImageTk
 import cv2
 
 import time
@@ -11,9 +11,10 @@ import time
 
 class CentralRole:
     def __init__(self):
-        pass
+        self.preview_memory_tk = {}
 
-    def type_video(self, all_elements, operation_list, user_select):  # 動画で出力
+    def type_video(self, send_all_elements, operation_list, user_select):  # 動画で出力
+        all_elements = copy.deepcopy(send_all_elements)
         # 読み取り専用、all_elementsに変更を加えてもいいが元のやつには反映されない
         if user_select[-4:] != ".mp4":
             user_select += ".mp4"
@@ -55,8 +56,8 @@ class CentralRole:
 
         return
 
-    def type_image(self, all_elements, operation_list, select_time, user_select):  # 画像で出力
-
+    def type_image(self, send_all_elements, operation_list, select_time, user_select):  # 画像で出力
+        all_elements = copy.deepcopy(send_all_elements)
         if user_select[-4:] != ".png":
             user_select += ".png"
 
@@ -80,20 +81,43 @@ class CentralRole:
 
         return
 
-    def type_preview(self, all_elements, operation_list, select_time):  # プレビュー出力
+    def edit_changed(self, editing_range=None):  # 配列での範囲指定
+        if editing_range is None:
+            self.preview_memory_tk = {}
+            return
+
+        self.preview_memory_tk = {k: v for k, v in zip(self.preview_memory_tk.keys(), self.preview_memory_tk.values()) if not k in range(editing_range)}
+
+        #del self.preview_memory_tk[editing_range_list]
+
+    def type_preview(self, send_all_elements, operation_list, select_time, canvas_size):  # プレビュー出力
+        all_elements = copy.deepcopy(send_all_elements)
+        t = select_time
+
+        if not self.preview_memory_tk[t] is None:
+            return self.preview_memory_tk[t]
+
         editor = all_elements.editor_info
+
+        # export_size = [canvas_size
+
         export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
         all_elements = self.get_media(all_elements)
-
         start_time = time.time()
 
-        export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(select_time), operation_list, editor)
-        export_draw = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_BGRA2RGB)
+        resize_position = window_size
+        export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(t), operation_list, editor)
+        image_cv = cv2.resize(export_draw, (resize_position))
+        image_cv_RGB = cv2.cvtColor(image_cv.astype('uint8'), cv2.COLOR_BGRA2RGB)
+        image_pil = Image.fromarray(image_cv_RGB)  # RGBからPILフォーマットへ変換
+        image_tk = ImageTk.PhotoImage(image_pil)  # ImageTkフォーマットへ変換
+
+        self.preview_memory_tk[t] = image_tk
 
         elapsed_time = time.time() - start_time
         print("処理時間 : " + str(elapsed_time) + "秒")
 
-        return export_draw
+        return image_tk
 
     def get_media(self, all_elements):
 

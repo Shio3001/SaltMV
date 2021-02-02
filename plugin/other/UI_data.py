@@ -35,6 +35,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.view_within = {}
         self.motion_history = []
 
+        self.canvas_pic = None
+
         self.mouse_motion = {"catch": False}
         self.mouse_touch = {}
         self.canvas_within = {"x": False, "y": False, "xy": False}
@@ -107,6 +109,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation["log"].write("キャンバス設置")
 
+    def set_canvas_pic(self):
+        if self.canvas_pic is None:
+            pass
+
     def make_blank_space(self, data, view_position, view_size, blank_limitline):
 
         # 左、上,右,下
@@ -149,18 +155,27 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 view_position, view_size = self.make_blank_space(data, view_position, view_size, blank_limitline)
 
             if data.fill == True:
-                self.__view_paint(data.color, data.blank_space[0], data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1])
+                self.__view_paint(data.blank_space[0], data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], color=data.color)
             else:
-                self.__view_paint(data.color, view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1])
+                self.__view_paint(view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1], color=data.color)
 
         if not self.text is None:
             canvas_center = [s / 2 for s in self.canvas_size]
             self.canvas.create_text(canvas_center[0], canvas_center[1], text=self.text)
 
-    def __view_paint(self, color, x, y, size_x, size_y):  # 塗りつぶし
-        self.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0)  # 塗りつぶし
+    def __view_paint(self, x, y, size_x, size_y, color=None):  # 塗りつぶし
+        if self.canvas_pic is None:
+            self.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0)  # 塗りつぶし
+        else:
+            self.canvas.create_rectangle(x, y, size_x, size_y, outline="", width=0, image=self.canvas_pic, anchor='nw')  # 塗りつぶし
         # self.canvas.create_rectangle(0 + data.blank_space[0], 0 + data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], fill=data.color, outline="", width=0)  # 塗りつぶし
         # self.canvas.create_rectangle(view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1], fill=data.color, outline="", width=0)  # 塗りつぶし
+        return
+
+    def tk_picture(self, tk_image):
+        self.canvas.delete("all")
+        self.canvas_pic = tk_image
+        self.__view_paint(0, 0, self.canvas_size[0], self.canvas_size[1])
         return
 
     def canvas_change_size(self):
