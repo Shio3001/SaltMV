@@ -11,7 +11,7 @@ class InitialValue:
     def __init__(self, data):
         self.main_window = data
         self.basic_ope = self.main_window.operation
-        self.all_elements = self.main_window.all_elements
+        #self.all_elements = self.main_window.all_elements
         self.elements = self.main_window.elements
         self.tk = self.main_window.tk
 
@@ -38,7 +38,8 @@ class InitialValue:
             pass
 
         def preview():
-            pass
+            preview_screen = self.main_window.new_parts(parts_name="pillow_view")
+            preview_screen.update_event(self.all_elements, [1, 2])
 
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()
@@ -50,18 +51,6 @@ class InitialValue:
         self.main_window.window_title_set("メインウインドウ")
         size = [640, 360]
         self.main_window.window_size_set(size)
-
-        test_button = self.main_window.new_parts(parts_name="button")
-
-        def test1(event):
-            test_button.edit_canvas_position(width_position=test_button.canvas_position[0] + 20)
-
-        #test_button.edit_canvas_size(width_size=100, height_size=100)
-        test_button.canvas_event_del(test_button.user_event)
-
-        test_button.canvas_for_event(processing=test1, user_event="Button-1")
-
-        test_box = self.main_window.new_parts(parts_name="textbox")
 
         def window_size_change_event(self):
             pass

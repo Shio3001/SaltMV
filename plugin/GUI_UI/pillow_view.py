@@ -8,8 +8,12 @@ class parts:
             pass
 
         def view(self, all_elements, frame_user_select):
-            tk_image = data.operation["out"]["output_video_image"]["CentralRole"].type_preview(all_elements, data.operation, frame_user_select, data.canvas_size)
-            data.tk_picture(tk_image)
+
+            for time in range(frame_user_select):
+                tk_image = data.operation["out"]["output_video_image"]["CentralRole"].type_preview(all_elements, data.operation, time, data.canvas_size)
+                data.tk_picture(tk_image)
+
+            return
             """
             image_pil = Image.fromarray(view_picture)  # RGBからPILフォーマットへ変換
             img_resize = image_pil

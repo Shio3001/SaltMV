@@ -24,7 +24,7 @@ class CentralRole:
         print(editor)
 
         if not editor or 0 in editor:
-            print("画面サイズなどがきちんと設定されていないため動画を出力できません")
+            operation_list["log"].write("画面サイズなどがきちんと設定されていないため動画を出力できません")
             return
 
         export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
@@ -32,25 +32,26 @@ class CentralRole:
         fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
         size = (editor[0], editor[1])
         writer = cv2.VideoWriter(user_select, fmt, editor[2], size)  # ライター作成
-        print("書き出し開始")
+        operation_list["log"].write("書き出し開始")
         start_time = time.time()
 
         all_elements = self.get_media(all_elements)
         for now_frame in range(editor[3]):
-            print("\r進捗: {0} / {1} 進捗率: {2} %".format(now_frame + 1, editor[3], round(((now_frame + 1) / editor[3]) * 100)), end='')
+            #print("\r進捗: {0} / {1} 進捗率: {2} %".format(now_frame + 1, editor[3], round(((now_frame + 1) / editor[3]) * 100)), end='')
+            operation_list["log"].write("進捗: {0} / {1} 進捗率: {2} %".format(now_frame + 1, editor[3], round(((now_frame + 1) / editor[3]) * 100)))
 
             export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, now_frame, operation_list, editor)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
 
-        print("")
-        print("書き出し終了")
-        print("")
+        operation_list["log"].write("")
+        operation_list["log"].write("書き出し終了")
+        operation_list["log"].write("")
         elapsed_time = time.time() - start_time
-        print("処理時間 : " + str(elapsed_time) + "秒")
-        print("1フレームあたり平均処理時間" + str(elapsed_time / editor[3]) + "秒")
-        print("{0}fps 1フレーム{1}".format(editor[2], 1 / editor[2]))
-        print("")
+        operation_list["log"].write("処理時間 : " + str(elapsed_time) + "秒")
+        operation_list["log"].write("1フレームあたり平均処理時間" + str(elapsed_time / editor[3]) + "秒")
+        operation_list["log"].write("{0}fps 1フレーム{1}".format(editor[2], 1 / editor[2]))
+        operation_list["log"].write("")
 
         writer.release()
 
@@ -77,7 +78,7 @@ class CentralRole:
         cv2.imwrite(user_select, output_data)
 
         elapsed_time = time.time() - start_time
-        print("処理時間 : " + str(elapsed_time) + "秒")
+        operation_list["log"].write("処理時間 : " + str(elapsed_time) + "秒")
 
         return
 
@@ -99,15 +100,24 @@ class CentralRole:
 
         editor = all_elements.editor_info
 
-        # export_size = [canvas_size
-
         export_draw_base = np.zeros((editor[1], editor[0], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
         all_elements = self.get_media(all_elements)
         start_time = time.time()
 
-        resize_position = window_size
+        #operation_list["log"].write("開始時間 :{0} ".format(start_time))
+
+        resize_size = copy.deepcopy(canvas_size)
+        edit_size = [editor[0], editor[1]]
+        decrease = [0, 0]
+
+        decrease[0] = canvas_size[0] / edit_size[0]
+        resize_size = [e * d for e, d in zip(edit_size, decrease)]
+
+        decrease[1] = canvas_size[1] / resize_size[1]
+        resize_size[1] = resize_size[1] * decrease[1]
+
         export_draw = operation_list["out"]["frame_process"]["CentralRole"].main(export_draw_base, all_elements, int(t), operation_list, editor)
-        image_cv = cv2.resize(export_draw, (resize_position))
+        image_cv = cv2.resize(export_draw, (resize_size))
         image_cv_RGB = cv2.cvtColor(image_cv.astype('uint8'), cv2.COLOR_BGRA2RGB)
         image_pil = Image.fromarray(image_cv_RGB)  # RGBからPILフォーマットへ変換
         image_tk = ImageTk.PhotoImage(image_pil)  # ImageTkフォーマットへ変換
@@ -115,7 +125,7 @@ class CentralRole:
         self.preview_memory_tk[t] = image_tk
 
         elapsed_time = time.time() - start_time
-        print("処理時間 : " + str(elapsed_time) + "秒")
+        operation_list["log"].write("処理時間 : " + str(elapsed_time) + "秒")
 
         return image_tk
 

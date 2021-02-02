@@ -13,14 +13,27 @@ class CentralRole:
     def __init__(self):
         pass
 
+    # def all_elements_data(self):
+    #    self.all_elements = all_elements
+
     def main(self, all_elements, elements, internal_operation, app_name):
+
+        #self.all_elements = all_elements
+
+        #all_elements_data = AllElementsDATA(send_all_elements, internal_operation)
 
         expansion_keys = internal_operation["plugin"]["expansion"].keys()
         expansion_list = {}
 
         GUI_UI = internal_operation["plugin"]["GUI_UI"]
 
-        base_data = [internal_operation, all_elements, elements, GUI_UI, GUI_base_color, GUI_alpha_color]
+        base_data = {"ope": internal_operation,
+                     "el": elements,
+                     "ui": GUI_UI,
+                     "base_color": GUI_base_color,
+                     "alpha_color": GUI_alpha_color,
+                     "al": all_elements
+                     }
 
         send_main = internal_operation["plugin"]["other"]["window_data"].SendWindowData(None, base_data)
         expansion_list["main"] = internal_operation["plugin"]["expansion"][GUI_main_name].InitialValue(send_main).main()
@@ -37,3 +50,11 @@ class CentralRole:
 
         print("GUI終了")
         return
+
+
+"""
+class AllElementsDATA:
+    def __init__(self, send_all_elements, internal_operation):
+        self.all_elements = send_all_elements
+        internal_operation["log"].write("all_elements GUI登録")
+"""

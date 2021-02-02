@@ -27,9 +27,6 @@ class CentralRole:
         addpoint = None
         # try:
         for i, ie in enumerate(thisobject.effects[user_select].effectPoint):
-            # print(i)
-            # print(thisobject.effects[user_select].effectPoint)
-            # print(thisobject.effects[user_select].effectPoint[i])
             if thisobject.effects[user_select].effectPoint[i]["time"] >= maketime:
                 addpoint = copy.deepcopy(thisobject.effects[user_select].effectPoint[-1])  # 入れる予定の場所をもとに時間を検索
                 print("時間検索")

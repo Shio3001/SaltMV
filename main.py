@@ -45,6 +45,8 @@ from data_output import obj_substantial
 
 from doc_save import make_save
 
+from user_GUI import edit_all_project_data
+
 import elements
 
 # pyhton pluginテスト
@@ -71,6 +73,7 @@ operation_list["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
 operation_list["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
 operation_list["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
 operation_list["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
+operation_list["all_elements"] = edit_all_project_data.CentralRole()
 
 this_os = str(os.name)  # windowsか判定
 if this_os == "nt":
@@ -131,6 +134,7 @@ class CentralRole:
     def __init__(self):
 
         self.all_elements = elements.AllElements()  # 全てを司るもの
+        # operation_list["all_elements"].set_all_elements(self.all_elements)
 
         self.responselist = ["終了", "問題なし", "問題あり"]  # main.pyに戻ってくる時の応答リスト
 

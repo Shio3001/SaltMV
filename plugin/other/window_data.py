@@ -10,16 +10,16 @@ class SendWindowData:  # window生成のためのデータ
         self.window_size = [100, 100]
         self.window_name = "tkinter"
         self.main_window = main_window
-        self.operation = base_data[0]
-        self.all_elements = base_data[1]
-        self.elements = base_data[2]
+        self.operation = base_data["ope"]
+        self.all_elements = base_data["al"]  # copy.deepcopy厳禁
+        self.elements = base_data["el"]
 
-        self.GUI_base_color = base_data[4]
-        self.GUI_alpha_color = base_data[5]
+        self.GUI_base_color = base_data["base_color"]
+        self.GUI_alpha_color = base_data["alpha_color"]
 
         #self.window_bind = PrgBind()
 
-        print(base_data[3].keys())
+        # print(base_data["ui"].keys())
 
         # self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window, self.operation)) for key in list(base_data[3].keys())}
 
@@ -28,7 +28,7 @@ class SendWindowData:  # window生成のためのデータ
         else:
             self.window = tk.Tk()
 
-        self.GUI_UI_parts = base_data[3]
+        self.GUI_UI_parts = base_data["ui"]
         # self.UI_operation =
 
         self.window.configure(bg=self.GUI_base_color)
