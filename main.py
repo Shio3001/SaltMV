@@ -3,54 +3,20 @@ import sys
 import numpy as np
 import os
 import copy
-
 from pathlib import Path
-
 import cv2
 from PIL import Image, ImageDraw, ImageFilter
 import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
-
 import importlib
 import datetime
 
 import main_user_CUI  # GUI処分 CUI中継操作
 import main_user_GUI
-
 import log
-
 from chord_tool import file_path
-
-"""
-from auxiliary import directory_conversion as dircon
-from auxiliary import effect_auxiliary
-from auxiliary import log
-# from auxiliary import program_aggregation as prg_aggregation
-
-# set
-from user_CUI.Visualization import printlayer
-from user_CUI.Visualization import layerselect
-from user_CUI.Visualization import seteditsize
-from user_CUI.Visualization import timeselect
-
-from user_CUI import usersetpoint  # CUI 操作に関するファイル GUI処分
-from user_CUI import makeobject
-# from info_userCUI.EditPointFile import edit_point  # CUI 操作に関するファイル GUI処分 set_pointで設定したものを編集するやつ
-from data_input import input_point  # 内部処理
-from data_input import input_video_image
-from data_input import input_text
-from data_input import new_layer
-from data_input import input_plugin
-
-from data_output import output_video_image
-from data_output import current_location
-from data_output import frame_process
-from data_output import obj_substantial
-"""
-#from doc_save import make_save
 import edit_data_control
-
 import elements
 
 # pyhton pluginテスト

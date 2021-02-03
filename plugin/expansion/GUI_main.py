@@ -49,9 +49,6 @@ class InitialValue:
             preview_screen = self.main_window.new_parts(parts_name="pillow_view")
             preview_screen.size_update("self.all_elements", [1, 2])
 
-            # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
-            # canvas.pack()
-
         main_menubar_list = [("ファイル", "終了", window_exit, "新規作成", project_new, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save)]
         self.main_window.menubar_set(main_menubar_list)
 
