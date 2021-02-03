@@ -9,6 +9,8 @@ class InitialValue:
         self.timeline = data
         self.basic_ope = self.timeline.operation
 
+    # def get_all_elements(self)
+
     def main(self):
 
         self.basic_ope["log"].write("タイムライン起動")

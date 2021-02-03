@@ -10,8 +10,8 @@ from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 class InitialValue:
     def __init__(self, data):
         self.main_window = data
-        self.basic_ope = self.main_window.operation
-        #self.all_elements = self.main_window.all_elements
+        self.operation = self.main_window.operation
+        self.all_elements = self.main_window.all_elements
         self.elements = self.main_window.elements
         self.tk = self.main_window.tk
 
@@ -19,8 +19,16 @@ class InitialValue:
         # self.UI_operation = self.main_window.UI_operation  # パーツを整形するためのデータ
 
     def main(self):
+        self.operation["log"].write("メイン画面起動")
 
-        self.basic_ope["log"].write("メイン画面起動")
+        """
+        def get_edit():
+            return self.all_elements  # データおくる
+
+        def set_edit(send_all_elements):
+            self.all_elements = send_all_elements  # データもら
+            return
+        """
 
         def window_exit():
             self.main_window.window.destroy()
@@ -39,7 +47,7 @@ class InitialValue:
 
         def preview():
             preview_screen = self.main_window.new_parts(parts_name="pillow_view")
-            preview_screen.update_event(self.all_elements, [1, 2])
+            preview_screen.size_update(self.all_elements, [1, 2])
 
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()

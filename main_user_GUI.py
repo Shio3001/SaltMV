@@ -27,12 +27,13 @@ class CentralRole:
 
         GUI_UI = internal_operation["plugin"]["GUI_UI"]
 
+        internal_operation["edit_data"].set_get(data=all_elements)
+
         base_data = {"ope": internal_operation,
                      "el": elements,
                      "ui": GUI_UI,
                      "base_color": GUI_base_color,
-                     "alpha_color": GUI_alpha_color,
-                     "al": all_elements
+                     "alpha_color": GUI_alpha_color
                      }
 
         send_main = internal_operation["plugin"]["other"]["window_data"].SendWindowData(None, base_data)

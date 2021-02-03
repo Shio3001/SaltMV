@@ -11,7 +11,7 @@ class SendWindowData:  # window生成のためのデータ
         self.window_name = "tkinter"
         self.main_window = main_window
         self.operation = base_data["ope"]
-        self.all_elements = base_data["al"]  # copy.deepcopy厳禁
+        # self.all_elements = base_data["al"]  # copy.deepcopy厳禁
         self.elements = base_data["el"]
 
         self.GUI_base_color = base_data["base_color"]

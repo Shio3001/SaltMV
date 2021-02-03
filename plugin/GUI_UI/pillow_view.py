@@ -22,6 +22,6 @@ class parts:
             image_tk = ImageTk.PhotoImage(image_pil)  # ImageTkフォーマットへ変換
             """
 
-        data.update_event = size_update
+        data.size_update = size_update
 
         return data
