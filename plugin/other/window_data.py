@@ -4,18 +4,18 @@ import os
 
 
 class SendWindowData:  # window生成のためのデータ
-    def __init__(self, main_window, base_data):
+    def __init__(self, main_window, operation, UI_parts, UI_auxiliary):
         self.tk = tk
         self.menubar_list = {}
         self.window_size = [100, 100]
         self.window_name = "tkinter"
         self.main_window = main_window
-        self.operation = base_data["ope"]
+        self.operation = operation
         # self.all_elements = base_data["al"]  # copy.deepcopy厳禁
-        self.elements = base_data["el"]
+        #self.elements = base_data["el"]
 
-        self.GUI_base_color = base_data["base_color"]
-        self.GUI_alpha_color = base_data["alpha_color"]
+        self.GUI_base_color = "#1a1a1a"
+        self.GUI_alpha_color = "#000000"
 
         #self.window_bind = PrgBind()
 
@@ -28,7 +28,8 @@ class SendWindowData:  # window生成のためのデータ
         else:
             self.window = tk.Tk()
 
-        self.GUI_UI_parts = base_data["ui"]
+        self.UI_parts = UI_parts
+        self.UI_auxiliary = UI_auxiliary
         # self.UI_operation =
 
         self.window.configure(bg=self.GUI_base_color)
@@ -44,7 +45,7 @@ class SendWindowData:  # window生成のためのデータ
             self.window.bind("<{0}>".format(user_event), processing, "+")
 
     def new_parts(self, parts_name=None):
-        new_parts_obj = self.GUI_UI_parts[parts_name].parts().UI_set(self.operation["plugin"]["other"]["UI_data"].SendUIData(self.window, self.operation, self.GUI_base_color, self.GUI_alpha_color))
+        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.operation, self.GUI_base_color, self.GUI_alpha_color))
         return new_parts_obj
 
     def display_size_get(self):

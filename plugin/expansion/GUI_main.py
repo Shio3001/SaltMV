@@ -11,11 +11,11 @@ class InitialValue:
     def __init__(self, data):
         self.main_window = data
         self.operation = self.main_window.operation
-        self.all_elements = self.main_window.all_elements
-        self.elements = self.main_window.elements
+        #self.all_elements = self.main_window.all_elements
+        #self.elements = self.main_window.elements
         self.tk = self.main_window.tk
 
-        self.GUI_UI_parts = self.main_window.GUI_UI_parts  # パーツひとつひとつのデータ
+        self.UI_parts = self.main_window.UI_parts  # パーツひとつひとつのデータ
         # self.UI_operation = self.main_window.UI_operation  # パーツを整形するためのデータ
 
     def main(self):
@@ -47,7 +47,7 @@ class InitialValue:
 
         def preview():
             preview_screen = self.main_window.new_parts(parts_name="pillow_view")
-            preview_screen.size_update(self.all_elements, [1, 2])
+            preview_screen.size_update("self.all_elements", [1, 2])
 
             # あーキャンバス内での座標計算は左上だけど、物を配置するときにはものの中央で考えないといけないらしい
             # canvas.pack()

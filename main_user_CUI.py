@@ -8,26 +8,33 @@ import copy
 # GUI処分ファイル(CUI中継)
 
 
-class CentralRole:
-    def __init__(self):
+class CUI:
+    def __init__(self, all_data):
+        self.all_data = all_data
 
         # self.selectlist = {0, "何もないよ", 1: "終了", 2: "保存", 3: "プロジェクト設定", 4: "レイヤー生成", 5: "オブジェクト生成", 6: "中間点設定", 7: "設定書き出し"}
-
+        """
         self.selectlist = np.array([["0", "何もないよ", self.nothing],
                                     ["1", "終了", self.exit],
                                     ["2", "保存", self.save],
                                     ["2a", "上書き保存", self.overwrite_save],
                                     ["3", "取得", self.load],
                                     ["4", "プロジェクト設定", self.set_edit],
-                                    ["5", "レイヤー生成", self.newlayer],
-                                    ["6", "オブジェクト生成", self.newobject],
-                                    ["7", "中間点生成", self.newpoint],
-                                    ["8", "設定表示", self.printall],
-                                    ["9", "動画の書き出し", self.export_video],
-                                    ["10", "画像の書き出し", self.export_image]])
+                                    ["5", "シーン設定", self.set_scene],
+                                    ["6", "レイヤー生成", self.newlayer],
+                                    ["7", "オブジェクト生成", self.newobject],
+                                    ["8", "中間点生成", self.newpoint],
+                                    ["9", "設定表示", self.printall],
+                                    ["10", "動画の書き出し", self.export_video],
+                                    ["11", "画像の書き出し", self.export_image]])
+        """
 
         self.save_location = ""
 
+    def main(self):
+        pass
+
+    """
     def usernextselect(self, responselist, all_elements, elements, operation_list):
 
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -149,3 +156,4 @@ class CentralRole:
         operation_list["out"]["output_video_image"]["CentralRole"].type_image(copy.deepcopy(all_elements), operation_list, select_time, user_select)
 
         return all_elements, responselist[1]
+    """

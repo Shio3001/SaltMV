@@ -4,7 +4,7 @@ import datetime
 class LogPrint:
     def __init__(self, directory):
         self.time = datetime.datetime.now()
-        self.path = directory.main("../log/log_{0}.txt".format(self.time))
+        self.path = directory.path_support("../log/log_{0}.txt".format(self.time))
         self.logfile = open(self.path, mode='a')
 
         self.permit = True

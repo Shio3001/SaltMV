@@ -7,10 +7,16 @@ import copy
 
 class AllElements:  # えらい
     def __init__(self):
+        self.scenes = []
+        print("全てのレイヤー管理 を追加しました : AllElements [ Elements ] ")
+
+
+class SceneElements:  # えらい
+    def __init__(self):
         self.layer_group = []  # 一番重要だと思われ
         self.editor_info = []  # 動画の画面サイズとかその辺
 
-        print("全てのレイヤー管理 を追加しました : AllElements [ Elements ] ")
+        print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
 
 class layerElements:  # 次にえらい
@@ -34,7 +40,7 @@ class ObjectElements:  # その次にえらい
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
 
 
-class effectElements:  # えらくない
+class EffectElements:  # えらくない
     def __init__(self):
         self.effectname = None
         self.effectPoint = []
