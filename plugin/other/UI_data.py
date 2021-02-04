@@ -3,7 +3,7 @@ import copy
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, operation, GUI_base_color, GUI_alpha_color):
+    def __init__(self, window, all_data, GUI_base_color, GUI_alpha_color):
         # canvas系：文字入力なし 表示だけ
         # textbox系：文字入力あり 入力あり
         self.window = window
@@ -11,7 +11,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas = None
 
-        self.operation = operation
+        self.operation = all_data.operation
+        self.all_data = all_data
 
         self.canvas_size = [10, 10]
         self.canvas_position = [0, 0]

@@ -17,7 +17,7 @@ import main_user_GUI
 import log
 from chord_tool import file_path
 import edit_data_control
-import elements
+
 
 # pyhton pluginテスト
 
@@ -27,26 +27,6 @@ all_data = edit_data_control.Storage()
 # 主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
 
 #operation = {"set": {}, "out": {}, "CUI": {}, "save": {}, "useful": {}, "plugin": {}}
-"""
-operation["set"]["input_point"] = {"CentralRole": input_point.CentralRole()}  # 中間点を設定する
-operation["set"]["input_video_image"] = {"CentralRole": input_video_image.CentralRole()}  # 動画・画像の読み込みを行う
-operation["set"]["input_text"] = {"CentralRole": input_text.CentralRole()}  # テキストの読み込みを行う
-operation["set"]["new_layer"] = {"CentralRole": new_layer.CentralRole()}
-operation["set"]["input_plugin"] = {"CentralRole": input_plugin.CentralRole()}
-operation["out"]["output_video_image"] = {"CentralRole": output_video_image.CentralRole()}  # 動画と画像の場合の出力をまとめる
-operation["out"]["frame_process"] = {"CentralRole": frame_process.CentralRole()}  # フレームごとの処理を書いておく
-operation["out"]["current_location"] = {"CentralRole": current_location.CentralRole()}  # 中間点から現在の居場所を算出する
-operation["out"]["obj_substantial"] = {"CentralRole": obj_substantial.CentralRole()}  # 中間点から現在の居場所を算出する
-#operation["save"]["make_save"] = {"CentralRole": make_save.CentralRole()}
-operation["CUI"]["usersetpoint"] = {"CentralRole": usersetpoint.CentralRole()}
-operation["CUI"]["printlayer"] = {"CentralRole": printlayer.CentralRole()}
-operation["CUI"]["layerselect"] = {"CentralRole": layerselect.CentralRole()}
-operation["CUI"]["seteditsize"] = {"CentralRole": seteditsize.CentralRole()}
-operation["CUI"]["timeselect"] = {"CentralRole": timeselect.CentralRole()}
-operation["CUI"]["makeobject"] = {"CentralRole": makeobject.CentralRole()}
-operation["useful"]["dircon"] = {"CentralRole": dircon.CentralRole()}
-operation["useful"]["effect_auxiliary"] = {"Calculation": effect_auxiliary.Calculation()}
-"""
 
 # ファイル定義開始
 operation = {}
@@ -68,6 +48,7 @@ plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全�
 plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
 
 
+operation["plugin"] = {}
 for plugin_folder_name in plugin_folder:  # Folder分だけまわす
 
     pl_section_inside = os.listdir(os.path.join(plugin_path, plugin_folder_name))  # pluginfolder内のアイテムを全取得
@@ -77,25 +58,11 @@ for plugin_folder_name in plugin_folder:  # Folder分だけまわす
 
     for file_name in pl_section_inside_list:
         if file_name[-3:] == ".py":
-            # path = (plugin_folder_name + "." + file_name.replace('.py', '')).replace(plugin_path, '')
-            # operation["log"].write("path {0}".format(path))
-            #path = os.path.relpath(os.path.join(plugin_path, plugin_folder_name, file_name)).replace(".py", '').replace(slash, '.')
-
-            # plugin_path_relative =
             file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
             path = os.path.relpath(file_path, py_path)
-
-            operation["log"].write("read : {0}".format(file_path))
-            operation["log"].write("read : {0}".format(path))
-
-            #operation["log"].write(file_path, path, py_path)
-
             path_dot = path.replace('.py', '').replace(all_data.slash, '.')
-            # operation["log"].write(path_dot)
-
             import_data = importlib.import_module(path_dot, py_path)
             operation["plugin"][str(plugin_folder_name)][str(file_name.replace('.py', ''))] = import_data
-            operation["log"].write(operation)
 
 # plugin読み込み終了
 

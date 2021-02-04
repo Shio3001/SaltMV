@@ -8,6 +8,7 @@ import copy
 class AllElements:  # えらい
     def __init__(self):
         self.scenes = []
+        self.number = 0
         print("全てのレイヤー管理 を追加しました : AllElements [ Elements ] ")
 
 
@@ -19,9 +20,9 @@ class SceneElements:  # えらい
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
 
-class layerElements:  # 次にえらい
+class LayerElements:  # 次にえらい
     def __init__(self):
-        self.retention_object = []
+        self.object_group = []
 
         print("レイヤーを追加しました : layerElements [ Elements ]")
 
@@ -35,7 +36,7 @@ class ObjectElements:  # その次にえらい
         self.staend_property = [None, None]  # 開始地点,終了地点
         self.objectType = None
         self.unique_property = []  # それぞれ任意 #ObjectTypeによって分別
-        self.effects = []
+        self.effects_group = []
 
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
 
