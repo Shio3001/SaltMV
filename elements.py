@@ -30,6 +30,8 @@ class LayerElements:  # 次にえらい
 class ObjectElements:  # その次にえらい
     def __init__(self):
         self.effects_group = []
+        self.installation = [0, 0]
+        self.synthetic = "normal"
 
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
 
@@ -40,6 +42,6 @@ class EffectElements:  # えらくない
         self.effect_point = []
         self.procedure = None  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
-        self.export_loop = True
+        #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

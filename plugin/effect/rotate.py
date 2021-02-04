@@ -12,8 +12,8 @@ class InitialValue:
 
     def main(self, elements):
         setting_effect = elements.effectElements()
-        setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effectPoint = [{"time": 0, "rotate_z": 0, "rotate_center_x": 0, "rotate_center_y": 0}]
+        setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
+        setting_effect.effect_point = [{"time": 0, "rotate_z": 0, "rotate_center_x": 0, "rotate_center_y": 0}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -27,9 +27,9 @@ class CentralRole:
 
     def main(self, data):
         draw_size = tuple(map(int, data.draw_size.values()))
-        center = (draw_size[0] / 2 + data.position["rotate_center_x"], draw_size[1] / 2 + data.position["rotate_center_y"])
+        center = (draw_size[0] / 2 + data.effect_value["rotate_center_x"], draw_size[1] / 2 + data.effect_value["rotate_center_y"])
 
-        rotate_list = [[self.rotate_z, data.position["rotate_z"]]]
+        rotate_list = [[self.rotate_z, data.effect_value["rotate_z"]]]
 
         for i in rotate_list:
             data.draw = i[0](data, data.draw, draw_size, center, i[1])

@@ -23,7 +23,7 @@ class Rendering:
                 #print("\r進捗: {0} / {1} 進捗率: {2} %".format(now_frame + 1, this_scene.editor[3], round(((now_frame + 1) / this_scene.editor[3]) * 100)), end='')
                 operation["log"].write("進捗: {0} / {1} 進捗率: {2} %".format(now_frame + 1, this_scene.editor["len"], round(((now_frame + 1) / this_scene.editor["len"]) * 100)))
 
-                export_draw = operation["rendering"]["frame"].main(draw_base,operation, this_scene, now_frame)
+                export_draw = operation["rendering"]["frame"].main(draw_base, operation, this_scene, now_frame)
                 output_data = cv2.cvtColor((export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR))
                 writer.write(output_data)
 

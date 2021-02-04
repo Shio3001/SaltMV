@@ -18,8 +18,8 @@ import log
 from chord_tool import file_path
 import edit_data_control
 
-from Internal_operation.media_output import rendering_main
-from Internal_operation.media_output import rendering_frame
+from Internal_operation.rendering import rendering_main
+from Internal_operation.rendering import rendering_frame
 
 start_time = datetime.datetime.now()
 all_data = edit_data_control.Storage()

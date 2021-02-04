@@ -12,8 +12,8 @@ class InitialValue:
 
     def main(self, elements):
         setting_effect = elements.effectElements()
-        setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effectPoint = [{"time": 0}]
+        setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
+        setting_effect.effect_point = [{"time": 0}]
         setting_effect.various_fixed = {"path": ""}
         setting_effect.procedure = CentralRole()
         #setting_effect.export_loop = False

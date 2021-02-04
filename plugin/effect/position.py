@@ -12,8 +12,8 @@ class InitialValue:
 
     def main(self, elements):
         setting_effect = elements.effectElements()
-        setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effectPoint = [{"time": 0, "x": 0, "y": 0}]
+        setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
+        setting_effect.effect_point = [{"time": 0, "x": 0, "y": 0}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -28,6 +28,6 @@ class CentralRole:
     def main(self, data):
 
         # 座標
-        self.starting_point = [data.position["x"], data.position["y"]]
+        self.starting_point = [data.effect_value["x"], data.effect_value["y"]]
 
         return data.draw, self.starting_point

@@ -12,8 +12,8 @@ class InitialValue:
 
     def main(self, elements):
         setting_effect = elements.effectElements()
-        setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effectPoint = [{"time": 0, "alpha": 100}]
+        setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
+        setting_effect.effect_point = [{"time": 0, "alpha": 100}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -30,7 +30,7 @@ class CentralRole:
         data.draw = data.draw.astype('float32')
 
         # 透明度
-        alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.position["alpha"] * 0.01)
+        alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.effect_value["alpha"] * 0.01)
         data.draw[:, :, 3] *= alpha_draw
 
         return data.draw, self.starting_point

@@ -10,8 +10,8 @@ class InitialValue:
 
     def main(self, elements):
         setting_effect = elements.effectElements()
-        setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effectPoint = [{"time": 0, "speed": 1}]
+        setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
+        setting_effect.effect_point = [{"time": 0, "speed": 1}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -28,7 +28,7 @@ class CentralRole:
 
         # editor_size = {"x": editor[0], "y": editor[1]}
         # draw_size = {"x": draw.shape[1], "y": draw.shape[0]}
-        speed = data.position["speed"] - 1
+        speed = data.effect_value["speed"] - 1
 
         # self.direction = [d + speed if d < 0 else (speed * - 1) * d for d in self.direction]
 
