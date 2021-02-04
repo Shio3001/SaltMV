@@ -18,23 +18,20 @@ import log
 from chord_tool import file_path
 import edit_data_control
 
-
-# pyhton pluginテスト
+from Internal_operation.media_output import rendering_main
+from Internal_operation.media_output import rendering_frame
 
 start_time = datetime.datetime.now()
 all_data = edit_data_control.Storage()
 
-# 主な処理を連想配列にぶち込む ,連想配列を指定したらその処理持ってこれるようになりよ
-
-#operation = {"set": {}, "out": {}, "CUI": {}, "save": {}, "useful": {}, "plugin": {}}
-
-# ファイル定義開始
 operation = {}
+
+operation["rendering"] = {}
+operation["rendering"]["main"] = rendering_main.Rendering()
+operation["rendering"]["frame"] = rendering_frame.Rendering()
+
 operation["file_path"] = file_path.DirectoryPath()
 operation["log"] = log.LogPrint(operation["file_path"])
-
-# plugin読み込み
-
 
 now_path = os.getcwd()
 py_path = (os.path.abspath(__file__)).replace('main.py', '')
@@ -46,7 +43,6 @@ operation["log"].write(plugin_path)
 
 plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全取得
 plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
-
 
 operation["plugin"] = {}
 for plugin_folder_name in plugin_folder:  # Folder分だけまわす

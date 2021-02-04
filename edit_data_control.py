@@ -10,14 +10,12 @@ edit_data = elements.AllElements()
 
 class Storage:
     def __init__(self):
-
+        self.app_name = "NankokuMovieMaker"
         self.extension = ".json"
+
         self.operation = None
 
         self.elements = elements
-        self.app_name = "NankokuMovieMaker"
-        self.response = ["exit", "problem", "no_problem"]  # 応答リスト
-
         self.now_scene = 0  # 現在の操作シーン
 
         this_os = str(os.name)  # windowsか判定
@@ -40,8 +38,6 @@ class Storage:
 
     def scene(self, data=None):
         self.operation["log"].write("scene")
-
-        edit_data.number += 1
 
         if not data is None:
             edit_data.scenes[self.now_scene] = data
@@ -79,6 +75,7 @@ class Storage:
 
     def add_layer_elements(self):
         edit_data.scenes[self.now_scene].layer_group.append(elements.SceneElements())
+        print(edit_data.scenes[self.now_scene].layer_group)
 
     def add_object_elements(self, layer_order):
         edit_data.scenes[self.now_scene].layer_group[layer_order].object_group.append(elements.LayerElements())
@@ -98,14 +95,14 @@ class Storage:
     def del_effect_elements(self, layer_order, object_order, effect_order):
         del edit_data.scenes[self.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
 
-    def file_input(self, user_select, file_name):
+    def file_input(self, user_select):
 
-        file_name = self.extension_detection(file_name)
+        user_select = self.extension_detection(user_select)
 
         try:
-            lordfile = open(file_name, 'rb')
+            lordfile = open(user_select, 'rb')
             edit_data = pickle.load(lordfile)
-            save_path = copy.deepcopy(file_name)
+            save_path = copy.deepcopy(user_select)
 
             self.operation["log"].write("編集ファイルを開きました ファイルパス{0}".format(save_path))
 

@@ -14,9 +14,8 @@ class InitialValue:
         setting_effect = elements.effectElements()
         setting_effect.effectname = str(os.path.basename(__file__)).replace('.py', '')
         setting_effect.effectPoint = [{"time": 0, "letter_spacing": 0}]
-        setting_effect.various_fixed = {"placement_width": 0, "placement_height": 0}
+        setting_effect.various_fixed = {"text": "", "placement_width": 0, "placement_height": 0}
         setting_effect.procedure = CentralRole()
-        setting_effect.export_loop = False
 
         return setting_effect
 

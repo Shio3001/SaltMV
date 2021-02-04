@@ -62,4 +62,10 @@ class InitialValue:
 
         self.main_window.window_event(processing=window_size_change_event, user_event="Motion")
 
+        self.main_window.all_data.add_layer_elements()
+        self.main_window.all_data.add_layer_elements()
+        self.main_window.all_data.add_layer_elements()
+        self.main_window.all_data.add_layer_elements()
+        self.main_window.all_data.add_layer_elements()
+
         return self.main_window

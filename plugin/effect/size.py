@@ -15,7 +15,6 @@ class InitialValue:
         setting_effect.effectPoint = [{"time": 0, "size_x": 100, "size_y": 100}]
         setting_effect.various_fixed = {"size_lnk": True}
         setting_effect.procedure = CentralRole()
-        setting_effect.export_loop = False
 
         return setting_effect
 

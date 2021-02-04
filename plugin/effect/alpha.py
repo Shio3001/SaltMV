@@ -16,7 +16,6 @@ class InitialValue:
         setting_effect.effectPoint = [{"time": 0, "alpha": 100}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
-        setting_effect.export_loop = False
 
         return setting_effect
 

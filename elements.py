@@ -8,14 +8,14 @@ import copy
 class AllElements:  # えらい
     def __init__(self):
         self.scenes = []
-        self.number = 0
         print("全てのレイヤー管理 を追加しました : AllElements [ Elements ] ")
 
 
 class SceneElements:  # えらい
     def __init__(self):
         self.layer_group = []  # 一番重要だと思われ
-        self.editor_info = []  # 動画の画面サイズとかその辺
+        self.editor_info = {"x": 0, "y": 0, "fps": 0, "len": 0}  # 動画の画面サイズとかその辺
+        self.user_select_range = [None, None]
 
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
@@ -28,14 +28,7 @@ class LayerElements:  # 次にえらい
 
 
 class ObjectElements:  # その次にえらい
-    # GUI
     def __init__(self):
-        # self.DrawSetImg = DrawSetImg
-        self.document = []  # ファイルが入る
-        # self.point = [{}]  # 時間,x,y,size  #時間[x,y,a,size][間隔など、いろいろ]こっちの方がいいのでは
-        self.staend_property = [None, None]  # 開始地点,終了地点
-        self.objectType = None
-        self.unique_property = []  # それぞれ任意 #ObjectTypeによって分別
         self.effects_group = []
 
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
@@ -43,8 +36,8 @@ class ObjectElements:  # その次にえらい
 
 class EffectElements:  # えらくない
     def __init__(self):
-        self.effectname = None
-        self.effectPoint = []
+        self.effect_name = None
+        self.effect_point = []
         self.procedure = None  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
         self.export_loop = True

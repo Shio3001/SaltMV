@@ -126,6 +126,11 @@ class InitialValue:
 
         self.timeline.window_event(processing=window_size_change_event, user_event="Configure")
         self.timeline.all_data.add_layer_elements()
+        self.timeline.all_data.add_layer_elements()
+        self.timeline.all_data.add_layer_elements()
+        self.timeline.all_data.add_layer_elements()
+        self.timeline.all_data.add_layer_elements()
+        self.timeline.all_data.del_layer_elements(1)
         self.timeline.all_data.file_output("../log/test1.json")
         return self.timeline
 
