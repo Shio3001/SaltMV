@@ -6,6 +6,7 @@ import base64
 import os
 
 edit_data = elements.AllElements()
+now_scene = 0  # 現在の操作シーン
 
 
 class Storage:
@@ -16,7 +17,6 @@ class Storage:
         self.operation = None
 
         self.elements = elements
-        self.now_scene = 0  # 現在の操作シーン
 
         this_os = str(os.name)  # windowsか判定
         if this_os == "nt":
@@ -40,9 +40,9 @@ class Storage:
         self.operation["log"].write("scene")
 
         if not data is None:
-            edit_data.scenes[self.now_scene] = data
+            edit_data.scenes[now_scene] = data
             return
-        return edit_data.scenes[self.now_scene]
+        return edit_data.scenes[now_scene]
 
     def layer(self, layer_order, data=None):
         self.operation["log"].write("layer")
@@ -74,26 +74,26 @@ class Storage:
         edit_data.scenes.append(elements.SceneElements())
 
     def add_layer_elements(self):
-        edit_data.scenes[self.now_scene].layer_group.append(elements.SceneElements())
-        print(edit_data.scenes[self.now_scene].layer_group)
+        edit_data.scenes[now_scene].layer_group.append(elements.SceneElements())
+        print(edit_data.scenes[now_scene].layer_group)
 
     def add_object_elements(self, layer_order):
-        edit_data.scenes[self.now_scene].layer_group[layer_order].object_group.append(elements.LayerElements())
+        edit_data.scenes[now_scene].layer_group[layer_order].object_group.append(elements.LayerElements())
 
     def add_effect_elements(self, layer_order, object_order):
-        edit_data.scenes[self.now_scene].layer_group[layer_order].object_group[object_order].effect_group.append(elements.ObjectElements())
+        edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group.append(elements.ObjectElements())
 
     def del_scene_elements(self, scene_order):
         del edit_data.scenes[scene_order]
 
     def del_layer_elements(self, layer_order):
-        del edit_data.scenes[self.now_scene].layer_group[layer_order]
+        del edit_data.scenes[now_scene].layer_group[layer_order]
 
     def del_object_elements(self, layer_order, object_order):
-        del edit_data.scenes[self.now_scene].layer_group[layer_order].object_group[object_order]
+        del edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order]
 
     def del_effect_elements(self, layer_order, object_order, effect_order):
-        del edit_data.scenes[self.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
+        del edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
 
     def file_input(self, user_select):
 

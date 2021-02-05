@@ -20,6 +20,7 @@ import edit_data_control
 
 from Internal_operation.rendering import rendering_main
 from Internal_operation.rendering import rendering_frame
+from Internal_operation.rendering import rendering_point
 
 start_time = datetime.datetime.now()
 all_data = edit_data_control.Storage()
@@ -29,6 +30,7 @@ operation = {}
 operation["rendering"] = {}
 operation["rendering"]["main"] = rendering_main.Rendering()
 operation["rendering"]["frame"] = rendering_frame.Rendering()
+operation["rendering"]["point"] = rendering_point.PointAnalysis()
 
 operation["file_path"] = file_path.DirectoryPath()
 operation["log"] = log.LogPrint(operation["file_path"])
@@ -52,7 +54,7 @@ for plugin_folder_name in plugin_folder:  # Folder分だけまわす
 
     operation["plugin"][str(plugin_folder_name)] = {}
 
-    for file_name in pl_section_inside_list:
+    for file_name in pl_section_inside_list:  # ファイルごとの処理
         if file_name[-3:] == ".py":
             file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
             path = os.path.relpath(file_path, py_path)
