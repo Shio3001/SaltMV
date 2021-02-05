@@ -37,7 +37,7 @@ class Storage:
         return
 
     def scene(self, data=None):
-        self.operation["log"].write("scene")
+        # self.operation["log"].write("scene")
 
         if not data is None:
             edit_data.scenes[now_scene] = data
@@ -45,7 +45,7 @@ class Storage:
         return edit_data.scenes[now_scene]
 
     def layer(self, layer_order, data=None):
-        self.operation["log"].write("layer")
+        # self.operation["log"].write("layer")
 
         if not data is None:
             self.scene().layer_group[layer_order] = data
@@ -54,7 +54,7 @@ class Storage:
         return self.scene().layer_group[layer_order]
 
     def object(self, layer_order, object_order, data=None):
-        self.operation["log"].write("object")
+        # self.operation["log"].write("object")
 
         if not data is None:
             self.layer(layer_order).object_group[object_order] = data
@@ -62,7 +62,7 @@ class Storage:
         return self.layer(layer_order).object_group[object_order]
 
     def effect(self, layer_order, object_order, effect_order, data=None):
-        self.operation["log"].write("effect")
+        # self.operation["log"].write("effect")
 
         if not data is None:
             self.object(layer_order, object_order).effect_group[effect_order] = data

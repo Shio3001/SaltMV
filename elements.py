@@ -14,8 +14,8 @@ class AllElements:  # えらい
 class SceneElements:  # えらい
     def __init__(self):
         self.layer_group = []  # 一番重要だと思われ
-        self.editor_info = {"x": 0, "y": 0, "fps": 0, "len": 0}  # 動画の画面サイズとかその辺
-        self.user_select_range = [None, None]
+        self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 100}  # 動画の画面サイズとかその辺
+        #self.user_select_range = [0, 100]
 
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
@@ -40,8 +40,11 @@ class EffectElements:  # えらくない
     def __init__(self):
         self.effect_name = None
         self.effect_point = []
-        self.procedure = None  # インスタンス化したclassを詰め込む
+        self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")
+
+    def non_func(self):
+        print("関数がありません")

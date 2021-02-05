@@ -21,6 +21,6 @@ class PointAnalysis:
         now_point = {bk: (nv - nk / t) * nt for bk, nk, bv, nv in zip(before_point.keys(), next_point.keys(), before_point.vales(), next_point.vales())}
         now_point["time"] = now_f
 
-        print(now_point)
+        # print(now_point)
 
         return now_point
