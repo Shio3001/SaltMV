@@ -9,7 +9,8 @@ class Rendering:
         self.recoed_media = {}
 
     def video_output(self, operation, this_scene, path):
-        # print(this_scene.user_select_range)
+        operation["log"].stop(True)
+
         s, e = 0, this_scene.editor["len"]
 
         fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
@@ -29,16 +30,19 @@ class Rendering:
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
 
-        operation["log"].write("")
+        writer.release()
+
+        print("書き出し終了")
+
+        elapsed_time = time.time() - start_time
+        operation["log"].write("**************************************")
         operation["log"].write("書き出し終了")
         operation["log"].write("")
-        elapsed_time = time.time() - start_time
         operation["log"].write("処理時間 : " + str(elapsed_time) + "秒")
         operation["log"].write("1フレームあたり平均処理時間" + str(elapsed_time / this_scene.editor["len"]) + "秒")
         operation["log"].write("{0}fps 1フレーム{1}".format(this_scene.editor["fps"], 1 / this_scene.editor["fps"]))
-        operation["log"].write("")
-
-        writer.release()
+        operation["log"].write("処理数 {0}フレーム {1} から {2}".format(e - s, s, e))
+        operation["log"].write("**************************************")
 
         return
 
