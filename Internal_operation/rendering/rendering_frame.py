@@ -25,7 +25,7 @@ class Rendering:
     def layer(self, this_layer, draw_base):
 
         confirm_point = []
-        for this_objct in this_layer.objct_group:
+        for this_objct in this_layer.object_group:
             draw_base = self.obj(this_objct, draw_base)
 
         return draw_base
@@ -38,16 +38,33 @@ class Rendering:
             return draw_base
 
         draw_point = [0, 0]
+        draw = copy.deepcopy(draw_base)
 
         for this_effect in this_objct.effect_group:
-            draw_base, ef_draw_point = self.effect(this_effect, draw_base)
+            draw, ef_draw_point = self.effect(this_effect, draw)
             draw_point = [d + r for d, r in zip(draw_point, ef_draw_point)]
 
         # ここより上は座標中心区域
         confirm_point = self.center_to_upper_left(draw_point, ed_size)
+
         # ここより下はは座標左上域
 
-        self.operation["plugin"]["synthetic"][this_objct.synthetic].Synthetic.main(draw_base)
+        draw_size = [draw.shape[1], draw.shape[0]]
+        draw_range = [[], []]
+        draw_range[0] = confirm_point
+        draw_range[1] = [e + c for e, c in zip(draw_size, confirm_point)]
+
+        for i in range(2):
+            if draw_range[0][i] < 0:
+                draw_range[0][i] = 0
+
+            if draw_range[1][i] > ed_size[i]:
+                draw_range[1][i] = ed_size[i]
+                #draw = draw[0:,0:]
+
+        # 合成処理がここにあるのは万が一同じレイヤー内でかぶさった場合のためと合成処理取得のため
+        print(draw_range)
+        draw_base = self.operation["plugin"]["synthetic"][this_objct.synthetic].main(draw_base, draw, draw_range)
         return draw_base
 
     def effect(self, this_effect, draw_base):
@@ -68,7 +85,7 @@ class Rendering:
         if len(this_effect.effect_point) == 1:
             return this_effect.effect_point[0], this_effect.effect_point[0]  # 前地点と次地点あわせ
 
-        while left <= right:  # 2つ以上のあたいか
+        while left <= right:  # 2つ以上のあたい
             mid = (left + right) // 2
             if this_effect.effect_point[mid] <= self.now_f < this_effect.effect_point[mid + 1]:
                 return this_effect.effect_point[mid], this_effect.effect_point[mid + 1]
@@ -83,7 +100,7 @@ class Rendering:
 
     def center_to_upper_left(self, point, ed_size):
 
-        point = [p - (e / 2) for p, e in zip(point, ed_size)]
+        point = [p + (e / 2) for p, e in zip(point, ed_size)]
         return point
 
 

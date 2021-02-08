@@ -29,7 +29,7 @@ class LayerElements:  # 次にえらい
 
 class ObjectElements:  # その次にえらい
     def __init__(self):
-        self.effects_group = []
+        self.effect_group = []
         self.installation = [0, 0]  # オブジェクト範囲
         self.synthetic = "normal"  # 合成方法
 

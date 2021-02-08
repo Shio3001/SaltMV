@@ -80,7 +80,8 @@ class InitialValue:
             self.data.window_open_close(False)
 
         def new_obj():
-            timeline_bar.append(self.data.new_parts(parts_name="timeline_bar"))
+            # timeline_bar.append(self.data.new_parts(parts_name="timeline_bar"))
+            self.data.all_data.add_object_elements(0)
 
         menubar_list = [("ファイル", "閉じる", timeline_exit), ("新規", "新規シーン", new_scene, "新規レイヤー", new_layer, "動画", new_obj)]
         self.data.menubar_set(menubar_list)
@@ -99,6 +100,7 @@ class InitialValue:
             for r in parts:
                 if r.first_canvas_within["xy"] or r.first_touch["left"] or r.first_touch["right"]:
                     operation["log"].write("timeline_seekbar 返却")
+
                     return
 
             timeline_seekbar.edit_canvas_position(width_position=this_motion["x"])

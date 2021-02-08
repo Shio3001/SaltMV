@@ -60,11 +60,13 @@ class parts:
             # data.operation["log"].write("開始")
             data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position()
             data.mouse_misalignment = data.first_motion["x"] - data.canvas_position[0]
+            print("押す")
             # data.operation["log"].write("押す")
 
         def click_finish(event):
             data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position(reset=True)
             data.set_cursor()
+            print("離す")
             # data.operation["log"].write("終了")
 
         def motion(event):
@@ -82,6 +84,8 @@ class parts:
                 # data.operation["log"].write("カーソル変更")
             else:
                 data.set_cursor()
+
+        data.first_motion, data.first_touch, data.first_canvas_within = data.get_mouse_position()
 
         data.edit_view_new("base")
         data.edit_view_fill("base", True)

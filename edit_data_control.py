@@ -74,14 +74,14 @@ class Storage:
         edit_data.scenes.append(elements.SceneElements())
 
     def add_layer_elements(self):
-        edit_data.scenes[now_scene].layer_group.append(elements.SceneElements())
+        edit_data.scenes[now_scene].layer_group.append(elements.LayerElements())
         print(edit_data.scenes[now_scene].layer_group)
 
     def add_object_elements(self, layer_order):
-        edit_data.scenes[now_scene].layer_group[layer_order].object_group.append(elements.LayerElements())
+        edit_data.scenes[now_scene].layer_group[layer_order].object_group.append(elements.ObjectElements())
 
     def add_effect_elements(self, layer_order, object_order):
-        edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group.append(elements.ObjectElements())
+        edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group.append(elements.EffectElements())
 
     def del_scene_elements(self, scene_order):
         del edit_data.scenes[scene_order]

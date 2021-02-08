@@ -60,6 +60,10 @@ for plugin_folder_name in plugin_folder:  # Folder分だけまわす
             path = os.path.relpath(file_path, py_path)
             path_dot = path.replace('.py', '').replace(all_data.slash, '.')
             import_data = importlib.import_module(path_dot, py_path)
+
+            if str(plugin_folder_name) == "synthetic":
+                import_data = import_data.Synthetic()
+
             operation["plugin"][str(plugin_folder_name)][str(file_name.replace('.py', ''))] = import_data
 
 # plugin読み込み終了
