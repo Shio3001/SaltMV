@@ -10,7 +10,7 @@ class Rendering:
     def main(self, draw_base, operation, this_scene, now_frame):  # 必要なもの
         self.now_f = now_frame
         self.operation = operation
-        #print(draw_base.shape, self.now_f)
+        # print(draw_base.shape, self.now_f)
         draw_base = self.scene(this_scene, draw_base)
         # print(draw_base.shape)
 
@@ -24,7 +24,6 @@ class Rendering:
 
     def layer(self, this_layer, draw_base):
 
-        confirm_point = []
         for this_objct in this_layer.object_group:
             draw_base = self.obj(this_objct, draw_base)
 
@@ -32,40 +31,58 @@ class Rendering:
 
     def obj(self, this_objct, draw_base):
 
-        ed_size = [self.editor["x"], self.editor["y"]]
+        ed_size = [int(self.editor["x"]), int(self.editor["y"])]
 
         if this_objct.installation[0] <= self.now_f < this_objct.installation[1]:  # オブジェクト範囲外であれば返却
             return draw_base
 
-        draw_point = [0, 0]
-        draw = copy.deepcopy(draw_base)
+        additions_point = [0, 0]
+        source = copy.deepcopy(draw_base)
+        additions = copy.deepcopy(draw_base)
 
         for this_effect in this_objct.effect_group:
-            draw, ef_draw_point = self.effect(this_effect, draw)
-            draw_point = [d + r for d, r in zip(draw_point, ef_draw_point)]
+            additions, ef_additions_point = self.effect(this_effect, additions)
+            additions_point = [d + r for d, r in zip(additions_point, ef_additions_point)]
 
         # ここより上は座標中心区域
-        confirm_point = self.center_to_upper_left(draw_point, ed_size)
+        confirm_point = self.center_to_upper_left(additions_point, ed_size)
 
-        # ここより下はは座標左上域
+        additions_size = [additions.shape[1], additions.shape[0]]
 
-        draw_size = [draw.shape[1], draw.shape[0]]
-        draw_range = [[], []]
-        draw_range[0] = confirm_point
-        draw_range[1] = [e + c for e, c in zip(draw_size, confirm_point)]
+        source_margin = [[], []]  # エディター全体に対する希望範囲
+        additions_margin = [[], []]  # 追加描画範囲に対する希望範囲
+
+        source_margin[0] = confirm_point
+        source_margin[1] = [int(c + a) for c, a in zip(confirm_point, additions_size)]
+
+        additions_margin[0] = [0, 0]
+        additions_margin[1] = additions_size
 
         for i in range(2):
-            if draw_range[0][i] < 0:
-                draw_range[0][i] = 0
+            if source_margin[0][i] < 0:
+                additions_margin[0][i] = abs(source_margin[0][i])
+                source_margin[0][i] = 0
 
-            if draw_range[1][i] > ed_size[i]:
-                draw_range[1][i] = ed_size[i]
-                #draw = draw[0:,0:]
+                # print("加算")
 
-        # 合成処理がここにあるのは万が一同じレイヤー内でかぶさった場合のためと合成処理取得のため
-        print(draw_range)
-        draw_base = self.operation["plugin"]["synthetic"][this_objct.synthetic].main(draw_base, draw, draw_range)
-        return draw_base
+            if source_margin[1][i] > ed_size[i]:
+                additions_margin[1][i] = ed_size[i] - source_margin[0][i]
+                source_margin[1][i] = ed_size[i]
+
+                # print("減算")
+
+            #source_margin[:][i] = additions_margin[:][i]
+
+        #print(source_margin, additions_margin)
+
+        input_draw = source[source_margin[0][1]:source_margin[1][1], source_margin[0][0]:source_margin[1][0]]
+        additions_draw = additions[additions_margin[0][1]:additions_margin[1][1], additions_margin[0][0]:additions_margin[1][0]]
+
+        # print(input_draw.shape)
+        output_draw = self.operation["plugin"]["synthetic"][this_objct.synthetic].main(input_draw, additions_draw)
+        source[source_margin[0][1]:source_margin[1][1], source_margin[0][0]:source_margin[1][0]] = output_draw
+
+        return source
 
     def effect(self, this_effect, draw_base):
         # 二分探索すればいいよ <timeによる配列と配列の間位をさがす>
@@ -100,7 +117,7 @@ class Rendering:
 
     def center_to_upper_left(self, point, ed_size):
 
-        point = [p + (e / 2) for p, e in zip(point, ed_size)]
+        point = [int(p + (e / 2)) for p, e in zip(point, ed_size)]
         return point
 
 
@@ -119,4 +136,4 @@ class EffectPluginElements:
         # self.editor_size =
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
 
-        #self.location = location
+        # self.location = location

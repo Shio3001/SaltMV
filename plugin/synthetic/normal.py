@@ -3,17 +3,15 @@ class Synthetic:
     def __init__(self):
         self.name = "通常"
 
-    def main(self, draw_base, draw, draw_range):
+    def main(self, synthesis_target, draw):
 
-        synthesis_target = draw_base[draw_range[0][0]:draw_range[0][1], draw_range[1][0]:draw_range[1][1]]
-
-        print(len(synthesis_target))
+        RGB_draw = synthesis_target
 
         for i in range(3):  # RGB
-            RGB_draw = (draw[:, :, i] - synthesis_target[0:0:i]) * (draw[:, :, 3] / 255)
-            print(len(RGB_draw))
+            #print(RGB_draw[i].shape, synthesis_target[:, :, i].shape, draw[:, :, i].shape, draw[:, :, 3].shape)
+            RGB_draw[:, :, i] = (draw[:, :, i] - synthesis_target[:, :, i]) * (draw[:, :, 3] / 255)
+            # print(len(RGB_draw))
 
-        synthesis_target += RGB_draw
+        synthesis_target[0:3] += RGB_draw[0:3]
 
-        draw_base[draw_range[0][0]:draw_range[0][1], draw_range[1][0]:draw_range[1][1]] = synthesis_target
-        return draw_base
+        return synthesis_target
