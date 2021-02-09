@@ -9,5 +9,6 @@ class parts:
         data.edit_view_fill("base", True)
         data.edit_view_color("base", color="#c0c0c0")
 
+        #data.window_for_event(processing=click_start, user_event="Button-1")
         data.layer_label_number = layer_label_number
         return data
