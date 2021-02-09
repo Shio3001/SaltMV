@@ -17,6 +17,7 @@ import main_user_GUI
 import log
 from chord_tool import file_path
 import edit_data_control
+import UI_control
 
 from Internal_operation.rendering import rendering_main
 from Internal_operation.rendering import rendering_frame
@@ -24,6 +25,7 @@ from Internal_operation.rendering import rendering_point
 
 start_time = datetime.datetime.now()
 all_data = edit_data_control.Storage()
+all_UI_data = UI_control
 
 operation = {}
 
@@ -104,7 +106,7 @@ class CentralRole:
         return
 
     def main_GUI(self):
-        main_user_GUI.GUI(all_data).main()  # 次の選択を担うファイルへ送信
+        main_user_GUI.GUI(all_data, all_UI_data).main()  # 次の選択を担うファイルへ送信
         return
 
 

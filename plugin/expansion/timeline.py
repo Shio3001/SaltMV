@@ -22,50 +22,42 @@ class InitialValue:
         # self.data.menubar_set(timeline_menubar_list)
         self.operation["log"].write(display_size)
 
+        operation_range = self.data.all_UI_data.timeline_operation_range
+
         timeline_height = 30
 
         ui_parts = {}
         ui_parts["parts0"] = self.data.new_parts(parts_name="shape")
         ui_parts["parts1"] = self.data.new_parts(parts_name="shape")
 
-        timeline_time_percentage = self.data.new_parts(parts_name="percentage")
-
         timeline_bar = []
-        """
-
-        timeline_bar.append(self.data.new_parts(parts_name="timeline_bar"))
-        timeline_bar.append(self.data.new_parts(parts_name="timeline_bar"))
-        
-
-        timeline_bar[0].edit_timeline_height(timeline_height)
-        timeline_bar[0].edit_canvas_position(width_position=300)
-
-        timeline_bar[1].edit_timeline_height(timeline_height)
-        timeline_bar[1].edit_view_color("base", color="#1e90ff")
-        timeline_bar[1].edit_canvas_text(text="画像")
-        timeline_bar[1].edit_canvas_position(width_position=600)
-        """
-
-        timeline_time_percentage.edit_canvas_position(width_position=20, height_position=7)
 
         layer_frame = []
         layer_label = []
 
+        # layer_frame.layer_number(20)
+
         for i in range(20):
             layer_frame.append(None)
             layer_frame[i] = self.data.new_parts(parts_name="timeline_frame")
-            layer_frame[i].edit_canvas_position(height_position=timeline_height + i * timeline_height)
+            layer_frame[i].edit_canvas_position(width_position=self.data.all_UI_data.timeline_operation_range[0], height_position=self.data.all_UI_data.timeline_operation_range[1] + i * self.data.all_UI_data.timeline_size)
+            canvas_log = layer_frame[i].get_window_data()
+            layer_frame[i].edit_canvas_size(width_size=canvas_log["size"][0] - self.data.all_UI_data.timeline_operation_range[0], height_size=1)
 
             layer_label.append(None)
             layer_label[i] = self.data.new_parts(parts_name="timeline_layer_label")
-            layer_label[i].edit_canvas_position(width_position=0, height_position=timeline_height + i * timeline_height)
-            layer_label[i].layer_label_number(i + 1)
-            layer_label[i].edit_canvas_size(width_size=100, height_size=timeline_height)
+            layer_label[i].edit_canvas_position(width_position=0, height_position=self.data.all_UI_data.timeline_operation_range[1] + i * self.data.all_UI_data.timeline_size)
+            layer_label[i].layer_label_number(i)
+            layer_label[i].edit_canvas_size(width_size=self.data.all_UI_data.timeline_operation_range[0], height_size=self.data.all_UI_data.timeline_size)
 
         timeline_scroll_x = self.data.new_parts(parts_name="scroll_x")
         timeline_scroll_y = self.data.new_parts(parts_name="scroll_y")
         timeline_seekbar = self.data.new_parts(parts_name="timeline_nowtime")
         timeline_seekbar.edit_canvas_position(width_position=100)
+
+        timeline_time_percentage = self.data.new_parts(parts_name="percentage")
+        timeline_time_percentage.edit_canvas_position(width_position=operation_range[0] * 0.1, height_position=operation_range[1] * 0.1)
+        timeline_time_percentage.edit_canvas_size(width_size=operation_range[0] * 0.8, height_size=operation_range[1] * 0.8)
 
         # ここまで定義
         # ここから各種設定
@@ -111,23 +103,25 @@ class InitialValue:
         operation = self.operation
 
         def window_size_change_event(self):
-            canvas_log = ui_parts["parts0"].get_window_data()
-            ui_parts["parts0"].edit_canvas_position(width_position=0, height_position=0)
-            ui_parts["parts0"].edit_canvas_size(width_size=canvas_log["size"][0], height_size=timeline_height)
 
-            canvas_log = ui_parts["parts1"].get_window_data()
-            ui_parts["parts1"].edit_canvas_position(width_position=0, height_position=timeline_height)
-            ui_parts["parts1"].edit_canvas_size(width_size=100, height_size=canvas_log["size"][1] - timeline_height)
+            canvas_log = ui_parts["parts0"].get_window_data()  # よこ
+            ui_parts["parts0"].edit_canvas_position(width_position=0, height_position=0)
+            ui_parts["parts0"].edit_canvas_size(width_size=canvas_log["size"][0], height_size=operation_range[1])
+
+            canvas_log = ui_parts["parts1"].get_window_data()  # たて
+            ui_parts["parts1"].edit_canvas_position(width_position=0, height_position=operation_range[1])
+            ui_parts["parts1"].edit_canvas_size(width_size=operation_range[0], height_size=canvas_log["size"][1] - operation_range[1])
 
             operation["log"].write(timeline_scroll_x.scrollbar_position)
 
             canvas_log = timeline_scroll_x.get_window_data()
-            timeline_scroll_x.edit_canvas_size(width_size=canvas_log["size"][0] - 100 - 20)
-            timeline_scroll_x.edit_canvas_position(width_position=100, height_position=canvas_log["size"][1] - timeline_scroll_x.canvas_size[1])
+            timeline_scroll_x.edit_canvas_size(width_size=canvas_log["size"][0] - operation_range[0] - timeline_scroll_y.canvas_size[0])
+            timeline_scroll_x.edit_canvas_position(width_position=operation_range[0], height_position=canvas_log["size"][1] - timeline_scroll_x.canvas_size[1])
             timeline_scroll_x.change_size_position()  # スクロールバーの割合調整
 
-            timeline_scroll_y.edit_canvas_size(height_size=canvas_log["size"][1] - timeline_height - 20)
-            timeline_scroll_y.edit_canvas_position(width_position=canvas_log["size"][0] - timeline_scroll_y.canvas_size[0], height_position=timeline_height)
+            canvas_log = timeline_scroll_y.get_window_data()
+            timeline_scroll_y.edit_canvas_size(height_size=canvas_log["size"][1] - operation_range[1] - timeline_scroll_x.canvas_size[1])
+            timeline_scroll_y.edit_canvas_position(width_position=canvas_log["size"][0] - timeline_scroll_y.canvas_size[0], height_position=operation_range[1])
             timeline_scroll_y.change_size_position()  # スクロールバーの割合調整
 
             operation["log"].write(timeline_scroll_x.scrollbar_position)

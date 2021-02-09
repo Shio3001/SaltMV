@@ -4,7 +4,7 @@ import os
 
 
 class SendWindowData:  # window生成のためのデータ
-    def __init__(self, main_window, all_data, UI_parts, UI_auxiliary):
+    def __init__(self, main_window, all_data, UI_parts, UI_auxiliary, all_UI_data):
         self.tk = tk
         self.menubar_list = {}
         self.window_size = [100, 100]
@@ -12,17 +12,10 @@ class SendWindowData:  # window生成のためのデータ
         self.main_window = main_window
         self.operation = all_data.operation
         self.all_data = all_data
-        # self.all_elements = base_data["al"]  # copy.deepcopy厳禁
-        #self.elements = base_data["el"]
+        self.all_UI_data = all_UI_data
 
         self.GUI_base_color = "#1a1a1a"
         self.GUI_alpha_color = "#000000"
-
-        #self.window_bind = PrgBind()
-
-        # print(base_data["ui"].keys())
-
-        # self.GUI_UI = {key: base_data[3][key].parts(send_UI_data(self.main_window, self.operation)) for key in list(base_data[3].keys())}
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
@@ -46,7 +39,7 @@ class SendWindowData:  # window生成のためのデータ
             self.window.bind("<{0}>".format(user_event), processing, "+")
 
     def new_parts(self, parts_name=None):
-        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.all_data, self.GUI_base_color, self.GUI_alpha_color))
+        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.all_data, self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color))
         return new_parts_obj
 
     def display_size_get(self):

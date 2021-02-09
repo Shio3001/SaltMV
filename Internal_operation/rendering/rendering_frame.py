@@ -63,17 +63,9 @@ class Rendering:
                 additions_margin[0][i] = abs(source_margin[0][i])
                 source_margin[0][i] = 0
 
-                # print("加算")
-
             if source_margin[1][i] > ed_size[i]:
                 additions_margin[1][i] = ed_size[i] - source_margin[0][i]
                 source_margin[1][i] = ed_size[i]
-
-                # print("減算")
-
-            #source_margin[:][i] = additions_margin[:][i]
-
-        #print(source_margin, additions_margin)
 
         input_draw = source[source_margin[0][1]:source_margin[1][1], source_margin[0][0]:source_margin[1][0]]
         additions_draw = additions[additions_margin[0][1]:additions_margin[1][1], additions_margin[0][0]:additions_margin[1][0]]

@@ -3,7 +3,7 @@ import copy
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, all_data, GUI_base_color, GUI_alpha_color):
+    def __init__(self, window, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
         # canvas系：文字入力なし 表示だけ
         # textbox系：文字入力あり 入力あり
         self.window = window
@@ -13,6 +13,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation = all_data.operation
         self.all_data = all_data
+        self.all_UI_data = all_UI_data
 
         self.canvas_size = [10, 10]
         self.canvas_position = [0, 0]
@@ -48,12 +49,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
-
-        # self.window_bind = window_bind
-        # self.canvas_bind = PrgBind()
-
-        # self.window_event = PrgAggregate()
-        # self.canvas_event = PrgAggregate()
 
         self.operation["log"].write("パーツ初期設定")
 
@@ -97,6 +92,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         print("c1", self.canvas)
         self.canvas = tk.Canvas(self.window, highlightthickness=0, width=self.canvas_size[0], height=self.canvas_size[1])
+        # self.canvas.configure(bg=self.GUI_alpha_color)
         # self.canvas.place(x=self.canvas_position[0], y=self.canvas_position[1])
         print("c2", self.canvas)
         self.canvas_change_position()
@@ -158,6 +154,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
             if data.fill == True:
                 self.__view_paint(data.blank_space[0], data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], color=data.color)
             else:
+
+                for s, i in zip(["x", "y"], [0, 1]):
+                    if data.match[s] == True:
+                        view_position[i] = 0
+                        view_size[i] = self.canvas_size[i] - data.blank_space[i]
+
                 self.__view_paint(view_position[0], view_position[1], view_size[0] + view_position[0], view_size[1] + view_position[1], color=data.color)
 
         if not self.text is None:
@@ -257,7 +259,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.view_data[name].size = self.canvas_size
         self.paint()
 
-    def edit_view_blank_space(self, name, width_size=None, height_size=None):
+    def edit_view_blank_space(self, name, width_size=None, height_size=None):  # blank_space = 空白設定
         if not width_size is None:
             self.view_data[name].blank_space[0] = width_size
         if not height_size is None:
@@ -266,6 +268,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def disclosure(self):  # canvasに書かれている描画keyを開示
         self.operation["log"].write(list(self.view_data.keys()))
+
+    def edit_view_match(self, name, direction, user_select):
+        self.view_data[name].match[direction] = user_select
 
     # テキストボックスのため
 
@@ -393,6 +398,7 @@ class PartsViewData:
         self.position = [0, 0]
         self.size = [0, 0]
         self.fill = False
+        self.match = {"x": False, "y": False}
         self.blank_space = [0, 0]
 
 

@@ -19,6 +19,7 @@ class parts:
 
         data.edit_view_color("a1", color="#f0f8ff")
         data.edit_view_color("a2", color="#4169e1")
+        data.edit_view_match("a2", "y", True)
 
         data.edit_canvas_position(width_position=0, height_position=0)
         data.edit_canvas_size(width_size=xy_size[0], height_size=xy_size[1])
