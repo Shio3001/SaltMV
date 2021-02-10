@@ -19,6 +19,9 @@ class PointAnalysis:
         del next_point["time"]
 
         now_point = {bk: ((nv - bv) / t) * nt for bk, nk, bv, nv in zip(before_point.keys(), next_point.keys(), before_point.vales(), next_point.vales())}
+
+        # 時間演算法方法：((次の値 - 前の値) / 間の時間) * 今の時間
+
         now_point["time"] = now_f
 
         # print(now_point)

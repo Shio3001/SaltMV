@@ -40,6 +40,9 @@ class InitialValue:
         timeline_scroll_x = self.data.new_parts(parts_name="scroll_x")
         timeline_scroll_y = self.data.new_parts(parts_name="scroll_y")
 
+        timeline_seekbar = self.data.new_parts(parts_name="timeline_nowtime")
+        timeline_seekbar.edit_canvas_position(width_position=100)
+
         def reflect():
             layer_frame.append(None)
             layer_label.append(None)
@@ -57,10 +60,9 @@ class InitialValue:
             layer_label[i].layer_label_number(i)
             layer_label[i].edit_canvas_size(width_size=self.data.all_UI_data.timeline_operation_range[0], height_size=self.data.all_UI_data.timeline_size)
 
-        reflect()
+            # timeline_seekbar.canvas.tag_raise(layer_frame[i].canvas)
 
-        timeline_seekbar = self.data.new_parts(parts_name="timeline_nowtime")
-        timeline_seekbar.edit_canvas_position(width_position=100)
+        reflect()
 
         ui_parts["parts2"] = self.data.new_parts(parts_name="shape")
 

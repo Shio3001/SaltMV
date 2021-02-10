@@ -1,7 +1,7 @@
 import tkinter as tk
 import copy
-"""
 
+"""
 class SendCanvasData:
     def __init__(self, window, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
         self.window = window
@@ -52,7 +52,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.mouse_position = [0, 0]
         self.view_data = {}
         self.view_within = {}
-        self.motion_history = []
+        #self.motion_history = []
+
+        self.territory_data = {}
 
         self.canvas_pic = None
 
@@ -88,7 +90,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_update()
 
     def canvas_event_del(self, key):
-
         self.operation["log"].write("削除前:{0} ".format(self.event_canvas_key))
 
         key_index = self.event_canvas_key.index(key)
@@ -120,6 +121,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         for k, p in zip(self.event_canvas_key, self.event_canvas_processing):
             self.canvas.bind("<{0}>".format(k), p, "+")
+
+        for data in self.territory_data:
+            for k, p in zip(data.data.event_key, data.data.event_processing):
+                self.canvas.bind("<{0}>".format(k), p, "+")
 
         self.operation["log"].write("キャンバス設置")
 
@@ -185,7 +190,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def __view_paint(self, x, y, size_x, size_y, color=None):  # 塗りつぶし
         if self.canvas_pic is None:
-            self.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0)  # 塗りつぶし
+            self.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0, tags="")  # 塗りつぶし
         else:
             self.canvas.create_rectangle(x, y, size_x, size_y, outline="", width=0, image=self.canvas_pic, anchor='nw')  # 塗りつぶし
         # self.canvas.create_rectangle(0 + data.blank_space[0], 0 + data.blank_space[1], self.canvas_size[0] - data.blank_space[0], self.canvas_size[1] - data.blank_space[1], fill=data.color, outline="", width=0)  # 塗りつぶし
@@ -245,6 +250,29 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.mouse_motion["catch"] = select
         self.canvas_update()
 
+    def edit_territory_new(self, name):
+        self.territory_data[name] = PartsTerritoryData()
+
+    def edit_territory_position(self, name, width_position=None, height_position=None):
+        if not width_position is None:
+            self.territory_data[name].position[0] = width_position
+        if not height_position is None:
+            self.territory_data[name].position[1] = height_position
+
+    def edit_territory_size(self, name, width_size=None, height_size=None):
+        if not width_size is None:
+            self.territory_data[name].size[0] = width_size
+        if not height_size is None:
+            self.territory_data[name].size[1] = height_size
+
+    def territory_for_event(self, processing=None, user_event=None):
+        if not user_event is None:
+            # self.event_territory[]
+            self.event_canvas_key.append(user_event)
+            self.event_canvas_processing.append(processing)
+        self.canvas_update()
+
+        self.paint()
     # canvas内描画のため
 
     def edit_view_new(self, name):
@@ -327,8 +355,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.window.config(cursor=name)
         self.canvas.config(cursor=name)
 
-    def notion_andkey(self, name):  # マウスが動いたときのeventを設定
-        self.notion_key = name
+    # def notion_andkey(self, name):  # マウスが動いたときのeventを設定
+    #    self.notion_key = name
 
     def get_window_data(self):
         return {"size": [self.window.winfo_width(), self.window.winfo_height()]}
@@ -336,12 +364,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def get_canvas_data(self):  # canvasのwindow内相対位置を返却
         return {"position": copy.deepcopy(self.canvas_position), "size": copy.deepcopy(self.canvas_size)}
 
-    def get_mouse_position(self, reset=None):  # mouseのwindow内相対位置を返却
+    # def get_territory_data(self,name):
+    #    return {"position","size": }
+
+    def get_mouse_position(self, name, reset=None):  # mouseのwindow内相対位置を返却
 
         if reset == True:
             self.__mouse_data_set()
 
-        self.mouse_position_get()
+        self.mouse_position_get(name)
         return copy.deepcopy(self.mouse_motion), copy.deepcopy(self.mouse_touch), copy.deepcopy(self.canvas_within)
 
     def get_view_position(self):  # 長方形など四角形(0°)のときのみしかつかえません、あしからず
@@ -371,42 +402,54 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.mouse_touch["top_inside"] = False
         self.mouse_touch["under_inside"] = False
 
-        self.canvas_within = {"x": False, "y": False, "xy": False}
+        self.territory_within = {"x": False, "y": False, "xy": False}
+        #self.canvas_within = {"x": False, "y": False, "xy": False}
 
-    def mouse_position_get(self):
-
+    def mouse_position_get(self, name):
         self.__mouse_data_set()
-        left = self.canvas_position[0]
-        right = self.canvas_size[0] + self.canvas_position[0]
-        top = self.canvas_position[1]
-        under = self.canvas_size[1] + self.canvas_position[1]
 
-        tolerance = 3
+        edge = {}
 
-        if left - tolerance <= self.mouse_motion["x"] <= left + tolerance:
+        edge["left"] = self.canvas_position[0] + self.territory_data[name].position[0]
+        edge["right"] = edge["left"] + self.territory_data[name].position[0]
+        edge["top"] = self.canvas_position[1] + self.territory_data[name].position[1]
+        edge["under"] = edge["top"] + self.territory_data[name].position[1]
+
+        tolerance = 3  # 許容範囲
+
+        if edge["left"] - tolerance <= self.mouse_motion["x"] <= edge["left"] + tolerance:
             self.mouse_touch["left"] = True
 
-        if right - tolerance <= self.mouse_motion["x"] <= right + tolerance:
+        if edge["right"] - tolerance <= self.mouse_motion["x"] <= edge["right"] + tolerance:
             self.mouse_touch["right"] = True
 
-        if top - tolerance <= self.mouse_motion["y"] <= top + tolerance:
+        if edge["top"] - tolerance <= self.mouse_motion["y"] <= edge["top"] + tolerance:
             self.mouse_touch["top"] = True
 
-        if under - tolerance <= self.mouse_motion["y"] <= under + tolerance:
+        if edge["under"] - tolerance <= self.mouse_motion["y"] <= edge["under"] + tolerance:
             self.mouse_touch["under"] = True
 
         if not self.canvas is None:
-            for i, j in zip([0, 1], ["x", "y"]):
-                if self.canvas_position[i] <= self.mouse_motion[j] <= self.canvas_position[i] + self.canvas_size[i]:
-                    self.canvas_within[j] = True
-                    # self.operation["log"].write(j, True)
+            for i, j in zip([["left", "right"], ["top", "under"]], ["x", "y"]):
+                if edge[i] <= self.mouse_motion[j] <= edge[i]:
+                    self.territory_within[j] = True
                 else:
-                    self.canvas_within[j] = False
+                    self.territory_within[j] = False
 
-            if self.canvas_within["x"] == True and self.canvas_within["y"] == True:
-                self.canvas_within["xy"] = True
+            if self.territory_within["x"] == True and self.territory_within["y"] == True:
+                self.territory_within["xy"] = True
             else:
-                self.canvas_within["xy"] = False
+                self.territory_within["xy"] = False
+
+
+class PartsTerritoryData:
+    def __init__(self):
+        self.position = [0, 0]
+        self.size = [0, 0]
+
+        self.event_key = []
+        self.event_processing = []
+        self.territory_within = {}
 
 
 class PartsViewData:
