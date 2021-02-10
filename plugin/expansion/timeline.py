@@ -50,6 +50,8 @@ class InitialValue:
             layer_frame[i].edit_canvas_position(width_position=self.data.all_UI_data.timeline_operation_range[0], height_position=self.data.all_UI_data.timeline_operation_range[1] + (i + 1) * self.data.all_UI_data.timeline_size)
             layer_frame[i].view(subtraction=timeline_scroll_y.canvas_size[0])
 
+            # layer_frame[i].canvas.tag_raise(timeline_scroll_x.canvas)
+
             layer_label[i] = self.data.new_parts(parts_name="timeline_layer_label")
             layer_label[i].edit_canvas_position(width_position=0, height_position=self.data.all_UI_data.timeline_operation_range[1] + i * self.data.all_UI_data.timeline_size)
             layer_label[i].layer_label_number(i)

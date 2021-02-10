@@ -1,5 +1,22 @@
 import tkinter as tk
 import copy
+"""
+
+class SendCanvasData:
+    def __init__(self, window, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
+        self.window = window
+        self.tk = tk
+        self.operation = all_data.operation
+        self.all_data = all_data
+        self.all_UI_data = all_UI_data
+
+        self.canvas_size = [10, 10]
+        self.canvas_position = [0, 0]
+
+
+class SendTextData:
+    def __init__(self, window, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
+"""
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
