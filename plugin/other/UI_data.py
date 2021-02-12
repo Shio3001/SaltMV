@@ -9,6 +9,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def __init__(self, window, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
         self.window = window
         self.all_data = all_data
+        self.operation = all_data.operation
         self.all_UI_data = all_UI_data
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
@@ -17,6 +18,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.tk = tk
 
         self.canvas_data = CanvasData(self.window)
+
+    # 以下canvas
 
     def edit_canvas_size(self, x=None, y=None):
         self.canvas_data.size = self.common_control.xy_compilation(self.canvas_data.size, x=x, y=y)
@@ -28,15 +31,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         canvas_edge, canvas_join = self.common_control.xy_compilation(self.canvas_data)
         return canvas_edge, canvas_join
 
-    def add_canvas_event(self, key, func):
-        func_name = self.common_control.get_func_name(func)
-        self.canvas_data.event["{0}{1}".format(key, func_name)] = func
-        self.canvas_data.canvas = self.common_control.event_bind(self.canvas_data.canvas, self.canvas_data.event)
-
-    def del_canvas_event(self, key):
-        del self.canvas_data.event[key]
-
-    # territory
+    # 以下territory
 
     def new_territory(self, name):
         self.canvas_data.territory[name] = TerritoryData(self.canvas_data.canvas)
@@ -54,14 +49,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         territory_edge, territory_join = self.common_control.xy_compilation(self.canvas_data.territory[name])
         return territory_edge, territory_join
 
-    """
-    def add_territory_event(self, key, func):
-        func_name = self.common_control.get_func_name(func)
-        self.territory.event["{0}{1}".format(key, func_name)] = func
-        self.territory.canvas = self.common_control.event_bind(self.territory.canvas, self.canvas_data.event)
-    """
-
-    # diagram
+    # 以下diagram
 
     def new_diagram(self, ca_name, di_name):
         self.canvas_data.territory[ca_name].diagram[di_name] = DiagramData(self.canvas_data.canvas)
@@ -81,6 +69,59 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def get_diagram_contact(self, ca_name, di_name):
         diagram_edge, diagram_join = self.common_control.xy_compilation(self.canvas_data.territory[ca_name].diagram[di_name])
         return diagram_edge, diagram_join
+
+    #####################################################################################
+
+    def add_canvas_event(self, key, func):  # event
+        self.canvas_data.event[self.common_control.get_bind_name(key, func)] = [key, func]
+        self.canvas_data = self.common_control.canvas_event_bind(self.canvas_data)
+
+    def del_canvas_event(self, key, func):  # event
+        del self.canvas_data.event[self.common_control.get_bind_name(key, func)]
+
+    def add_territory_event(self, name, key, func):  # event
+        self.canvas_data.territory[name].event[self.common_control.get_bind_name(key, func)] = [key, func]
+        self.canvas_data = self.common_control.territory_event_bind(self.canvas_data, name)
+
+    def del_territory_event(self, name, key, func):  # event
+        del self.canvas_data.territory[name].event[self.common_control.get_bind_name(key, func)]
+
+    def add_diagram_event(self, ca_name, di_name, key, func):  # event
+        self.canvas_data.territory[ca_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)] = [key, func]
+        self.canvas_data.diagram[di_name] = self.common_control.diagram_event_bind(self.canvas_data, ca_name, di_name)
+
+    def del_diagram_event(self, ca_name, di_name, key, func):  # event
+        del self.canvas_data.territory[ca_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)]
+
+    #####################################################################################
+
+    def canvas_draw(self):
+        for territory in self.canvas_data.territory:
+            self.territory_draw(territory)
+
+    def territory_draw(self, territory_data):
+        for diagram in territory_data.diagram:
+            self.diagram_draw(territory_data, diagram)
+
+    def diagram_draw(self, territory_data, diagram_data):
+        x, y, size_x, size_y = 0, 0, 0, 0
+
+        if diagram_data.fill:
+            x = territory_data.position[0]
+            y = territory_data.position[1]
+
+            size_x = territory_data.size[0]
+            size_y = territory_data.size[0]
+
+        else:
+            x = territory_data.position[0] + diagram_data.position[0]
+            y = territory_data.position[1] + diagram_data.position[1]
+
+            size_x = diagram_data.size[0]
+            size_y = diagram_data.size[1]
+
+        color = diagram_data.color
+        self.canvas_data.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0, tags="")  # 塗りつぶし
 
 
 class CanvasData:
@@ -110,11 +151,15 @@ class DiagramData:
         self.size = [0, 0]
         self.position = [0, 0]
         self.text = ""
+        self.color = ""
 
         self.event = {}
 
     def event_link(self):
         pass
+
+    def set_color(self, color):
+        self.color = color
 
 
 class TextBoxData:
@@ -139,8 +184,18 @@ class CommonControl:
     # def contact_edge(self):
     #    return
 
-    def event_bind(self, target, list):
-        return target
+    def canvas_event_bind(self, data):
+        for name, kp in zip(data.event.keys(), data.event.values()):
+            data.canvas.bind("<{0}>".format(kp[0]), kp[1], "+")
+        return data
+
+    def territory_event_bind(self, data, name):
+        return data
+
+    def diagram_event_bind(self, data, ca_name, di_name):
+        # for name, kp in zip(data.event.keys(), data.event.values()):
+        #    data.canvas.bind("<{0}>".format(kp[0]), kp[1], "+")
+        return data
 
     def get_mouse_position(self):  # マウスの位置を取得
         mouse = []
@@ -172,7 +227,8 @@ class CommonControl:
 
         return edge_detection, join_detection
 
-    def get_func_name(self, func):
-        func_name = (str(func)[1].replace("<")).replace(">")
-        print(func_name)
+    def get_bind_name(self, key, func):
+        func_name = str(func.__name__)
+        name = "{0}_{1}".format(key, func_name)
+        print(name)
         return func_name
