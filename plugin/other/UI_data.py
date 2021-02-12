@@ -1,5 +1,6 @@
 import tkinter as tk
 import copy
+import inspect
 
 permission = 3  # 接触範囲許可範囲
 
@@ -17,16 +18,23 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas_data = CanvasData(self.window)
 
-    def edit_canvas_size(self, name, x=None, y=None):
+    def edit_canvas_size(self, x=None, y=None):
         self.canvas_data.size = self.common_control.xy_compilation(self.canvas_data.size, x=x, y=y)
 
-    def edit_canvas_position(self, name, x=None, y=None):
+    def edit_canvas_position(self, x=None, y=None):
         self.canvas_data.position = self.common_control.xy_compilation(self.canvas_data.position, x=x, y=y)
 
     def get_canvas_contact(self):
         canvas_edge, canvas_join = self.common_control.xy_compilation(self.canvas_data)
-
         return canvas_edge, canvas_join
+
+    def add_canvas_event(self, key, func):
+        func_name = self.common_control.get_func_name(func)
+        self.canvas_data.event["{0}{1}".format(key, func_name)] = func
+        self.canvas_data.canvas = self.common_control.event_bind(self.canvas_data.canvas, self.canvas_data.event)
+
+    def del_canvas_event(self, key):
+        del self.canvas_data.event[key]
 
     # territory
 
@@ -44,8 +52,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def get_territory_contact(self, name):
         territory_edge, territory_join = self.common_control.xy_compilation(self.canvas_data.territory[name])
-
         return territory_edge, territory_join
+
+    """
+    def add_territory_event(self, key, func):
+        func_name = self.common_control.get_func_name(func)
+        self.territory.event["{0}{1}".format(key, func_name)] = func
+        self.territory.canvas = self.common_control.event_bind(self.territory.canvas, self.canvas_data.event)
+    """
 
     # diagram
 
@@ -86,11 +100,8 @@ class TerritoryData:
     def __init__(self, canvas):
         self.size = [0, 0]
         self.position = [0, 0]
-
         self.canvas = canvas
-
         self.diagram = {}
-
         self.event = {}
 
 
@@ -128,8 +139,8 @@ class CommonControl:
     # def contact_edge(self):
     #    return
 
-    def event_bind(self):
-        return
+    def event_bind(self, target, list):
+        return target
 
     def get_mouse_position(self):  # マウスの位置を取得
         mouse = []
@@ -160,3 +171,8 @@ class CommonControl:
             join_detection[2] = True
 
         return edge_detection, join_detection
+
+    def get_func_name(self, func):
+        func_name = (str(func)[1].replace("<")).replace(">")
+        print(func_name)
+        return func_name
