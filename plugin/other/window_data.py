@@ -38,6 +38,12 @@ class SendWindowData:  # window生成のためのデータ
         if not processing is None and not user_event is None:
             self.window.bind("<{0}>".format(user_event), processing, "+")
 
+    def new_canvas(self):
+        pass
+
+    def del_canvas(self):
+        pass
+
     def new_parts(self, parts_name=None):
         new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.all_data, self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color))
         return new_parts_obj

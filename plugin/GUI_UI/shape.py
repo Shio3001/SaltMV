@@ -1,13 +1,8 @@
 class parts:
-    def UI_set(self, UI_operation):
-        data = UI_operation
-
-        data.edit_view_new("base")
-        data.edit_view_fill("base", True)
-
-        # data.edit_canvas_text(text="これはてすと")
-        data.edit_canvas_position(width_position=0, height_position=0)
-        data.edit_canvas_size(width_size=0, height_size=0)
-        data.edit_view_color("base", color="#c0c0c0")
+    def UI_set(self, data):
+        data.new_territory("main")
+        data.edit_territory_size("main", x=100, y=100)
+        data.edit_territory_position("main", x=10, y=100)
+        print(data.get_territory_contact("main"))
 
         return data

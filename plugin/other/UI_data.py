@@ -28,8 +28,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.position = self.common_control.xy_compilation(self.canvas_data.position, x=x, y=y)
 
     def get_canvas_contact(self):
-        canvas_edge, canvas_join = self.common_control.xy_compilation(self.canvas_data)
-        return canvas_edge, canvas_join
+        mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data)
+        return mouse, canvas_edge, canvas_join
 
     # 以下territory
 
@@ -46,8 +46,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[name].position = self.common_control.xy_compilation(self.canvas_data.territory[name].position, x=x, y=y)
 
     def get_territory_contact(self, name):
-        territory_edge, territory_join = self.common_control.xy_compilation(self.canvas_data.territory[name])
-        return territory_edge, territory_join
+        mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[name])
+        return mouse, territory_edge, territory_join
 
     # 以下diagram
 
@@ -67,8 +67,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[ca_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[ca_name].diagram[di_name].position, x=x, y=y)
 
     def get_diagram_contact(self, ca_name, di_name):
-        diagram_edge, diagram_join = self.common_control.xy_compilation(self.canvas_data.territory[ca_name].diagram[di_name])
-        return diagram_edge, diagram_join
+        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(self.canvas_data.territory[ca_name].diagram[di_name])
+        return mouse, diagram_edge, diagram_join
 
     #####################################################################################
 
@@ -100,28 +100,38 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.territory_draw(territory)
 
     def territory_draw(self, territory_data):
-        for diagram in territory_data.diagram:
-            self.diagram_draw(territory_data, diagram)
+        for v, k in zip(territory_data.diagram.keys(), territory_data.diagram.vales()):
+            self.diagram_draw(territory_data, v)
 
     def diagram_draw(self, territory_data, diagram_data):
-        x, y, size_x, size_y = 0, 0, 0, 0
+        xy, size_xy = [0, 0], [0, 0]  # 領域基準
 
-        if diagram_data.fill:
-            x = territory_data.position[0]
-            y = territory_data.position[1]
+        for i in range(2):
+            if diagram_data.fill:  # 座標の計算
+                xy[i] = territory_data.position[i]
+                size_xy[i] = territory_data.size[i]
 
-            size_x = territory_data.size[0]
-            size_y = territory_data.size[0]
+            else:
+                xy[i] = territory_data.position[i] + diagram_data.position[i]
+                size_xy[i] = diagram_data.size[i]
 
-        else:
-            x = territory_data.position[0] + diagram_data.position[0]
-            y = territory_data.position[1] + diagram_data.position[1]
+            # 左側が図形ー右側が余白反映
 
-            size_x = diagram_data.size[0]
-            size_y = diagram_data.size[1]
+            if xy[i] < territory_data.blank_space[i]:
+                difference = territory_data.blank_space[i] - xy[i]
+                print("左上減算 : {0}".format(difference))
+
+                xy[i] += difference
+                size_xy[i] -= difference
+
+            if xy[i] + size_xy[i] > territory_data.position[i] + territory_data.size[i] - territory_data.blank_space[i]:
+                difference = (territory_data.position[i] + territory_data.size[i] - territory_data.blank_space[i]) - (xy[i] + size_xy[i])
+                print("右下減算 : {0}".format(difference))
+
+                size_xy[i] += difference
 
         color = diagram_data.color
-        self.canvas_data.canvas.create_rectangle(x, y, size_x, size_y, fill=color, outline="", width=0, tags="")  # 塗りつぶし
+        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags="")  # 塗りつぶし
 
 
 class CanvasData:
@@ -144,6 +154,8 @@ class TerritoryData:
         self.canvas = canvas
         self.diagram = {}
         self.event = {}
+
+        self.blank_space = [0, 0]
 
 
 class DiagramData:
@@ -217,15 +229,14 @@ class CommonControl:
             if (data.position[i] + data.size[i] - permission) <= mouse[i] <= (data.position[i] + data.size[i] + permission):
                 edge_detection[i][1] = True
 
-        for j in range(2):
-
+        for i in range(2):
             if (data.position[i] - permission) <= mouse[i] <= (data.position[i] + data.size[i] + permission):
                 join_detection[i] = True
 
         if join_detection[0] and join_detection[1]:
             join_detection[2] = True
 
-        return edge_detection, join_detection
+        return mouse, edge_detection, join_detection
 
     def get_bind_name(self, key, func):
         func_name = str(func.__name__)
