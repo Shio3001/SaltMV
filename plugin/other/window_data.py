@@ -22,8 +22,14 @@ class SendWindowData:  # window生成のためのデータ
         else:
             self.window = tk.Tk()
 
+        self.common_control = self.operation["plugin"]["other"]["UI_control"].CommonControl(self.window)
+
+        #self.common_control = self.operation["plugin"]["other"]["UI_control"].CommonControl(self.window)
+
         self.UI_parts = UI_parts
         self.UI_auxiliary = UI_auxiliary
+
+        self.canvas_data = {}
         # self.UI_operation =
 
         self.window.configure(bg=self.GUI_base_color)
@@ -38,14 +44,35 @@ class SendWindowData:  # window生成のためのデータ
         if not processing is None and not user_event is None:
             self.window.bind("<{0}>".format(user_event), processing, "+")
 
-    def new_canvas(self):
-        pass
+    #####################################################################################
 
-    def del_canvas(self):
-        pass
+    def new_canvas(self, name):
+        self.canvas_data[name] = CanvasData(self.window)
 
-    def new_parts(self, parts_name=None):
-        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.all_data, self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color))
+    def del_canvas(self, name):
+        del self.canvas_data[name]
+
+    def edit_canvas_size(self, name, x=None, y=None):
+        self.canvas_data[name].size = self.common_control.xy_compilation(self.canvas_data[name].size, x=x, y=y)
+
+    def edit_canvas_position(self, name, x=None, y=None):
+        self.canvas_data[name].position = self.common_control.xy_compilation(self.canvas_data[name].position, x=x, y=y)
+
+    def get_canvas_contact(self, name):
+        mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name])
+        return mouse, canvas_edge, canvas_join
+
+    def add_canvas_event(self, name, key, func):  # event
+        self.canvas_data[name].event[self.common_control.get_bind_name(key, func)] = [key, func]
+        self.canvas_data[name] = self.common_control.canvas_event_bind(self.canvas_data[name])
+
+    def del_canvas_event(self, name, key, func):  # event
+        del self.canvas_data[name].event[self.common_control.get_bind_name(key, func)]
+
+    #####################################################################################
+
+    def new_parts(self, name, parts_name=None):
+        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.canvas_data[name], self.common_control, self.all_data, self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color))
         return new_parts_obj
 
     def display_size_get(self):
@@ -99,3 +126,16 @@ class SendWindowData:  # window生成のためのデータ
         self.window.update()
 
         # self.window.mainloop()
+
+
+class CanvasData:
+    def __init__(self, window):
+        self.size = [0, 0]
+        self.position = [0, 0]
+        self.canvas = tk.Canvas(window, highlightthickness=0, width=self.size[0], height=self.size[1])
+        self.territory = {}
+
+        self.event = {}
+
+    def event_link(self):
+        pass

@@ -2,34 +2,20 @@ import tkinter as tk
 import copy
 import inspect
 
-permission = 3  # 接触範囲許可範囲
-
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
+    def __init__(self, window, canvas_data, common_control, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
         self.window = window
+        self.canvas_data = canvas_data
         self.all_data = all_data
         self.operation = all_data.operation
         self.all_UI_data = all_UI_data
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
 
-        self.common_control = CommonControl(self.window)
+        self.common_control = common_control
+
         self.tk = tk
-
-        self.canvas_data = CanvasData(self.window)
-
-    # 以下canvas
-
-    def edit_canvas_size(self, x=None, y=None):
-        self.canvas_data.size = self.common_control.xy_compilation(self.canvas_data.size, x=x, y=y)
-
-    def edit_canvas_position(self, x=None, y=None):
-        self.canvas_data.position = self.common_control.xy_compilation(self.canvas_data.position, x=x, y=y)
-
-    def get_canvas_contact(self):
-        mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data)
-        return mouse, canvas_edge, canvas_join
 
     # 以下territory
 
@@ -66,18 +52,20 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def edit_diagram_position(self, ca_name, di_name, x=None, y=None):
         self.canvas_data.territory[ca_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[ca_name].diagram[di_name].position, x=x, y=y)
 
+    def edit_diagram_color(self, ca_name, di_name, color=None):
+        if color is None:
+            color = self.GUI_alpha_color
+        self.canvas_data.territory[ca_name].diagram[di_name].color = color
+
+    def edit_diagram_text(self, ca_name, di_name, text=None):
+
+        self.canvas_data.territory[ca_name].diagram[di_name].text = text
+
     def get_diagram_contact(self, ca_name, di_name):
         mouse, diagram_edge, diagram_join = self.common_control.contact_detection(self.canvas_data.territory[ca_name].diagram[di_name])
         return mouse, diagram_edge, diagram_join
 
     #####################################################################################
-
-    def add_canvas_event(self, key, func):  # event
-        self.canvas_data.event[self.common_control.get_bind_name(key, func)] = [key, func]
-        self.canvas_data = self.common_control.canvas_event_bind(self.canvas_data)
-
-    def del_canvas_event(self, key, func):  # event
-        del self.canvas_data.event[self.common_control.get_bind_name(key, func)]
 
     def add_territory_event(self, name, key, func):  # event
         self.canvas_data.territory[name].event[self.common_control.get_bind_name(key, func)] = [key, func]
@@ -130,21 +118,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
                 size_xy[i] += difference
 
+        if not diagram_data.text is None:
+            pass
+
         color = diagram_data.color
         self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags="")  # 塗りつぶし
-
-
-class CanvasData:
-    def __init__(self, window):
-        self.size = [0, 0]
-        self.position = [0, 0]
-        self.canvas = tk.Canvas(window, highlightthickness=0, width=self.size[0], height=self.size[1])
-        self.territory = {}
-
-        self.event = {}
-
-    def event_link(self):
-        pass
 
 
 class TerritoryData:
@@ -178,68 +156,3 @@ class TextBoxData:
     def __init__(self, territory):
         self.position = [0, 0]
         self.text = ""
-
-
-class CommonControl:
-    def __init__(self, window):
-        self.window = window
-
-    def xy_compilation(self, origin, x=None, y=None):  # 設定項目を変更する
-        if not x is None:
-            origin[0] = x
-
-        if not y is None:
-            origin[1] = y
-
-        return origin
-
-    # def contact_edge(self):
-    #    return
-
-    def canvas_event_bind(self, data):
-        for name, kp in zip(data.event.keys(), data.event.values()):
-            data.canvas.bind("<{0}>".format(kp[0]), kp[1], "+")
-        return data
-
-    def territory_event_bind(self, data, name):
-        return data
-
-    def diagram_event_bind(self, data, ca_name, di_name):
-        # for name, kp in zip(data.event.keys(), data.event.values()):
-        #    data.canvas.bind("<{0}>".format(kp[0]), kp[1], "+")
-        return data
-
-    def get_mouse_position(self):  # マウスの位置を取得
-        mouse = []
-        mouse[0] = self.window.winfo_pointerx() - self.window.winfo_rootx()
-        mouse[1] = self.window.winfo_pointery() - self.window.winfo_rooty()
-
-        return mouse
-
-    def contact_detection(self, data):  # 辺に触れているか
-        mouse = self.get_mouse_position()
-
-        edge_detection = [[False, False], [False, False]]  # 辺に対する #x左,x右,y上,y下
-        join_detection = [False, False, False]  # 中に対する #x , y, xy
-
-        for i in range(2):
-            if (data.position[i] - permission) <= mouse[i] <= (data.position[i] + permission):
-                edge_detection[i][0] = True
-
-            if (data.position[i] + data.size[i] - permission) <= mouse[i] <= (data.position[i] + data.size[i] + permission):
-                edge_detection[i][1] = True
-
-        for i in range(2):
-            if (data.position[i] - permission) <= mouse[i] <= (data.position[i] + data.size[i] + permission):
-                join_detection[i] = True
-
-        if join_detection[0] and join_detection[1]:
-            join_detection[2] = True
-
-        return mouse, edge_detection, join_detection
-
-    def get_bind_name(self, key, func):
-        func_name = str(func.__name__)
-        name = "{0}_{1}".format(key, func_name)
-        print(name)
-        return func_name
