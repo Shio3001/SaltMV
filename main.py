@@ -15,6 +15,7 @@ import datetime
 import main_user_CUI  # GUI処分 CUI中継操作
 import main_user_GUI
 import log
+import error
 from chord_tool import file_path
 import edit_data_control
 import UI_control
@@ -36,6 +37,7 @@ operation["rendering"]["point"] = rendering_point.PointAnalysis()
 
 operation["file_path"] = file_path.DirectoryPath()
 operation["log"] = log.LogPrint(operation["file_path"])
+operation["error"] = error.ErrorAction(operation["log"])
 
 now_path = os.getcwd()
 py_path = (os.path.abspath(__file__)).replace('main.py', '')

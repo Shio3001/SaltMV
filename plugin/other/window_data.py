@@ -54,6 +54,9 @@ class SendWindowData:  # window生成のためのデータ
 
     def edit_canvas_size(self, name, x=None, y=None):
         self.canvas_data[name].size = self.common_control.xy_compilation(self.canvas_data[name].size, x=x, y=y)
+        print(self.canvas_data[name].size)
+        self.canvas_data[name].canvas.config(width=self.canvas_data[name].size[0])
+        self.canvas_data[name].canvas.config(height=self.canvas_data[name].size[1])
 
     def edit_canvas_position(self, name, x=None, y=None):
         self.canvas_data[name].position = self.common_control.xy_compilation(self.canvas_data[name].position, x=x, y=y)
@@ -76,8 +79,8 @@ class SendWindowData:  # window生成のためのデータ
         return new_parts_obj
 
     def display_size_get(self):
-        self.display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
-        return self.display_size
+        display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
+        return display_size
 
     def window_size_set(self, send):
         if not send is None:

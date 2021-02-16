@@ -12,10 +12,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.all_UI_data = all_UI_data
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
-
         self.common_control = common_control
-
         self.tk = tk
+
+        print("UI生成")
 
     # 以下territory
 
@@ -37,32 +37,38 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     # 以下diagram
 
-    def new_diagram(self, ca_name, di_name):
-        self.canvas_data.territory[ca_name].diagram[di_name] = DiagramData(self.canvas_data.canvas)
+    def new_diagram(self, te_name, di_name):
+        self.canvas_data.territory[te_name].diagram[di_name] = DiagramData(self.canvas_data.canvas)
 
-    def del_diagram(self, ca_name, di_name):
-        del self.canvas_data.territory[ca_name].diagram[di_name]
+    def del_diagram(self, te_name, di_name):
+        del self.canvas_data.territory[te_name].diagram[di_name]
 
-    def new_textbox(self, ca_name, di_name):
-        self.canvas_data.territory[ca_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
+    def new_textbox(self, te_name, di_name):
+        self.canvas_data.territory[te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
 
-    def edit_diagram_size(self, ca_name, di_name, x=None, y=None):
-        self.canvas_data.territory[ca_name].diagram[di_name].size = self.common_control.xy_compilation(self.canvas_data.territory[ca_name].diagram[di_name].size, x=x, y=y)
+    def edit_diagram_size(self, te_name, di_name, x=None, y=None):
+        self.canvas_data.territory[te_name].diagram[di_name].size = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].size, x=x, y=y)
 
-    def edit_diagram_position(self, ca_name, di_name, x=None, y=None):
-        self.canvas_data.territory[ca_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[ca_name].diagram[di_name].position, x=x, y=y)
+    def edit_diagram_position(self, te_name, di_name, x=None, y=None):
+        self.canvas_data.territory[te_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].position, x=x, y=y)
 
-    def edit_diagram_color(self, ca_name, di_name, color=None):
-        if color is None:
+    def edit_diagram_fill(self, te_name, di_name, select):
+        if select != True != False:
+            self.operation["error"].action(message="TrueとFalse以外入れるなあほ")
+
+        self.canvas_data.territory[te_name].diagram[di_name].fill = select
+
+    def edit_diagram_color(self, te_name, di_name, color=None):
+        if color is None or not color[0] == "#":
             color = self.GUI_alpha_color
-        self.canvas_data.territory[ca_name].diagram[di_name].color = color
 
-    def edit_diagram_text(self, ca_name, di_name, text=None):
+        self.canvas_data.territory[te_name].diagram[di_name].color = color
 
-        self.canvas_data.territory[ca_name].diagram[di_name].text = text
+    def edit_diagram_text(self, te_name, di_name, text=None):
+        self.canvas_data.territory[te_name].diagram[di_name].text = text
 
-    def get_diagram_contact(self, ca_name, di_name):
-        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(self.canvas_data.territory[ca_name].diagram[di_name])
+    def get_diagram_contact(self, te_name, di_name):
+        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(self.canvas_data.territory[te_name].diagram[di_name])
         return mouse, diagram_edge, diagram_join
 
     #####################################################################################
@@ -74,24 +80,23 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def del_territory_event(self, name, key, func):  # event
         del self.canvas_data.territory[name].event[self.common_control.get_bind_name(key, func)]
 
-    def add_diagram_event(self, ca_name, di_name, key, func):  # event
-        self.canvas_data.territory[ca_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)] = [key, func]
-        self.canvas_data.diagram[di_name] = self.common_control.diagram_event_bind(self.canvas_data, ca_name, di_name)
+    def add_diagram_event(self, te_name, di_name, key, func):  # event
+        self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)] = [key, func]
+        self.canvas_data.diagram[di_name] = self.common_control.diagram_event_bind(self.canvas_data, te_name, di_name)
 
-    def del_diagram_event(self, ca_name, di_name, key, func):  # event
-        del self.canvas_data.territory[ca_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)]
+    def del_diagram_event(self, te_name, di_name, key, func):  # event
+        del self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)]
 
     #####################################################################################
 
-    def canvas_draw(self):
-        for territory in self.canvas_data.territory:
-            self.territory_draw(territory)
+    def territory_draw(self, te_name):
+        for k in self.canvas_data.territory[te_name].diagram.keys():
+            self.diagram_draw(te_name, k)
 
-    def territory_draw(self, territory_data):
-        for v, k in zip(territory_data.diagram.keys(), territory_data.diagram.vales()):
-            self.diagram_draw(territory_data, v)
+    def diagram_draw(self, te_name, di_name):
+        territory_data = self.canvas_data.territory[te_name]
+        diagram_data = self.canvas_data.territory[te_name].diagram[di_name]
 
-    def diagram_draw(self, territory_data, diagram_data):
         xy, size_xy = [0, 0], [0, 0]  # 領域基準
 
         for i in range(2):
@@ -118,11 +123,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
                 size_xy[i] += difference
 
+        canvas_center = [size - xy / 2 for xy, size in zip(xy, size_xy)]
+
+        print(xy, size_xy)
+
         if not diagram_data.text is None:
-            pass
+            self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text)
+            return
 
         color = diagram_data.color
-        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags="")  # 塗りつぶし
+
+        print(color)
+        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags=di_name)  # 塗りつぶし
+        return
 
 
 class TerritoryData:
@@ -140,8 +153,9 @@ class DiagramData:
     def __init__(self, territory):
         self.size = [0, 0]
         self.position = [0, 0]
-        self.text = ""
+        self.text = None
         self.color = ""
+        self.fill = False
 
         self.event = {}
 
