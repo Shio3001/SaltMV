@@ -87,7 +87,22 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def del_diagram_event(self, te_name, di_name, key, func):  # event
         del self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)]
 
-    #####################################################################################
+    def __event_territory_reflection(self, te_name, di_name, add_del):
+        add_del_tk = ""
+
+        if add_del == True:
+            add_del_tk = "+"
+        elif add_del == False:
+            add_del_tk = "-"
+        else:
+            self.operation["error"].action(message="TrueとFalse以外入れるなあほ")
+
+        event = self.canvas_data.territory[te_name].diagram[di_name].event
+        for k, f in zip(event.keys(), event.vales()):
+            print(k, f, add_del_tk)
+            self.canvas_data.canvas.tag_bind(k, "<{0}>".format(f[0]), f[1], add_del_tk)
+
+        #####################################################################################
 
     def territory_draw(self, te_name):
         for k in self.canvas_data.territory[te_name].diagram.keys():
