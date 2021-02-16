@@ -13,7 +13,8 @@ class InitialValue:
 
     def main(self):
         self.data.new_canvas("timeline")
-        self.data.edit_canvas_size("timeline", x=100, y=100)
+        self.data.edit_canvas_size("timeline", x=300, y=300)
+        self.data.edit_canvas_position("timeline", x=100, y=100)
         self.data.window_title_set("タイムライン")
 
         shape = []

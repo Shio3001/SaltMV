@@ -20,7 +20,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     # 以下territory
 
     def new_territory(self, name):
-        self.canvas_data.territory[name] = TerritoryData(self.canvas_data.canvas)
+        self.canvas_data.territory[name] = TerritoryData()
 
     def del_territory(self, name):
         del self.canvas_data.territory[name]
@@ -38,7 +38,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     # 以下diagram
 
     def new_diagram(self, te_name, di_name):
-        self.canvas_data.territory[te_name].diagram[di_name] = DiagramData(self.canvas_data.canvas)
+        self.canvas_data.territory[te_name].diagram[di_name] = DiagramData()
 
     def del_diagram(self, te_name, di_name):
         del self.canvas_data.territory[te_name].diagram[di_name]
@@ -104,6 +104,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 xy[i] = territory_data.position[i]
                 size_xy[i] = territory_data.size[i]
 
+                print("座標全選択")
+
             else:
                 xy[i] = territory_data.position[i] + diagram_data.position[i]
                 size_xy[i] = diagram_data.size[i]
@@ -139,10 +141,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
 
 class TerritoryData:
-    def __init__(self, canvas):
+    def __init__(self):
         self.size = [0, 0]
         self.position = [0, 0]
-        self.canvas = canvas
         self.diagram = {}
         self.event = {}
 
@@ -150,7 +151,7 @@ class TerritoryData:
 
 
 class DiagramData:
-    def __init__(self, territory):
+    def __init__(self):
         self.size = [0, 0]
         self.position = [0, 0]
         self.text = None

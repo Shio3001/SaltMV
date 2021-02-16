@@ -54,12 +54,13 @@ class SendWindowData:  # window生成のためのデータ
 
     def edit_canvas_size(self, name, x=None, y=None):
         self.canvas_data[name].size = self.common_control.xy_compilation(self.canvas_data[name].size, x=x, y=y)
-        print(self.canvas_data[name].size)
+        print("ペイント", self.canvas_data[name].size)
         self.canvas_data[name].canvas.config(width=self.canvas_data[name].size[0])
         self.canvas_data[name].canvas.config(height=self.canvas_data[name].size[1])
 
     def edit_canvas_position(self, name, x=None, y=None):
         self.canvas_data[name].position = self.common_control.xy_compilation(self.canvas_data[name].position, x=x, y=y)
+        self.canvas_data[name].canvas.place(x=self.canvas_data[name].position[0], y=self.canvas_data[name].position[1])
 
     def get_canvas_contact(self, name):
         mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name])
@@ -139,6 +140,8 @@ class CanvasData:
         self.territory = {}
 
         self.event = {}
+
+        print(self.canvas)
 
     def event_link(self):
         pass
