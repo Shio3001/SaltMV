@@ -75,7 +75,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_id = []
 
         for di_name, f in zip(self.canvas_data.territory[te_name].diagram.keys(), self.canvas_data.territory[te_name].diagram.values()):
-            new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func,)
+            new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func, "+")
             bind_id.append(new_bind_id)
 
             print(di_name, bind_id, "bind")
@@ -91,7 +91,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             for b in bind_id:
                 print(key, bind_id, b, "e")
-                self.canvas_data.canvas.unbind("<{0}>".format(key), b)
+                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), b)
 
         del self.canvas_data.territory[te_name].event[bind_name]
 
