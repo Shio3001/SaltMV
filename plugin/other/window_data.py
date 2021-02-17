@@ -1,6 +1,4 @@
 import tkinter as tk
-import copy
-import os
 
 
 class SendWindowData:  # window生成のためのデータ
@@ -22,10 +20,7 @@ class SendWindowData:  # window生成のためのデータ
         else:
             self.window = tk.Tk()
 
-        self.common_control = self.operation["plugin"]["other"]["UI_control"].CommonControl(self.window)
-
-        #self.common_control = self.operation["plugin"]["other"]["UI_control"].CommonControl(self.window)
-
+        self.common_control = all_UI_data.CommonControl(self.window, self.operation)
         self.UI_parts = UI_parts
         self.UI_auxiliary = UI_auxiliary
 
@@ -66,12 +61,31 @@ class SendWindowData:  # window生成のためのデータ
         mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name])
         return mouse, canvas_edge, canvas_join
 
+    #####################################################################################
+
     def add_canvas_event(self, name, key, func):  # event
-        self.canvas_data[name].event[self.common_control.get_bind_name(key, func)] = [key, func]
-        self.canvas_data[name] = self.common_control.canvas_event_bind(self.canvas_data[name])
+        bind_id = self.canvas_data[name].canvas.bind("<{0}>".format(key), func, "+")
+        self.canvas_data[name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
 
     def del_canvas_event(self, name, key, func):  # event
-        del self.canvas_data[name].event[self.common_control.get_bind_name(key, func)]
+        bind_name = self.common_control.get_bind_name(key, func)
+        bind_id = self.canvas_data[name].event[bind_name][2]
+        self.canvas_data[name].canvas.unbind("<{0}>".format(key), bind_id)
+        del self.canvas_data[name].event[bind_name]
+
+    def all_add_canvas_event(self, name):
+        for k, f in zip(self.canvas_data[name].event.keys(), self.canvas_data[name].event.values()):
+            self.canvas_data[name].canvas.bind("<{0}>".format(f[0]), f[1], "+")
+
+    def all_del_canvas_event(self, name):  # canvasの再生成時の復元
+        for k, f in zip(self.canvas_data[name].event.keys(), self.canvas_data[name].event.values()):
+            self.canvas_data[name].canvas.unbind("<{0}>".format(f[0]), f[2])
+            print(self.canvas_data[name].event[k], f)
+
+        self.canvas_data[name].event = {}
+
+    def get_canvas_event(self, name):
+        return self.canvas_data[name].event
 
     #####################################################################################
 
@@ -111,10 +125,10 @@ class SendWindowData:  # window生成のためのデータ
                     main_bar = content
                 elif i % 2 == 0:
                     bar_prg.append(content)
-                    #print("bar偶数情報", content, i)
+                    # print("bar偶数情報", content, i)
                 elif (i + 1) % 2 == 0:
                     bar_name.append(content)
-                    #print("bar奇数情報", content, i)
+                    # print("bar奇数情報", content, i)
 
             pull_down = tk.Menu(window_menubar, tearoff=0)
 
@@ -136,7 +150,9 @@ class CanvasData:
     def __init__(self, window):
         self.size = [0, 0]
         self.position = [0, 0]
+
         self.canvas = tk.Canvas(window, highlightthickness=0, width=self.size[0], height=self.size[1])
+
         self.territory = {}
 
         self.event = {}

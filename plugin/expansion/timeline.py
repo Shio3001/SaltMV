@@ -9,19 +9,29 @@ class InitialValue:
         self.data = data
         self.operation = self.data.operation
 
-    # def get_all_elements(self)
-
     def main(self):
         self.data.new_canvas("timeline")
         self.data.edit_canvas_size("timeline", x=300, y=300)
-        self.data.edit_canvas_position("timeline", x=100, y=100)
+        self.data.edit_canvas_position("timeline", x=0, y=0)
         self.data.window_title_set("タイムライン")
 
         shape = []
         shape.append(None)
         shape[0] = self.data.new_parts("timeline", parts_name="shape")
 
-        print(self.data.canvas_data)
+        def test(event):
+            print("test")
+
+        def test2(event):
+            print("test2")
+
+        self.data.add_canvas_event("timeline", "Button-1", test)
+        self.data.add_canvas_event("timeline", "Button-2", test)
+        self.data.add_canvas_event("timeline", "Button-1", test2)
+        print(self.data.get_canvas_event("timeline"))
+        # self.data.all_add_canvas_event("timeline")
+        print(self.data.get_canvas_event("timeline"))
+        # self.data.all_del_canvas_event("timeline")
 
         return self.data
 

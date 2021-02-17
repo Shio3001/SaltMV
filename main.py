@@ -37,6 +37,8 @@ operation["rendering"]["point"] = rendering_point.PointAnalysis()
 
 operation["file_path"] = file_path.DirectoryPath()
 operation["log"] = log.LogPrint(operation["file_path"])
+operation["log"].stop(True)
+operation["log"].write("ログ起動")
 operation["error"] = error.ErrorAction(operation["log"])
 
 now_path = os.getcwd()

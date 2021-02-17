@@ -73,36 +73,71 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     #####################################################################################
 
-    def add_territory_event(self, name, key, func):  # event
-        self.canvas_data.territory[name].event[self.common_control.get_bind_name(key, func)] = [key, func]
-        self.canvas_data = self.common_control.territory_event_bind(self.canvas_data, name)
+    def add_territory_event(self, te_name,  key, func):  # event
+        bind_id = []
 
-    def del_territory_event(self, name, key, func):  # event
-        del self.canvas_data.territory[name].event[self.common_control.get_bind_name(key, func)]
+        for di_name, f in zip(self.canvas_data.territory[te_name].diagram.keys(), self.canvas_data.territory[te_name].diagram.values()):
+            new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func, "+")
+            bind_id.append(new_bind_id)
+
+        self.canvas_data.territory[te_name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
+
+    def del_territory_event(self, te_name,  key, func):  # event
+        bind_name = self.common_control.get_bind_name(key, func)
+        bind_id = self.canvas_data.territory[te_name].event[bind_name][2]
+
+        for di_name, f in zip(self.canvas_data.territory[te_name].diagram.keys(), self.canvas_data.territory[te_name].diagram.values()):
+            bind_id = self.canvas_data.territory[te_name].event[bind_name][2]
+
+            for b in bind_id:
+                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), b)
+
+        del self.canvas_data.territory[te_name].event[bind_name]
+
+    def all_add_territory_event(self, te_name):
+        for k, f in zip(self.canvas_data.territory[te_name].event.keys(), self.canvas_data.territory[te_name].event.values()):
+            pass
+
+    def all_del_territory_event(self, te_name):  # canvasの再生成時の復元
+        for k, f in zip(self.canvas_data.territory[te_name].event.keys(), self.canvas_data.territory[te_name].event.values()):
+            print(self.canvas_data.territory[te_name].event[k], f)
+
+        self.canvas_data.territory[te_name].event = {}
+
+    def get_territory_event(self, te_name):
+        return self.canvas_data.territory[te_name].event
+
+    #####################################################################################
 
     def add_diagram_event(self, te_name, di_name, key, func):  # event
-        self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)] = [key, func]
-        self.canvas_data.diagram[di_name] = self.common_control.diagram_event_bind(self.canvas_data, te_name, di_name)
+        a = self.common_control.get_tag_name(te_name, di_name)
+        bind_id = self.canvas_data.canvas.tag_bind(a, "<{0}>".format(key), func, "+")
+
+        print(bind_id)
+
+        self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
 
     def del_diagram_event(self, te_name, di_name, key, func):  # event
-        del self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)]
+        bind_name = self.common_control.get_bind_name(key, func)
+        bind_id = self.canvas_data.territory[te_name].diagram[di_name].event[bind_name][2]
+        self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), bind_id)
+        del self.canvas_data.territory[te_name].diagram[di_name].event[bind_name]
 
-    def __event_territory_reflection(self, te_name, di_name, add_del):
-        add_del_tk = ""
+    def all_add_diagram_event(self, te_name, di_name):
+        for k, f in zip(self.canvas_data.territory[te_name].diagram[di_name].event.keys(), self.canvas_data.territory[te_name].diagram[di_name].event.values()):
+            self.canvas_data.territory[te_name].diagram[di_name].canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(f[0]), f[1], "+")
 
-        if add_del == True:
-            add_del_tk = "+"
-        elif add_del == False:
-            add_del_tk = "-"
-        else:
-            self.operation["error"].action(message="TrueとFalse以外入れるなあほ")
+    def all_del_diagram_event(self, te_name, di_name):  # canvasの再生成時の復元
+        for k, f in zip(self.canvas_data.territory[te_name].diagram[di_name].event.keys(), self.canvas_data.territory[te_name].diagram[di_name].event.values()):
+            self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(f[0]), f[2])
+            print(self.canvas_data.territory[te_name].diagram[di_name].event[k], f)
 
-        event = self.canvas_data.territory[te_name].diagram[di_name].event
-        for k, f in zip(event.keys(), event.vales()):
-            print(k, f, add_del_tk)
-            self.canvas_data.canvas.tag_bind(k, "<{0}>".format(f[0]), f[1], add_del_tk)
+        self.canvas_data.territory[te_name].diagram[di_name].event = {}
 
-        #####################################################################################
+    def get_diagram_event(self, te_name, di_name):
+        return self.canvas_data.territory[te_name].diagram[di_name].event
+
+    #####################################################################################
 
     def territory_draw(self, te_name):
         for k in self.canvas_data.territory[te_name].diagram.keys():
@@ -145,13 +180,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print(xy, size_xy)
 
         if not diagram_data.text is None:
-            self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text)
+            self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name))
             return
 
         color = diagram_data.color
 
         print(color)
-        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags=di_name)  # 塗りつぶし
+        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(te_name, di_name))  # 塗りつぶし
         return
 
 
