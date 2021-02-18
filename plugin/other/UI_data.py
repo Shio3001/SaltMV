@@ -51,7 +51,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[te_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].position, x=x, y=y)
 
     def edit_diagram_fill(self, te_name, di_name, select):
-        if select != True != False:
+        if select != True and select != False:
             self.operation["error"].action(message="TrueとFalse以外入れるなあほ")
 
         self.canvas_data.territory[te_name].diagram[di_name].fill = select
@@ -72,30 +72,49 @@ class SendUIData:  # パーツひとつあたりのためのclass
     #####################################################################################
 
     def add_territory_event(self, te_name,  key, func):  # event
-        bind_id = []
+        bind_id_list = []
+        di_name_list = []
 
         for di_name in self.canvas_data.territory[te_name].diagram.keys():
+            print(di_name, "あああああああああ")
+            print(te_name, di_name, key, func)
             new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func, "+")
-            print("new_bind", new_bind_id)
-            bind_id.append(new_bind_id)
+            print("new_bind", self.common_control.get_tag_name(key, func), new_bind_id, di_name)
+            bind_id_list.append(new_bind_id)
+            di_name_list.append(di_name)
 
-        self.canvas_data.territory[te_name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
+        self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id_list, di_name_list]
 
     def del_territory_event(self, te_name,  key, func):  # event
-        bind_name = self.common_control.get_bind_name(key, func)
+        bind_name = self.common_control.get_tag_name(key, func)
+        bind_id = self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)][2]
+        di_name = self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)][3]
+
+        print("bind", bind_id)
+        for d, b in zip(di_name, bind_id):
+            self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, d), "<{0}>".format(key), b)
+            # for b in bind_id:
+            #    print("b", b)
+            # bind_id =
+            #self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), bind_id)
+
+        """
+        bind_name = self.common_control.get_tag_name(key, func)
 
         print("del", self.canvas_data.territory[te_name].event)
 
+        k = self.canvas_data.territory[te_name].event[bind_name][0]
         bind_id = self.canvas_data.territory[te_name].event[bind_name][2]
 
-        for di_name in self.canvas_data.territory[te_name].diagram.keys():
-            print(di_name, bind_id, "bind")
+        for di_name in list(self.canvas_data.territory[te_name].diagram.keys()):
+            print(di_name, bind_id, "bind", self.canvas_data.territory[te_name].diagram.keys())
 
             for b in bind_id:
-                print(key, bind_id, b, "e")
-                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), b)
+                print(te_name, di_name, k, b)
+                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(k), b)
 
         del self.canvas_data.territory[te_name].event[bind_name]
+        """
 
     def all_add_territory_event(self, te_name):
         pass
@@ -120,10 +139,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         print(bind_id)
 
-        self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
+        self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id]
 
     def del_diagram_event(self, te_name, di_name, key, func):  # event
-        bind_name = self.common_control.get_bind_name(key, func)
+        bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[te_name].diagram[di_name].event[bind_name][2]
         self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), bind_id)
         print("tag unbind")

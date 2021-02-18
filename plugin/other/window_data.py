@@ -64,10 +64,10 @@ class SendWindowData:  # window生成のためのデータ
 
     def add_canvas_event(self, name, key, func):  # event
         bind_id = self.canvas_data[name].canvas.bind("<{0}>".format(key), func, "+")
-        self.canvas_data[name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
+        self.canvas_data[name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id]
 
     def del_canvas_event(self, name, key, func):  # event
-        bind_name = self.common_control.get_bind_name(key, func)
+        bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data[name].event[bind_name][2]
         self.canvas_data[name].canvas.unbind("<{0}>".format(key), bind_id)
         del self.canvas_data[name].event[bind_name]
