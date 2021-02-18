@@ -145,11 +145,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         for di_name in self.canvas_data.territory[te_name].diagram.keys():
             tag = self.common_control.get_tag_name(te_name, di_name)
             if move == True:
-                self.canvas_data.canvas.tag_lower(tag, target)
+                self.canvas_data.canvas.tag_lower(tag)
                 return
 
             elif move == False:
-                self.canvas_data.canvas.tag_raise(tag, target)
+                self.canvas_data.canvas.tag_raise(tag)
                 return
 
     def diagram_stack(self, te_name, di_name, move, target=None):
