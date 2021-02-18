@@ -86,45 +86,28 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id_list, di_name_list]
 
     def del_territory_event(self, te_name,  key, func):  # event
-        bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)][2]
         di_name = self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)][3]
 
         print("bind", bind_id)
         for d, b in zip(di_name, bind_id):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, d), "<{0}>".format(key), b)
-            # for b in bind_id:
-            #    print("b", b)
-            # bind_id =
-            #self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), bind_id)
-
-        """
-        bind_name = self.common_control.get_tag_name(key, func)
-
-        print("del", self.canvas_data.territory[te_name].event)
-
-        k = self.canvas_data.territory[te_name].event[bind_name][0]
-        bind_id = self.canvas_data.territory[te_name].event[bind_name][2]
-
-        for di_name in list(self.canvas_data.territory[te_name].diagram.keys()):
-            print(di_name, bind_id, "bind", self.canvas_data.territory[te_name].diagram.keys())
-
-            for b in bind_id:
-                print(te_name, di_name, k, b)
-                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(k), b)
-
-        del self.canvas_data.territory[te_name].event[bind_name]
-        """
 
     def all_add_territory_event(self, te_name):
-        pass
-        # for k, f in zip(self.canvas_data.territory[te_name].event.keys(), self.canvas_data.territory[te_name].event.values()):
-        #    for di_name, f in zip(self.canvas_data.territory[te_name].diagram.keys(), self.canvas_data.territory[te_name].diagram.values()):
-        #        new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func, "+")
+        for v in self.canvas_data.territory[te_name].event.values():
+            for di_name in self.canvas_data.territory[te_name].diagram.keys():
+                v[2] = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(v[0]), v[1], "+")
+
+        # for tek, tev in zip(self.canvas_data.territory[te_name].event.keys(), self.canvas_data.territory[te_name].event.values()):
+        #    for di_name in self.canvas_data.territory[te_name].diagram.keys():
+        #        bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, dk), "<{0}>".format(tev), func, "+")
 
     def all_del_territory_event(self, te_name):  # canvasの再生成時の復元
-        for k, f in zip(self.canvas_data.territory[te_name].event.keys(), self.canvas_data.territory[te_name].event.values()):
-            print(self.canvas_data.territory[te_name].event[k], f)
+        for bind in self.canvas_data.territory[te_name].event.values():
+            #print(v[2], self.canvas_data.territory[te_name].diagram.keys(), "v")
+            for di_name, v in zip(self.canvas_data.territory[te_name].diagram.keys(), bind[2]):
+                #print(di_name, v[2], "a")
+                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(bind[0]), v)
 
         self.canvas_data.territory[te_name].event = {}
 
@@ -150,7 +133,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def all_add_diagram_event(self, te_name, di_name):
         for k, f in zip(self.canvas_data.territory[te_name].diagram[di_name].event.keys(), self.canvas_data.territory[te_name].diagram[di_name].event.values()):
-            self.canvas_data.territory[te_name].diagram[di_name].canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(f[0]), f[1], "+")
+            f[2] = self.canvas_data.territory[te_name].diagram[di_name].canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(f[0]), f[1], "+")
 
     def all_del_diagram_event(self, te_name, di_name):  # canvasの再生成時の復元
         for k, f in zip(self.canvas_data.territory[te_name].diagram[di_name].event.keys(), self.canvas_data.territory[te_name].diagram[di_name].event.values()):

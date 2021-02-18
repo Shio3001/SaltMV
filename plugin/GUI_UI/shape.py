@@ -40,6 +40,9 @@ class parts:
         data.add_territory_event("main", "Button-1", test_minasan_konnbanha)
         #data.del_territory_event("main", "Button-1", test_minasan_konnbanha)
 
+        # data.all_add_territory_event("main")
+        data.all_del_territory_event("main")
+
         print(data.get_territory_event("main"))
 
         print("b")
