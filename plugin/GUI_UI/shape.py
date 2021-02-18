@@ -19,15 +19,15 @@ class parts:
         def test_minasan_konnbanha(event):
             print("みなさんこんばんは")
 
-        data.add_diagram_event("main", "1", "Button-1", test_minasan)
-        data.del_diagram_event("main", "1", "Button-1", test_minasan)
+        #data.add_diagram_event("main", "1", "Button-1", test_minasan)
+        #data.del_diagram_event("main", "1", "Button-1", test_minasan)
 
         print("a")
 
         print(data.get_territory_event("main"))
 
-        #data.add_territory_event("main", "Button-1", test_minasan_konnbanha)
-        #data.del_territory_event("main", "Button-1", test_minasan_konnbanha)
+        data.add_territory_event("main", "Button-1", test_minasan_konnbanha)
+        data.del_territory_event("main", "Button-1", test_minasan_konnbanha)
 
         print(data.get_territory_event("main"))
 

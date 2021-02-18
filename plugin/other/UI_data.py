@@ -83,6 +83,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def del_territory_event(self, te_name,  key, func):  # event
         bind_name = self.common_control.get_bind_name(key, func)
+
+        print("del", self.canvas_data.territory[te_name].event)
+
         bind_id = self.canvas_data.territory[te_name].event[bind_name][2]
 
         for di_name in self.canvas_data.territory[te_name].diagram.keys():
@@ -90,7 +93,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             for b in bind_id:
                 print(key, bind_id, b, "e")
-                self.canvas_data.canvas.tag_unbind("<{0}>".format(key), b)
+                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), b)
 
         del self.canvas_data.territory[te_name].event[bind_name]
 
