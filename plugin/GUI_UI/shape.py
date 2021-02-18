@@ -27,21 +27,21 @@ class parts:
         def test_minasan(event):
             print("みなさんこんにちは")
 
+            data.diagram_stack("main", "3", True)
+
         def test_minasan_konnbanha(event):
             print("みなさんこんばんは")
 
-        #data.add_diagram_event("main", "1", "Button-1", test_minasan)
-        #data.del_diagram_event("main", "1", "Button-1", test_minasan)
+            data.diagram_stack("main", "3", False)
 
         print("a")
 
         print(data.get_territory_event("main"))
 
-        data.add_territory_event("main", "Button-1", test_minasan_konnbanha)
-        #data.del_territory_event("main", "Button-1", test_minasan_konnbanha)
-
-        # data.all_add_territory_event("main")
-        data.all_del_territory_event("main")
+        data.add_territory_event("main", "Button-1", test_minasan)
+        data.add_territory_event("main", "Button-2", test_minasan_konnbanha)
+        #data.add_territory_event("main", "Button-1", test_minasan)
+        # data.all_del_territory_event("main")
 
         print(data.get_territory_event("main"))
 

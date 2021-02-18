@@ -98,15 +98,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             for di_name in self.canvas_data.territory[te_name].diagram.keys():
                 v[2] = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(v[0]), v[1], "+")
 
-        # for tek, tev in zip(self.canvas_data.territory[te_name].event.keys(), self.canvas_data.territory[te_name].event.values()):
-        #    for di_name in self.canvas_data.territory[te_name].diagram.keys():
-        #        bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, dk), "<{0}>".format(tev), func, "+")
-
     def all_del_territory_event(self, te_name):  # canvasの再生成時の復元
         for bind in self.canvas_data.territory[te_name].event.values():
-            #print(v[2], self.canvas_data.territory[te_name].diagram.keys(), "v")
             for di_name, v in zip(self.canvas_data.territory[te_name].diagram.keys(), bind[2]):
-                #print(di_name, v[2], "a")
                 self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(bind[0]), v)
 
         self.canvas_data.territory[te_name].event = {}
@@ -146,6 +140,36 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return self.canvas_data.territory[te_name].diagram[di_name].event
 
     #####################################################################################
+
+    def territory_stack(self, te_name, move):
+        for di_name in self.canvas_data.territory[te_name].diagram.keys():
+            tag = self.common_control.get_tag_name(te_name, di_name)
+            if move == True:
+                self.canvas_data.canvas.tag_lower(tag, target)
+                return
+
+            elif move == False:
+                self.canvas_data.canvas.tag_raise(tag, target)
+                return
+
+    def diagram_stack(self, te_name, di_name, move, target=None):
+        tag = self.common_control.get_tag_name(te_name, di_name)
+
+        if move == True and target == None:
+            self.canvas_data.canvas.tag_lower(tag)
+            return
+
+        elif move == False and target == None:
+            self.canvas_data.canvas.tag_raise(tag)
+            return
+
+        if move == True:
+            self.canvas_data.canvas.tag_lower(tag, target)
+            return
+
+        elif move == False:
+            self.canvas_data.canvas.tag_raise(tag, target)
+            return
 
     def territory_draw(self, te_name):
         for k in self.canvas_data.territory[te_name].diagram.keys():
