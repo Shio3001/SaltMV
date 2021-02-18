@@ -26,10 +26,10 @@ class InitialValue:
             print("test2")
 
         self.data.add_canvas_event("timeline", "Button-1", test)
-        self.data.add_canvas_event("timeline", "Button-2", test)
-        self.data.add_canvas_event("timeline", "Button-1", test2)
+        #self.data.add_canvas_event("timeline", "Button-2", test)
+        #self.data.add_canvas_event("timeline", "Button-1", test2)
         print(self.data.get_canvas_event("timeline"))
-        # self.data.all_add_canvas_event("timeline")
+        self.data.del_canvas_event("timeline", "Button-1", test)
         print(self.data.get_canvas_event("timeline"))
         # self.data.all_del_canvas_event("timeline")
 

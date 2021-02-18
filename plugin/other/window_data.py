@@ -25,7 +25,6 @@ class SendWindowData:  # window生成のためのデータ
         self.UI_auxiliary = UI_auxiliary
 
         self.canvas_data = {}
-        # self.UI_operation =
 
         self.window.configure(bg=self.GUI_base_color)
 

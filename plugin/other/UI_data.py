@@ -74,11 +74,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def add_territory_event(self, te_name,  key, func):  # event
         bind_id = []
 
-        for di_name, f in zip(self.canvas_data.territory[te_name].diagram.keys(), self.canvas_data.territory[te_name].diagram.values()):
+        for di_name in self.canvas_data.territory[te_name].diagram.keys():
             new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func, "+")
+            print("new_bind", new_bind_id)
             bind_id.append(new_bind_id)
-
-            print(di_name, bind_id, "bind")
 
         self.canvas_data.territory[te_name].event[self.common_control.get_bind_name(key, func)] = [key, func, bind_id]
 
@@ -86,12 +85,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_name = self.common_control.get_bind_name(key, func)
         bind_id = self.canvas_data.territory[te_name].event[bind_name][2]
 
-        for di_name, f in zip(self.canvas_data.territory[te_name].diagram.keys(), self.canvas_data.territory[te_name].diagram.values()):
+        for di_name in self.canvas_data.territory[te_name].diagram.keys():
             print(di_name, bind_id, "bind")
 
             for b in bind_id:
                 print(key, bind_id, b, "e")
-                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), b)
+                self.canvas_data.canvas.tag_unbind("<{0}>".format(key), b)
 
         del self.canvas_data.territory[te_name].event[bind_name]
 
@@ -124,6 +123,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_name = self.common_control.get_bind_name(key, func)
         bind_id = self.canvas_data.territory[te_name].diagram[di_name].event[bind_name][2]
         self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), bind_id)
+        print("tag unbind")
         del self.canvas_data.territory[te_name].diagram[di_name].event[bind_name]
 
     def all_add_diagram_event(self, te_name, di_name):

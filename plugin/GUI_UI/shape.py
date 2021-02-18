@@ -2,10 +2,10 @@ class parts:
     def UI_set(self, data):
         data.new_territory("main")
         data.new_diagram("main", "1")
-        data.new_diagram("main", "2")
-        data.new_diagram("main", "3")
-        data.new_diagram("main", "4")
-        data.new_diagram("main", "5")
+        #data.new_diagram("main", "2")
+        #data.new_diagram("main", "3")
+        #data.new_diagram("main", "4")
+        #data.new_diagram("main", "5")
 
         data.edit_territory_size("main", x=10, y=10)
         data.edit_territory_position("main", x=50, y=50)
@@ -19,14 +19,15 @@ class parts:
         def test_minasan_konnbanha(event):
             print("みなさんこんばんは")
 
-        data.add_territory_event("main", "Button-1", test_minasan_konnbanha)
         data.add_diagram_event("main", "1", "Button-1", test_minasan)
+        data.del_diagram_event("main", "1", "Button-1", test_minasan)
 
         print("a")
 
         print(data.get_territory_event("main"))
 
-        data.del_territory_event("main", "Button-1", test_minasan_konnbanha)
+        #data.add_territory_event("main", "Button-1", test_minasan_konnbanha)
+        #data.del_territory_event("main", "Button-1", test_minasan_konnbanha)
 
         print(data.get_territory_event("main"))
 
