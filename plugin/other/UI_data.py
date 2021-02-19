@@ -21,6 +21,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("テストイベント")
 
     def new_territory(self, name):
+
         self.canvas_data.territory[name] = TerritoryData()
 
         self.new_diagram(name, "base")
