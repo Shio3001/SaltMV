@@ -63,10 +63,10 @@ class InitialValue:
         size = [640, 360]
         self.data.window_size_set(size)
 
-        def window_size_change_event(self):
-            pass
+        # def window_size_change_event(self):
+        #    pass
 
-        self.data.window_event(processing=window_size_change_event, user_event="Motion")
+        #self.data.window_event(processing=window_size_change_event, user_event="Motion")
 
         # self.data.all_data.add_layer_elements()
 

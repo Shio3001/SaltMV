@@ -11,7 +11,7 @@ class InitialValue:
 
     def main(self):
         self.data.new_canvas("timeline")
-        self.data.edit_canvas_size("timeline", x=300, y=300)
+        self.data.edit_canvas_size("timeline", x=1000, y=1000)
         self.data.edit_canvas_position("timeline", x=0, y=0)
         self.data.window_title_set("タイムライン")
 
@@ -29,7 +29,7 @@ class InitialValue:
         #self.data.add_canvas_event("timeline", "Button-2", test)
         #self.data.add_canvas_event("timeline", "Button-1", test2)
         print(self.data.get_canvas_event("timeline"))
-        self.data.del_canvas_event("timeline", "Button-1", test)
+        #self.data.del_canvas_event("timeline", "Button-1", test)
         print(self.data.get_canvas_event("timeline"))
         # self.data.all_del_canvas_event("timeline")
 

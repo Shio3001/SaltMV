@@ -25,6 +25,7 @@ class SendWindowData:  # window生成のためのデータ
         self.UI_auxiliary = UI_auxiliary
 
         self.canvas_data = {}
+        self.window_event = {}
 
         self.window.configure(bg=self.GUI_base_color)
 
@@ -34,9 +35,28 @@ class SendWindowData:  # window生成のためのデータ
         if select == False:
             self.window.withdraw()
 
-    def window_event(self, processing=None, user_event=None):
-        if not processing is None and not user_event is None:
-            self.window.bind("<{0}>".format(user_event), processing, "+")
+    def add_window_event(self, name, key, func):  # event
+        bind_id = self.window.bind("<{0}>".format(key), func, "+")
+        self.window_event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id]
+
+    def del_windows_event(self, name, key, func):  # event
+        bind_name = self.common_control.get_tag_name(key, func)
+        bind_id = self.window_event[bind_name][2]
+        self.window.unbind("<{0}>".format(key), bind_id)
+        del self.window_event[bind_name]
+
+    def all_add_window_event(self, name):
+        for k, f in zip(self.window_event.keys(), self.window_event.values()):
+            self.window.bind("<{0}>".format(f[0]), f[1], "+")
+
+    def all_del_window_event(self, name):  # canvasの再生成時の復元
+        for k, f in zip(self.window_event.keys(), self.window_event.values()):
+            self.window.unbind("<{0}>".format(f[0]), f[2])
+
+        self.window_event = {}
+
+    def get_window_event(self, name):
+        return self.window_event
 
     #####################################################################################
 

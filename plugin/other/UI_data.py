@@ -143,32 +143,33 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def territory_stack(self, te_name, move):
         for di_name in self.canvas_data.territory[te_name].diagram.keys():
+
             tag = self.common_control.get_tag_name(te_name, di_name)
+
+            print(tag, move)
             if move == True:
-                self.canvas_data.canvas.tag_lower(tag)
-                return
+                self.canvas_data.canvas.tag_raise(tag)
 
             elif move == False:
-                self.canvas_data.canvas.tag_raise(tag)
-                return
+                self.canvas_data.canvas.tag_lower(tag)
 
     def diagram_stack(self, te_name, di_name, move, target=None):
         tag = self.common_control.get_tag_name(te_name, di_name)
 
         if move == True and target == None:
-            self.canvas_data.canvas.tag_lower(tag)
-            return
-
-        elif move == False and target == None:
             self.canvas_data.canvas.tag_raise(tag)
             return
 
+        elif move == False and target == None:
+            self.canvas_data.canvas.tag_lower(tag)
+            return
+
         if move == True:
-            self.canvas_data.canvas.tag_lower(tag, target)
+            self.canvas_data.canvas.tag_raise(tag, target)
             return
 
         elif move == False:
-            self.canvas_data.canvas.tag_raise(tag, target)
+            self.canvas_data.canvas.tag_lower(tag, target)
             return
 
     def territory_draw(self, te_name):
@@ -209,16 +210,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         canvas_center = [size - xy / 2 for xy, size in zip(xy, size_xy)]
 
-        print(xy, size_xy)
-
         if not diagram_data.text is None:
             self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name))
             return
 
         color = diagram_data.color
 
-        print(color)
-        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0], size_xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(te_name, di_name))  # 塗りつぶし
+        print(xy, size_xy, "test")
+        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(te_name, di_name))  # 塗りつぶし
         return
 
 
