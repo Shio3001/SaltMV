@@ -1,9 +1,10 @@
-a = 0
-while a != "end":
-    b = int(input())
+import os
+# print(os.environ.get("USER"))
 
-    if b == "end":
-        break
+user = str(os.environ.get("USER"))
+# /System/Library/Fonts
+# /Library/Fonts
+# /Users/maruyama/Library/Fonts
+font_path = os.path.join("Users", user, "Library/Fonts")
 
-    a += b
-print(a)
+print(font_path)

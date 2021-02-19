@@ -18,13 +18,33 @@ class Storage:
 
         self.elements = elements
 
+        self.os_type = None
+
         this_os = str(os.name)  # windowsか判定
         if this_os == "nt":
             self.slash = "\\"
+            self.os_type = "w"
         else:
             self.slash = "/"
+            self.os_type = "ml"
 
         self.add_scene_elements()
+
+    def get_font_path(self):
+
+        font_path = {}
+
+        if self.os_type == "ml":
+            font_path["system"] = "/System/Library/Fonts"
+            font_path["library"] = "/Library/Fonts"
+            font_path["user"] = os.path.join("/Users", self.get_user(), "Library/Fonts")
+        # "/System/Library/Fonts"
+        # /Library/Fonts
+        # /Users/maruyama/Library/Fonts
+        return font_path
+
+    def get_user(self):
+        return os.environ.get("USER")
 
     def set_operation(self, send_operation):
         self.operation = send_operation

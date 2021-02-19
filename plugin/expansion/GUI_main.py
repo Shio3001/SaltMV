@@ -11,10 +11,6 @@ class InitialValue:
     def __init__(self, data):
         self.data = data
         self.operation = self.data.operation
-        #self.all_elements = self.data.all_elements
-        #self.elements = self.data.elements
-        self.tk = self.data.tk
-
         self.UI_parts = self.data.UI_parts  # パーツひとつひとつのデータ
         # self.UI_operation = self.data.UI_operation  # パーツを整形するためのデータ
 

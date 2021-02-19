@@ -2,29 +2,17 @@ class parts:
     def __init__(self):
         print("")
 
-    def UI_set(self, UI_operation):
-        data = UI_operation
+    def UI_set(self, data):
+        data.new_territory("main")
+        data.edit_territory_position("main", x=100, y=100)
+        data.edit_territory_size("main", x=100, y=100)
+        data.new_diagram("main", "0")
+        data.edit_diagram_fill("main", "0", True)
+        data.edit_diagram_color("main", "0", "#00ff00")
+        data.edit_diagram_text("main", "0", "これはボタン")
 
-        data.new_territory("a")
-        data.edit_territory_size("a", x=640, y=70)
-        data.edit_territory_position("a", x=20, y=20)
+        data.territory_draw("main")
 
-        # data.edit_view_color("a1", color="#808080")
+        data.add_territory_event("main", "Button-1", data.event_not_func)
 
-        """
-        data.edit_view_new("a")
-        data.edit_view_fill("a", True)
-
-        data.edit_canvas_text(text="これはてすと")
-        data.edit_canvas_position(width_position=100, height_position=200)
-        data.edit_canvas_size(width_size=100, height_size=300)
-        data.edit_view_color("a", color="#0000ff")
-
-        data.canvas_for_event(processing=data.processing, user_event=data.user_event)
-        """
-        # data.set_mouse_motion(True)
-        # data.set_cursor("none")
-
-        print("追加")
-
-        return data  # ボタンのベースを生成
+        return data
