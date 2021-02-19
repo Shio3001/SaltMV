@@ -15,10 +15,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.common_control = common_control
         self.tk = tk
 
-        print("UI生成")
+        # print("UI生成")
+
+    def event_not_func(self, event):
+        print("テストイベント")
 
     def new_territory(self, name):
         self.canvas_data.territory[name] = TerritoryData()
+
+        self.new_diagram(name, "base")
+        self.edit_diagram_fill(name, "base", True)
+        self.edit_diagram_color(name, "base")
 
     def del_territory(self, name):
         del self.canvas_data.territory[name]
@@ -76,10 +83,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         di_name_list = []
 
         for di_name in self.canvas_data.territory[te_name].diagram.keys():
-            print(di_name, "あああああああああ")
-            print(te_name, di_name, key, func)
             new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), func, "+")
-            print("new_bind", self.common_control.get_tag_name(key, func), new_bind_id, di_name)
             bind_id_list.append(new_bind_id)
             di_name_list.append(di_name)
 
@@ -89,7 +93,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_id = self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)][2]
         di_name = self.canvas_data.territory[te_name].event[self.common_control.get_tag_name(key, func)][3]
 
-        print("bind", bind_id)
+        #print("bind", bind_id)
         for d, b in zip(di_name, bind_id):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, d), "<{0}>".format(key), b)
 
@@ -114,7 +118,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         a = self.common_control.get_tag_name(te_name, di_name)
         bind_id = self.canvas_data.canvas.tag_bind(a, "<{0}>".format(key), func, "+")
 
-        print(bind_id)
+        # print(bind_id)
 
         self.canvas_data.territory[te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id]
 
@@ -122,7 +126,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[te_name].diagram[di_name].event[bind_name][2]
         self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(key), bind_id)
-        print("tag unbind")
+        #print("tag unbind")
         del self.canvas_data.territory[te_name].diagram[di_name].event[bind_name]
 
     def all_add_diagram_event(self, te_name, di_name):
@@ -132,7 +136,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def all_del_diagram_event(self, te_name, di_name):  # canvasの再生成時の復元
         for k, f in zip(self.canvas_data.territory[te_name].diagram[di_name].event.keys(), self.canvas_data.territory[te_name].diagram[di_name].event.values()):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(te_name, di_name), "<{0}>".format(f[0]), f[2])
-            print(self.canvas_data.territory[te_name].diagram[di_name].event[k], f)
+            #print(self.canvas_data.territory[te_name].diagram[di_name].event[k], f)
 
         self.canvas_data.territory[te_name].diagram[di_name].event = {}
 
@@ -146,7 +150,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             tag = self.common_control.get_tag_name(te_name, di_name)
 
-            print(tag, move)
+            #print(tag, move)
             if move == True:
                 self.canvas_data.canvas.tag_raise(tag)
 
@@ -187,7 +191,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 xy[i] = territory_data.position[i]
                 size_xy[i] = territory_data.size[i]
 
-                print("座標全選択")
+                # print("座標全選択")
 
             else:
                 xy[i] = territory_data.position[i] + diagram_data.position[i]
@@ -197,27 +201,29 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             if xy[i] < territory_data.blank_space[i]:
                 difference = territory_data.blank_space[i] - xy[i]
-                print("左上減算 : {0}".format(difference))
+                #print("左上減算 : {0}".format(difference))
 
                 xy[i] += difference
                 size_xy[i] -= difference
 
             if xy[i] + size_xy[i] > territory_data.position[i] + territory_data.size[i] - territory_data.blank_space[i]:
                 difference = (territory_data.position[i] + territory_data.size[i] - territory_data.blank_space[i]) - (xy[i] + size_xy[i])
-                print("右下減算 : {0}".format(difference))
+                #print("右下減算 : {0}".format(difference))
 
                 size_xy[i] += difference
 
-        canvas_center = [size - xy / 2 for xy, size in zip(xy, size_xy)]
+        canvas_center = [xy + (size / 2) for xy, size in zip(xy, size_xy)]
 
-        if not diagram_data.text is None:
-            self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name))
-            return
+        print("座標 : {0} サイズ : {1} 中央 : {2}".format(xy, size_xy, canvas_center))
 
         color = diagram_data.color
 
-        print(xy, size_xy, "test")
+        #print(xy, size_xy, "test")
         self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(te_name, di_name))  # 塗りつぶし
+
+        if not diagram_data.text is None:
+            self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
+
         return
 
 
@@ -235,17 +241,15 @@ class DiagramData:
     def __init__(self):
         self.size = [0, 0]
         self.position = [0, 0]
-        self.text = None
+
         self.color = ""
         self.fill = False
 
+        self.text = None
+        self.font_size = 0
+        self.font_type = ""
+
         self.event = {}
-
-    def event_link(self):
-        pass
-
-    def set_color(self, color):
-        self.color = color
 
 
 class TextBoxData:

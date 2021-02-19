@@ -68,7 +68,7 @@ class SendWindowData:  # window生成のためのデータ
 
     def edit_canvas_size(self, name, x=None, y=None):
         self.canvas_data[name].size = self.common_control.xy_compilation(self.canvas_data[name].size, x=x, y=y)
-        print("ペイント", self.canvas_data[name].size)
+        #print("ペイント", self.canvas_data[name].size)
         self.canvas_data[name].canvas.config(width=self.canvas_data[name].size[0])
         self.canvas_data[name].canvas.config(height=self.canvas_data[name].size[1])
 
@@ -99,7 +99,7 @@ class SendWindowData:  # window生成のためのデータ
     def all_del_canvas_event(self, name):  # canvasの再生成時の復元
         for k, f in zip(self.canvas_data[name].event.keys(), self.canvas_data[name].event.values()):
             self.canvas_data[name].canvas.unbind("<{0}>".format(f[0]), f[2])
-            print(self.canvas_data[name].event[k], f)
+            #print(self.canvas_data[name].event[k], f)
 
         self.canvas_data[name].event = {}
 
@@ -144,10 +144,10 @@ class SendWindowData:  # window生成のためのデータ
                     main_bar = content
                 elif i % 2 == 0:
                     bar_prg.append(content)
-                    # print("bar偶数情報", content, i)
+                    # #print("bar偶数情報", content, i)
                 elif (i + 1) % 2 == 0:
                     bar_name.append(content)
-                    # print("bar奇数情報", content, i)
+                    # #print("bar奇数情報", content, i)
 
             pull_down = tk.Menu(window_menubar, tearoff=0)
 
@@ -176,7 +176,4 @@ class CanvasData:
 
         self.event = {}
 
-        print(self.canvas)
-
-    def event_link(self):
-        pass
+        # print(self.canvas)
