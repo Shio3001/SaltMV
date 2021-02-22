@@ -19,6 +19,8 @@ class InitialValue:
         # shape.append(None)
         #shape[0] = self.data.new_parts("timeline", parts_name="shape")
         button = self.data.new_parts("timeline", parts_name="button")
+        button.edit_territory_position("main", x=500, y=500)
+        button.territory_draw("main")
 
         return self.data
 

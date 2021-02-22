@@ -26,10 +26,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.new_diagram(name, "base")
         self.edit_diagram_fill(name, "base", True)
-        self.edit_diagram_color(name, "base")
+        self.edit_diagram_color(name, "base", "#00ffff")
 
     def del_territory(self, name):
         del self.canvas_data.territory[name]
+
+        self.territory_draw(name, te_del=True)
 
     def edit_territory_size(self, name, x=None, y=None):
         self.canvas_data.territory[name].size = self.common_control.xy_compilation(self.canvas_data.territory[name].size, x=x, y=y)
@@ -43,10 +45,20 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     # 以下diagram
 
-    def new_diagram(self, te_name, di_name):
-        self.canvas_data.territory[te_name].diagram[di_name] = DiagramData()
+    def new_diagram(self, te_name, di_name, diagram_type=None):
+        if diagram_type is None:
+            self.canvas_data.territory[te_name].diagram[di_name] = DiagramData()
+
+        if diagram_type == "text":
+            self.canvas_data.territory[te_name].diagram[di_name] = DiagramTextData()
+
+        print(self.canvas_data.territory[te_name].diagram)
+
+    # def new_diagram_text(self, te_name, di_name):
+    #    self.canvas_data.territory[te_name].diagram[di_name] = DiagramTextData()
 
     def del_diagram(self, te_name, di_name):
+        self.diagram_draw(te_name, di_name, di_del=True)
         del self.canvas_data.territory[te_name].diagram[di_name]
 
     def new_textbox(self, te_name, di_name):
@@ -59,10 +71,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[te_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].position, x=x, y=y)
 
     def edit_diagram_fill(self, te_name, di_name, select):
+
         if select != True and select != False:
             self.operation["error"].action(message="TrueとFalse以外入れるなあほ")
 
         self.canvas_data.territory[te_name].diagram[di_name].fill = select
+
+    def edit_diagram_text_center(self, te_name, di_name, xy, select):
+        # if
+        self.operation["error"].action(message="これテキスト用じゃないぞあほ")
 
     def edit_diagram_color(self, te_name, di_name, color=None):
         if color is None or not color[0] == "#":
@@ -177,55 +194,72 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.tag_lower(tag, target)
             return
 
-    def territory_draw(self, te_name):
+    def territory_draw(self, te_name, te_del=False):
         for k in self.canvas_data.territory[te_name].diagram.keys():
-            self.diagram_draw(te_name, k)
+            self.diagram_draw(te_name, k, te_del)
 
-    def diagram_draw(self, te_name, di_name):
+    # def get_diagram_name(self):
+
+    def diagram_draw(self, te_name, di_name, di_del=False):
         territory_data = self.canvas_data.territory[te_name]
         diagram_data = self.canvas_data.territory[te_name].diagram[di_name]
 
+        if di_del:
+            self.canvas_data.canvas.delete(self, self.common_control.get_tag_name(te_name, di_name))
+            diagram_data.draw_tag = False
+            return
+
+        diagram_name = str(diagram_data.__class__.__name__)
+
+        if diagram_name == "DiagramData":
+            self.diagram_shape_draw(territory_data, diagram_data, te_name, di_name)
+
+        if diagram_name == "DiagramTextData":
+            self.diagram_text_draw(territory_data, diagram_data, te_name, di_name)
+
+        if diagram_name == "TextBoxData":
+            pass
+
+        diagram_data.draw_tag = True
+        return
+
+    def diagram_shape_draw(self, territory_data, diagram_data, te_name, di_name):
         xy, size_xy = [0, 0], [0, 0]  # 領域基準
+
+        color = diagram_data.color
 
         for i in range(2):
             if diagram_data.fill:  # 座標の計算
                 xy[i] = territory_data.position[i]
                 size_xy[i] = territory_data.size[i]
 
-                # print("座標全選択")
-
             else:
                 xy[i] = territory_data.position[i] + diagram_data.position[i]
                 size_xy[i] = diagram_data.size[i]
 
-            # 左側が図形ー右側が余白反映
+        print("shape")
+        if diagram_data.draw_tag:
+            self.canvas_data.canvas.coords(self.common_control.get_tag_name(te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
+        if not diagram_data.draw_tag:
+            self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(te_name, di_name))  # 塗りつぶし
 
-            if xy[i] < territory_data.blank_space[i]:
-                difference = territory_data.blank_space[i] - xy[i]
-                #print("左上減算 : {0}".format(difference))
+        diagram_data.draw_tag = True
 
-                xy[i] += difference
-                size_xy[i] -= difference
+    def diagram_text_draw(self, territory_data, diagram_data, te_name, di_name):
+        xy, size_xy = [0, 0], [0, 0]  # 領域基準
+        for i in range(2):
+            if diagram_data.center[i]:
+                xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
+            else:
+                xy[i] = territory_data.position[i] + diagram_data.position[i] + (territory_data.size[i] / 2)
 
-            if xy[i] + size_xy[i] > territory_data.position[i] + territory_data.size[i] - territory_data.blank_space[i]:
-                difference = (territory_data.position[i] + territory_data.size[i] - territory_data.blank_space[i]) - (xy[i] + size_xy[i])
-                #print("右下減算 : {0}".format(difference))
+        print("text")
+        if diagram_data.draw_tag:
+            self.canvas_data.canvas.moveto(self.common_control.get_tag_name(te_name, di_name), xy[0], xy[1])
+        if not diagram_data.draw_tag:
+            self.canvas_data.canvas.create_text(xy[0], xy[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
 
-                size_xy[i] += difference
-
-        canvas_center = [xy + (size / 2) for xy, size in zip(xy, size_xy)]
-
-        print("座標 : {0} サイズ : {1} 中央 : {2}".format(xy, size_xy, canvas_center))
-
-        color = diagram_data.color
-
-        #print(xy, size_xy, "test")
-        self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(te_name, di_name))  # 塗りつぶし
-
-        if not diagram_data.text is None:
-            self.canvas_data.canvas.create_text(canvas_center[0], canvas_center[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
-
-        return
+        diagram_data.draw_tag = True
 
 
 class TerritoryData:
@@ -238,22 +272,27 @@ class TerritoryData:
         self.blank_space = [0, 0]
 
 
-class DiagramData:
+class DiagramBase:  # 指定不可
+    size = [0, 0]
+    position = [0, 0]
+    color = None
+    fill = False
+    draw_tag = False
+
+
+class DiagramData(DiagramBase):
     def __init__(self):
-        self.size = [0, 0]
-        self.position = [0, 0]
-
-        self.color = ""
-        self.fill = False
-
-        self.text = None
-        self.font_size = 0
-        self.font_type = ""
-
         self.event = {}
 
 
-class TextBoxData:
+class DiagramTextData(DiagramBase):
+    def __init__(self):
+        self.text = ""
+        self.font_size = 0
+        self.font_type = None
+        self.center = [False, False]
+
+
+class TextBoxData(DiagramBase):
     def __init__(self, territory):
-        self.position = [0, 0]
         self.text = ""
