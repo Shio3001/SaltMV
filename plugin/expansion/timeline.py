@@ -15,11 +15,8 @@ class InitialValue:
         self.data.edit_canvas_position("timeline", x=0, y=0)
         self.data.window_title_set("タイムライン")
 
-        #shape = []
-        # shape.append(None)
-        #shape[0] = self.data.new_parts("timeline", parts_name="shape")
         button = self.data.new_parts("timeline", parts_name="button")
-        button.edit_territory_position("main", x=500, y=500)
+        button.edit_territory_position("main", x=200, y=200)
         button.territory_draw("main")
 
         return self.data

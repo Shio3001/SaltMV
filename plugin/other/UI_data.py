@@ -73,13 +73,22 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def edit_diagram_fill(self, te_name, di_name, select):
 
         if select != True and select != False:
-            self.operation["error"].action(message="TrueとFalse以外入れるなあほ")
+            self.operation["error"].action(message="TrueとFalse以外入れるな")
 
         self.canvas_data.territory[te_name].diagram[di_name].fill = select
 
     def edit_diagram_text_center(self, te_name, di_name, xy, select):
-        # if
-        self.operation["error"].action(message="これテキスト用じゃないぞあほ")
+        if not self.get_diagram_type(te_name, di_name, "DiagramTextData"):
+            self.operation["error"].action(message="これテキスト用じゃないぞ")
+
+        i = {"x": 0, "y": 1}
+        self.canvas_data.territory[te_name].diagram[di_name].center[i[xy]] = select
+
+    def edit_diagram_target(self, te_name, di_name, target_di_name):
+        if not target_di_name in self.canvas_data.territory[te_name].diagram.keys():
+            self.operation["error"].action(message="そのキーは存在しない")
+
+        self.canvas_data.territory[te_name].diagram[di_name].target = target_di_name
 
     def edit_diagram_color(self, te_name, di_name, color=None):
         if color is None or not color[0] == "#":
@@ -200,6 +209,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     # def get_diagram_name(self):
 
+    def get_diagram_type(self, te_name, di_name, data_type):
+        diagram_name = str(self.canvas_data.territory[te_name].diagram[di_name].__class__.__name__)
+
+        if diagram_name == data_type:
+            return True
+        else:
+            return False
+
     def diagram_draw(self, te_name, di_name, di_del=False):
         territory_data = self.canvas_data.territory[te_name]
         diagram_data = self.canvas_data.territory[te_name].diagram[di_name]
@@ -209,15 +226,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
             diagram_data.draw_tag = False
             return
 
-        diagram_name = str(diagram_data.__class__.__name__)
-
-        if diagram_name == "DiagramData":
+        if self.get_diagram_type(te_name, di_name, "DiagramData"):
             self.diagram_shape_draw(territory_data, diagram_data, te_name, di_name)
 
-        if diagram_name == "DiagramTextData":
+        if self.get_diagram_type(te_name, di_name, "DiagramTextData"):
             self.diagram_text_draw(territory_data, diagram_data, te_name, di_name)
 
-        if diagram_name == "TextBoxData":
+        if self.get_diagram_type(te_name, di_name, "TextBoxData"):
             pass
 
         diagram_data.draw_tag = True
@@ -248,7 +263,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def diagram_text_draw(self, territory_data, diagram_data, te_name, di_name):
         xy, size_xy = [0, 0], [0, 0]  # 領域基準
         for i in range(2):
-            if diagram_data.center[i]:
+            if not diagram_data.target is None:
+                diagram_target = territory_data.diagram[str(diagram_data.target)]
+
+                if diagram_target.fill:
+                    xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
+
+                else:
+                    xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
+
+                print("b")
+
+            elif diagram_data.center[i]:
                 xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
             else:
                 xy[i] = territory_data.position[i] + diagram_data.position[i] + (territory_data.size[i] / 2)
@@ -291,6 +317,8 @@ class DiagramTextData(DiagramBase):
         self.font_size = 0
         self.font_type = None
         self.center = [False, False]
+
+        self.target = None
 
 
 class TextBoxData(DiagramBase):
