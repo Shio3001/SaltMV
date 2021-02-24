@@ -39,7 +39,7 @@ class SendWindowData:  # window生成のためのデータ
         bind_id = self.window.bind("<{0}>".format(key), func, "+")
         self.window_event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id]
 
-    def del_windows_event(self, key, func):  # event
+    def del_window_event(self, key, func):  # event
         bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.window_event[bind_name][2]
         self.window.unbind("<{0}>".format(key), bind_id)
@@ -109,7 +109,11 @@ class SendWindowData:  # window生成のためのデータ
     #####################################################################################
 
     def new_parts(self, name, parts_name=None):
-        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.canvas_data[name], self.common_control, self.all_data, self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color))
+        window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event}
+        canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event}
+
+        new_parts_obj = self.UI_parts[parts_name].parts().UI_set(self.UI_auxiliary.SendUIData(self.window, self.canvas_data[name], self.common_control, self.all_data,
+                                                                                              self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color, window_event_data, canvas_event_data))
         return new_parts_obj
 
     def display_size_get(self):

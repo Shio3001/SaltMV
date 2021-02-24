@@ -22,7 +22,7 @@ class parts:
         data.edit_diagram_position("main", "1", x=50, y=50)
 
         #data.edit_diagram_text_center("main", "1", "x", True)
-        data.edit_diagram_target("main", "1", "0")
+        #data.edit_diagram_target("main", "1", "0")
 
         data.territory_draw("main")
 
@@ -31,7 +31,7 @@ class parts:
         def test(event):
             print(data.get_territory_contact("main"))
 
-        data.add_territory_event("main", "Button-1", test)
+        data.window_event_data["add"]("Button-1", test)
         # def
 
         return data

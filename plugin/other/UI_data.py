@@ -4,7 +4,7 @@ import inspect
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, canvas_data, common_control, all_data, all_UI_data, GUI_base_color, GUI_alpha_color):
+    def __init__(self, window, canvas_data, common_control, all_data, all_UI_data, GUI_base_color, GUI_alpha_color, window_event_data, canvas_event_data):
         self.window = window
         self.canvas_data = canvas_data
         self.all_data = all_data
@@ -14,6 +14,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.GUI_alpha_color = GUI_alpha_color
         self.common_control = common_control
         self.tk = tk
+
+        self.window_event_data = window_event_data
+        self.canvas_event_data = canvas_event_data
 
         # print("UI生成")
 
@@ -263,29 +266,20 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def diagram_text_draw(self, territory_data, diagram_data, te_name, di_name):
         xy, size_xy = [0, 0], [0, 0]  # 領域基準
         for i in range(2):
-            if not diagram_data.target is None and diagram_data.center[i]:  # ターゲット指定されている場合かつ中心になるよう設定さてる場合
-                diagram_target = territory_data.diagram[str(diagram_data.target)]
-
-                xy[i] = diagram_target.position[i] + territory_data.position[i] + (diagram_target.size[i] / 2)
-
-                print("t1")
-
-            elif not diagram_data.target is None:  # ターゲット指定されている場合
+            if not diagram_data.target is None:  # ターゲットが指定さてる場合
                 diagram_target = territory_data.diagram[str(diagram_data.target)]
                 xy[i] = diagram_target.position[i] + territory_data.position[i] + (diagram_target.size[i] / 2)
-
-                print("t2")
 
             elif diagram_data.center[i]:  # 中心になるよう設定さてる場合
-                pass
+                xy[i] = diagram_data.position[i] + (diagram_data.size[i] / 2) + territory_data.position[i]
 
             else:  # ターゲット指定されている場合
-                pass
+                xy[i] = diagram_data.position[i] + territory_data.position[i]
 
         print("text", xy, size_xy)
 
         if diagram_data.draw_tag:
-            _, text_size = self.get_diagram_position_size(te_name, di_name)
+            _, text_size = self.get_diagram_position_size(te_name, di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
             self.canvas_data.canvas.moveto(self.common_control.get_tag_name(te_name, di_name), xy[0] - (text_size[0] / 2), xy[1] - (text_size[1] / 2))
         if not diagram_data.draw_tag:
             self.canvas_data.canvas.create_text(xy[0], xy[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
@@ -294,8 +288,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def get_diagram_position_size(self, te_name, di_name):
         pos_size = self.canvas_data.canvas.bbox(self.common_control.get_tag_name(te_name, di_name))
-
-        print(pos_size)
 
         position = pos_size[0], pos_size[1]
         size = pos_size[2] - pos_size[0], pos_size[3] - pos_size[1]
