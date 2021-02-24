@@ -24,7 +24,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("テストイベント")
 
     def new_territory(self, name):
-
         self.canvas_data.territory[name] = TerritoryData()
 
         self.new_diagram(name, "base")
@@ -43,7 +42,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[name].position = self.common_control.xy_compilation(self.canvas_data.territory[name].position, x=x, y=y)
 
     def get_territory_contact(self, name):
-        mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[name])
+        pos, size = self.common_control.contact_detection(self.canvas_data.territory[name].position, self.canvas_data.territory[name].size)
+        mouse, territory_edge, territory_join = pos, size
         return mouse, territory_edge, territory_join
 
     # 以下diagram
@@ -103,7 +103,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[te_name].diagram[di_name].text = text
 
     def get_diagram_contact(self, te_name, di_name):
-        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(self.canvas_data.territory[te_name].diagram[di_name])
+        pos, size = self.get_diagram_position_size(te_name, di_name)
+        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(pos, size)
         return mouse, diagram_edge, diagram_join
 
     #####################################################################################
@@ -285,6 +286,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.create_text(xy[0], xy[1], text=diagram_data.text, tags=self.common_control.get_tag_name(te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
 
         diagram_data.draw_tag = True
+
+    # def get_territory_position_size(self,te_name):
+    #    position, size
 
     def get_diagram_position_size(self, te_name, di_name):
         pos_size = self.canvas_data.canvas.bbox(self.common_control.get_tag_name(te_name, di_name))

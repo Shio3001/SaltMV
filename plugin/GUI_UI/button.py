@@ -29,7 +29,7 @@ class parts:
         #data.add_territory_event("main", "Button-1", data.event_not_func)
 
         def test(event):
-            print(data.get_territory_contact("main"))
+            print(data.get_diagram_contact("main", "0"))
 
         data.window_event_data["add"]("Button-1", test)
         # def

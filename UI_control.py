@@ -31,21 +31,22 @@ class CommonControl:
 
         return mouse
 
-    def contact_detection(self, data):  # 辺に触れているか
+    def contact_detection(self, position, size):  # 辺に触れているか
         mouse = self.get_mouse_position()
+        #position, size = self.get_position_size(data)
 
         edge_detection = [[False, False], [False, False]]  # 辺に対する #x左,x右,y上,y下
         join_detection = [False, False, False]  # 中に対する #x , y, xy
 
         for i in range(2):
-            if (data.position[i] - permission) <= mouse[i] <= (data.position[i] + permission):
+            if (position[i] - permission) <= mouse[i] <= (position[i] + permission):
                 edge_detection[i][0] = True
 
-            if (data.position[i] + data.size[i] - permission) <= mouse[i] <= (data.position[i] + data.size[i] + permission):
+            if (position[i] + size[i] - permission) <= mouse[i] <= (position[i] + size[i] + permission):
                 edge_detection[i][1] = True
 
         for i in range(2):
-            if (data.position[i] - permission) <= mouse[i] <= (data.position[i] + data.size[i] + permission):
+            if (position[i] - permission) <= mouse[i] <= (position[i] + size[i] + permission):
                 join_detection[i] = True
 
         if join_detection[0] and join_detection[1]:
