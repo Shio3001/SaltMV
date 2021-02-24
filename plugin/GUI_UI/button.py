@@ -26,8 +26,12 @@ class parts:
 
         data.territory_draw("main")
 
-        data.add_territory_event("main", "Button-1", data.event_not_func)
+        #data.add_territory_event("main", "Button-1", data.event_not_func)
 
+        def test(event):
+            print(data.get_territory_contact("main"))
+
+        data.add_territory_event("main", "Button-1", test)
         # def
 
         return data
