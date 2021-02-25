@@ -31,7 +31,7 @@ class parts:
         def test(event):
             print(data.get_diagram_contact("main", "0"))
 
-        data.window_event_data["add"]("Button-1", test)
+        #data.window_event_data["add"]("Motion", test)
         # def
 
         return data

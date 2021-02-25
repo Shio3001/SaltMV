@@ -28,6 +28,9 @@ class Storage:
             self.slash = "/"
             self.os_type = "ml"
 
+        self.font_data = {}
+        self.read_font()
+
         self.add_scene_elements()
 
     def get_font_path(self):
@@ -42,6 +45,27 @@ class Storage:
         # /Library/Fonts
         # /Users/maruyama/Library/Fonts
         return font_path
+
+    def read_font(self):
+        font_path = self.get_font_path()
+
+        if self.os_type == "ml":
+            for k, kv in zip(font_path.keys(), font_path.values()):
+                font_file_name = os.listdir(kv)
+
+                print("{0}ファイル量 : {1}".format(k, len(font_file_name)))
+
+                for f in font_file_name:
+                    print(f)
+                    self.font_data[f] = os.path.join(kv, f)
+
+            # for k in ["system", "library", "user"]:
+            #    font_file = os.listdir(font_path[k])
+
+        # for v in font_file.values():
+        #    self.font_data.keys()
+
+        print(self.font_data)
 
     def get_user(self):
         return os.environ.get("USER")
@@ -127,7 +151,6 @@ class Storage:
             self.operation["log"].write("編集ファイルを開きました ファイルパス{0}".format(save_path))
 
         except:
-            # print("ファイルが存在しませんでした")
             self.operation["log"].write("編集ファイルが存在しませんでした")
             save_path = ""
 

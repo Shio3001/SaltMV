@@ -42,8 +42,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[name].position = self.common_control.xy_compilation(self.canvas_data.territory[name].position, x=x, y=y)
 
     def get_territory_contact(self, name):
-        pos, size = self.common_control.contact_detection(self.canvas_data.territory[name].position, self.canvas_data.territory[name].size)
-        mouse, territory_edge, territory_join = pos, size
+        mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[name].position, self.canvas_data.territory[name].size)
         return mouse, territory_edge, territory_join
 
     # 以下diagram
