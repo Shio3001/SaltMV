@@ -10,7 +10,7 @@ now_scene = 0  # 現在の操作シーン
 
 
 class Storage:
-    def __init__(self):
+    def __init__(self, main_path):
         self.app_name = "NankokuMovieMaker"
         self.extension = ".json"
 
@@ -19,6 +19,8 @@ class Storage:
         self.elements = elements
 
         self.os_type = ""
+
+        self.main_path = main_path
 
         this_os = str(os.name)  # windowsか判定
         if this_os == "nt":
@@ -57,7 +59,9 @@ class Storage:
 
                 for f in font_file_name:
                     print(f)
-                    self.font_data[f] = os.path.join(kv, f)
+
+                    path = os.path.relpath(kv, self.main_path)
+                    self.font_data[f] = os.path.join(path, f)
 
             # for k in ["system", "library", "user"]:
             #    font_file = os.listdir(font_path[k])

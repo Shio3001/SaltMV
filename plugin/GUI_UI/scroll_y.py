@@ -1,7 +1,6 @@
 class parts:
-    def UI_set(self, UI_operation):
-        data = UI_operation
+    def UI_set(self, data):
 
-        data = data.operation["plugin"]["other"]["scroll"].CentralRole().main(data, "y")
+        data = data.operation["plugin"]["other"]["scroll"].CentralRole().main(data, 1)
 
         return data

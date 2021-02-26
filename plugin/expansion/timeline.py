@@ -19,6 +19,8 @@ class InitialValue:
         button.edit_territory_position("main", x=200, y=200)
         button.territory_draw("main")
 
+        scroll = self.data.new_parts("timeline", parts_name="scroll_x")
+
         return self.data
 
 

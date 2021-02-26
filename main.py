@@ -24,8 +24,9 @@ from Internal_operation.rendering import rendering_main
 from Internal_operation.rendering import rendering_frame
 from Internal_operation.rendering import rendering_point
 
+now_path = os.getcwd()
 start_time = datetime.datetime.now()
-all_data = edit_data_control.Storage()
+all_data = edit_data_control.Storage(now_path)
 all_UI_data = UI_control
 
 operation = {}
@@ -41,9 +42,10 @@ operation["log"].stop(True)
 operation["log"].write("ログ起動")
 operation["error"] = error.ErrorAction(operation["log"])
 
-now_path = os.getcwd()
+
 py_path = (os.path.abspath(__file__)).replace('main.py', '')
 plugin_path = os.path.join(py_path.replace('main.py', ''), "plugin")
+
 
 operation["log"].write(now_path)
 operation["log"].write(py_path)
@@ -78,6 +80,8 @@ operation["log"].write(operation)
 #app_name = "NankokuMovieMaker"
 
 all_data.set_operation(operation)
+#all_data.main_path = now_path
+print(all_data.main_path)
 
 
 class CentralRole:
