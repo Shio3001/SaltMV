@@ -43,8 +43,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[name].position = self.common_control.xy_compilation(self.canvas_data.territory[name].position, x=x, y=y)
         return self.canvas_data.territory[name].position
 
-    def get_territory_contact(self, name):
-        mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[name].position, self.canvas_data.territory[name].size)
+    def get_territory_contact(self, name,del_mouse=False):
+        mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[name].position, self.canvas_data.territory[name].size,del_mouse)
         return mouse, territory_edge, territory_join
 
     # 以下diagram
@@ -107,9 +107,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def edit_diagram_text(self, te_name, di_name, text=None):
         self.canvas_data.territory[te_name].diagram[di_name].text = text
 
-    def get_diagram_contact(self, te_name, di_name):
+    def get_diagram_contact(self, te_name, di_name,del_mouse=False):
         pos, size = self.get_diagram_position_size(te_name, di_name)
-        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(pos, size)
+        mouse, diagram_edge, diagram_join = self.common_control.contact_detection(pos, size,del_mouse)
         return mouse, diagram_edge, diagram_join
 
     #####################################################################################
