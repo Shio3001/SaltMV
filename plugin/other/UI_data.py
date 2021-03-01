@@ -56,6 +56,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if diagram_type == "text":
             self.canvas_data.territory[te_name].diagram[di_name] = DiagramTextData()
 
+        if diagram_type == "textbox":
+            self.canvas_data.territory[te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
+
         print(self.canvas_data.territory[te_name].diagram)
 
     # def new_diagram_text(self, te_name, di_name):
@@ -65,8 +68,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.diagram_draw(te_name, di_name, di_del=True)
         del self.canvas_data.territory[te_name].diagram[di_name]
 
-    def new_textbox(self, te_name, di_name):
-        self.canvas_data.territory[te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
+    # def new_textbox(self, te_name, di_name):
+    #    self.canvas_data.territory[te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
 
     def edit_diagram_size(self, te_name, di_name, x=None, y=None):
         self.canvas_data.territory[te_name].diagram[di_name].size = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].size, x=x, y=y)
