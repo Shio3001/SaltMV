@@ -1,9 +1,13 @@
-a = 0
-while a != "end":
-    b = int(input())
+import tkinter as tk
 
-    if b == "end":
-        break
 
-    a += b
-print(a)
+def test1(event):
+    print(event.delta)
+
+
+window = tk.Tk()
+
+window.bind("<{0}>".format("MouseWheel"), test1, "+")
+
+
+window.mainloop()
