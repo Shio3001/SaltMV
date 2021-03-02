@@ -81,10 +81,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         return self.canvas_data.territory[te_name].diagram[di_name].position
 
-    def edit_diagram_fill(self, te_name, di_name, select):
+    def edit_diagram_fill(self, te_name, di_name, select, direction=None):
 
         if select != True and select != False:
             self.operation["error"].action(message="TrueとFalse以外入れるな")
+
+        if not direction is None and (direction == 0 or direction == 1):
+            self.canvas_data.territory[te_name].diagram[di_name].fill_direction[direction] = select
+            return
 
         self.canvas_data.territory[te_name].diagram[di_name].fill = select
 
@@ -260,6 +264,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 xy[i] = territory_data.position[i]
                 size_xy[i] = territory_data.size[i]
 
+            elif diagram_data.fill_direction[i]:
+                xy[i] = territory_data.position[i]
+                size_xy[i] = territory_data.size[i]
+
             else:
                 xy[i] = territory_data.position[i] + diagram_data.position[i]
                 size_xy[i] = diagram_data.size[i]
@@ -322,6 +330,7 @@ class DiagramBase:  # 指定不可
     position = [0, 0]
     color = None
     fill = False
+    fill_direction = [False, False]
     draw_tag = False
 
 
