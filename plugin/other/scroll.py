@@ -75,7 +75,7 @@ class CentralRole:
 
             data.territory_draw("main")
 
-        def edit_percent_movement(position):  # 割合で設定する
+        def __edit_percent_movement(position):  # 割合で設定する
             print(position)
 
             sta_xy = [None, None]
@@ -143,7 +143,7 @@ class CentralRole:
 
                 print(now_mov, pos)
 
-                edit_percent_movement(pos)
+                __edit_percent_movement(pos)
 
                 percent_calculation()
 
@@ -166,6 +166,6 @@ class CentralRole:
 
         data.percent_calculation = percent_calculation
         data.edit_percent_percentage = edit_percent_percentage
-        data.edit_percent_movement = edit_percent_movement
+        #data.edit_percent_movement = edit_percent_movement
 
         return data
