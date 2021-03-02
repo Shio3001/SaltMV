@@ -10,7 +10,8 @@ class CentralRole:
         data.edit_diagram_fill("main", "back", True)
         data.edit_diagram_fill("main", "view", False)
 
-        data.edit_diagram_color("main", "view", "#00ffff")
+        data.edit_diagram_color("main", "back", "#555555")
+        data.edit_diagram_color("main", "view", "#00cccc")
 
         data.edit_diagram_fill("main", "view", True, direction=1-data.direction)
 
@@ -38,9 +39,28 @@ class CentralRole:
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-        def get_percent(self):
-            print(data.percent_range)
+        def percent_calculation():
+
+            data.drawing_area[0] = data.edit_territory_position("main")[data.direction] + data.brack_space
+            data.drawing_area[1] = data.edit_territory_position("main")[data.direction] + data.edit_territory_size("main")[data.direction] - data.brack_space
+
+            data.drawing_area_length = data.drawing_area[1] - data.drawing_area[0]
+
+            data.pos_drawing_area[0] = data.drawing_area[0]
+            data.pos_drawing_area[1] = data.drawing_area[1] - (data.drawing_area_length * data.percent_range[1])
+
+            print(data.drawing_area, data.pos_drawing_area, data.percent_range)
             return data.percent_range
+
+        def stopper():
+
+            if data.percent_range[0] < 0:
+                edit_percent_percentage(position=0)
+
+            if data.percent_range[0] > 1:
+                edit_percent_percentage(position=1)
+
+            return
 
         def eidt_size(x=None, y=None, space=None):
 
@@ -49,8 +69,7 @@ class CentralRole:
 
             data.edit_territory_size("main", x=x, y=y)
 
-            data.drawing_area[0] = data.edit_territory_position("main")[data.direction] + data.brack_space
-            data.drawing_area[1] = data.edit_territory_position("main")[data.direction] + data.edit_territory_size("main")[data.direction] - data.brack_space
+            percent_calculation()
 
             edit_percent_percentage()
 
@@ -65,20 +84,22 @@ class CentralRole:
             data.edit_diagram_position("main", "view", x=sta_xy[0], y=sta_xy[1])
             data.territory_draw("main")
 
-            data.percent_range[0] = (position - data.drawing_area[0]) / (data.drawing_area[1] - data.drawing_area[0])
+            percent_calculation()
+
+            data.percent_range[0] = (position - data.pos_drawing_area[0]) / (data.pos_drawing_area[1] - data.pos_drawing_area[0])
+            stopper()
 
         def edit_percent_percentage(position=None, size=None):  # 割合で設定する
             data.percent_range = data.common_control.xy_compilation(data.percent_range, x=position, y=size)
 
-            data.pos_drawing_area[0] = data.drawing_area[0]
-            data.pos_drawing_area[1] = data.drawing_area[1] * (1 - data.percent_range[1])
+            percent_calculation()
 
             print(data.drawing_area, data.pos_drawing_area)
 
             pos_length = data.pos_drawing_area[1] - data.pos_drawing_area[0]
             size_length = data.drawing_area[1] - data.drawing_area[0]
 
-            sta = pos_length * data.percent_range[0]
+            sta = pos_length * data.percent_range[0] + data.pos_drawing_area[0]
             end = size_length * data.percent_range[1]
 
             sta_xy = [None, None]
@@ -91,6 +112,8 @@ class CentralRole:
 
             data.edit_diagram_position("main", "view", x=sta_xy[0], y=sta_xy[1])
             data.edit_diagram_size("main", "view", x=end_xy[0], y=end_xy[1])
+
+            stopper()
 
             # print(data.pos_drawing_area)
 
@@ -122,6 +145,8 @@ class CentralRole:
 
                 edit_percent_movement(pos)
 
+                percent_calculation()
+
         def click_end(event):
 
             data.click_flag = False
@@ -131,15 +156,15 @@ class CentralRole:
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-        eidt_size(x=20, y=400)
-        edit_percent_percentage(position=0.25, size=0.25)
+        eidt_size(x=20, y=400, space=10)
+        edit_percent_percentage(position=0.00, size=0.25)
         data.add_diagram_event("main", "view", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_mov)
         data.add_diagram_event("main", "view", "ButtonRelease-1", click_end)
 
         data.territory_draw("main")
 
-        data.get_percent = get_percent
+        data.percent_calculation = percent_calculation
         data.edit_percent_percentage = edit_percent_percentage
         data.edit_percent_movement = edit_percent_movement
 
