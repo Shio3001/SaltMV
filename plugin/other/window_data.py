@@ -15,6 +15,8 @@ class SendWindowData:  # window生成のためのデータ
         self.GUI_base_color = "#1a1a1a"
         self.GUI_alpha_color = "#000000"
 
+        self.font_data = all_data.font_data
+
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
         else:
@@ -117,7 +119,7 @@ class SendWindowData:  # window生成のためのデータ
         canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event}
 
         new_UIdata = self.UI_auxiliary.SendUIData(self.window, self.canvas_data[name], self.common_control, self.all_data,
-                                                  self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color, window_event_data, canvas_event_data, territory_name)
+                                                  self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color, window_event_data, canvas_event_data, territory_name, self.font_data)
 
         # new_UIdata.new_territory()
 

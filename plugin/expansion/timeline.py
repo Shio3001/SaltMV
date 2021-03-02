@@ -22,7 +22,7 @@ class InitialValue:
         button.territory_draw()
 
         # print(button.canvas_data.territory["main"].diagram)
-        scroll = self.data.new_parts("timeline", "buttonpppp", parts_name="scroll_x")
+        scroll = self.data.new_parts("timeline", "buttonppp", parts_name="scroll_x")
 
         def scroll_edit(self):
             a = random.random()
