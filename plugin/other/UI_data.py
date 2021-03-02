@@ -37,11 +37,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def edit_territory_size(self, name, x=None, y=None):
         self.canvas_data.territory[name].size = self.common_control.xy_compilation(self.canvas_data.territory[name].size, x=x, y=y)
-        return self.canvas_data.territory[name].size
+        return copy.deepcopy(self.canvas_data.territory[name].size)
 
     def edit_territory_position(self, name, x=None, y=None):
         self.canvas_data.territory[name].position = self.common_control.xy_compilation(self.canvas_data.territory[name].position, x=x, y=y)
-        return self.canvas_data.territory[name].position
+        return copy.deepcopy(self.canvas_data.territory[name].position)
 
     def get_territory_contact(self, name, del_mouse=False):
         mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[name].position, self.canvas_data.territory[name].size, del_mouse)
@@ -74,12 +74,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def edit_diagram_size(self, te_name, di_name, x=None, y=None):
         self.canvas_data.territory[te_name].diagram[di_name].size = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].size, x=x, y=y)
 
-        return self.canvas_data.territory[te_name].diagram[di_name].size
+        return copy.deepcopy(self.canvas_data.territory[te_name].diagram[di_name].size)
 
     def edit_diagram_position(self, te_name, di_name, x=None, y=None):
         self.canvas_data.territory[te_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[te_name].diagram[di_name].position, x=x, y=y)
 
-        return self.canvas_data.territory[te_name].diagram[di_name].position
+        return copy.deepcopy(self.canvas_data.territory[te_name].diagram[di_name].position)
 
     def edit_diagram_fill(self, te_name, di_name, select, direction=None):
 

@@ -38,6 +38,10 @@ class CentralRole:
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+        def get_percent(self):
+            print(data.percent_range)
+            return data.percent_range
+
         def eidt_size(x=None, y=None, space=None):
 
             if not space is None:
@@ -48,11 +52,22 @@ class CentralRole:
             data.drawing_area[0] = data.edit_territory_position("main")[data.direction] + data.brack_space
             data.drawing_area[1] = data.edit_territory_position("main")[data.direction] + data.edit_territory_size("main")[data.direction] - data.brack_space
 
-            edit_percent()
+            edit_percent_percentage()
 
             data.territory_draw("main")
 
-        def edit_percent(position=None, size=None):
+        def edit_percent_movement(position):  # 割合で設定する
+            print(position)
+
+            sta_xy = [None, None]
+            sta_xy[data.direction] = position
+
+            data.edit_diagram_position("main", "view", x=sta_xy[0], y=sta_xy[1])
+            data.territory_draw("main")
+
+            data.percent_range[0] = (position - data.drawing_area[0]) / (data.drawing_area[1] - data.drawing_area[0])
+
+        def edit_percent_percentage(position=None, size=None):  # 割合で設定する
             data.percent_range = data.common_control.xy_compilation(data.percent_range, x=position, y=size)
 
             data.pos_drawing_area[0] = data.drawing_area[0]
@@ -89,6 +104,7 @@ class CentralRole:
             data.click_flag = True
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("main", "view")
             data.click_distance = data.mouse_sta[data.direction] - data.drawing_area[0]
+            data.view_pos_sta = data.edit_diagram_position("main", "view")
             # クリックした場所から,パーセント起点まで、どれだけの距離があるかどうかを計算
             # 計算の基準は描画開始地点  data.drawing_area[0] : "# 配列0番 : territory起点からパーセント起点まで 実数表示!" です
             # つまりterritory起点+spaceからここまでどのぐらいの距離があるかどうかを判定します
@@ -98,9 +114,13 @@ class CentralRole:
                 return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("main", "view")
             if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                now_pos = (now_mouse[data.direction] - data.drawing_area[0]) / (data.drawing_area[1] - data.drawing_area[0])
+                now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
-                edit_percent(position=now_pos)
+                pos = data.view_pos_sta[data.direction] + now_mov
+
+                print(now_mov, pos)
+
+                edit_percent_movement(pos)
 
         def click_end(event):
 
@@ -112,11 +132,15 @@ class CentralRole:
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         eidt_size(x=20, y=400)
-        edit_percent(position=0.25, size=0.25)
+        edit_percent_percentage(position=0.25, size=0.25)
         data.add_diagram_event("main", "view", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_mov)
         data.add_diagram_event("main", "view", "ButtonRelease-1", click_end)
 
         data.territory_draw("main")
+
+        data.get_percent = get_percent
+        data.edit_percent_percentage = edit_percent_percentage
+        data.edit_percent_movement = edit_percent_movement
 
         return data
