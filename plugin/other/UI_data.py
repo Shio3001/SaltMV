@@ -36,9 +36,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.edit_diagram_color("base", "#111111")
 
     def del_territory(self):
-        del self.canvas_data.territory[self.te_name]
-
         self.territory_draw(te_del=True)
+
+        del self.canvas_data.territory[self.te_name]
 
     def edit_territory_size(self, x=None, y=None):
         self.canvas_data.territory[self.te_name].size = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].size, x=x, y=y)

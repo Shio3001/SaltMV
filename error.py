@@ -9,7 +9,7 @@ class ErrorAction:
     def action(self, message=None):
         func_name = inspect.stack()[1].function
 
-        out = "error : {0} {1} ".format(func_name, message)
+        out = "error : 発生関数 : {0} / {1} ".format(func_name, message)
 
         self.log.write(out)
         self.log.write("error 強制 終了")
