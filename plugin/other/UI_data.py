@@ -32,6 +32,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("テストイベント")
 
     def new_territory(self):
+
+        if self.te_name in self.canvas_data.territory.keys():
+            self.operation["error"].action(message="テリトリーネーム(UIパーツタグ): {0} は すでに使用されています".format(self.te_name))
+
         self.canvas_data.territory[self.te_name] = TerritoryData()
 
         self.new_diagram("base")
@@ -58,6 +62,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
     # 以下diagram
 
     def new_diagram(self,  di_name, diagram_type=None):
+
+        if di_name in self.canvas_data.territory[self.te_name].diagram.keys():
+            self.operation["error"].action(message="ダイアグラムネーム(UI構成タグ): {0} は すでに使用されています".format(di_name))
+
         if diagram_type is None:
             self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramData()
 
@@ -69,15 +77,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         print(self.canvas_data.territory[self.te_name].diagram)
 
-    # def new_diagram_text(self,  di_name):
-    #    self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramTextData()
-
     def del_diagram(self,  di_name):
         self.diagram_draw(di_name, di_del=True)
         del self.canvas_data.territory[self.te_name].diagram[di_name]
-
-    # def new_textbox(self,  di_name):
-    #    self.canvas_data.territory[self.te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
 
     def edit_diagram_size(self,  di_name, x=None, y=None):
         self.canvas_data.territory[self.te_name].diagram[di_name].size = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].diagram[di_name].size, x=x, y=y)
@@ -99,25 +101,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
             return
 
         self.canvas_data.territory[self.te_name].diagram[di_name].fill[direction] = select
-
-        # if not direction is None and (direction == 0 or direction == 1):
-        #    self.canvas_data.territory[self.te_name].diagram[di_name].fill[direction] = select
-        #    return
-
-    """
-    def edit_diagram_text_center(self,  di_name, xy, select):
-        if not self.get_diagram_type(di_name, "DiagramTextData"):
-            self.operation["error"].action(message="これテキスト用じゃないぞ")
-
-        i = {"x": 0, "y": 1}
-        self.canvas_data.territory[self.te_name].diagram[di_name].center[i[xy]] = select
-
-    def edit_diagram_target(self,  di_name, target_di_name):
-        if not target_di_name in self.canvas_data.territory[self.te_name].diagram.keys():
-            self.operation["error"].action(message="そのキーは存在しない")
-
-        self.canvas_data.territory[self.te_name].diagram[di_name].target = target_di_name
-    """
 
     def edit_diagram_color(self,  di_name, color=None):
         if color is None or not color[0] == "#":
@@ -234,8 +217,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         for k in self.canvas_data.territory[self.te_name].diagram.keys():
             self.diagram_draw(k, te_del)
 
-    # def get_diagram_name(self):
-
     def get_diagram_type(self,  di_name, data_type):
         diagram_name = str(self.canvas_data.territory[self.te_name].diagram[di_name].__class__.__name__)
 
@@ -336,9 +317,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         diagram_data.draw_tag = True
 
-    # def get_territory_position_size(self,te_name):
-    #    position, size
-
     def get_diagram_position_size(self,  di_name):
         pos_size = self.canvas_data.canvas.bbox(self.common_control.get_tag_name(self.te_name, di_name))
 
@@ -375,32 +353,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not target is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].target = target
 
-        """
-
-        data = [None, None]
-
-        data[0] = [
-            text,
-            font_size,
-            font_type,
-            x_center,
-            y_center,
-            [center, center],
-            target
-        ]
-
-        data[1] = [
-            self.canvas_data.territory[self.te_name].diagram[di_name].text
-            self.canvas_data.territory[self.te_name].diagram[di_name].font_size,
-            self.canvas_data.territory[self.te_name].diagram[di_name].font_type,
-            self.canvas_data.territory[self.te_name].diagram[di_name].center[0],
-            self.canvas_data.territory[self.te_name].diagram[di_name].center[1],
-            self.canvas_data.territory[self.te_name].diagram[di_name].center,
-            self.canvas_data.territory[self.te_name].diagram[di_name].target,
-        ]
-
-        """
-
     # def edit_diagram_text
 
 
@@ -419,7 +371,6 @@ class DiagramBase:  # 指定不可
     position = [0, 0]
     color = None
     fill = False
-    #fill_direction = [False, False]
     draw_tag = False
 
 
