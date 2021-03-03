@@ -94,11 +94,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if select != True and select != False:
             self.operation["error"].action(message="TrueとFalse以外入れるな")
 
-        if not direction is None and (direction == 0 or direction == 1):
-            self.canvas_data.territory[self.te_name].diagram[di_name].fill_direction[direction] = select
+        if direction is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].fill = [select, select]
             return
 
-        self.canvas_data.territory[self.te_name].diagram[di_name].fill = select
+        self.canvas_data.territory[self.te_name].diagram[di_name].fill[direction] = select
+
+        # if not direction is None and (direction == 0 or direction == 1):
+        #    self.canvas_data.territory[self.te_name].diagram[di_name].fill[direction] = select
+        #    return
 
     """
     def edit_diagram_text_center(self,  di_name, xy, select):
@@ -267,11 +271,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         color = diagram_data.color
 
         for i in range(2):
-            if diagram_data.fill:  # 座標の計算
+            if not False in diagram_data.fill:  # 座標の計算
                 xy[i] = territory_data.position[i]
                 size_xy[i] = territory_data.size[i]
 
-            elif diagram_data.fill_direction[i]:
+            elif diagram_data.fill[i]:
                 xy[i] = territory_data.position[i]
                 size_xy[i] = territory_data.size[i]
 
@@ -291,15 +295,24 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         xy = [0, 0]  # 領域基準
         for i in range(2):
+
+            diagram_target = copy.deepcopy(territory_data.diagram[str(diagram_data.target)])
+            if diagram_target.fill[i]:
+                diagram_target.size[i] = territory_data.size[i]
+
             if not diagram_data.target is None:  # ターゲットが指定さてる場合
-                diagram_target = territory_data.diagram[str(diagram_data.target)]
-                xy[i] = diagram_target.position[i] + territory_data.position[i] + (diagram_target.size[i] / 2)
+                xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
 
-            elif diagram_data.center[i]:  # 中心になるよう設定さてる場合
-                xy[i] = diagram_data.position[i] + (diagram_data.size[i] / 2) + territory_data.position[i]
+                print(diagram_target.position[i], diagram_target.size[i], territory_data.position[i])
+                print("ターゲット指定")
 
-            else:  # ターゲット指定されている場合
-                xy[i] = diagram_data.position[i] + territory_data.position[i]
+            elif diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
+                xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
+
+                print("テリトリー中心")
+
+            else:
+                xy[i] = (diagram_data.size[i] / 2) + diagram_data.position[i] + territory_data.position[i]
 
         print("text", xy, diagram_data.text)
 
@@ -309,11 +322,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, old_text_len - 1)
             self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.text)
 
-            _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
-            self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy[0] - (text_size[0] / 2), xy[1] - (text_size[1] / 2))
-
         if not diagram_data.draw_tag:
-            self.canvas_data.canvas.create_text(xy[0], xy[1], text=diagram_data.text, tags=self.common_control.get_tag_name(self.te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
+            self.canvas_data.canvas.create_text(0, 0, text=diagram_data.text, tags=self.common_control.get_tag_name(self.te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
+
+        _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
+
+        if 0 in text_size:
+            return
+
+        xy_l = [xy - (ts/2) for xy, ts in zip(xy, text_size)]
+        print("テキスト最終位置", xy_l)
+        self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
 
         diagram_data.draw_tag = True
 
@@ -343,7 +362,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if not text is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].text = text
-
         if not font_size is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].font_size = font_size
         if not font_type is None:
@@ -401,7 +419,7 @@ class DiagramBase:  # 指定不可
     position = [0, 0]
     color = None
     fill = False
-    fill_direction = [False, False]
+    #fill_direction = [False, False]
     draw_tag = False
 
 

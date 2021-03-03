@@ -13,7 +13,8 @@ class parts:
         data.new_diagram("text", diagram_type="text")
 
         # , font_type=data.font_data["ArabicUIText.ttc"]
-        data.edit_diagram_text("text", text="これはボタン", center=True, target="0")
+        #data.edit_diagram_text("text", text="これはボタン", center=True, target="0")
+        data.edit_diagram_text("text", text="てすと", center=True, target="0")
 
         data.territory_draw()
 
