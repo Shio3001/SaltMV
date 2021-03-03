@@ -304,7 +304,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("text", xy, diagram_data.text)
 
         if diagram_data.draw_tag:
-            self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.old_text_len)
+            old_text_len = self.canvas_data.canvas.index(self.common_control.get_tag_name(self.te_name, di_name), tk.END)  # 文字数の長さを取得
+            print(old_text_len)
+            self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, old_text_len - 1)
             self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.text)
 
             _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
@@ -340,7 +342,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="これテキスト用じゃないぞ")
 
         if not text is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].old_text_len = int(len(text))
             self.canvas_data.territory[self.te_name].diagram[di_name].text = text
 
         if not font_size is None:
