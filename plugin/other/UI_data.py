@@ -288,7 +288,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         diagram_data.draw_tag = True
 
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name):
-        xy, size_xy = [0, 0], [0, 0]  # 領域基準
+
+        xy = [0, 0]  # 領域基準
         for i in range(2):
             if not diagram_data.target is None:  # ターゲットが指定さてる場合
                 diagram_target = territory_data.diagram[str(diagram_data.target)]
@@ -300,7 +301,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             else:  # ターゲット指定されている場合
                 xy[i] = diagram_data.position[i] + territory_data.position[i]
 
-        print("text", xy, size_xy)
+        print("text", xy, diagram_data.text)
 
         if diagram_data.draw_tag:
             self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, -1)
@@ -308,7 +309,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
             self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy[0] - (text_size[0] / 2), xy[1] - (text_size[1] / 2))
-            # self.canvas_data.canvas["text"]
 
         if not diagram_data.draw_tag:
             self.canvas_data.canvas.create_text(xy[0], xy[1], text=diagram_data.text, tags=self.common_control.get_tag_name(self.te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
@@ -339,7 +339,26 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not self.get_diagram_type(di_name, "DiagramTextData"):
             self.operation["error"].action(message="これテキスト用じゃないぞ")
 
-        get_data = [
+        if not text is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].text = text
+        if not font_size is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].font_size = font_size
+        if not font_type is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].font_type = font_type
+        if not x_center is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].center[0] = x_center
+        if not y_center is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].center[1] = y_center
+        if not center is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].center = [center, center]
+        if not target is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].target = target
+
+        """
+
+        data = [None, None]
+
+        data[0] = [
             text,
             font_size,
             font_type,
@@ -349,8 +368,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             target
         ]
 
-        set_data = [
-            self.canvas_data.territory[self.te_name].diagram[di_name].text,
+        data[1] = [
+            self.canvas_data.territory[self.te_name].diagram[di_name].text
             self.canvas_data.territory[self.te_name].diagram[di_name].font_size,
             self.canvas_data.territory[self.te_name].diagram[di_name].font_type,
             self.canvas_data.territory[self.te_name].diagram[di_name].center[0],
@@ -359,10 +378,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].target,
         ]
 
-        for g, s in zip(get_data, set_data):
-            if not g is None:
-                print("{0} -> {1}".format(s, g))
-                s = g
+        """
 
     # def edit_diagram_text
 

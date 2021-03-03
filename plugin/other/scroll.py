@@ -74,7 +74,7 @@ class CentralRole:
 
             data.territory_draw()
 
-        def __edit_percent_movement(position):  # 割合で設定する
+        def __edit_percent_movement(position):  # 移動量で設定する
             print(position)
 
             sta_xy = [None, None]
