@@ -143,7 +143,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_id = self.canvas_data.territory[self.te_name].event[self.common_control.get_tag_name(key, func)][2]
         di_name = self.canvas_data.territory[self.te_name].event[self.common_control.get_tag_name(key, func)][3]
 
-        #print("bind", bind_id)
+        # print("bind", bind_id)
         for d, b in zip(di_name, bind_id):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(d), "<{0}>".format(key), b)
 
@@ -176,7 +176,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name][2]
         self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(self.te_name, di_name), "<{0}>".format(key), bind_id)
-        #print("tag unbind")
+        # print("tag unbind")
         del self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name]
 
     def all_add_diagram_event(self,  di_name):
@@ -186,7 +186,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def all_del_diagram_event(self,  di_name):  # canvasの再生成時の復元
         for k, f in zip(self.canvas_data.territory[self.te_name].diagram[di_name].event.keys(), self.canvas_data.territory[self.te_name].diagram[di_name].event.values()):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(self.te_name, di_name), "<{0}>".format(f[0]), f[2])
-            #print(self.canvas_data.territory[self.te_name].diagram[di_name].event[k], f)
+            # print(self.canvas_data.territory[self.te_name].diagram[di_name].event[k], f)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].event = {}
 
@@ -200,7 +200,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             tag = self.common_control.get_tag_name(self.te_name, di_name)
 
-            #print(tag, move)
+            # print(tag, move)
             if move == True:
                 self.canvas_data.canvas.tag_raise(tag)
 
@@ -304,7 +304,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("text", xy, diagram_data.text)
 
         if diagram_data.draw_tag:
-            self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, -1)
+            self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.old_text_len)
             self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.text)
 
             _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
@@ -340,7 +340,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="これテキスト用じゃないぞ")
 
         if not text is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].old_text_len = int(len(text))
             self.canvas_data.territory[self.te_name].diagram[di_name].text = text
+
         if not font_size is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].font_size = font_size
         if not font_type is None:
@@ -415,6 +417,8 @@ class DiagramTextData(DiagramBase):
         self.center = [False, False]
 
         self.target = None
+
+        self.old_text_len = 0
 
 
 class TextBoxData(DiagramBase):
