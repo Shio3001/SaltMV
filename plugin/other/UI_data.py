@@ -41,9 +41,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.new_territory()
 
-        print("クラスが生成されました")
+        self.operation["log"].write("UIdata生成")
 
-        # print("UI生成")
+        # self.operation["log"].write("UI生成")
 
     def event_not_func(self, event):
         print("テストイベント")
@@ -53,9 +53,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="テリトリーネーム(UIパーツタグ): {0} は すでに使用されています".format(self.te_name))
 
         self.canvas_data.territory[self.te_name] = TerritoryData()
-        print("テリトリー生成 {0}".format(self.te_name))
-
-        print(self.canvas_data.territory)
+        self.operation["log"].write("テリトリー生成 {0}".format(self.te_name))
 
         self.new_diagram("base")
         self.edit_diagram_fill("base", True)
@@ -72,7 +70,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def edit_territory_position(self, x=None, y=None):
         self.canvas_data.territory[self.te_name].position = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].position, x=x, y=y)
-        print(self.canvas_data.territory)
         return copy.deepcopy(self.canvas_data.territory[self.te_name].position)
 
     def get_territory_contact(self, del_mouse=False):
@@ -97,11 +94,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
             self.del_diagram("base")
 
-        print("ダイヤグラム生成 <テリトリー:{0}> {1}".format(self.te_name, self.canvas_data.territory[self.te_name].diagram))
+        self.operation["log"].write("ダイヤグラム生成 <テリトリー:{0}> {1}".format(self.te_name, self.canvas_data.territory[self.te_name].diagram))
 
     def del_diagram(self,  di_name):
         self.diagram_draw(di_name, di_del=True)
-        print("ダイヤグラム削除 <テリトリー:{0}> {1}".format(self.te_name, di_name))
+        self.operation["log"].write("ダイヤグラム削除 <テリトリー:{0}> {1}".format(self.te_name, di_name))
         del self.canvas_data.territory[self.te_name].diagram[di_name]
 
     def edit_diagram_size(self,  di_name, x=None, y=None):
@@ -110,11 +107,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].size)
 
     def edit_diagram_position(self,  di_name, x=None, y=None):
-        print(self.canvas_data.territory["i"].diagram["view"].position, "c")
-        print(self.te_name, di_name)
         self.canvas_data.territory[self.te_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].diagram[di_name].position, x=x, y=y)
-        print(self.canvas_data.territory["i"].diagram["view"].position, "d")
-        # print(self.canvas_data.territory["textbox"].diagram["view"].position)
 
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].position)
 
@@ -157,7 +150,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_id = self.canvas_data.territory[self.te_name].event[self.common_control.get_tag_name(key, func)][2]
         di_name = self.canvas_data.territory[self.te_name].event[self.common_control.get_tag_name(key, func)][3]
 
-        # print("bind", bind_id)
+        # self.operation["log"].write("bind", bind_id)
         for d, b in zip(di_name, bind_id):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(d), "<{0}>".format(key), b)
 
@@ -182,7 +175,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         a = self.common_control.get_tag_name(self.te_name, di_name)
         bind_id = self.canvas_data.canvas.tag_bind(a, "<{0}>".format(key), func, "+")
 
-        # print(bind_id)
+        # self.operation["log"].write(bind_id)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id]
 
@@ -190,7 +183,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name][2]
         self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(self.te_name, di_name), "<{0}>".format(key), bind_id)
-        # print("tag unbind")
+        # self.operation["log"].write("tag unbind")
         del self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name]
 
     def all_add_diagram_event(self,  di_name):
@@ -200,7 +193,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def all_del_diagram_event(self,  di_name):  # canvasの再生成時の復元
         for k, f in zip(self.canvas_data.territory[self.te_name].diagram[di_name].event.keys(), self.canvas_data.territory[self.te_name].diagram[di_name].event.values()):
             self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(self.te_name, di_name), "<{0}>".format(f[0]), f[2])
-            # print(self.canvas_data.territory[self.te_name].diagram[di_name].event[k], f)
+            # self.operation["log"].write(self.canvas_data.territory[self.te_name].diagram[di_name].event[k], f)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].event = {}
 
@@ -214,7 +207,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
             tag = self.common_control.get_tag_name(self.te_name, di_name)
 
-            # print(tag, move)
+            # self.operation["log"].write(tag, move)
             if move == True:
                 self.canvas_data.canvas.tag_raise(tag)
 
@@ -291,7 +284,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 xy[i] = territory_data.position[i] + diagram_data.position[i]
                 size_xy[i] = diagram_data.size[i]
 
-        print("shape", xy, size_xy,  di_name)
+        self.operation["log"].write("shape", xy, size_xy,  di_name)
         if diagram_data.draw_tag:
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
@@ -302,11 +295,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         xy = self.__center_target_calculation(territory_data, diagram_data,  di_name)
 
-        print("text", xy, diagram_data.text)
+        self.operation["log"].write("text", xy, diagram_data.text)
 
         if diagram_data.draw_tag:
             old_text_len = self.canvas_data.canvas.index(self.common_control.get_tag_name(self.te_name, di_name), tk.END)  # 文字数の長さを取得
-            print(old_text_len)
+            self.operation["log"].write(old_text_len)
             self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.te_name, di_name), 0, old_text_len - 1)
             self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.text)
 
@@ -320,7 +313,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             return
 
         xy_l = [xy - (ts/2) for xy, ts in zip(xy, text_size)]
-        print("テキスト最終位置", xy_l)
+        #self.operation["log"].write("テキスト最終位置", xy_l)
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
 
     def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name):
@@ -328,19 +321,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if diagram_data.draw_tag:
             pass
-            print("すでに生成済み:textbox")
 
         if not diagram_data.draw_tag:
 
             size = round(diagram_data.size[0] / 10)
 
             if diagram_data.fill[0]:
-                print("テリトリー引継ぎ")
+                self.operation["log"].write("テリトリー引継ぎ")
 
             #size = round(size/10)
 
-            print("entry情報", xy, size)
-            print("初回:textbox")
+            #self.operation["log"].write("entry情報", xy, size)
+            # self.operation["log"].write("初回:textbox")
 
             entry = self.tk.Entry(self.canvas_data.canvas, width=size, highlightthickness=0, relief="flat")
             self.canvas_data.canvas.create_window(0, 0, tags=self.common_control.get_tag_name(self.te_name, di_name), window=entry)
@@ -348,7 +340,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         _, obj_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
         xy_l = [xy + (ob/2) for xy, ob in zip(xy, obj_size)]
 
-        print("テキストボックス決定値 : ", xy_l, obj_size)
+        #self.operation["log"].write("テキストボックス決定値 : ", xy_l, obj_size)
 
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
 
@@ -362,8 +354,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
                     diagram_target.size[i] = territory_data.size[i]
 
                 xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
-                print(diagram_target.position[i], diagram_target.size[i], territory_data.position[i])
-                print("ターゲット指定")
+                #self.operation["log"].write(diagram_target.position[i], diagram_target.size[i], territory_data.position[i])
+                # self.operation["log"].write("ターゲット指定")
 
             elif diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
                 xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
