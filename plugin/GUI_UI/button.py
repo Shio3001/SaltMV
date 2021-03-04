@@ -11,7 +11,7 @@ class parts:
         data.edit_diagram_color("0", "#ffffff")
 
         data.new_diagram("text", diagram_type="text")
-        data.edit_diagram_text("text", text="てすと", center=True, target="0")
+        data.edit_diagram_text("text", text="てすと", center=True, font_size=20)
 
         data.territory_draw()
 

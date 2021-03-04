@@ -36,12 +36,14 @@ class CentralRole:
         # data.directionによって指定された方向の両側に,data.brack_spaceのスペースを作ります
         # これにより描画禁止領域をdiagramに設定することができます
 
+        print("scroll class ID", data)
+
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         def percent_calculation():
 
-            data.drawing_area[0] = data.edit_territory_position()[data.direction] + data.brack_space
-            data.drawing_area[1] = data.edit_territory_position()[data.direction] + data.edit_territory_size()[data.direction] - data.brack_space
+            data.drawing_area[0] = data.edit_territory_position()[data.direction] + data.canvas_data.position[data.direction] + data.brack_space
+            data.drawing_area[1] = data.edit_territory_position()[data.direction] + data.canvas_data.position[data.direction] + data.edit_territory_size()[data.direction] - data.brack_space
 
             data.drawing_area_length = data.drawing_area[1] - data.drawing_area[0]
 
@@ -59,6 +61,8 @@ class CentralRole:
             if data.percent_range[0] > 1:
                 edit_percent_percentage(position=1)
 
+            print("割合情報", data.percent_range)
+
             return
 
         def edit_size(x=None, y=None, space=None):
@@ -67,11 +71,8 @@ class CentralRole:
                 data.brack_space = space
 
             data.edit_territory_size(x=x, y=y)
-
             percent_calculation()
-
             edit_percent_percentage()
-
             data.territory_draw()
 
         def __edit_percent_movement(position):  # 移動量で設定する
@@ -86,6 +87,8 @@ class CentralRole:
             percent_calculation()
 
             data.percent_range[0] = (position - data.pos_drawing_area[0]) / (data.pos_drawing_area[1] - data.pos_drawing_area[0])
+
+            print("移動量で変更")
             # 割合を算出します
             stopper()
 
@@ -108,8 +111,6 @@ class CentralRole:
             sta_xy[data.direction] = sta
             end_xy[data.direction] = end
 
-            print(sta, end, data.percent_range)
-
             data.edit_diagram_position("view", x=sta_xy[0], y=sta_xy[1])
             data.edit_diagram_size("view", x=end_xy[0], y=end_xy[1])
 
@@ -119,11 +120,17 @@ class CentralRole:
 
             data.territory_draw()
 
+            print("割合で変更")
+
             return
 
         data.click_flag = False
 
         def click_start(event):
+
+            #print(data.canvas_data.territory[data.te_name].diagram["view"].position[0], data.canvas_data.canvas.bbox(data.common_control.get_tag_name(data.te_name, "view")))
+            # data.operation["error"].action(message="test")
+
             data.click_flag = True
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("view")
             data.click_distance = data.mouse_sta[data.direction] - data.drawing_area[0]
@@ -139,9 +146,11 @@ class CentralRole:
             if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
+                print(data.view_pos_sta[data.direction])
+
                 pos = data.view_pos_sta[data.direction] + now_mov
 
-                print(now_mov, pos)
+                print("マウス移動", now_mov, pos)
 
                 __edit_percent_movement(pos)
 

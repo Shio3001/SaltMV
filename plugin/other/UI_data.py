@@ -1,12 +1,26 @@
 import tkinter as tk
+
 import copy
 import inspect
+import sys
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
-    def __init__(self, window, canvas_data, common_control, all_data, all_UI_data,
-                 GUI_base_color, GUI_alpha_color,
-                 window_event_data, canvas_event_data, territory_name, font_data):
+    def __init__(self,
+                 window,
+                 canvas_data,
+                 common_control,
+                 all_data,
+                 all_UI_data,
+                 GUI_base_color,
+                 GUI_alpha_color,
+                 window_event_data,
+                 canvas_event_data,
+                 territory_name,
+                 font_data,
+                 tkFont,
+                 tkFont_list):
+
         self.window = window
         self.canvas_data = canvas_data
         self.all_data = all_data
@@ -22,6 +36,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.te_name = territory_name
         self.font_data = font_data
 
+        self.tkFont = tkFont
+        self.tkFont_list = tkFont_list
+
         self.new_territory()
 
         print("クラスが生成されました")
@@ -32,15 +49,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("テストイベント")
 
     def new_territory(self):
-
         if self.te_name in self.canvas_data.territory.keys():
             self.operation["error"].action(message="テリトリーネーム(UIパーツタグ): {0} は すでに使用されています".format(self.te_name))
 
         self.canvas_data.territory[self.te_name] = TerritoryData()
+        print("テリトリー生成 {0}".format(self.te_name))
+
+        print(self.canvas_data.territory)
 
         self.new_diagram("base")
         self.edit_diagram_fill("base", True)
-        self.edit_diagram_color("base", "#111111")
+        self.edit_diagram_color("base", "#000000")
 
     def del_territory(self):
         self.territory_draw(te_del=True)
@@ -53,6 +72,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def edit_territory_position(self, x=None, y=None):
         self.canvas_data.territory[self.te_name].position = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].position, x=x, y=y)
+        print(self.canvas_data.territory)
         return copy.deepcopy(self.canvas_data.territory[self.te_name].position)
 
     def get_territory_contact(self, del_mouse=False):
@@ -71,14 +91,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if diagram_type == "text":
             self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramTextData()
+            self.del_diagram("base")
 
         if diagram_type == "textbox":
             self.canvas_data.territory[self.te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
+            self.del_diagram("base")
 
-        print(self.canvas_data.territory[self.te_name].diagram)
+        print("ダイヤグラム生成 <テリトリー:{0}> {1}".format(self.te_name, self.canvas_data.territory[self.te_name].diagram))
 
     def del_diagram(self,  di_name):
         self.diagram_draw(di_name, di_del=True)
+        print("ダイヤグラム削除 <テリトリー:{0}> {1}".format(self.te_name, di_name))
         del self.canvas_data.territory[self.te_name].diagram[di_name]
 
     def edit_diagram_size(self,  di_name, x=None, y=None):
@@ -87,7 +110,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].size)
 
     def edit_diagram_position(self,  di_name, x=None, y=None):
+        print(self.canvas_data.territory["i"].diagram["view"].position, "c")
+        print(self.te_name, di_name)
         self.canvas_data.territory[self.te_name].diagram[di_name].position = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].diagram[di_name].position, x=x, y=y)
+        print(self.canvas_data.territory["i"].diagram["view"].position, "d")
+        # print(self.canvas_data.territory["textbox"].diagram["view"].position)
 
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].position)
 
@@ -241,7 +268,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.__diagram_text_draw(territory_data, diagram_data,  di_name)
 
         if self.get_diagram_type(di_name, "TextBoxData"):
-            pass
+            self.__diagram_textbox_draw(territory_data, diagram_data,  di_name)
 
         diagram_data.draw_tag = True
         return
@@ -267,33 +294,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("shape", xy, size_xy,  di_name)
         if diagram_data.draw_tag:
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
+
         if not diagram_data.draw_tag:
             self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.te_name, di_name))  # 塗りつぶし
 
-        diagram_data.draw_tag = True
-
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name):
 
-        xy = [0, 0]  # 領域基準
-        for i in range(2):
-
-            diagram_target = copy.deepcopy(territory_data.diagram[str(diagram_data.target)])
-            if diagram_target.fill[i]:
-                diagram_target.size[i] = territory_data.size[i]
-
-            if not diagram_data.target is None:  # ターゲットが指定さてる場合
-                xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
-
-                print(diagram_target.position[i], diagram_target.size[i], territory_data.position[i])
-                print("ターゲット指定")
-
-            elif diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
-                xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
-
-                print("テリトリー中心")
-
-            else:
-                xy[i] = (diagram_data.size[i] / 2) + diagram_data.position[i] + territory_data.position[i]
+        xy = self.__center_target_calculation(territory_data, diagram_data,  di_name)
 
         print("text", xy, diagram_data.text)
 
@@ -304,8 +311,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.te_name, di_name), 0, diagram_data.text)
 
         if not diagram_data.draw_tag:
-            self.canvas_data.canvas.create_text(0, 0, text=diagram_data.text, tags=self.common_control.get_tag_name(self.te_name, di_name), font=(diagram_data.font_type, diagram_data.font_size))
+            self.canvas_data.canvas.create_text(0, 0, text="new", tags=self.common_control.get_tag_name(self.te_name, di_name))
 
+        self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.te_name, di_name), text=diagram_data.text, font=(diagram_data.font_type, diagram_data.font_size))
         _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
 
         if 0 in text_size:
@@ -315,7 +323,54 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("テキスト最終位置", xy_l)
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
 
-        diagram_data.draw_tag = True
+    def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name):
+        xy = self.__center_target_calculation(territory_data, diagram_data,  di_name)
+
+        if diagram_data.draw_tag:
+            pass
+            print("すでに生成済み:textbox")
+
+        if not diagram_data.draw_tag:
+
+            size = round(diagram_data.size[0] / 10)
+
+            if diagram_data.fill[0]:
+                print("テリトリー引継ぎ")
+
+            #size = round(size/10)
+
+            print("entry情報", xy, size)
+            print("初回:textbox")
+
+            entry = self.tk.Entry(self.canvas_data.canvas, width=size, highlightthickness=0, relief="flat")
+            self.canvas_data.canvas.create_window(0, 0, tags=self.common_control.get_tag_name(self.te_name, di_name), window=entry)
+
+        _, obj_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
+        xy_l = [xy + (ob/2) for xy, ob in zip(xy, obj_size)]
+
+        print("テキストボックス決定値 : ", xy_l, obj_size)
+
+        self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
+
+    def __center_target_calculation(self, territory_data, diagram_data,  di_name):
+        xy = [0, 0]  # 領域基準
+        for i in range(2):
+
+            if not diagram_data.target is None:  # ターゲットが指定さてる場合
+                diagram_target = copy.deepcopy(territory_data.diagram[str(diagram_data.target)])
+                if diagram_target.fill[i]:
+                    diagram_target.size[i] = territory_data.size[i]
+
+                xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
+                print(diagram_target.position[i], diagram_target.size[i], territory_data.position[i])
+                print("ターゲット指定")
+
+            elif diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
+                xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
+            else:  # 普通の指定
+                xy[i] = (diagram_data.size[i] / 2) + diagram_data.position[i] + territory_data.position[i]
+
+        return xy
 
     def get_diagram_position_size(self,  di_name):
         pos_size = self.canvas_data.canvas.bbox(self.common_control.get_tag_name(self.te_name, di_name))
@@ -324,6 +379,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
         size = pos_size[2] - pos_size[0], pos_size[3] - pos_size[1]
 
         return position, size
+
+    def tk_font_inquiry(self, font_name):
+        if not font_name in self.tkFont_list:
+            print("font: {0} は 使用できません".format(font_name))
+
+        return font_name
 
     def edit_diagram_text(self,
                           di_name,
@@ -343,6 +404,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not font_size is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].font_size = font_size
         if not font_type is None:
+            self.tk_font_inquiry(font_type)
             self.canvas_data.territory[self.te_name].diagram[di_name].font_type = font_type
         if not x_center is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].center[0] = x_center
@@ -352,8 +414,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].center = [center, center]
         if not target is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].target = target
-
-    # def edit_diagram_text
 
 
 class TerritoryData:
@@ -370,7 +430,7 @@ class DiagramBase:  # 指定不可
     size = [0, 0]
     position = [0, 0]
     color = None
-    fill = False
+    fill = [False, False]
     draw_tag = False
 
 
@@ -388,9 +448,12 @@ class DiagramTextData(DiagramBase):
 
         self.target = None
 
-        self.old_text_len = 0
+        #self.old_text_len = 0
 
 
 class TextBoxData(DiagramBase):
     def __init__(self, territory):
         self.text = ""
+        self.font_size = 0
+        self.target = None
+        self.center = [False, False]

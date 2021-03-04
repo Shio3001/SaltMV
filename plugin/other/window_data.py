@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as tkFont
 
 
 class SendWindowData:  # window生成のためのデータ
@@ -28,6 +29,10 @@ class SendWindowData:  # window生成のためのデータ
 
         self.canvas_data = {}
         self.window_event = {}
+
+        self.tkFont = tkFont
+        self.tkFont_list = list(self.tkFont.families())  # これを使うにはtk.TK()をしたあとじゃないとダメらしい
+        # print(self.tkFont_list)
 
         self.window.configure(bg=self.GUI_base_color)
 
@@ -78,6 +83,8 @@ class SendWindowData:  # window生成のためのデータ
         self.canvas_data[name].position = self.common_control.xy_compilation(self.canvas_data[name].position, x=x, y=y)
         self.canvas_data[name].canvas.place(x=self.canvas_data[name].position[0], y=self.canvas_data[name].position[1])
 
+        self.common_control.set_canvas_size(self.canvas_data[name].position)
+
     def get_canvas_contact(self, name):
         mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name].position, self.canvas_data[name].size)
         return mouse, canvas_edge, canvas_join
@@ -114,8 +121,19 @@ class SendWindowData:  # window生成のためのデータ
         window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event}
         canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event}
 
-        new_UIdata = self.UI_auxiliary.SendUIData(self.window, self.canvas_data[name], self.common_control, self.all_data,
-                                                  self.all_UI_data, self.GUI_base_color, self.GUI_alpha_color, window_event_data, canvas_event_data, territory_name, self.font_data)
+        new_UIdata = self.UI_auxiliary.SendUIData(self.window,
+                                                  self.canvas_data[name],
+                                                  self.common_control,
+                                                  self.all_data,
+                                                  self.all_UI_data,
+                                                  self.GUI_base_color,
+                                                  self.GUI_alpha_color,
+                                                  window_event_data,
+                                                  canvas_event_data,
+                                                  territory_name,
+                                                  self.font_data,
+                                                  self.tkFont,
+                                                  self.tkFont_list)
 
         # new_UIdata.new_territory()
 

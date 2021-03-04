@@ -31,6 +31,7 @@ class Storage:
             self.os_type = "ml"
 
         self.font_data = {}
+        self.font_name = {}
         self.read_font()
 
         self.add_scene_elements()
@@ -63,13 +64,11 @@ class Storage:
                     path = os.path.relpath(kv, self.main_path)
                     self.font_data[f] = os.path.join(path, f)
 
-            # for k in ["system", "library", "user"]:
-            #    font_file = os.listdir(font_path[k])
-
-        # for v in font_file.values():
-        #    self.font_data.keys()
+                    f_k = f[: -4]
+                    self.font_name[f_k] = f
 
         print(self.font_data)
+        print(self.font_name)
 
     def get_user(self):
         return os.environ.get("USER")

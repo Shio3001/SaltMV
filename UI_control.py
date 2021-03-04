@@ -15,14 +15,19 @@ class CommonControl:
         self.window = window
         self.operation = operation
 
+    def set_canvas_size(self, p):
+        self.canvas_position = p
+
     def xy_compilation(self, origin, x=None, y=None):  # 設定項目を変更する
+
+        calculation = copy.deepcopy(origin)
         if not x is None:
-            origin[0] = x
+            calculation[0] = x
 
         if not y is None:
-            origin[1] = y
+            calculation[1] = y
 
-        return origin
+        return calculation
 
     def get_mouse_position(self):  # マウスの位置を取得
         mouse = [None, None]
@@ -34,6 +39,8 @@ class CommonControl:
     def contact_detection(self, position, size, del_mouse):  # 辺に触れているか
         mouse = self.get_mouse_position()
         #position, size = self.get_position_size(data)
+
+        position = [p + cp for p, cp in zip(position, self.canvas_position)]
 
         edge_detection = [[False, False], [False, False]]  # 辺に対する #x左,x右,y上,y下
         join_detection = [False, False, False]  # 中に対する #x , y, xy

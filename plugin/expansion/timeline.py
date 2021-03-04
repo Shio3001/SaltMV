@@ -17,19 +17,30 @@ class InitialValue:
         self.data.edit_canvas_position("timeline", x=0, y=0)
         self.data.window_title_set("タイムライン")
 
+        # print(button.canvas_data.territory["main"].diagram)
+
+        scroll = self.data.new_parts("timeline", "i", parts_name="scroll_x")
+
         button = self.data.new_parts("timeline", "buttonpppp", parts_name="button")
         button.edit_territory_position(x=200, y=200)
         button.territory_draw()
 
-        # print(button.canvas_data.territory["main"].diagram)
-        scroll = self.data.new_parts("timeline", "buttonpppop", parts_name="scroll_x")
+        print(scroll.canvas_data.territory["i"].diagram["view"].position, "a")
+
+        textbox = self.data.new_parts("timeline", "tepppop", parts_name="textbox")
+
+        print(scroll.canvas_data.territory["i"].diagram["view"].position, "b")
 
         def scroll_edit(self):
             a = random.random()
             scroll.edit_percent_percentage(size=a)
+
+            button.edit_diagram_text("text", text=str(a), font_size=20)
+            button.diagram_draw("text")
+        #
         # print(button.canvas_data.territory["main"].diagram)
 
-        button.add_diagram_event("0", "Button-1", scroll_edit)
+        button.add_territory_event("Button-1", scroll_edit)
 
         return self.data
 

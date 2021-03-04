@@ -1,8 +1,7 @@
 
 
 class parts:
-    def UI_set(self, UI_operation):
-        data = UI_operation
+    def UI_set(self, data):
 
         def size_update(self, width_size, height_size):
             pass
