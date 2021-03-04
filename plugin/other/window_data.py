@@ -143,6 +143,8 @@ class SendWindowData:  # window生成のためのデータ
 
         del new_UIdata
 
+        self.operation["log"].write_func_list(new_parts_obj)
+
         return new_parts_obj
 
     def display_size_get(self):

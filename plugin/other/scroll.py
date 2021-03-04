@@ -42,8 +42,8 @@ class CentralRole:
 
         def percent_calculation():
 
-            data.drawing_area[0] = data.edit_territory_position()[data.direction] + data.canvas_data.position[data.direction] + data.brack_space
-            data.drawing_area[1] = data.edit_territory_position()[data.direction] + data.canvas_data.position[data.direction] + data.edit_territory_size()[data.direction] - data.brack_space
+            data.drawing_area[0] = data.edit_territory_position()[data.direction] + data.brack_space
+            data.drawing_area[1] = data.edit_territory_position()[data.direction] + data.edit_territory_size()[data.direction] - data.brack_space
 
             data.drawing_area_length = data.drawing_area[1] - data.drawing_area[0]
 

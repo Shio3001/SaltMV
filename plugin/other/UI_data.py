@@ -1,7 +1,7 @@
 import tkinter as tk
 
 import copy
-import inspect
+
 import sys
 
 
@@ -324,23 +324,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if not diagram_data.draw_tag:
 
-            size = round(diagram_data.size[0] / 10)
-
             if diagram_data.fill[0]:
                 self.operation["log"].write("テリトリー引継ぎ")
 
-            #size = round(size/10)
-
-            #self.operation["log"].write("entry情報", xy, size)
-            # self.operation["log"].write("初回:textbox")
-
-            entry = self.tk.Entry(self.canvas_data.canvas, width=size, highlightthickness=0, relief="flat")
-            self.canvas_data.canvas.create_window(0, 0, tags=self.common_control.get_tag_name(self.te_name, di_name), window=entry)
+            entry = self.tk.Entry(self.canvas_data.canvas, highlightthickness=0, relief="flat")
+            self.canvas_data.canvas.create_window(0, 0, tags=self.common_control.get_tag_name(self.te_name, di_name), window=entry, width=diagram_data.size[0], height=diagram_data.size[1])
 
         _, obj_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
         xy_l = [xy + (ob/2) for xy, ob in zip(xy, obj_size)]
 
         #self.operation["log"].write("テキストボックス決定値 : ", xy_l, obj_size)
+
+        self.operation["log"].write_func_list(self.canvas_data.canvas.create_window)
 
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
 

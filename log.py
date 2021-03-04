@@ -1,4 +1,5 @@
 import datetime
+import inspect
 
 
 class LogPrint:
@@ -29,3 +30,8 @@ class LogPrint:
     def get_nowtime(self):
         nowtime = datetime.datetime.now()
         return nowtime
+
+    def write_func_list(self, class_data):
+        self.logfile.write(" * * * {0} 関数表記 {1} {2} * * * \n".format(self.get_nowtime(), inspect.stack()[1].function, str(class_data)))
+        for i in inspect.getmembers(class_data):
+            self.write(i)
