@@ -267,22 +267,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return
 
     def __diagram_shape_draw(self, territory_data, diagram_data,  di_name):
-        xy, size_xy = [0, 0], [0, 0]  # 領域基準
 
         color = diagram_data.color
 
-        for i in range(2):
-            if not False in diagram_data.fill:  # 座標の計算
-                xy[i] = territory_data.position[i]
-                size_xy[i] = territory_data.size[i]
-
-            elif diagram_data.fill[i]:
-                xy[i] = territory_data.position[i]
-                size_xy[i] = territory_data.size[i]
-
-            else:
-                xy[i] = territory_data.position[i] + diagram_data.position[i]
-                size_xy[i] = diagram_data.size[i]
+        xy, size_xy = self.__left_coordinate_calculation(territory_data, diagram_data)
 
         self.operation["log"].write("shape", xy, size_xy,  di_name)
         if diagram_data.draw_tag:
@@ -307,50 +295,53 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.create_text(0, 0, text="new", tags=self.common_control.get_tag_name(self.te_name, di_name))
 
         self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.te_name, di_name), text=diagram_data.text, font=(diagram_data.font_type, diagram_data.font_size))
-        _, text_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
 
-        if 0 in text_size:
-            return
+        if diagram_data.anchor == 1:
+            text_xy, text_size = self.get_diagram_position_size(di_name)
 
-        xy_l = [xy - (ts/2) for xy, ts in zip(xy, text_size)]
-        #self.operation["log"].write("テキスト最終位置", xy_l)
-        self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
+            xy[0] -= text_size[0] / 2
+            xy[1] -= diagram_data.font_size / 2
+
+        print("テキストボックス最終座標", xy[1], text_size)
+
+        self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1])
 
     def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name):
-        xy = self.__center_target_calculation(territory_data, diagram_data,  di_name)
+        xy, size_xy = self.__left_coordinate_calculation(territory_data, diagram_data)
 
-        if diagram_data.draw_tag:
-            pass
+        self.operation["log"].write_func_list(self.canvas_data.territory[self.te_name].diagram[di_name].entry.place)
 
-        if not diagram_data.draw_tag:
+        print("テキストボックス決定座標", xy, size_xy)
 
-            if diagram_data.fill[0]:
-                self.operation["log"].write("テリトリー引継ぎ")
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry.place(
+            x=xy[0] + self.canvas_data.position[0],
+            y=xy[1] + self.canvas_data.position[1],
+            width=size_xy[0],
+            height=size_xy[1])
 
-            entry = self.tk.Entry(self.canvas_data.canvas, highlightthickness=0, relief="flat")
-            self.canvas_data.canvas.create_window(0, 0, tags=self.common_control.get_tag_name(self.te_name, di_name), window=entry, width=diagram_data.size[0], height=diagram_data.size[1])
+    def __left_coordinate_calculation(self, territory_data, diagram_data):
 
-        _, obj_size = self.get_diagram_position_size(di_name)  # 生成する時テキストは真ん中の癖に変更しようとしたら左上指定になるのでサイズを取ってきてひく
-        xy_l = [xy + (ob/2) for xy, ob in zip(xy, obj_size)]
+        xy, size_xy = [0, 0], [0, 0]  # 領域基準
+        for i in range(2):
+            if diagram_data.fill[i]:
+                xy[i] = territory_data.position[i]
+                size_xy[i] = territory_data.size[i]
 
-        #self.operation["log"].write("テキストボックス決定値 : ", xy_l, obj_size)
+            else:
+                xy[i] = territory_data.position[i] + diagram_data.position[i]
+                size_xy[i] = diagram_data.size[i]
 
-        self.operation["log"].write_func_list(self.canvas_data.canvas.create_window)
-
-        self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy_l[0], xy_l[1])
+        return xy, size_xy
 
     def __center_target_calculation(self, territory_data, diagram_data,  di_name):
         xy = [0, 0]  # 領域基準
         for i in range(2):
-
             if not diagram_data.target is None:  # ターゲットが指定さてる場合
                 diagram_target = copy.deepcopy(territory_data.diagram[str(diagram_data.target)])
                 if diagram_target.fill[i]:
                     diagram_target.size[i] = territory_data.size[i]
 
                 xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
-                #self.operation["log"].write(diagram_target.position[i], diagram_target.size[i], territory_data.position[i])
-                # self.operation["log"].write("ターゲット指定")
 
             elif diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
                 xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
@@ -381,7 +372,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
                           x_center=None,
                           y_center=None,
                           center=None,
-                          target=None):
+                          target=None,
+                          anchor=None):
 
         if not self.get_diagram_type(di_name, "DiagramTextData"):
             self.operation["error"].action(message="これテキスト用じゃないぞ")
@@ -401,6 +393,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].center = [center, center]
         if not target is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].target = target
+        if not anchor is None:
+            self.canvas_data.territory[self.te_name].diagram[di_name].anchor = anchor
 
 
 class TerritoryData:
@@ -434,13 +428,19 @@ class DiagramTextData(DiagramBase):
         self.center = [False, False]
 
         self.target = None
+        self.anchor = 1
+
+        # 配置可能なスペースに余裕がある場合、Widget をどこに配置するか指定します。
+        # デフォルトは Tk.CENTER. そのほかに、Tk.W (左よせ）、Tk.E （右よせ）、Tk.N （上よせ）、Tk.S （下よせ）、 Tk.NW （左上）、Tk.SW （左下）、Tk.NE （右上）、Tk.SE （右下）
+        # must be n, ne, e, se, s, sw, w, nw, or center
 
         #self.old_text_len = 0
 
 
 class TextBoxData(DiagramBase):
-    def __init__(self, territory):
+    def __init__(self, canvas):
         self.text = ""
         self.font_size = 0
         self.target = None
         self.center = [False, False]
+        self.entry = tk.Entry(canvas, highlightthickness=0, relief="flat")

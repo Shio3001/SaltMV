@@ -32,7 +32,7 @@ class InitialValue:
             a = random.random()
             scroll.edit_percent_percentage(size=a)
 
-            button.edit_diagram_text("text", text=str(a), font_size=20)
+            button.edit_diagram_text("text", text=str(round(a*100)), font_size=20)
             button.diagram_draw("text")
         #
         # print(button.canvas_data.territory["main"].diagram)

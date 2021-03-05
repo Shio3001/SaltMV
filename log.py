@@ -4,9 +4,10 @@ import inspect
 
 class LogPrint:
     def __init__(self, directory):
+        self.directory = directory
         self.time = datetime.datetime.now()
-        self.path = directory.path_support("../log/log_{0}.txt".format(self.time))
-        self.logfile = open(self.path, mode='a')
+        self.path = self.directory.path_support("../log/log_{0}.txt".format(self.time))
+        self.logfile = self.new_file(self.path)
 
         self.permit = True
 
@@ -32,6 +33,16 @@ class LogPrint:
         return nowtime
 
     def write_func_list(self, class_data):
-        self.logfile.write(" * * * {0} 関数表記 {1} {2} * * * \n".format(self.get_nowtime(), inspect.stack()[1].function, str(class_data)))
+        path_func = self.directory.path_support("../log/{0}.txt".format(str(class_data)))
+
+        logfile_func = self.new_file(path_func)
+        logfile_func.write(" * * * {0} 関数表記 {1} {2} * * * \n".format(self.get_nowtime(), inspect.stack()[1].function, str(class_data)))
         for i in inspect.getmembers(class_data):
-            self.write(i)
+            # print(i)
+            logfile_func.write(str(i))
+
+        logfile_func.close()
+
+    def new_file(self, path):
+        file = open(path, mode='a')
+        return file
