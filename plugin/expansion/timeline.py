@@ -34,6 +34,8 @@ class InitialValue:
         var_data.edit_territory_size(x=50, y=50)
         var_data.territory_draw()
 
+        test_obj = self.data.new_parts("timeline", "t", parts_name="timeline_objct")
+
         def scroll_edit(self):
             a = random.random()
             scroll.edit_percent_percentage(size=a)

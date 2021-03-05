@@ -26,7 +26,7 @@ class CommonControl:
         if not y is None:
             calculation[1] = y
 
-        return calculation
+        return copy.deepcopy(calculation)
 
     def get_mouse_position(self):  # マウスの位置を取得
         mouse = [None, None]
