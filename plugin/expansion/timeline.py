@@ -28,6 +28,12 @@ class InitialValue:
         textbox = self.data.new_parts("timeline", "tepppop", parts_name="textbox")
         scroll = self.data.new_parts("timeline", "i", parts_name="scroll_x")
 
+        var_data = self.data.new_parts("timeline", "c", parts_name="var_edit")
+        var_data.discount = 0.2
+        var_data.edit_territory_position(x=150, y=100)
+        var_data.edit_territory_size(x=50, y=50)
+        var_data.territory_draw()
+
         def scroll_edit(self):
             a = random.random()
             scroll.edit_percent_percentage(size=a)

@@ -4,7 +4,6 @@ class parts:
 
         data.edit_diagram_position("textbox", x=200, y=0)
         data.edit_diagram_size("textbox", x=20, y=20)
-        #print("textbox class ID", data)
         data.territory_draw()
 
         return data

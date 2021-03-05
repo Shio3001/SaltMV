@@ -380,7 +380,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="これテキスト用じゃないぞ")
 
         if not text is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].text = text
+            self.canvas_data.territory[self.te_name].diagram[di_name].text = str(text)
         if not font_size is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].font_size = font_size
         if not font_type is None:
@@ -414,11 +414,12 @@ class DiagramBase:  # 指定不可
     color = None
     fill = [False, False]
     draw_tag = False
+    event = {}
 
 
 class DiagramData(DiagramBase):
     def __init__(self):
-        self.event = {}
+        pass
 
 
 class DiagramTextData(DiagramBase):
