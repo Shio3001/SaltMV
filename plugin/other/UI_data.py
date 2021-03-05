@@ -302,11 +302,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
             xy[0] -= text_size[0] / 2
             xy[1] -= diagram_data.font_size / 2
 
-        print("テキストボックス最終座標", xy[1], text_size)
+        print("テキスト最終座標", xy[1], text_size)
 
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1])
 
     def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name):
+        print(territory_data.position, diagram_data.position)
         xy, size_xy = self.__left_coordinate_calculation(territory_data, diagram_data)
 
         self.operation["log"].write_func_list(self.canvas_data.territory[self.te_name].diagram[di_name].entry.place)
@@ -314,8 +315,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         print("テキストボックス決定座標", xy, size_xy)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.place(
-            x=xy[0] + self.canvas_data.position[0],
-            y=xy[1] + self.canvas_data.position[1],
+            x=xy[0],
+            y=xy[1],
             width=size_xy[0],
             height=size_xy[1])
 
