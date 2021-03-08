@@ -38,30 +38,50 @@ class InitialValue:
         shape[1].edit_territory_position(x=timeline_left)
         shape[1].edit_diagram_color("0", left_up_color)
 
+        self.data.timeline_objct = []
+
+        def new_objct():
+            self.data.timeline_objct.append(None)
+            self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
+
+        # def edit_view_range
+            # timeline_objct[-1].edit_timeline_range
+
+        new_objct()
+
+        # def timeline_range_edit(sta, end):
+        #    pass
+
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()
-
             self.data.edit_canvas_size("timeline",  x=size_x, y=size_y)
 
             shape[0].edit_territory_size(y=size_y)
             shape[1].edit_territory_size(x=size_x - timeline_left)
 
-            print(size_x, size_y)
+            print("ウィンドウサイズ", size_x, size_y)
+
+            #length = self.data.all_data.scene().editer["len"]
+
+            l = timeline_left
+            r = size_x
+
+            #l = (size_x - timeline_left) / length
+            #r = size_x / length
+
+            for i in self.data.timeline_objct:
+                print(l, r)
+                i.edit_timeline_range(sta_px=l, end_px=r, sta_f=50, end_f=150)
+
+                print(i.px_f_func(100))
 
             shape[0].territory_draw()
             shape[1].territory_draw()
 
-        def get_mouse(event):
-
-            mouse, _, _ = shape[0].get_diagram_contact("0")
-
-            print(mouse)
+            # new_objct()
 
         self.data.add_window_event("Configure", window_size_edit)
-        self.data.add_window_event("Button-1", get_mouse)
         window_size_edit(None)
-
-        #test_obj = self.data.new_parts("timeline", "t", parts_name="timeline_objct")
 
         return self.data
 

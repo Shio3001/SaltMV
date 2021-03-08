@@ -1,4 +1,7 @@
 # coding:utf-8
+from Internal_operation.rendering import rendering_point
+from Internal_operation.rendering import rendering_frame
+from Internal_operation.rendering import rendering_main
 import sys
 import numpy as np
 import os
@@ -19,10 +22,6 @@ import error
 from chord_tool import file_path
 import edit_data_control
 import UI_control
-
-from Internal_operation.rendering import rendering_main
-from Internal_operation.rendering import rendering_frame
-from Internal_operation.rendering import rendering_point
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()

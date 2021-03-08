@@ -8,10 +8,11 @@ class parts:
         data.value = 0
         data.click_flag = False
 
-        #data.all_data.scene().editor["len"] = 各シーン長さ
+        data.shape_up = 0
+        data.obj_length = 0
 
-        data.timeline_obj_range = [0, 100]  # フレームに対する実数表示！ タイムラインに対してどれだけ占めるかを計算します #開始地点 ,サイズ
-        data.timeline_view_range = [0, 100]  # フレームに対する実数表示！ #タイムラインが、現在どこからどこまでの割合で表示しているかを"フレームに対して"記録します #開始地点 ,終了地点
+        # data.timeline_obj_range = [0, 100]  # フレームに対する実数表示！ タイムラインに対してどれだけ占めるかを計算します #開始地点 ,サイズ
+        # data.timeline_view_range = [0, 100]  # フレームに対する実数表示！ #タイムラインが、現在どこからどこまでの割合で表示しているかを"フレームに対して"記録します #開始地点 ,終了地点
 
         # 上二つどちらもフレームに対する実数表示にすれば楽かもしれないけど、今度はフレームに対する実数表示のための変換もいるのか、しんどすぎる
 
@@ -21,26 +22,41 @@ class parts:
         data.edit_diagram_color("bar", "#00ff00")
         data.territory_draw()
 
-        def edit_timeline_range(sta, end):  # 画面サイズが変更された時
-            data.timeline_view_range = [sta, end]
+        data.sta_end_px = [0, 0]  # 実数表示 タイムラインがどこからどこまでを表示するかpxで保管します
+        data.sta_end_frame = [0, 0]  # フレーム実数表示 タイムラインがどこからどこまで表示するかをframeで表示します
+        data.slope = 0
+        # y = ax
+        # f = (px-sta_end_px[0]) *slope + sta_end_f[0]
+
+        def px_f_func(px):
+            return (px - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0]
+
+        def f_px_func(f):
+            return (f - data.sta_end_frame[0]) / data.slpope - data.sta_end_px[0]
+
+        data.px_f_func = px_f_func
+        data.f_px_func = f_px_func
+
+        def edit_timeline_range(sta_px=None, end_px=None, sta_f=None, end_f=None):  # 画面サイズが変更された時
+            data.sta_end_px = data.common_control.xy_compilation(data.sta_end_px, x=sta_px, y=end_px)
+            data.sta_end_frame = data.common_control.xy_compilation(data.sta_end_frame, x=sta_f, y=end_f)
+            data.slope = (data.sta_end_frame[1] - data.sta_end_frame[0]) / (data.sta_end_px[1] - data.sta_end_px[0])  # 一次関数を計算
+            print("傾き", data.slope)
+
             data.territory_draw()
 
-        def edit_objct_motion(now_position=None, now_size=None):
+        def edit_objct_motion(now_position=None, now_size=None):  # 移動量指定
             data.edit_diagram_position("bar", x=now_position)
             data.edit_diagram_size("bar", x=now_size)
-            frame_calculation(tuple(now_position, now_size))
+
+            frame_calculation(now_position, now_size)
             data.territory_draw()
 
-        def edit_objct_percentage(position=None, size=None):
+        def edit_objct_frame(position=None, size=None):  # フレーム実数指定
             pass
 
-        def frame_calculation(obj_view_range):  # 実数座標(描画座標から) -> frame実数
-            obj_pos, obj_size = obj_view_range
-
-            #timeline_view_length = data.timeline_view_range[1] - data.timeline_view_range[0]
-
-            # view_obj_sta = obj_view_range[0] / timeline_view_length  # 割合
-            # view_obj_size = obj_view_range[1] / timeline_view_length  # 割合
+        def frame_calculation(now_position, now_size):  # 実数座標(描画座標から) -> frame実数
+            pass
 
         def coordinate_calculation():  # frame実数 -> 実数座標(描画座標へ)
             pass
@@ -77,5 +93,7 @@ class parts:
         data.add_diagram_event("bar", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_position)
         data.add_diagram_event("bar", "ButtonRelease-1", click_end)
+
+        data.edit_timeline_range = edit_timeline_range
 
         return data
