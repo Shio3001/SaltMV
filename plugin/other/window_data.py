@@ -65,7 +65,21 @@ class SendWindowData:  # window生成のためのデータ
     def get_window_event(self):
         return self.window_event
 
-    #####################################################################################
+    def get_window_size(self):
+        size_x = self.window.winfo_width()
+        size_y = self.window.winfo_height()
+
+        return size_x, size_y
+
+    def get_window_position(self):
+        self.window.update_idletasks()
+
+        x = self.window.winfo_x()
+        y = self.window.winfo_y()
+
+        return x, y
+
+        #####################################################################################
 
     def new_canvas(self, name):
         self.canvas_data[name] = CanvasData(self.window)
@@ -79,11 +93,14 @@ class SendWindowData:  # window生成のためのデータ
         self.canvas_data[name].canvas.config(width=self.canvas_data[name].size[0])
         self.canvas_data[name].canvas.config(height=self.canvas_data[name].size[1])
 
+        return self.canvas_data[name].size
+
     def edit_canvas_position(self, name, x=None, y=None):
         self.canvas_data[name].position = self.common_control.xy_compilation(self.canvas_data[name].position, x=x, y=y)
         self.canvas_data[name].canvas.place(x=self.canvas_data[name].position[0], y=self.canvas_data[name].position[1])
+        self.common_control.set_canvas_position(self.canvas_data[name].position)
 
-        self.common_control.set_canvas_size(self.canvas_data[name].position)
+        return self.canvas_data[name].position
 
     def get_canvas_contact(self, name):
         mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name].position, self.canvas_data[name].size)

@@ -234,8 +234,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             return
 
     def territory_draw(self,  te_del=False):
-        for k in self.canvas_data.territory[self.te_name].diagram.keys():
-            self.diagram_draw(k, te_del)
+        for d in self.canvas_data.territory[self.te_name].diagram.keys():
+            self.diagram_draw(d, te_del)
 
     def get_diagram_type(self,  di_name, data_type):
         diagram_name = str(self.canvas_data.territory[self.te_name].diagram[di_name].__class__.__name__)
@@ -274,7 +274,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation["log"].write("shape", xy, size_xy,  di_name)
         if diagram_data.draw_tag:
+            self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.te_name, di_name), fill=color)
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
+
+            print(xy, size_xy)
 
         if not diagram_data.draw_tag:
             self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.te_name, di_name))  # 塗りつぶし
@@ -334,7 +337,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         return xy, size_xy
 
-    def __center_target_calculation(self, territory_data, diagram_data,  di_name):
+    def __center_target_calculatin(self, territory_data, diagram_data,  di_name):
         xy = [0, 0]  # 領域基準
         for i in range(2):
             if not diagram_data.target is None:  # ターゲットが指定さてる場合

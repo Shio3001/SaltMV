@@ -14,8 +14,9 @@ class CommonControl:
     def __init__(self, window, operation):
         self.window = window
         self.operation = operation
+        self.canvas_position = [0, 0]
 
-    def set_canvas_size(self, p):
+    def set_canvas_position(self, p):
         self.canvas_position = p
 
     def xy_compilation(self, origin, x=None, y=None):  # 設定項目を変更する
