@@ -43,7 +43,7 @@ class InitialValue:
         def new_objct():
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
-            self.data.timeline_objct[-1].edit_timeline_range(sta_px=0, end_px=100, sta_f=0, end_f=100)
+            self.data.timeline_objct[-1].edit_timeline_range(sta_px=0, end_px=100, sta_f=5, end_f=100)
             self.data.timeline_objct[-1].edit_objct_frame(position=0, size=5)
             #self.data.edit_timeline_range(sta_px=timeline_left, end_px=size_x, sta_f=0, end_f=100)
 
@@ -67,7 +67,7 @@ class InitialValue:
             #length = self.data.all_data.scene().editer["len"]
 
             for i in self.data.timeline_objct:
-                i.edit_timeline_range(sta_px=timeline_left, end_px=size_x, sta_f=0, end_f=100)
+                i.edit_timeline_range(sta_px=timeline_left, end_px=size_x, sta_f=0, end_f=20)
                 i.edit_objct_frame()
 
             shape[0].territory_draw()

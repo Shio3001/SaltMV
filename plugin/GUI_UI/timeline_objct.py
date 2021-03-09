@@ -11,6 +11,8 @@ class parts:
         data.shape_up = 0
         data.obj_length = 0
 
+        data.disconnect = [0, 0]  # 左と右の切断量
+
         # sta_endがついている変数は左座標と右座標で取ってるので変換注意
         # ↑訂正
         # 座標＋サイズ方式に変更します
@@ -37,7 +39,9 @@ class parts:
                 return f_p
 
             f_s = (px_p + px_s - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0] - f_p
-            return f_p, f_s
+            f_ps = [f_p, f_s]
+            print(f_ps)
+            return f_ps
 
         def f_px_func(f_p, f_s=None):  # 送られたframeが何pxか計算
             px_p = (f_p - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0]
@@ -47,7 +51,9 @@ class parts:
 
             px_s = (f_p + f_s - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0] - px_p
 
-            return px_p, px_s
+            px_ps = [px_p, px_s]
+
+            return px_ps
 
         data.sta_end_obj_px = [0, 100]
         data.sta_end_obj_f = [px_f_func(data.sta_end_obj_px[0]), px_f_func(data.sta_end_obj_px[1])]
@@ -55,35 +61,67 @@ class parts:
         data.px_f_func = px_f_func
         data.f_px_func = f_px_func
 
+        def draw():
+            pos, size = copy.deepcopy(data.sta_end_obj_px)
+
+            if size < 0:
+                return
+
+            if pos < data.sta_end_px[0]:
+                pos = data.sta_end_px[0]
+                size = (data.sta_end_obj_px[1] + data.sta_end_obj_px[0]) - data.sta_end_px[0]
+
+            if pos + size > data.sta_end_px[1]:
+                size = data.sta_end_px[1] - pos
+
+            data.disconnect[0] = pos - data.sta_end_obj_px[0]
+            data.disconnect[1] = data.sta_end_obj_px[1] - size
+
+            print(data.disconnect, "a")
+            print(data.sta_end_obj_f, "b")
+            # print()
+
+            data.edit_diagram_position("bar", x=pos)
+            data.edit_diagram_size("bar", x=size)
+            data.territory_draw()
+
         def edit_timeline_range(sta_px=None, end_px=None, sta_f=None, end_f=None):  # 画面サイズが変更された時 #end_pxはサイズじゃなくて右端座標だよ！！！気をつけて
             data.sta_end_px = data.common_control.xy_compilation(data.sta_end_px, x=sta_px, y=end_px)
             data.sta_end_frame = data.common_control.xy_compilation(data.sta_end_frame, x=sta_f, y=end_f)
             data.slope = (data.sta_end_frame[1] - data.sta_end_frame[0]) / (data.sta_end_px[1] - data.sta_end_px[0])  # 一次関数を計算
             print("傾き", data.slope)
 
-            data.territory_draw()
+            draw()
 
         def edit_objct_motion(now_position=None, now_size=None):  # 移動量指定
             data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
 
-            data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
-            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
+            one_f_px = f_px_func(0, 1)[1]
+
+            if one_f_px > data.sta_end_obj_px[1] > 0:
+                data.sta_end_obj_px[1] = one_f_px
 
             print("移動量指定", data.sta_end_obj_px)
 
             data.sta_end_obj_f = px_f_func(data.sta_end_obj_px[0], data.sta_end_obj_px[1])
 
-            print(data.sta_end_obj_f)
-            data.territory_draw()
+            print("frame指定", data.sta_end_obj_f)
+
+            if data.sta_end_obj_f[0] < 0:
+                data.sta_end_obj_px[0] = copy.deepcopy(data.sta_end_px[0])
+
+            draw()
 
         def edit_objct_frame(position=None, size=None):  # フレーム実数指定
             data.sta_end_obj_f = data.common_control.xy_compilation(data.sta_end_obj_f, x=position, y=size)
 
+            if data.sta_end_obj_f[0] < 0:
+                data.sta_end_obj_f[0] = 0
+                print("反応B")
+
             data.sta_end_obj_px = f_px_func(data.sta_end_obj_f[0], data.sta_end_obj_f[1])
 
-            data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
-            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
-            data.territory_draw()
+            draw()
 
         data.edit_objct_frame = edit_objct_frame
         data.edit_objct_motion = edit_objct_motion
@@ -91,8 +129,8 @@ class parts:
         def click_start(event):
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
-            data.view_pos_sta = data.edit_diagram_position("bar")
-            data.view_size_sta = data.edit_diagram_size("bar")
+            data.view_pos_sta = data.edit_diagram_position("bar")[0] - data.disconnect[0]
+            data.view_size_sta = data.edit_diagram_size("bar")[0] + data.disconnect[1]
 
         def click_position(event):
             if not data.click_flag:
@@ -102,15 +140,15 @@ class parts:
             now_mov = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
 
             if data.mouse_touch_sta[0][0]:
-                edit_objct_motion(now_position=data.view_pos_sta[0]+now_mov, now_size=data.view_size_sta[0]-now_mov)
+                edit_objct_motion(now_position=data.view_pos_sta+now_mov, now_size=data.view_size_sta-now_mov)
                 print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:
-                edit_objct_motion(now_size=data.view_size_sta[0]+now_mov)
+                edit_objct_motion(now_size=data.view_size_sta+now_mov)
                 print("右側移動")
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                edit_objct_motion(now_position=now_mov+data.view_pos_sta[0])
+                edit_objct_motion(now_position=now_mov+data.view_pos_sta)
 
         def click_end(event):
             data.click_flag = False
