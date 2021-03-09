@@ -12,6 +12,8 @@ class parts:
         data.obj_length = 0
 
         # sta_endがついている変数は左座標と右座標で取ってるので変換注意
+        # ↑訂正
+        # 座標＋サイズ方式に変更します
 
         # data.timeline_obj_range = [0, 100]  # フレームに対する実数表示！ タイムラインに対してどれだけ占めるかを計算します #開始地点 ,サイズ
         # data.timeline_view_range = [0, 100]  # フレームに対する実数表示！ #タイムラインが、現在どこからどこまでの割合で表示しているかを"フレームに対して"記録します #開始地点 ,終了地点
@@ -28,15 +30,26 @@ class parts:
         data.sta_end_frame = [0, 0]  # フレーム実数表示 タイムラインがどこからどこまで表示するかをframeで表示します
         data.slope = 0
 
-        def px_f_func(px):  # 送られたpxが何フレームか計算
-            f = (px - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0]
-            return f
+        def px_f_func(px_p, px_s=None):  # 送られたpxが何フレームか計算
+            f_p = (px_p - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0]
 
-        def f_px_func(f):  # 送られたframeが何pxか計算
-            px = (f - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0]
-            return px
+            if px_s is None:
+                return f_p
 
-        data.sta_end_obj_px = [data.edit_diagram_position("bar")[0], data.edit_diagram_position("bar")[0]+data.edit_diagram_size("bar")[0]]
+            f_s = (px_p + px_s - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0] - f_p
+            return f_p, f_s
+
+        def f_px_func(f_p, f_s=None):  # 送られたframeが何pxか計算
+            px_p = (f_p - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0]
+
+            if f_s is None:
+                return px_p
+
+            px_s = (f_p + f_s - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0] - px_p
+
+            return px_p, px_s
+
+        data.sta_end_obj_px = [0, 100]
         data.sta_end_obj_f = [px_f_func(data.sta_end_obj_px[0]), px_f_func(data.sta_end_obj_px[1])]
 
         data.px_f_func = px_f_func
@@ -54,14 +67,11 @@ class parts:
             data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
 
             data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
-            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1] - data.sta_end_obj_px[0])
+            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
 
             print("移動量指定", data.sta_end_obj_px)
 
-            data.sta_end_obj_f[0] = px_f_func(data.sta_end_obj_px[0])
-            data.sta_end_obj_f[1] = px_f_func(data.sta_end_obj_px[1])
-
-            print("合計値", px_f_func(data.sta_end_obj_px[0] + data.sta_end_obj_px[1]))
+            data.sta_end_obj_f = px_f_func(data.sta_end_obj_px[0], data.sta_end_obj_px[1])
 
             print(data.sta_end_obj_f)
             data.territory_draw()
@@ -69,11 +79,10 @@ class parts:
         def edit_objct_frame(position=None, size=None):  # フレーム実数指定
             data.sta_end_obj_f = data.common_control.xy_compilation(data.sta_end_obj_f, x=position, y=size)
 
-            data.sta_end_obj_px[0] = f_px_func(data.sta_end_obj_f[0])
-            data.sta_end_obj_px[1] = f_px_func(data.sta_end_obj_f[1])
+            data.sta_end_obj_px = f_px_func(data.sta_end_obj_f[0], data.sta_end_obj_f[1])
 
             data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
-            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1] - data.sta_end_obj_px[0])
+            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
             data.territory_draw()
 
         data.edit_objct_frame = edit_objct_frame

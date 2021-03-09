@@ -20,7 +20,7 @@ class CommonControl:
         self.canvas_position = p
 
     def xy_compilation(self, origin, x=None, y=None):  # 設定項目を変更する
-        calculation = copy.deepcopy(origin)
+        calculation = list(copy.deepcopy(origin))
         if not x is None:
             calculation[0] = x
 
