@@ -34,7 +34,7 @@ class parts:
             px = (f - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0]
             return px
 
-        data.sta_end_obj_px = [data.edit_diagram_position("bar")[0], data.edit_diagram_size("bar")[0]]
+        data.sta_end_obj_px = [data.edit_diagram_position("bar")[0], data.edit_diagram_position("bar")[0]+data.edit_diagram_size("bar")[0]]
         data.sta_end_obj_f = [px_f_func(data.sta_end_obj_px[0]), px_f_func(data.sta_end_obj_px[1])]
 
         data.px_f_func = px_f_func
@@ -56,7 +56,7 @@ class parts:
             print("移動量指定", data.sta_end_obj_px)
 
             data.sta_end_obj_f[0] = px_f_func(data.sta_end_obj_px[0])
-            data.sta_end_obj_f[1] = px_f_func(data.sta_end_obj_px[1])
+            data .sta_end_obj_f[1] = px_f_func(data.sta_end_obj_px[1]+data.sta_end_obj_px[0])
 
             print("合計値", px_f_func(data.sta_end_obj_px[0] + data.sta_end_obj_px[1]))
 
