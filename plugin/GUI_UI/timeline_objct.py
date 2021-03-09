@@ -11,6 +11,8 @@ class parts:
         data.shape_up = 0
         data.obj_length = 0
 
+        # sta_endがついている変数は左座標と右座標で取ってるので変換注意
+
         # data.timeline_obj_range = [0, 100]  # フレームに対する実数表示！ タイムラインに対してどれだけ占めるかを計算します #開始地点 ,サイズ
         # data.timeline_view_range = [0, 100]  # フレームに対する実数表示！ #タイムラインが、現在どこからどこまでの割合で表示しているかを"フレームに対して"記録します #開始地点 ,終了地点
 
@@ -50,13 +52,14 @@ class parts:
 
         def edit_objct_motion(now_position=None, now_size=None):  # 移動量指定
             data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
+
             data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
-            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
+            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1] - data.sta_end_obj_px[0])
 
             print("移動量指定", data.sta_end_obj_px)
 
             data.sta_end_obj_f[0] = px_f_func(data.sta_end_obj_px[0])
-            data .sta_end_obj_f[1] = px_f_func(data.sta_end_obj_px[1]+data.sta_end_obj_px[0])
+            data.sta_end_obj_f[1] = px_f_func(data.sta_end_obj_px[1])
 
             print("合計値", px_f_func(data.sta_end_obj_px[0] + data.sta_end_obj_px[1]))
 
@@ -70,7 +73,7 @@ class parts:
             data.sta_end_obj_px[1] = f_px_func(data.sta_end_obj_f[1])
 
             data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
-            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
+            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1] - data.sta_end_obj_px[0])
             data.territory_draw()
 
         data.edit_objct_frame = edit_objct_frame
