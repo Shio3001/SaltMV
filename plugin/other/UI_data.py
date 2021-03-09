@@ -277,7 +277,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.te_name, di_name), fill=color)
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
-            print(xy, size_xy)
+            #print(xy, size_xy)
 
         if not diagram_data.draw_tag:
             self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.te_name, di_name))  # 塗りつぶし
@@ -305,7 +305,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             xy[0] -= text_size[0] / 2
             xy[1] -= diagram_data.font_size / 2
 
-        print("テキスト最終座標", xy[1], text_size)
+        #print("テキスト最終座標", xy[1], text_size)
 
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.te_name, di_name), xy[0], xy[1])
 
@@ -315,7 +315,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation["log"].write_func_list(self.canvas_data.territory[self.te_name].diagram[di_name].entry.place)
 
-        print("テキストボックス決定座標", xy, size_xy)
+        #print("テキストボックス決定座標", xy, size_xy)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.place(
             x=xy[0],

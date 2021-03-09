@@ -63,17 +63,9 @@ class InitialValue:
 
             #length = self.data.all_data.scene().editer["len"]
 
-            l = timeline_left
-            r = size_x
-
-            #l = (size_x - timeline_left) / length
-            #r = size_x / length
-
             for i in self.data.timeline_objct:
-                print(l, r)
-                i.edit_timeline_range(sta_px=l, end_px=r, sta_f=50, end_f=150)
-
-                print(i.px_f_func(100))
+                i.edit_timeline_range(sta_px=timeline_left, end_px=size_x, sta_f=0, end_f=100)
+                # i.edit_objct_frame()
 
             shape[0].territory_draw()
             shape[1].territory_draw()

@@ -25,19 +25,22 @@ class parts:
         data.sta_end_px = [0, 0]  # 実数表示 タイムラインがどこからどこまでを表示するかpxで保管します
         data.sta_end_frame = [0, 0]  # フレーム実数表示 タイムラインがどこからどこまで表示するかをframeで表示します
         data.slope = 0
-        # y = ax
-        # f = (px-sta_end_px[0]) *slope + sta_end_f[0]
 
-        def px_f_func(px):
-            return (px - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0]
+        def px_f_func(px):  # 送られたpxが何フレームか計算
+            f = (px - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0]
+            return f
 
-        def f_px_func(f):
-            return (f - data.sta_end_frame[0]) / data.slpope - data.sta_end_px[0]
+        def f_px_func(f):  # 送られたframeが何pxか計算
+            px = (f - data.sta_end_frame[0]) / data.slope + data.sta_end_px[0]
+            return px
+
+        data.sta_end_obj_px = [data.edit_diagram_position("bar")[0], data.edit_diagram_size("bar")[0]]
+        data.sta_end_obj_f = [px_f_func(data.sta_end_obj_px[0]), px_f_func(data.sta_end_obj_px[1])]
 
         data.px_f_func = px_f_func
         data.f_px_func = f_px_func
 
-        def edit_timeline_range(sta_px=None, end_px=None, sta_f=None, end_f=None):  # 画面サイズが変更された時
+        def edit_timeline_range(sta_px=None, end_px=None, sta_f=None, end_f=None):  # 画面サイズが変更された時 #end_pxはサイズじゃなくて右端座標だよ！！！気をつけて
             data.sta_end_px = data.common_control.xy_compilation(data.sta_end_px, x=sta_px, y=end_px)
             data.sta_end_frame = data.common_control.xy_compilation(data.sta_end_frame, x=sta_f, y=end_f)
             data.slope = (data.sta_end_frame[1] - data.sta_end_frame[0]) / (data.sta_end_px[1] - data.sta_end_px[0])  # 一次関数を計算
@@ -46,20 +49,32 @@ class parts:
             data.territory_draw()
 
         def edit_objct_motion(now_position=None, now_size=None):  # 移動量指定
-            data.edit_diagram_position("bar", x=now_position)
-            data.edit_diagram_size("bar", x=now_size)
+            data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
+            data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
+            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
 
-            frame_calculation(now_position, now_size)
+            print("移動量指定", data.sta_end_obj_px)
+
+            data.sta_end_obj_f[0] = px_f_func(data.sta_end_obj_px[0])
+            data.sta_end_obj_f[1] = px_f_func(data.sta_end_obj_px[1])
+
+            print("合計値", px_f_func(data.sta_end_obj_px[0] + data.sta_end_obj_px[1]))
+
+            print(data.sta_end_obj_f)
             data.territory_draw()
 
         def edit_objct_frame(position=None, size=None):  # フレーム実数指定
-            pass
+            data.sta_end_obj_f = data.common_control.xy_compilation(data.sta_end_obj_f, x=position, y=size)
 
-        def frame_calculation(now_position, now_size):  # 実数座標(描画座標から) -> frame実数
-            pass
+            data.sta_end_obj_px[0] = f_px_func(data.sta_end_obj_f[0])
+            data.sta_end_obj_px[1] = f_px_func(data.sta_end_obj_f[1])
 
-        def coordinate_calculation():  # frame実数 -> 実数座標(描画座標へ)
-            pass
+            data.edit_diagram_position("bar", x=data.sta_end_obj_px[0])
+            data.edit_diagram_size("bar", x=data.sta_end_obj_px[1])
+            data.territory_draw()
+
+        data.edit_objct_frame = edit_objct_frame
+        data.edit_objct_motion = edit_objct_motion
 
         def click_start(event):
             data.click_flag = True
