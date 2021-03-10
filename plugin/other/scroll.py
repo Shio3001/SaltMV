@@ -150,7 +150,7 @@ class CentralRole:
         def __edit_percent_movement(position):  # 移動量で設定する
             #print("移動量", position)
 
-            area_pos = position - data.pos_drawing_area[0]
+            area_pos = position - data.pos_drawing_area[0]  # 現在地より描画開始地点を引いた値
 
             if area_pos < 0:
                 area_pos = 0
@@ -159,7 +159,7 @@ class CentralRole:
                 area_pos = data.drawing_area_length
 
             sta_xy = [None, None]
-            sta_xy[data.direction] = area_pos + data.pos_drawing_area[0]
+            sta_xy[data.direction] = area_pos + data.pos_drawing_area[0]  # 最終描画確定位置
 
             data.edit_diagram_position("view", x=sta_xy[0], y=sta_xy[1])
             data.territory_draw()
@@ -234,8 +234,19 @@ class CentralRole:
             now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
             if data.lr_edit and data.mouse_touch_sta[data.direction][0]:
-                __edit_percent_movement_size(data.view_size_sta-now_mov)
-                __edit_percent_movement(data.view_pos_sta+now_mov)
+
+                size = data.view_size_sta-now_mov
+                pos = data.view_pos_sta+now_mov
+
+                if size < data.scroll_minimum_value_px and 0 < now_mov:
+                    print("反応P 差分", data.scroll_minimum_value_px - size)
+                    pos -= (data.scroll_minimum_value_px - size)
+
+                if now_mov < 0 and pos < data.pos_drawing_area[0]:
+                    return
+
+                __edit_percent_movement_size(size)  # posとsizeを同時に変更する場合は先にsizeをおかないとダメらしい
+                __edit_percent_movement(pos)
 
             elif data.lr_edit and data.mouse_touch_sta[data.direction][1]:
                 __edit_percent_movement_size(data.view_size_sta+now_mov)

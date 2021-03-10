@@ -83,7 +83,7 @@ class parts:
 
             data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
 
-            if one_f_px > data.sta_end_obj_px[1]:
+            if one_f_px > data.sta_end_obj_px[1]:  # もし1フレームぶんのpxよりサイズが小さかったら
                 data.sta_end_obj_px[1] = one_f_px
 
             data.sta_end_obj_f = px_f_func(data.sta_end_obj_px[0], data.sta_end_obj_px[1])
@@ -121,12 +121,15 @@ class parts:
             now_mov = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
 
             if data.mouse_touch_sta[0][0]:
+                if now_mov < 0 and data.view_pos_sta+now_mov < f_px_func(0):
+                    return
+
                 edit_objct_motion(now_position=data.view_pos_sta+now_mov, now_size=data.view_size_sta-now_mov)
-                print("左側移動")
+                # print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:
                 edit_objct_motion(now_size=data.view_size_sta+now_mov)
-                print("右側移動")
+                # print("右側移動")
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 edit_objct_motion(now_position=now_mov+data.view_pos_sta)
