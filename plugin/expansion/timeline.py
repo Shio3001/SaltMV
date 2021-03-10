@@ -59,10 +59,11 @@ class InitialValue:
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
             sta_f = frame_len * scroll_data[0]
-            end_f = frame_len * scroll_data[1]
+            end_f = frame_len * (scroll_data[0] + scroll_data[1])
             for i in self.data.timeline_objct:
                 i.edit_timeline_range(sta_f=sta_f, end_f=end_f)
                 i.edit_objct_frame()
+                print(i.edit_diagram_size("bar"))
 
         timeline_scroll.set_scroll_event(timeline_view_range)
 
