@@ -49,23 +49,23 @@ class CentralRole:
                 return
             data.scroll_event(data.percent_range)
 
-        print("scroll class ID", data)
+        #print("scroll class ID", data)
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         def percent_calculation():
 
-            data.drawing_area[0] = data.edit_territory_position()[data.direction] + data.brack_space
-            data.drawing_area[1] = data.edit_territory_position()[data.direction] + data.edit_territory_size()[data.direction] - data.brack_space
+            data.drawing_area[0] = data.brack_space
+            data.drawing_area[1] = data.edit_territory_size()[data.direction] - data.brack_space
 
             data.drawing_area_length = data.drawing_area[1] - data.drawing_area[0]
 
             data.pos_drawing_area[0] = data.drawing_area[0]
             data.pos_drawing_area[1] = data.drawing_area_length * (1 - data.percent_range[1]) + data.drawing_area[0]
 
-            #print("範囲", data.pos_drawing_area[1] - data.drawing_area[1])
+            ##print("範囲", data.pos_drawing_area[1] - data.drawing_area[1])
 
-            print("scroll", data.drawing_area, data.drawing_area_length, data.pos_drawing_area)
+            #print("scroll", data.drawing_area, data.drawing_area_length, data.pos_drawing_area)
             return
 
         def stopper():
@@ -76,7 +76,7 @@ class CentralRole:
             if data.percent_range[0] > 1:
                 edit_percent_percentage(position=1)
 
-            print("割合情報", data.percent_range)
+            #print("割合情報", data.percent_range)
 
             return
 
@@ -91,7 +91,7 @@ class CentralRole:
             data.territory_draw()
 
         def __edit_percent_movement(position):  # 移動量で設定する
-            print("移動量", position)
+            #print("移動量", position)
 
             if position < data.pos_drawing_area[0]:
                 position = data.pos_drawing_area[0]
@@ -100,19 +100,19 @@ class CentralRole:
                 position = data.pos_drawing_area[1]
 
             sta_xy = [None, None]
-            sta_xy[data.direction] = position - data.edit_territory_position()[data.direction]
+            sta_xy[data.direction] = position
 
             data.edit_diagram_position("view", x=sta_xy[0], y=sta_xy[1])
             data.territory_draw()
 
             percent_calculation()
-            print(position, data.pos_drawing_area[0])
+            #print(position, data.pos_drawing_area[0])
 
             pos_drawing_area_length = data.pos_drawing_area[1] - data.pos_drawing_area[0]
 
             data.percent_range[0] = (position - data.pos_drawing_area[0]) / (pos_drawing_area_length) if pos_drawing_area_length != 0 else 0
 
-            print("割合計算", data.percent_range, position - data.pos_drawing_area[0], data.pos_drawing_area[1] - data.pos_drawing_area[0])
+            #print("割合計算", data.percent_range, position - data.pos_drawing_area[0], data.pos_drawing_area[1] - data.pos_drawing_area[0])
 
             run_scroll_event()
             # 割合を算出します
@@ -123,12 +123,12 @@ class CentralRole:
 
             percent_calculation()
 
-            print(data.drawing_area, data.pos_drawing_area)
+            #print(data.drawing_area, data.pos_drawing_area)
 
             pos_length = data.pos_drawing_area[1] - data.pos_drawing_area[0]
             size_length = data.drawing_area[1] - data.drawing_area[0]
 
-            sta = pos_length * data.percent_range[0] + data.pos_drawing_area[0] - data.edit_territory_position()[data.direction]
+            sta = pos_length * data.percent_range[0] + data.pos_drawing_area[0]
             end = size_length * data.percent_range[1]
 
             sta_xy = [None, None]
@@ -146,7 +146,7 @@ class CentralRole:
 
             data.territory_draw()
 
-            print("割合で変更")
+            # print("割合で変更")
 
             return
 
@@ -154,7 +154,7 @@ class CentralRole:
 
         def click_start(event):
 
-            #print(data.canvas_data.territory[data.te_name].diagram["view"].position[0], data.canvas_data.canvas.bbox(data.common_control.get_tag_name(data.te_name, "view")))
+            ##print(data.canvas_data.territory[data.te_name].diagram["view"].position[0], data.canvas_data.canvas.bbox(data.common_control.get_tag_name(data.te_name, "view")))
             # data.operation["error"].action(message="test")
 
             data.click_flag = True
@@ -173,8 +173,6 @@ class CentralRole:
 
                 pos = data.view_pos_sta + now_mov
 
-                print("マウス移動", now_mov, pos)
-
                 __edit_percent_movement(pos)
 
                 percent_calculation()
@@ -189,7 +187,8 @@ class CentralRole:
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         edit_size(x=0, y=0, space=0)
-        edit_percent_percentage(position=0.00, size=1)
+        edit_percent_percentage(position=0.00, size=0.5
+                                )
         data.add_diagram_event("view", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_mov)
         data.add_diagram_event("view", "ButtonRelease-1", click_end)

@@ -56,8 +56,15 @@ class InitialValue:
             self.data.timeline_objct[-1].territory_stack(False)
         new_objct()
 
-        def timeline_view_range(event):
-            pass
+        def timeline_view_range(scroll_data):
+            frame_len = self.data.all_data.scene().editor["len"]
+            sta_f = frame_len * scroll_data[0]
+            end_f = frame_len * scroll_data[1]
+            for i in self.data.timeline_objct:
+                i.edit_timeline_range(sta_f=sta_f, end_f=end_f)
+                i.edit_objct_frame()
+
+        timeline_scroll.set_scroll_event(timeline_view_range)
 
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()
@@ -73,7 +80,7 @@ class InitialValue:
             timeline_scroll.edit_size(x=size_x - timeline_left, space=20)
 
             for i in self.data.timeline_objct:
-                i.edit_timeline_range(sta_px=timeline_left, end_px=size_x, sta_f=0, end_f=20)
+                i.edit_timeline_range(sta_px=timeline_left, end_px=size_x)
                 i.edit_objct_frame()
 
             shape[0].territory_draw()
