@@ -46,7 +46,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         # self.operation["log"].write("UI生成")
 
     def event_not_func(self, event):
-        print("テストイベント")
+        pass
 
     def new_territory(self):
         if self.te_name in self.canvas_data.territory.keys():

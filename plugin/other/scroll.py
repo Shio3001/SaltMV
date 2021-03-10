@@ -36,18 +36,42 @@ class CentralRole:
         # data.directionによって指定された方向の両側に,data.brack_spaceのスペースを作ります
         # これにより描画禁止領域をdiagramに設定することができます
 
+        data.scroll_sta_event = None
         data.scroll_event = None
+        data.scroll_end_event = None
 
         def set_scroll_event(func):
             data.scroll_event = func
 
+        def set_scroll_sta_event(func):
+            data.scroll_sta_event = func
+
+        def set_scroll_end_event(func):
+            data.scroll_end_event = func
+
         data.set_scroll_event = set_scroll_event
         data.set_scroll_event(data.event_not_func)
+
+        data.set_scroll_sta_event = set_scroll_sta_event
+        data.set_scroll_sta_event(data.event_not_func)
+
+        data.set_scroll_end_event = set_scroll_end_event
+        data.set_scroll_end_event(data.event_not_func)
 
         def run_scroll_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
             data.scroll_event(data.percent_range)
+
+        def run_scroll_sta_event():
+            if not str(type(data.scroll_event)) == "<class 'function'>":
+                return
+            data.scroll_sta_event(data.percent_range)
+
+        def run_scroll_end_event():
+            if not str(type(data.scroll_event)) == "<class 'function'>":
+                return
+            data.scroll_end_event(data.percent_range)
 
         #print("scroll class ID", data)
 
@@ -164,6 +188,8 @@ class CentralRole:
             # 計算の基準は描画開始地点  data.drawing_area[0] : "# 配列0番 : territory起点からパーセント起点まで 実数表示!" です
             # つまりterritory起点+spaceからここまでどのぐらいの距離があるかどうかを判定します
 
+            run_scroll_sta_event()
+
         def click_mov(event):
             if not data.click_flag:
                 return
@@ -183,6 +209,8 @@ class CentralRole:
 
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("view", del_mouse=True)
             data.mouse, _, data.diagram_join = data.get_diagram_contact("view", del_mouse=True)
+
+            run_scroll_end_event()
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
