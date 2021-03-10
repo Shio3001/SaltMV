@@ -70,11 +70,20 @@ class parts:
             draw()
 
         def edit_objct_motion(now_position=None, now_size=None):  # 移動量指定
-            data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
 
             one_f_px = f_px_func(0, 1)[1]
 
-            if one_f_px > data.sta_end_obj_px[1] > 0:
+            if not now_position is None:  # posの変更によって1フレームを下回らないようにする
+                ns = now_size
+                if ns is None:
+                    ns = data.sta_end_obj_px[1]
+
+                if ns < one_f_px:
+                    now_position = now_position - (one_f_px - ns)
+
+            data.sta_end_obj_px = data.common_control.xy_compilation(data.sta_end_obj_px, x=now_position, y=now_size)
+
+            if one_f_px > data.sta_end_obj_px[1]:
                 data.sta_end_obj_px[1] = one_f_px
 
             data.sta_end_obj_f = px_f_func(data.sta_end_obj_px[0], data.sta_end_obj_px[1])

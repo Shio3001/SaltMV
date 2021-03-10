@@ -54,6 +54,9 @@ class InitialValue:
             self.data.timeline_objct[-1].edit_objct_frame(position=p, size=10)
             self.data.timeline_objct[-1].territory_stack(False)
 
+        for i in range(2):
+            new_objct()
+
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
             sta_f = frame_len * scroll_data[0]
