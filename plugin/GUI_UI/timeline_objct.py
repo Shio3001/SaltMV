@@ -121,10 +121,10 @@ class parts:
             now_mov = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
 
             if data.mouse_touch_sta[0][0]:
-                if now_mov < 0 and data.view_pos_sta+now_mov < f_px_func(0):
-                    return
+                pos = data.view_pos_sta+now_mov
+                size = data.view_size_sta-now_mov
 
-                edit_objct_motion(now_position=data.view_pos_sta+now_mov, now_size=data.view_size_sta-now_mov)
+                edit_objct_motion(now_position=pos, now_size=size)
                 # print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:

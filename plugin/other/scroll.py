@@ -127,11 +127,11 @@ class CentralRole:
         def __edit_percent_movement_size(size):
             if size < data.scroll_minimum_value_px:
                 size = data.scroll_minimum_value_px
-                print("検知A")
+                # print("検知A")
 
             if size > data.drawing_area_length:
                 size = data.drawing_area_length
-                print("検知B")
+                # print("検知B")
 
             sta_xy = [None, None]
             sta_xy[data.direction] = size
@@ -140,9 +140,9 @@ class CentralRole:
 
             data.percent_range[1] = size / data.drawing_area_length if data.drawing_area_length != 0 else 0
 
-            percent_calculation()
             data.territory_draw()
 
+            percent_calculation()
             run_scroll_event()
 
             stopper()
@@ -239,7 +239,7 @@ class CentralRole:
                 pos = data.view_pos_sta+now_mov
 
                 if size < data.scroll_minimum_value_px and 0 < now_mov:
-                    print("反応P 差分", data.scroll_minimum_value_px - size)
+                    #print("反応P 差分", data.scroll_minimum_value_px - size)
                     pos -= (data.scroll_minimum_value_px - size)
 
                 if now_mov < 0 and pos < data.pos_drawing_area[0]:
