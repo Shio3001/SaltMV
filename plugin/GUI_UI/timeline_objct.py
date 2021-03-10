@@ -8,11 +8,6 @@ class parts:
         data.value = 0
         data.click_flag = False
 
-        data.shape_up = 0
-        data.obj_length = 0
-
-        data.disconnect = [0, 0]  # 左と右の切断量
-
         # sta_endがついている変数は左座標と右座標で取ってるので変換注意
         # ↑訂正
         # 座標＋サイズ方式に変更します
@@ -40,7 +35,6 @@ class parts:
 
             f_s = (px_p + px_s - data.sta_end_px[0]) * data.slope + data.sta_end_frame[0] - f_p
             f_ps = [f_p, f_s]
-            print(f_ps)
             return f_ps
 
         def f_px_func(f_p, f_s=None):  # 送られたframeが何pxか計算
@@ -64,23 +58,6 @@ class parts:
         def draw():
             pos, size = copy.deepcopy(data.sta_end_obj_px)
 
-            if size < 0:
-                return
-
-            if pos < data.sta_end_px[0]:
-                pos = data.sta_end_px[0]
-                size = (data.sta_end_obj_px[1] + data.sta_end_obj_px[0]) - data.sta_end_px[0]
-
-            if pos + size > data.sta_end_px[1]:
-                size = data.sta_end_px[1] - pos
-
-            data.disconnect[0] = pos - data.sta_end_obj_px[0]
-            data.disconnect[1] = data.sta_end_obj_px[1] - size
-
-            print(data.disconnect, "a")
-            print(data.sta_end_obj_f, "b")
-            # print()
-
             data.edit_diagram_position("bar", x=pos)
             data.edit_diagram_size("bar", x=size)
             data.territory_draw()
@@ -89,7 +66,6 @@ class parts:
             data.sta_end_px = data.common_control.xy_compilation(data.sta_end_px, x=sta_px, y=end_px)
             data.sta_end_frame = data.common_control.xy_compilation(data.sta_end_frame, x=sta_f, y=end_f)
             data.slope = (data.sta_end_frame[1] - data.sta_end_frame[0]) / (data.sta_end_px[1] - data.sta_end_px[0])  # 一次関数を計算
-            print("傾き", data.slope)
 
             draw()
 
@@ -101,23 +77,19 @@ class parts:
             if one_f_px > data.sta_end_obj_px[1] > 0:
                 data.sta_end_obj_px[1] = one_f_px
 
-            print("移動量指定", data.sta_end_obj_px)
-
             data.sta_end_obj_f = px_f_func(data.sta_end_obj_px[0], data.sta_end_obj_px[1])
 
-            print("frame指定", data.sta_end_obj_f)
-
-            if data.sta_end_obj_f[0] < 0:
-                data.sta_end_obj_px[0] = copy.deepcopy(data.sta_end_px[0])
+            if data.sta_end_obj_f[0] < 0:  # もし0frame以下なら
+                data.sta_end_obj_px[0] = f_px_func(0)
+                data.sta_end_obj_f[0] = 0
 
             draw()
 
         def edit_objct_frame(position=None, size=None):  # フレーム実数指定
             data.sta_end_obj_f = data.common_control.xy_compilation(data.sta_end_obj_f, x=position, y=size)
 
-            if data.sta_end_obj_f[0] < 0:
+            if data.sta_end_obj_f[0] < 0:  # もし0frame以下なら
                 data.sta_end_obj_f[0] = 0
-                print("反応B")
 
             data.sta_end_obj_px = f_px_func(data.sta_end_obj_f[0], data.sta_end_obj_f[1])
 
@@ -129,8 +101,8 @@ class parts:
         def click_start(event):
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
-            data.view_pos_sta = data.edit_diagram_position("bar")[0] - data.disconnect[0]
-            data.view_size_sta = data.edit_diagram_size("bar")[0] + data.disconnect[1]
+            data.view_pos_sta = data.edit_diagram_position("bar")[0]
+            data.view_size_sta = data.edit_diagram_size("bar")[0]
 
         def click_position(event):
             if not data.click_flag:
