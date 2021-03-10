@@ -40,6 +40,19 @@ class CentralRole:
         data.scroll_event = None
         data.scroll_end_event = None
 
+        data.lr_edit = False
+
+        data.scroll_minimum_value_px = 1  # 1px設定
+
+        def set_scroll_minimum_value_px(select):
+            data.scroll_minimum_value_px = select
+
+        def set_lr_edit(select):
+            data.lr_edit = select
+
+        data.set_lr_edit = set_lr_edit
+        data.set_scroll_minimum_value_px = set_scroll_minimum_value_px
+
         def set_scroll_event(func):
             data.scroll_event = func
 
@@ -87,9 +100,6 @@ class CentralRole:
             data.pos_drawing_area[0] = data.drawing_area[0]
             data.pos_drawing_area[1] = data.drawing_area_length * (1 - data.percent_range[1]) + data.drawing_area[0]
 
-            ##print("範囲", data.pos_drawing_area[1] - data.drawing_area[1])
-
-            #print("scroll", data.drawing_area, data.drawing_area_length, data.pos_drawing_area)
             return
 
         def stopper():
@@ -114,17 +124,42 @@ class CentralRole:
             edit_percent_percentage()
             data.territory_draw()
 
+        def __edit_percent_movement_size(size):
+            if size < data.scroll_minimum_value_px:
+                size = data.scroll_minimum_value_px
+                print("検知A")
+
+            if size > data.drawing_area_length:
+                size = data.drawing_area_length
+                print("検知B")
+
+            sta_xy = [None, None]
+            sta_xy[data.direction] = size
+
+            data.edit_diagram_size("view", x=sta_xy[0], y=sta_xy[1])
+
+            data.percent_range[1] = size / data.drawing_area_length if data.drawing_area_length != 0 else 0
+
+            percent_calculation()
+            data.territory_draw()
+
+            run_scroll_event()
+
+            stopper()
+
         def __edit_percent_movement(position):  # 移動量で設定する
             #print("移動量", position)
 
-            if position < data.pos_drawing_area[0]:
-                position = data.pos_drawing_area[0]
+            area_pos = position - data.pos_drawing_area[0]
 
-            if position > data.pos_drawing_area[1]:
-                position = data.pos_drawing_area[1]
+            if area_pos < 0:
+                area_pos = 0
+
+            if area_pos > data.drawing_area_length:
+                area_pos = data.drawing_area_length
 
             sta_xy = [None, None]
-            sta_xy[data.direction] = position
+            sta_xy[data.direction] = area_pos + data.pos_drawing_area[0]
 
             data.edit_diagram_position("view", x=sta_xy[0], y=sta_xy[1])
             data.territory_draw()
@@ -134,7 +169,7 @@ class CentralRole:
 
             pos_drawing_area_length = data.pos_drawing_area[1] - data.pos_drawing_area[0]
 
-            data.percent_range[0] = (position - data.pos_drawing_area[0]) / (pos_drawing_area_length) if pos_drawing_area_length != 0 else 0
+            data.percent_range[0] = area_pos / (pos_drawing_area_length) if pos_drawing_area_length != 0 else 0
 
             #print("割合計算", data.percent_range, position - data.pos_drawing_area[0], data.pos_drawing_area[1] - data.pos_drawing_area[0])
 
@@ -182,8 +217,9 @@ class CentralRole:
             # data.operation["error"].action(message="test")
 
             data.click_flag = True
-            data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("view")
+            data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("view")
             data.view_pos_sta = data.edit_diagram_position("view")[data.direction]
+            data.view_size_sta = data.edit_diagram_size("view")[data.direction]
             # クリックした場所から,パーセント起点まで、どれだけの距離があるかどうかを計算
             # 計算の基準は描画開始地点  data.drawing_area[0] : "# 配列0番 : territory起点からパーセント起点まで 実数表示!" です
             # つまりterritory起点+spaceからここまでどのぐらいの距離があるかどうかを判定します
@@ -194,20 +230,26 @@ class CentralRole:
             if not data.click_flag:
                 return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("view")
-            if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
+            now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
+
+            if data.lr_edit and data.mouse_touch_sta[data.direction][0]:
+                __edit_percent_movement_size(data.view_size_sta-now_mov)
+                __edit_percent_movement(data.view_pos_sta+now_mov)
+
+            elif data.lr_edit and data.mouse_touch_sta[data.direction][1]:
+                __edit_percent_movement_size(data.view_size_sta+now_mov)
+
+            elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 pos = data.view_pos_sta + now_mov
-
                 __edit_percent_movement(pos)
-
                 percent_calculation()
 
         def click_end(event):
 
             data.click_flag = False
 
-            data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("view", del_mouse=True)
+            data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("view", del_mouse=True)
             data.mouse, _, data.diagram_join = data.get_diagram_contact("view", del_mouse=True)
 
             run_scroll_end_event()

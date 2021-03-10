@@ -41,6 +41,7 @@ class InitialValue:
         self.data.timeline_objct = []
 
         timeline_scroll = self.data.new_parts("timeline", "srob", parts_name="scroll_x")
+        timeline_scroll.set_lr_edit(True)
 
         scroll_size = 20
         timeline_scroll.edit_size(y=scroll_size)
@@ -72,18 +73,22 @@ class InitialValue:
             size_x, size_y = self.data.get_window_size()
             self.data.edit_canvas_size("timeline",  x=size_x, y=size_y)
 
+            timeline_width = size_x - timeline_left
+
             shape[0].edit_territory_size(y=size_y)
-            shape[1].edit_territory_size(x=size_x - timeline_left)
+            shape[1].edit_territory_size(x=timeline_width)
 
             #print("ウィンドウサイズ", size_x, size_y)
 
             #length = self.data.all_data.scene().editer["len"]
 
-            timeline_scroll.edit_size(x=size_x - timeline_left, space=20)
+            timeline_scroll.edit_size(x=timeline_width, space=20)
 
             for i in self.data.timeline_objct:
                 i.edit_timeline_range(sta_px=timeline_left, end_px=size_x)
                 i.edit_objct_frame()
+
+            timeline_scroll.set_scroll_minimum_value_px(self.data.timeline_objct[-1].f_px_func(1))
 
             shape[0].territory_draw()
             shape[1].territory_draw()
