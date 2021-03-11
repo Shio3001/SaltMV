@@ -44,16 +44,17 @@ class InitialValue:
         timeline_scroll.set_lr_edit(True)
 
         scroll_size = 20
-        timeline_scroll.edit_size(y=scroll_size)
+        timeline_scroll.edit_territory_size(y=scroll_size)
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
         def new_objct(p=0):
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
-            self.data.timeline_objct[-1].edit_timeline_range(sta_px=0, end_px=100, sta_f=5, end_f=100)
-            self.data.timeline_objct[-1].edit_objct_frame(position=p, size=10)
+            #self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=0, end_px=100, sta_f=5, end_f=100)
+            self.data.timeline_objct[-1].pxf.edit_objct_frame(position=p, size=10)
             self.data.timeline_objct[-1].territory_stack(False)
+            # self.data.timeline_objct[-1].territory_draw()
 
         for i in range(2):
             new_objct()
@@ -63,8 +64,8 @@ class InitialValue:
             sta_f = frame_len * scroll_data[0]
             end_f = frame_len * (scroll_data[0] + scroll_data[1])
             for i in self.data.timeline_objct:
-                i.edit_timeline_range(sta_f=sta_f, end_f=end_f)
-                i.edit_objct_frame()
+                i.set_pxf_slope(sta_f=sta_f, end_f=end_f)
+                i.pxf.edit_objct_frame()
                 # print(i.edit_diagram_size("bar"))
 
         timeline_scroll.set_scroll_event(timeline_view_range)
@@ -81,14 +82,15 @@ class InitialValue:
             #print("ウィンドウサイズ", size_x, size_y)
 
             #length = self.data.all_data.scene().editer["len"]
-
-            timeline_scroll.edit_size(x=timeline_width, space=20)
+            timeline_scroll.edit_territory_size(x=timeline_width)
+            timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
+            timeline_scroll.pxf.edit_objct_frame()
 
             for i in self.data.timeline_objct:
-                i.edit_timeline_range(sta_px=timeline_left, end_px=size_x)
-                i.edit_objct_frame()
+                i.set_pxf_slope(sta_px=timeline_left, end_px=size_x)
+                i.pxf.edit_objct_frame()
 
-            timeline_scroll.set_scroll_minimum_value_px(self.data.timeline_objct[-1].f_px_func(1))
+            # timeline_scroll.pxf.set_scroll_minimum_value_px(self.data.timeline_objct[-1].pxf.f_px_func(1))
 
             shape[0].territory_draw()
             shape[1].territory_draw()
