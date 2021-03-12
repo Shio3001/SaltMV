@@ -8,9 +8,7 @@ class parts:
         data.value = 0
         data.click_flag = False
 
-        data.plus_px_frame_data()
-
-        data.pxf = data.timeline_calculation
+        data.pxf = data.plus_px_frame_data()
 
         # sta_endがついている変数は左座標と右座標で取ってるので変換注意
         # ↑訂正
@@ -37,6 +35,7 @@ class parts:
         #data.pxf(sta_px=0, end_px=100, sta_f=5, end_f=100)
 
         def set_pxf_slope(sta_px=None, end_px=None, sta_f=None, end_f=None):
+            #print("obj", sta_px, end_px, sta_f, end_f)
             data.pxf.edit_range(sta_px=sta_px, end_px=end_px, sta_f=sta_f, end_f=end_f)
 
         data.set_pxf_slope = set_pxf_slope
@@ -66,11 +65,11 @@ class parts:
                 size = data.view_size_sta-now_mov
 
                 data.pxf.edit_objct_motion(now_position=pos, now_size=size)
-                # print("左側移動")
+                # #print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:
                 data.pxf.edit_objct_motion(now_size=data.view_size_sta+now_mov)
-                # print("右側移動")
+                # #print("右側移動")
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.edit_objct_motion(now_position=now_mov+data.view_pos_sta)

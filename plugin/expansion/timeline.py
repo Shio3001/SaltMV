@@ -17,7 +17,7 @@ class InitialValue:
         self.data.edit_canvas_position("timeline", x=0, y=0)
         self.data.window_title_set("タイムライン")
 
-        # #print(button.canvas_data.territory["main"].diagram)
+        # ##print(button.canvas_data.territory["main"].diagram)
 
         shape = []
 
@@ -61,12 +61,16 @@ class InitialValue:
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
-            sta_f = frame_len * scroll_data[0]
-            end_f = frame_len * (scroll_data[0] + scroll_data[1])
+            sta_f = frame_len * (scroll_data[0] / 100)
+            end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)
+
+            #timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
+            timeline_scroll.pxf.edit_objct_frame()
+
             for i in self.data.timeline_objct:
                 i.set_pxf_slope(sta_f=sta_f, end_f=end_f)
                 i.pxf.edit_objct_frame()
-                # print(i.edit_diagram_size("bar"))
+                # #print(i.edit_diagram_size("bar"))
 
         timeline_scroll.set_scroll_event(timeline_view_range)
 
@@ -79,7 +83,7 @@ class InitialValue:
             shape[0].edit_territory_size(y=size_y)
             shape[1].edit_territory_size(x=timeline_width)
 
-            #print("ウィンドウサイズ", size_x, size_y)
+            ##print("ウィンドウサイズ", size_x, size_y)
 
             #length = self.data.all_data.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)

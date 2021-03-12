@@ -16,8 +16,7 @@ class CentralRole:
 
         # 百分率は0~100ではなく0~1でやること、100でやられるとしんどい
 
-        data.plus_px_frame_data(data.direction)
-        data.pxf = data.timeline_calculation
+        data.pxf = data.plus_px_frame_data(data.direction, obj_length=True)
 
         # data.scroll_minimum_value_px = 1  # 1px設定
 
@@ -38,12 +37,15 @@ class CentralRole:
 
         def set_scroll_event(func):
             data.scroll_event = func
+            data.scroll_event(data.pxf.sta_size_obj_f)
 
         def set_scroll_sta_event(func):
             data.scroll_sta_event = func
+            data.scroll_event(data.pxf.sta_size_obj_f)
 
         def set_scroll_end_event(func):
             data.scroll_end_event = func
+            data.scroll_event(data.pxf.sta_size_obj_f)
 
         data.set_scroll_event = set_scroll_event
         data.set_scroll_event(data.event_not_func)
@@ -57,34 +59,34 @@ class CentralRole:
         def run_scroll_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
-            data.scroll_event(data.pxf.sta_end_obj_f)
+            data.scroll_event(data.pxf.sta_size_obj_f)
 
         def run_scroll_sta_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
-            data.scroll_sta_event(data.pxf.sta_end_obj_f)
+            data.scroll_sta_event(data.pxf.sta_size_obj_f)
 
         def run_scroll_end_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
-            data.scroll_end_event(data.pxf.sta_end_obj_f)
+            data.scroll_end_event(data.pxf.sta_size_obj_f)
 
         def draw(pos, size):
 
             #pos -= data.pxf.f_px_func(0)
-            print("a", pos, size)
+            #print("a", pos, size)
 
-            print("b", data.pxf.px_f_func(pos))
+            #print("b", data.pxf.px_f_func(pos))
 
             data.edit_diagram_position("view", x=pos)
             data.edit_diagram_size("view", x=size)
             data.territory_draw()
 
-            print("pos決定", pos, size)
+            #print("pos決定", pos, size)
 
         data.pxf.set_draw_func(draw)
 
-        # print("scroll class ID", data)
+        # #print("scroll class ID", data)
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -99,15 +101,16 @@ class CentralRole:
 
             if size is None:
                 size = data.edit_diagram_size("view")[data.direction]
+                #print("size", size)
 
             if not end_px is None:
-                end_px = end_px - size - data.blank_space
+                end_px = end_px - data.blank_space
 
-            print("D値", data.edit_diagram_size("view")[data.direction])
-            print("A値", sta_px)
-            print("B値", end_px)
+            #print("D値", data.edit_diagram_size("view")[data.direction])
+            #print("A値", sta_px)
+            #print("B値", end_px)
 
-            data.pxf.edit_range(sta_px=sta_px, end_px=end_px, sta_f=0, end_f=1)
+            data.pxf.edit_range(sta_px=sta_px, end_px=end_px, sta_f=0, end_f=100, size=size)
 
         data.set_pxf_slope = set_pxf_slope
 
@@ -115,7 +118,7 @@ class CentralRole:
 
         def click_start(event):
 
-            # print(data.canvas_data.territory[data.te_name].diagram["view"].position[0], data.canvas_data.canvas.bbox(data.common_control.get_tag_name(data.te_name, "view")))
+            # #print(data.canvas_data.territory[data.te_name].diagram["view"].position[0], data.canvas_data.canvas.bbox(data.common_control.get_tag_name(data.te_name, "view")))
             # data.operation["error"].action(message="test")
 
             data.click_flag = True
@@ -143,7 +146,7 @@ class CentralRole:
                 set_pxf_slope(size=size)
                 data.pxf.edit_objct_motion(now_position=pos, now_size=size)
 
-                print(data.pxf.sta_end_obj_f)
+                # print(data.pxf.sta_size_obj_f)
 
             elif data.lr_edit and data.mouse_touch_sta[data.direction][1]:
                 data.pxf.edit_objct_motion(now_size=data.view_size_sta+now_mov)

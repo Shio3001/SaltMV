@@ -42,8 +42,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.new_territory()
 
         self.operation["log"].write("UIdata生成")
+        self.operation_timeline_calculation = self.operation["plugin"]["other"]["timeline_calculation"]
 
-        self.timeline_calculation = None
+        #self.timeline_calculation = None
 
         # self.operation["log"].write("UI生成")
 
@@ -66,9 +67,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         del self.canvas_data.territory[self.te_name]
 
-    def plus_px_frame_data(self, direction=None):
-        print("e", self.canvas_data.territory[self.te_name], self.te_name)
-        self.timeline_calculation = self.operation["plugin"]["other"]["timeline_calculation"].TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction, mi="test")
+    def plus_px_frame_data(self, direction=None,obj_length=None):
+        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction,obj_length=obj_length)
+        return timeline_calculation
 
     def edit_territory_size(self, x=None, y=None):
         self.canvas_data.territory[self.te_name].size = self.common_control.xy_compilation(self.canvas_data.territory[self.te_name].size, x=x, y=y)
