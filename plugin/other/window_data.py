@@ -104,6 +104,10 @@ class SendWindowData:  # window生成のためのデータ
 
     def get_canvas_contact(self, name):
         mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name].position, self.canvas_data[name].size)
+
+        for i in range(2):
+            mouse[i] -= self.canvas_data[name].position[0]
+
         return mouse, canvas_edge, canvas_join
 
     #####################################################################################

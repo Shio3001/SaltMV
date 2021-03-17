@@ -67,8 +67,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         del self.canvas_data.territory[self.te_name]
 
-    def plus_px_frame_data(self, direction=None,obj_length=None):
-        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction,obj_length=obj_length)
+    def plus_px_frame_data(self, direction=None, obj_length=None):
+        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction, obj_length=obj_length)
         return timeline_calculation
 
     def edit_territory_size(self, x=None, y=None):
@@ -81,6 +81,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def get_territory_contact(self, del_mouse=False):
         mouse, territory_edge, territory_join = self.common_control.contact_detection(self.canvas_data.territory[self.te_name].position, self.canvas_data.territory[self.te_name].size, del_mouse)
+
+        for i in range(2):
+            mouse[i] -= (self.edit_territory_position()[i] + self.canvas_data.position[0])
+
         return mouse, territory_edge, territory_join
 
     # 以下diagram
@@ -138,6 +142,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def get_diagram_contact(self,  di_name, del_mouse=False):
         pos, size = self.get_diagram_position_size(di_name)
         mouse, diagram_edge, diagram_join = self.common_control.contact_detection(pos, size, del_mouse)
+
+        for i in range(2):
+            mouse[i] -= (self.edit_territory_position()[i] + self.canvas_data.position[i] + pos[i])
+
         return mouse, diagram_edge, diagram_join
 
     #####################################################################################

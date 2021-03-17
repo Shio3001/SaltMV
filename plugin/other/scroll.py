@@ -35,6 +35,9 @@ class CentralRole:
         data.scroll_sta_event = None
         data.scroll_end_event = None
 
+        data.sta_end_px = [0, 0]
+        data.a_b_percent = [0, 0]
+
         def set_scroll_event(func):
             data.scroll_event = func
             data.scroll_event(data.pxf.sta_size_obj_f)
@@ -72,45 +75,38 @@ class CentralRole:
             data.scroll_end_event(data.pxf.sta_size_obj_f)
 
         def draw(pos, size):
-
-            #pos -= data.pxf.f_px_func(0)
-            #print("a", pos, size)
-
-            #print("b", data.pxf.px_f_func(pos))
-
             data.edit_diagram_position("view", x=pos)
             data.edit_diagram_size("view", x=size)
             data.territory_draw()
 
-            #print("pos決定", pos, size)
+            # print("pos決定", pos, size)
 
         data.pxf.set_draw_func(draw)
 
         # #print("scroll class ID", data)
 
+        # s , a , b, e
+
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         data.blank_space = 0
+        #data.slope = 0
 
-        def set_pxf_slope(sta_px=None, end_px=None, space=None, size=None):
+        def set_pxf_slope(sta_px=None, end_px=None, space=None, size=0):
             if not space is None:
                 data.blank_space = space
 
             if not sta_px is None:
-                sta_px = sta_px + data.blank_space
-
-            if size is None:
-                size = data.edit_diagram_size("view")[data.direction]
-                #print("size", size)
+                sta_px += data.blank_space
 
             if not end_px is None:
-                end_px = end_px - data.blank_space
+                end_px -= data.blank_space
 
-            #print("D値", data.edit_diagram_size("view")[data.direction])
-            #print("A値", sta_px)
-            #print("B値", end_px)
+            if size is None:
+                size = 0
 
-            data.pxf.edit_range(sta_px=sta_px, end_px=end_px, sta_f=0, end_f=100, size=size)
+            data.sta_end_px = data.common_control.xy_compilation(data.sta_end_px, x=sta_px, y=end_px)
+            data.pxf.edit_range(sta_px=data.sta_end_px[0], end_px=data.sta_end_px[1], sta_f=0, end_f=100, size=size)
 
         data.set_pxf_slope = set_pxf_slope
 
@@ -143,16 +139,19 @@ class CentralRole:
                 size = data.view_size_sta-now_mov
                 pos = data.view_pos_sta+now_mov
 
-                set_pxf_slope(size=size)
                 data.pxf.edit_objct_motion(now_position=pos, now_size=size)
 
                 # print(data.pxf.sta_size_obj_f)
 
             elif data.lr_edit and data.mouse_touch_sta[data.direction][1]:
+
+                # data.edit_a_b_position(now_mov)
                 data.pxf.edit_objct_motion(now_size=data.view_size_sta+now_mov)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.edit_objct_motion(now_position=now_mov+data.view_pos_sta)
+
+                # data.edit_a_b_position(now_mov)
 
             run_scroll_event()
 

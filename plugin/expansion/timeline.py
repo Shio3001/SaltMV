@@ -23,7 +23,7 @@ class InitialValue:
 
         timeline_left = 50  # タイムラインの左側のshape(x)
         timeline_up = 50  # タイムラインの上側のshape(y)
-        timeline_size = 30  # タイムラインの幅(y)
+        timeline_size = 10  # タイムラインの幅(y)
 
         left_up_color = "#ffffff"
 
@@ -52,7 +52,7 @@ class InitialValue:
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
             #self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=0, end_px=100, sta_f=5, end_f=100)
-            self.data.timeline_objct[-1].pxf.edit_objct_frame(position=p, size=10)
+            self.data.timeline_objct[-1].pxf.edit_objct_frame(position=p, size=timeline_size)
             self.data.timeline_objct[-1].territory_stack(False)
             # self.data.timeline_objct[-1].territory_draw()
 
@@ -63,6 +63,8 @@ class InitialValue:
             frame_len = self.data.all_data.scene().editor["len"]
             sta_f = frame_len * (scroll_data[0] / 100)
             end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)
+
+            print(scroll_data[0])
 
             #timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
             timeline_scroll.pxf.edit_objct_frame()

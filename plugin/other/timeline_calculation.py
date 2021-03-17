@@ -5,6 +5,9 @@ class TimelineCalculation:
     def __init__(self, UI_common_control, territory, direction=None, obj_length=None):
         self.sta_end_px = [0, 0]  # 実数表示 タイムラインがどこからどこまでを表示するかpxで保管します
         self.sta_end_frame = [0, 0]  # フレーム実数表示 タイムラインがどこからどこまで表示するかをframeで表示します
+
+        self.sta_end_size_px = [0, 0]
+
         self.slope = 0
         self.sta_size_obj_px = [0, 100]
         self.sta_size_obj_f = [0, 100]
@@ -60,32 +63,40 @@ class TimelineCalculation:
         elif not end_px is None:
             end_px = end_px-self.territory.position[self.direction]
 
+        # if size is None or not self.obj_length and False == True:
+        #    size = 0
+
+        print("size", size, "size_f", size_f)
+
         if size is None:
             size = 0
 
-        else:
-            print("座標によるサイズ変更", size)
+        if size_f is None:
+            size_f = 0
 
         self.sta_end_px = self.common_control.xy_compilation(self.sta_end_px, x=sta_px, y=end_px)
         self.sta_end_frame = self.common_control.xy_compilation(self.sta_end_frame, x=sta_f, y=end_f)
-        sta_end_frame_length = self.sta_end_frame[1] - self.sta_end_frame[0]
-        sta_end_px_length = self.sta_end_px[1] - self.sta_end_px[0] - size
+        self.sta_end_size_px = [self.sta_end_px[0], self.sta_end_px[1]]
 
-        print("a", sta_end_frame_length, self.sta_end_px[1] - self.sta_end_px[0])
+        sta_end_frame_length = self.sta_end_frame[1] - self.sta_end_frame[0]
+        sta_end_px_length = self.sta_end_size_px[1] - self.sta_end_px[0]
+
+        # print("a", sta_end_frame_length, self.sta_end_px[1] - self.sta_end_px[0])
 
         if sta_end_px_length == 0:
             self.slope = 0
             self.one_f_px = 0
             return
 
-        if not size_f is None and self.obj_length:
-            length = sta_end_px_length * size_f / sta_end_frame_length
-            sta_end_px_length -= length
-            print("フレームによるサイズ変更", length)
-
-        print("b", sta_end_frame_length, sta_end_px_length)
+        # if not size_f is None and self.obj_length:
+        #    length = (self.sta_end_px[1] - self.sta_end_px[0]) * size_f / sta_end_frame_length
+        #    sta_end_px_length -= length
+        #    print("フレームによるサイズ変更", length)
+        # print("b", sta_end_frame_length, sta_end_px_length)
 
         self.slope = sta_end_frame_length / sta_end_px_length
+
+        print("傾き", self.slope)
 
         # print(self.slope)
 
@@ -97,7 +108,7 @@ class TimelineCalculation:
     def __draw(self):
         pos, size = self.sta_size_obj_px
 
-        #print("le2", size)
+        # print("le2", size)
 
         if str(type(self.draw_func)) == "<class 'function'>":
             self.draw_func(pos, size)
@@ -110,11 +121,11 @@ class TimelineCalculation:
             size = self.sta_size_obj_px[1]
 
         if size < self.one_f_px and not position is None:
-            print("作動A", size)
+            # print("作動A", size)
             position = position - (self.one_f_px - size)
 
         elif size < self.one_f_px:
-            print("作動B", size)
+            # print("作動B", size)
             size = self.one_f_px
 
         return position, size
@@ -132,15 +143,15 @@ class TimelineCalculation:
             self.sta_size_obj_f[0] = 0
 
     def limits_position_max_frame(self):
-        if self.sta_size_obj_f[0] > self.px_f_func(self.sta_end_px[1]):
+        if self.sta_size_obj_f[0] > self.sta_end_frame[1]:
             self.sta_size_obj_px[0] = self.f_px_func(self.sta_end_frame[1])
-            self.sta_size_obj_f[0] = self.px_f_func(self.sta_end_px[1])
+            self.sta_size_obj_f[0] = self.sta_end_frame[1]
 
     def edit_objct_motion(self, now_position=None, now_size=None):  # 移動量指定
         now_position, now_size = self.limits_size_1_frame(now_position, now_size)
         self.sta_size_obj_px = self.common_control.xy_compilation(self.sta_size_obj_px, x=now_position, y=now_size)
 
-        self.edit_range(size_f=self.px_f_func(self.sta_size_obj_px[1]))
+        self.edit_range(size=self.sta_size_obj_px[1])
 
         self.sta_size_obj_f = self.px_f_func(self.sta_size_obj_px[0], self.sta_size_obj_px[1])
 
