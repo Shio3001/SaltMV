@@ -67,7 +67,7 @@ class InitialValue:
             print(scroll_data[0])
 
             #timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
-            timeline_scroll.pxf.edit_objct_frame()
+            # timeline_scroll.pxf.edit_objct_frame()
 
             for i in self.data.timeline_objct:
                 i.set_pxf_slope(sta_f=sta_f, end_f=end_f)

@@ -16,7 +16,7 @@ class CentralRole:
 
         # 百分率は0~100ではなく0~1でやること、100でやられるとしんどい
 
-        data.pxf = data.plus_px_frame_data(data.direction, obj_length=True)
+        data.pxf = data.plus_px_frame_data(data.direction, obj_length=True, debug_name="scroll")
 
         # data.scroll_minimum_value_px = 1  # 1px設定
 
@@ -92,7 +92,7 @@ class CentralRole:
         data.blank_space = 0
         #data.slope = 0
 
-        def set_pxf_slope(sta_px=None, end_px=None, space=None, size=0):
+        def set_pxf_slope(sta_px=None, end_px=None, space=None):
             if not space is None:
                 data.blank_space = space
 
@@ -102,11 +102,8 @@ class CentralRole:
             if not end_px is None:
                 end_px -= data.blank_space
 
-            if size is None:
-                size = 0
-
             data.sta_end_px = data.common_control.xy_compilation(data.sta_end_px, x=sta_px, y=end_px)
-            data.pxf.edit_range(sta_px=data.sta_end_px[0], end_px=data.sta_end_px[1], sta_f=0, end_f=100, size=size)
+            data.pxf.edit_range(sta_px=data.sta_end_px[0], end_px=data.sta_end_px[1], sta_f=0, end_f=100)
 
         data.set_pxf_slope = set_pxf_slope
 
@@ -144,8 +141,6 @@ class CentralRole:
                 # print(data.pxf.sta_size_obj_f)
 
             elif data.lr_edit and data.mouse_touch_sta[data.direction][1]:
-
-                # data.edit_a_b_position(now_mov)
                 data.pxf.edit_objct_motion(now_size=data.view_size_sta+now_mov)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です

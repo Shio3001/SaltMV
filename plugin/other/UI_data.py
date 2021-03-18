@@ -67,8 +67,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         del self.canvas_data.territory[self.te_name]
 
-    def plus_px_frame_data(self, direction=None, obj_length=None):
-        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction, obj_length=obj_length)
+    def plus_px_frame_data(self, direction=None, obj_length=None, debug_name=None):
+        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction, obj_length=obj_length, debug_name=debug_name)
         return timeline_calculation
 
     def edit_territory_size(self, x=None, y=None):
