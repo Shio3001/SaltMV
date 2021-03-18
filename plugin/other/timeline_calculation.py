@@ -49,17 +49,6 @@ class TimelineCalculation:
         f_s = px_s * self.slope[1]
         return [f_p, f_s]
 
-        """
-        f_p = (px_p - self.sta_end_px[0]) * self.slope[0] + self.sta_end_frame[0]
-
-        if px_s is None:
-            return f_p
-
-        f_s = (px_p + px_s - self.sta_end_px[0]) * self.slope[1] + self.sta_end_frame[0] - f_p
-        f_ps = [f_p, f_s]
-        return f_ps
-        """
-
     def f_px_func(self, f_p, f_s=None):  # 送られたframeが何pxか計算
 
         if 0 in self.slope and f_s is None:
