@@ -8,44 +8,11 @@ class parts:
         data.value = 0
         data.click_flag = False
 
-        data.pxf = data.plus_px_frame_data()
-
-        # sta_endがついている変数は左座標と右座標で取ってるので変換注意
-        # ↑訂正
-        # 座標＋サイズ方式に変更します
-
-        # data.timeline_obj_range = [0, 100]  # フレームに対する実数表示！ タイムラインに対してどれだけ占めるかを計算します #開始地点 ,サイズ
-        # data.timeline_view_range = [0, 100]  # フレームに対する実数表示！ #タイムラインが、現在どこからどこまでの割合で表示しているかを"フレームに対して"記録します #開始地点 ,終了地点
-
-        # 上二つどちらもフレームに対する実数表示にすれば楽かもしれないけど、今度はフレームに対する実数表示のための変換もいるのか、しんどすぎる
-
         data.new_diagram("bar")
         data.edit_diagram_size("bar", x=100, y=40)
         data.edit_diagram_position("bar", x=100, y=40)
         data.edit_diagram_color("bar", "#00ff00")
         data.territory_draw()
-
-        # data.sta_end_px = [0, 0]  # 実数表示 タイムラインがどこからどこまでを表示するかpxで保管します
-        # data.sta_end_frame = [0, 0]  # フレーム実数表示 タイムラインがどこからどこまで表示するかをframeで表示します
-        #data.slope = 0
-
-        #data.edit_objct_frame = edit_objct_frame
-        #data.edit_objct_motion = edit_objct_motion
-
-        #data.pxf(sta_px=0, end_px=100, sta_f=5, end_f=100)
-
-        def set_pxf_slope(sta_px=None, end_px=None, sta_f=None, end_f=None):
-            #print("obj", sta_px, end_px, sta_f, end_f)
-            data.pxf.edit_range(sta_px=sta_px, end_px=end_px, sta_f=sta_f, end_f=end_f)
-
-        data.set_pxf_slope = set_pxf_slope
-
-        def draw(pos, size):
-            data.edit_diagram_position("bar", x=pos)
-            data.edit_diagram_size("bar", x=size)
-            data.territory_draw()
-
-        data.pxf.set_draw_func(draw)
 
         def click_start(event):
             data.click_flag = True
