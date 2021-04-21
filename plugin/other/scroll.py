@@ -1,3 +1,6 @@
+import copy
+
+
 class CentralRole:
     def main(self, data, direction):
 
@@ -26,12 +29,13 @@ class CentralRole:
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="scroll")
 
-        def draw(self, f, px):
-            data.edit_diagram_position("view", x=px[0])
-            data.edit_diagram_size("view", x=px[1])
+        def draw(px_pos, px_size):
+            data.edit_diagram_position("view", x=px_pos)
+            data.edit_diagram_size("view", x=px_size)
 
             data.territory_draw()
 
+        data.pxf.set_sta_end_f(sta=0, end=100)
         data.pxf.set_draw_func(draw)
 
         data.scroll_event = None
@@ -89,8 +93,8 @@ class CentralRole:
         def click_start(event):
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("view")
-            data.view_pos_sta = data.edit_diagram_position("view")[data.direction]
-            data.view_size_sta = data.edit_diagram_size("view")[data.direction]
+            data.view_pos_sta = copy.deepcopy(data.edit_diagram_position("view")[data.direction])
+            data.view_size_sta = copy.deepcopy(data.edit_diagram_size("view")[data.direction])
             # クリックした場所から,パーセント起点まで、どれだけの距離があるかどうかを計算
             # 計算の基準は描画開始地点  data.drawing_area[0] : "# 配列0番 : territory起点からパーセント起点まで 実数表示!" です
             # つまりterritory起点+spaceからここまでどのぐらいの距離があるかどうかを判定します
@@ -103,15 +107,23 @@ class CentralRole:
             now_mouse, _, data.diagram_join = data.get_diagram_contact("view")
             now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
-            size = data.view_size_sta-now_mov
-            pos = data.view_pos_sta+now_mov
+            print(now_mouse[data.direction], data.mouse_sta[data.direction])
 
-            if data.lr_edit and data.mouse_touch_sta[data.direction][0]:
-                pass
-            elif data.lr_edit and data.mouse_touch_sta[data.direction][1]:
-                pass
+            pos = data.view_pos_sta + now_mov
+
+            if data.mouse_touch_sta[0][0]:  # 左側移動
+                print(now_mov, "A")
+                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov)
+                # #print("左側移動")
+
+            elif data.mouse_touch_sta[0][1]:  # 右側移動
+                data.pxf.set_px_ratio(size=data.view_size_sta+now_mov)
+                print(now_mov, "B")
+                # #print("右側移動")
+
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                pass
+                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
+                print(now_mov, "C")
 
             run_scroll_event()
 
@@ -126,7 +138,7 @@ class CentralRole:
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-        data.set_sta_end_px(sta=0, end=100, space=0)
+        data.pxf.set_sta_end_px(sta=0, end=100, space=0)
         data.pxf.set_f_ratio(position=0, size=5)
         data.add_diagram_event("view", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_mov)

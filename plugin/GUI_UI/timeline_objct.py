@@ -14,6 +14,16 @@ class parts:
         data.edit_diagram_color("bar", "#00ff00")
         data.territory_draw()
 
+        data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
+
+        def draw(px_pos, px_size):
+            data.edit_diagram_position("bar", x=px_pos)
+            data.edit_diagram_size("bar", x=px_size)
+
+            data.territory_draw()
+
+        data.pxf.set_draw_func(draw)
+
         def click_start(event):
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
@@ -31,15 +41,15 @@ class parts:
                 pos = data.view_pos_sta+now_mov
                 size = data.view_size_sta-now_mov
 
-                data.pxf.edit_objct_motion(now_position=pos, now_size=size)
+                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 # #print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:
-                data.pxf.edit_objct_motion(now_size=data.view_size_sta+now_mov)
+                data.pxf.set_px_ratio(size=data.view_size_sta+now_mov)
                 # #print("右側移動")
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                data.pxf.edit_objct_motion(now_position=now_mov+data.view_pos_sta)
+                data.pxf.set_px_ratio(position=now_mov+data.view_pos_sta, size=data.view_size_sta)
 
         def click_end(event):
             data.click_flag = False

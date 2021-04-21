@@ -52,7 +52,7 @@ class InitialValue:
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
             #self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=0, end_px=100, sta_f=5, end_f=100)
-            self.data.timeline_objct[-1].pxf.edit_objct_frame(position=p, size=timeline_size)
+            self.data.timeline_objct[-1].pxf.set_f_ratio(position=p, size=timeline_size)
             self.data.timeline_objct[-1].territory_stack(False)
             # self.data.timeline_objct[-1].territory_draw()
 
@@ -64,17 +64,17 @@ class InitialValue:
             sta_f = frame_len * (scroll_data[0] / 100)
             end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)
 
-            print(scroll_data[0])
+            # print(scroll_data[0])
 
             #timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
             # timeline_scroll.pxf.edit_objct_frame()
 
             for i in self.data.timeline_objct:
-                i.set_pxf_slope(sta_f=sta_f, end_f=end_f)
-                i.pxf.edit_objct_frame()
+                i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
+                i.pxf.set_f_ratio()
                 # #print(i.edit_diagram_size("bar"))
 
-        timeline_scroll.set_scroll_event(timeline_view_range)
+        timeline_scroll.set_scroll_event(timeline_view_range)  # コールバック関数登録
 
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()
@@ -89,12 +89,12 @@ class InitialValue:
 
             #length = self.data.all_data.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)
-            timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
-            timeline_scroll.pxf.edit_objct_frame()
+            timeline_scroll.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=10)
+            timeline_scroll.pxf.set_f_ratio()
 
             for i in self.data.timeline_objct:
-                i.set_pxf_slope(sta_px=timeline_left, end_px=size_x)
-                i.pxf.edit_objct_frame()
+                i.pxf.set_sta_end_px(sta=timeline_left, end=size_x)
+                i.pxf.set_f_ratio()
 
             # timeline_scroll.pxf.set_scroll_minimum_value_px(self.data.timeline_objct[-1].pxf.f_px_func(1))
 

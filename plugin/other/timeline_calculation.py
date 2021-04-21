@@ -2,10 +2,10 @@ import copy
 
 
 class TimelineCalculation:
-    def __init__(self, UI_common_control, territory, direction=None, obj_length=None, debug_name=None):
+    def __init__(self, UI_common_control, territory, direction=None, debug_name=None):
         self.common_control = UI_common_control
         self.territory = territory
-        self.obj_length = obj_length
+
         self.debug_name = debug_name
 
         self.direction = direction
@@ -15,15 +15,15 @@ class TimelineCalculation:
         self.sta_end_px = [0, 0]
         self.sta_end_f = [0, 1]
 
-        self.ratio_px = [0, 0]  # pos,size
-        self.ratio_f = [0, 0]  # pos,size
+        self.ratio_f = [0, 0]  # pos,size]
 
-        self.convert = 1
+        # self.convert = 1
 
         self.blank_space = 0
 
         def test(pos_size):
-            print(pos_size)
+            pass
+            # print(pos_size)
 
         self.draw_func = test
 
@@ -34,7 +34,7 @@ class TimelineCalculation:
         self.draw_func = func
 
     def stop_frame_max(self):
-        if self.ratio_f[0] < self.sta_end_f[1]:
+        if self.ratio_f[0] > self.sta_end_f[1]:
             self.ratio_f[0] = self.sta_end_f[1]
 
     def set_sta_end_px(self, sta=None, end=None, space=None):
@@ -53,26 +53,59 @@ class TimelineCalculation:
         self.sta_end_f = self.common_control.xy_compilation(self.sta_end_f, x=sta, y=end)
 
     def set_px_ratio(self, position=None, size=None):
-        self.ratio_px = self.common_control.xy_compilation(self.ratio_px, x=position, y=size)
-        self.__convert_px_f()
+
+        scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
+        frame_long = self.sta_end_f[1] - self.sta_end_f[0]
+
+        rate = frame_long / scroll_long
+        pos_rate = (scroll_long + size) / scroll_long
+
+        pos_f, size_f = None, None
+
+        if not position is None:
+            pos_f = position * rate * pos_rate
+        if not size is None:
+            size_f = size * rate
+
+        print(pos_f, size_f)
+
+        self.draw_func(position, size)
 
     def set_f_ratio(self, position=None, size=None):
         self.ratio_f = self.common_control.xy_compilation(self.ratio_f, x=position, y=size)
-        self.__convert_f_px()
 
-    def __convert_px_f(self):
-        self.__set_convert()
-        self.ratio_f = [self.ratio_px[i] / self.convert for i in range(2)]
+        self.draw_func(20, 10)
+
+        """
+        scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
+        frame_long = self.sta_end_f[1] - self.sta_end_f[0]
+
+        rate = scroll_long / frame_long
+        pos_rate = (scroll_long + self.ratio_f[1]) / frame_long
+
+        self.draw_func(self.ratio_f[0], self.ratio_f[1])
+        """
+
+        # self.__draw()
+
+    """
+    def __convert_px_f(self, px):
+        self.ratio_f =
 
     def __convert_f_px(self):
-        self.__set_convert()
-        self.ratio_px = [self.ratio_f[i] * self.convert for i in range(2)]
+        return ratio_px
+    """
 
+    """
     def __set_convert(self):
-        self.convert = self.sta_end_px[0] / (self.sta_end_px[0] + self.ratio_px[1])
+        px_lengh = sta_end_px[1] - sta_end_px[0]
 
-    def __draw(self):
-        self.draw_func(self.ratio_px)
+        self.convert =
+    """
+
+    def __draw(self, frame, px):
+
+        self.draw_func(frame, px)
 
 # 複雑にしている原因分かったかもしれない
 # 原因、ストッパーの機能をpx側でもやろうとしてたからだ、普通にframe側でやればいいのでは

@@ -67,8 +67,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         del self.canvas_data.territory[self.te_name]
 
-    def plus_px_frame_data(self, direction=None, obj_length=None, debug_name=None):
-        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction, obj_length=obj_length, debug_name=debug_name)
+    def plus_px_frame_data(self, direction=None, debug_name=None):
+        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction, debug_name=debug_name)
         return timeline_calculation
 
     def edit_territory_size(self, x=None, y=None):
@@ -144,7 +144,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         mouse, diagram_edge, diagram_join = self.common_control.contact_detection(pos, size, del_mouse)
 
         for i in range(2):
-            mouse[i] -= (self.edit_territory_position()[i] + self.canvas_data.position[i] + pos[i])
+            mouse[i] -= (self.edit_territory_position()[i] + self.canvas_data.position[i])
 
         return mouse, diagram_edge, diagram_join
 
@@ -213,6 +213,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[self.te_name].diagram[di_name].event = {}
 
     def get_diagram_event(self,  di_name):
+
         return self.canvas_data.territory[self.te_name].diagram[di_name].event
 
     #####################################################################################
