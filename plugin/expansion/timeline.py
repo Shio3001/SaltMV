@@ -69,10 +69,10 @@ class InitialValue:
             #timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
             # timeline_scroll.pxf.edit_objct_frame()
 
-            for i in self.data.timeline_objct:
-                i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
-                i.pxf.set_f_ratio()
-                # #print(i.edit_diagram_size("bar"))
+            # for i in self.data.timeline_objct:
+            #    i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
+            #    i.pxf.set_f_ratio()
+            # #print(i.edit_diagram_size("bar"))
 
         timeline_scroll.set_scroll_event(timeline_view_range)  # コールバック関数登録
 
