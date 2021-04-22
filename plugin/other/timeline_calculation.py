@@ -27,6 +27,8 @@ class TimelineCalculation:
 
         self.draw_func = test
 
+        print(debug_name, "===============================================")
+
     def set_draw_func(self, func):
         if not str(type(func)) == "<class 'function'>":
             return
@@ -61,6 +63,7 @@ class TimelineCalculation:
 
         if scroll_long != size:
             pos_rate = frame_long / (scroll_long - size)
+
         else:
             pos_rate = 0
 
@@ -70,8 +73,8 @@ class TimelineCalculation:
             size = 1
 
         if not position is None:
-            self.ratio_f[0] = position * pos_rate
-            position += self.blank_space
+            self.ratio_f[0] = (position - self.blank_space) * pos_rate
+
         if not size is None:
             self.ratio_f[1] = size * rate
 
@@ -79,20 +82,17 @@ class TimelineCalculation:
 
         if self.ratio_f[0] < self.sta_end_f[0]:  # posが0より手前になった
             self.ratio_f[0] = 0
-            print("AS", self.ratio_f)
             flag = True
 
         if self.ratio_f[1] > frame_long:  # sizeが幅を超えた
             self.ratio_f[1] = frame_long
-            print("BS",  self.ratio_f, frame_long)
             flag = True
 
-        if self.ratio_f[0] > frame_long:  # posの値が幅を超えた
-            self.ratio_f[0] = self.sta_end_f[1]
-            print("CS", self.ratio_f)
+        if self.ratio_f[0] > self.sta_end_f[1]:  # posの値が幅を超えた
+            self.ratio_f[0] = copy.deepcopy(self.sta_end_f[1])
             flag = True
 
-        print(self.ratio_f)
+        print("pxから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "position", position, "size", size)
 
         if flag:
             self.set_f_ratio()
@@ -107,44 +107,16 @@ class TimelineCalculation:
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
 
         rate = scroll_long / frame_long
+        pos_rate = scroll_long / (frame_long - self.ratio_f[1])
 
-        pos_long = (frame_long - self.ratio_f[1])
+        pos_plus = (frame_long - self.ratio_f[1]) / frame_long
 
-        pos_rate = scroll_long / pos_long if pos_long != 0 else 0
-
-        pos_px = self.ratio_f[0] * pos_rate + self.blank_space
+        pos_px = self.ratio_f[0] * rate * pos_plus
         size_px = self.ratio_f[1] * rate
 
-        print("P",  self.ratio_f, pos_px, size_px, pos_long, pos_rate, frame_long)
+        print("frameから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "pos_px", pos_px, "size_px", size_px)
 
-        self.draw_func(pos_px, size_px)
-
-        """
-        scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
-        frame_long = self.sta_end_f[1] - self.sta_end_f[0]
-
-        rate = scroll_long / frame_long
-        pos_rate = (scroll_long + self.ratio_f[1]) / frame_long
-
-        self.draw_func(self.ratio_f[0], self.ratio_f[1])
-        """
-
-        # self.__draw()
-
-    """
-    def __convert_px_f(self, px):
-        self.ratio_f =
-
-    def __convert_f_px(self):
-        return ratio_px
-    """
-
-    """
-    def __set_convert(self):
-        px_lengh = sta_end_px[1] - sta_end_px[0]
-
-        self.convert =
-    """
+        self.draw_func(pos_px + self.blank_space, size_px)
 
     def __draw(self, frame, px):
 

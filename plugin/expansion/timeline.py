@@ -56,8 +56,8 @@ class InitialValue:
             self.data.timeline_objct[-1].territory_stack(False)
             # self.data.timeline_objct[-1].territory_draw()
 
-        for i in range(2):
-            new_objct()
+        # for i in range(2):
+        #    new_objct()
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
@@ -89,7 +89,7 @@ class InitialValue:
 
             #length = self.data.all_data.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)
-            timeline_scroll.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=10)
+            timeline_scroll.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
             timeline_scroll.pxf.set_f_ratio()
 
             for i in self.data.timeline_objct:

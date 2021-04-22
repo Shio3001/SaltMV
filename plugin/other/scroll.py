@@ -107,23 +107,23 @@ class CentralRole:
             now_mouse, _, data.diagram_join = data.get_diagram_contact("view")
             now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
-            print(now_mouse[data.direction], data.mouse_sta[data.direction])
+            #print(now_mouse[data.direction], data.mouse_sta[data.direction])
 
             pos = data.view_pos_sta + now_mov
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
-                print(now_mov, "A")
+                #print(now_mov, "A")
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov)
                 # #print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
                 data.pxf.set_px_ratio(size=data.view_size_sta+now_mov)
-                print(now_mov, "B")
+                #print(now_mov, "B")
                 # #print("右側移動")
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
-                print(now_mov, "C")
+                #print(now_mov, "C")
 
             run_scroll_event()
 
