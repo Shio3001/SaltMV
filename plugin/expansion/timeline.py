@@ -51,28 +51,26 @@ class InitialValue:
         def new_objct(p=0):
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
-            #self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=0, end_px=100, sta_f=5, end_f=100)
+            #self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=timeline_left, end_px=100, sta_f=5, end_f=100)
             self.data.timeline_objct[-1].pxf.set_f_ratio(position=p, size=timeline_size)
+            self.data.timeline_objct[-1].edit_territory_position(x=timeline_left)
+
             self.data.timeline_objct[-1].territory_stack(False)
             # self.data.timeline_objct[-1].territory_draw()
 
-        # for i in range(2):
-        #    new_objct()
+        for i in range(2):
+            new_objct()
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
             sta_f = frame_len * (scroll_data[0] / 100)
             end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)
 
-            # print(scroll_data[0])
+            print("変更", sta_f, end_f)
 
-            #timeline_scroll.set_pxf_slope(sta_px=timeline_left, end_px=size_x, space=20)
-            # timeline_scroll.pxf.edit_objct_frame()
-
-            # for i in self.data.timeline_objct:
-            #    i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
-            #    i.pxf.set_f_ratio()
-            # #print(i.edit_diagram_size("bar"))
+            for i in self.data.timeline_objct:
+                i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
+                i.pxf.set_f_ratio()
 
         timeline_scroll.set_scroll_event(timeline_view_range)  # コールバック関数登録
 
@@ -93,6 +91,7 @@ class InitialValue:
             timeline_scroll.pxf.set_f_ratio()
 
             for i in self.data.timeline_objct:
+                i.edit_territory_size(x=timeline_width)
                 i.pxf.set_sta_end_px(sta=timeline_left, end=size_x)
                 i.pxf.set_f_ratio()
 

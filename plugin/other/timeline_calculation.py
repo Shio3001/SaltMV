@@ -92,7 +92,7 @@ class TimelineCalculation:
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f[1])
             flag = True
 
-        print("pxから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "position", position, "size", size)
+        print(self.debug_name, " :pxから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "position", position, "size", size)
 
         if flag:
             self.set_f_ratio()
@@ -107,14 +107,14 @@ class TimelineCalculation:
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
 
         rate = scroll_long / frame_long
-        pos_rate = scroll_long / (frame_long - self.ratio_f[1])
+        #pos_rate = scroll_long / (frame_long - self.ratio_f[1])
 
-        pos_plus = (frame_long - self.ratio_f[1])/frame_long
+        pos_plus = (frame_long - self.ratio_f[1]) / frame_long
 
-        pos_px = self.ratio_f[0] * rate * pos_plus
+        pos_px = (self.ratio_f[0] - self.sta_end_f[0]) * rate * pos_plus
         size_px = self.ratio_f[1] * rate
 
-        print("frameから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "pos_px", pos_px, "size_px", size_px, "pos_plus", pos_plus)
+        print(self.debug_name, " :frameから", "割合設定", self.ratio_f, "rate", rate, "pos_px", pos_px, "size_px", size_px, "pos_plus", pos_plus)
 
         self.draw_func(pos_px + self.blank_space, size_px)
 
