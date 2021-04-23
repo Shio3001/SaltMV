@@ -42,6 +42,7 @@ class InitialValue:
 
         timeline_scroll = self.data.new_parts("timeline", "srob", parts_name="scroll_x")
         timeline_scroll.set_lr_edit(True)
+        timeline_scroll.pxf.init_set_sta_end_f(sta=0, end=100)
 
         scroll_size = 20
         timeline_scroll.edit_territory_size(y=scroll_size)
@@ -51,7 +52,8 @@ class InitialValue:
         def new_objct(p=0):
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
-            #self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=timeline_left, end_px=100, sta_f=5, end_f=100)
+            # self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=timeline_left, end_px=100, sta_f=5, end_f=100)
+
             self.data.timeline_objct[-1].pxf.set_f_ratio(position=p, size=timeline_size)
             self.data.timeline_objct[-1].edit_territory_position(x=timeline_left)
 
@@ -63,12 +65,24 @@ class InitialValue:
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
-            sta_f = frame_len * (scroll_data[0] / 100)
-            end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)
 
-            print("変更", sta_f, end_f)
+            sta_end_long = scroll_data.sta_end_f[1] - scroll_data.sta_end_f[0]
+
+            sta_f = frame_len * (scroll_data.ratio_f[0] / 100)
+            end_f = frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100)
+
+            print(sta_f, end_f, "staend")
+
+            #sta_f = frame_len * (sta_origin / 100)
+            # end_f = frame_len * (end_origin / 100)  # たぶん原因はここの式
+            # end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)  # たぶん原因はここの式
+
+            # print("変更", sta_f, end_f, sta_origin, end_origin)
+
+            # rate =
 
             for i in self.data.timeline_objct:
+                i.pxf.init_set_sta_end_f(sta=0, end=frame_len)
                 i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
                 i.pxf.set_f_ratio()
 
@@ -83,9 +97,9 @@ class InitialValue:
             shape[0].edit_territory_size(y=size_y)
             shape[1].edit_territory_size(x=timeline_width)
 
-            ##print("ウィンドウサイズ", size_x, size_y)
+            # print("ウィンドウサイズ", size_x, size_y)
 
-            #length = self.data.all_data.scene().editer["len"]
+            # length = self.data.all_data.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)
             timeline_scroll.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
             timeline_scroll.pxf.set_f_ratio()

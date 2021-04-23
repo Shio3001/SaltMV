@@ -27,7 +27,7 @@ class CentralRole:
         data.set_lr_edit = set_lr_edit
         # data.set_scroll_minimum_value_px = set_scroll_minimum_value_px
 
-        data.pxf = data.plus_px_frame_data(direction=0, debug_name="scroll")
+        data.pxf = data.plus_px_frame_data(direction=0, debug_name="scroll", size_del=True)
 
         def draw(px_pos, px_size):
             data.edit_diagram_position("view", x=px_pos)
@@ -42,41 +42,57 @@ class CentralRole:
         data.scroll_sta_event = None
         data.scroll_end_event = None
 
-        def set_scroll_event(func):
+        def ratio_f_pos_edit():
+            #ratio_f = [0, 0]
+
+            #ratio_f[0] = copy.deepcopy(data.pxf.ratio_f[0])
+            #ratio_f[1] = copy.deepcopy(data.pxf.ratio_f[1])
+
+            ratio_data = RatioData(data.pxf.ratio_f, data.pxf.sta_end_f)
+
+            return ratio_data
+
+        def set_scroll_event(func):  # コールバック設定
             data.scroll_event = func
-            data.scroll_event(data.pxf.ratio_f)
+            ratio = ratio_f_pos_edit()
+            data.scroll_event(ratio)
 
-        def set_scroll_sta_event(func):
+        def set_scroll_sta_event(func):  # コールバック設定
             data.scroll_sta_event = func
-            data.scroll_event(data.pxf.ratio_f)
+            ratio = ratio_f_pos_edit()
+            data.scroll_sta_event(ratio)
 
-        def set_scroll_end_event(func):
+        def set_scroll_end_event(func):  # コールバック設定
             data.scroll_end_event = func
-            data.scroll_event(data.pxf.ratio_f)
+            ratio = ratio_f_pos_edit()
+            data.scroll_end_event(ratio)
 
-        data.set_scroll_event = set_scroll_event
+        data.set_scroll_event = set_scroll_event  # コールバック実行
         data.set_scroll_event(data.event_not_func)
 
-        data.set_scroll_sta_event = set_scroll_sta_event
+        data.set_scroll_sta_event = set_scroll_sta_event  # コールバック実行
         data.set_scroll_sta_event(data.event_not_func)
 
-        data.set_scroll_end_event = set_scroll_end_event
+        data.set_scroll_end_event = set_scroll_end_event  # コールバック実行
         data.set_scroll_end_event(data.event_not_func)
 
         def run_scroll_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
-            data.scroll_event(data.pxf.ratio_f)
+            ratio = ratio_f_pos_edit()
+            data.scroll_event(ratio)
 
         def run_scroll_sta_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
-            data.scroll_sta_event(data.pxf.ratio_f)
+            ratio = ratio_f_pos_edit()
+            data.scroll_sta_event(ratio)
 
         def run_scroll_end_event():
             if not str(type(data.scroll_event)) == "<class 'function'>":
                 return
-            data.scroll_end_event(data.pxf.ratio_f)
+            ratio = ratio_f_pos_edit()
+            data.scroll_end_event(ratio)
 
             # print("pos決定", pos, size)
 
@@ -149,3 +165,9 @@ class CentralRole:
         # data.edit_percent_movement = edit_percent_movement
 
         return data
+
+
+class RatioData:
+    def __init__(self, ratio_f, sta_end_f):
+        self.ratio_f = copy.deepcopy(ratio_f)
+        self.sta_end_f = copy.deepcopy(sta_end_f)
