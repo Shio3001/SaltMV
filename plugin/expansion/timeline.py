@@ -63,18 +63,35 @@ class InitialValue:
         def new_objct(p=0):
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
-            # self.data.timeline_objct[-1].pxf.edit_timeline_range(sta_px=timeline_left, end_px=100, sta_f=5, end_f=100)
 
-            self.data.timeline_objct[-1].pxf.set_f_ratio(position=p, size=timeline_size)
             self.data.timeline_objct[-1].edit_territory_position(x=timeline_left)
-
             self.data.timeline_objct[-1].territory_stack(False)
-            # self.data.timeline_objct[-1].territory_draw()
-
             self.data.timeline_objct[-1].set_scroll_event(reflect_timeline_to_movie)  # コールバック関数登録
 
-        for i in range(2):
-            new_objct()
+            frame_len = self.data.all_data.scene().editor["len"]
+            self.data.timeline_objct[-1].pxf.init_set_sta_end_f(sta=0, end=frame_len)
+            self.data.timeline_objct[-1].pxf.set_sta_end_f(sta=0, end=frame_len)
+
+            #self.data.timeline_objct[-1].pxf.set_f_ratio(position=p, size=timeline_size)
+
+            self.data.timeline_objct[-1].pxf.set_f_ratio()
+
+        # for i in range(1):
+        #    new_objct()
+
+        def loading_movie_data():
+            print("取得")
+            get_scene = self.data.all_data.scene()
+
+            frame_len = get_scene.editor["len"]
+
+            for layer in get_scene.layer_group:
+                for obj in layer.object_group:
+                    print(obj, "実行")
+                    new_objct()
+                    self.data.timeline_objct[-1].pxf.set_f_ratio(position=obj.installation[0], size=obj.installation[1] - obj.installation[0])
+
+            # new_objct()
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
@@ -85,14 +102,6 @@ class InitialValue:
             end_f = frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100)
 
             print(sta_f, end_f, "staend")
-
-            #sta_f = frame_len * (sta_origin / 100)
-            # end_f = frame_len * (end_origin / 100)  # たぶん原因はここの式
-            # end_f = frame_len * ((scroll_data[0] + scroll_data[1]) / 100)  # たぶん原因はここの式
-
-            # print("変更", sta_f, end_f, sta_origin, end_origin)
-
-            # rate =
 
             for i in self.data.timeline_objct:
                 i.pxf.init_set_sta_end_f(sta=0, end=frame_len)
@@ -131,6 +140,8 @@ class InitialValue:
 
         self.data.add_window_event("Configure", window_size_edit)
         window_size_edit(None)
+
+        self.data.all_data.fill_input_callback = loading_movie_data
 
         return self.data
 

@@ -37,11 +37,11 @@ class InitialValue:
             pass
 
         def project_open():
-            pass
+            self.data.all_data.file_input(self.data.all_data.input_debug("open"))
             # self.data.all_data.add_layer_elements()
 
         def project_save():
-            pass
+            self.data.all_data.file_output(self.data.all_data.input_debug("close"))
 
         def project_overwrite_save():
             pass

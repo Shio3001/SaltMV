@@ -22,6 +22,9 @@ class Storage:
 
         self.main_path = main_path
 
+        self.fill_input_callback = None
+        self.fill_output_callback = None
+
         this_os = str(os.name)  # windowsか判定
         if this_os == "nt":
             self.slash = "\\"
@@ -35,6 +38,13 @@ class Storage:
         self.read_font()
 
         self.add_scene_elements()
+
+    def input_debug(self, message=None):
+        print("{0} 入力してください".format(message))
+
+        in_data = str(input())
+
+        return in_data
 
     def get_font_path(self):
 
@@ -153,6 +163,12 @@ class Storage:
 
             self.operation["log"].write("編集ファイルを開きました ファイルパス{0}".format(save_path))
 
+            if not str(type(self.fill_input_callback)) == "<class 'function'>":
+                return
+
+            print("input実行")
+            self.fill_input_callback()
+
         except:
             self.operation["log"].write("編集ファイルが存在しませんでした")
             save_path = ""
@@ -170,6 +186,10 @@ class Storage:
         openfile.close()
 
         save_location = copy.deepcopy(user_select)
+
+        if not str(type(self.fill_output_callback)) == "<class 'function'>":
+            return
+        self.fill_output_callback()
 
         return save_location
 
