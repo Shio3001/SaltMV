@@ -50,7 +50,7 @@ class InitialValue:
         timeline_scroll.territory_draw()
 
         self.data.all_data.add_layer_elements()
-        self.data.all_data.add_object_elements(0)
+        # self.data.all_data.add_object_elements(0)
 
         def reflect_timeline_to_movie(scroll_data):
             get_media_data = self.data.all_data.media_object(0, 0)
@@ -79,8 +79,8 @@ class InitialValue:
 
             self.data.timeline_objct[-1].pxf.set_f_ratio(size=20)
 
-        for i in range(1):
-            new_objct()
+        # for i in range(1):
+        #    new_objct()
 
         def loading_movie_data():
             print("取得")
