@@ -87,45 +87,47 @@ class Storage:
         self.operation = send_operation
 
     def get(self):
-        return edit_data
+        return copy.deepcopy(edit_data)
 
     def set(self, send):
-        edit_data = send
+        edit_data = copy.deepcopy(send)
         return
 
     def scene(self, data=None):
         # self.operation["log"].write("scene")
 
         if not data is None:
-            edit_data.scenes[now_scene] = data
+            edit_data.scenes[now_scene] = copy.deepcopy(data)
             return
-        return edit_data.scenes[now_scene]
+        return copy.deepcopy(edit_data.scenes[now_scene])
 
     def layer(self, layer_order, data=None):
         # self.operation["log"].write("layer")
 
         if not data is None:
-            self.scene().layer_group[layer_order] = data
+            edit_data.scenes[now_scene].layer_group[layer_order] = copy.deepcopy(data)
             return
 
-        return self.scene().layer_group[layer_order]
+        return copy.deepcopy(self.scene().layer_group[layer_order])
 
     def media_object(self, layer_order, object_order, data=None):
         # self.operation["log"].write("object")
 
         if not data is None:
-            self.layer(layer_order).object_group[object_order] = data
+            edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order] = copy.deepcopy(data)
+
+            print("受信しました", data.installation)
             return
-        return self.layer(layer_order).object_group[object_order]
+        return copy.deepcopy(self.layer(layer_order).object_group[object_order])
 
     def effect(self, layer_order, object_order, effect_order, data=None):
         # self.operation["log"].write("effect")
 
         if not data is None:
-            self.object(layer_order, object_order).effect_group[effect_order] = data
+            edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order] = copy.deepcopy(data)
             return
 
-        return self.object(layer_order, object_order).effect_group[effect_order]
+        return copy.deepcopy(self.object(layer_order, object_order).effect_group[effect_order])
 
     def add_scene_elements(self):
         edit_data.scenes.append(elements.SceneElements())

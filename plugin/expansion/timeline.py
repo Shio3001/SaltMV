@@ -57,7 +57,7 @@ class InitialValue:
             get_media_data.installation = [scroll_data.ratio_f[0], scroll_data.ratio_f[0] + scroll_data.ratio_f[1]]
             self.data.all_data.media_object(0, 0, data=get_media_data)
 
-            print(self.data.all_data.media_object(0, 0).installation)
+            print(self.data.all_data.media_object(0, 0).installation, "installation", scroll_data.ratio_f)
             # self.data.timeline_objct[-1].
 
         def new_objct(p=0):
@@ -69,15 +69,18 @@ class InitialValue:
             self.data.timeline_objct[-1].set_scroll_event(reflect_timeline_to_movie)  # コールバック関数登録
 
             frame_len = self.data.all_data.scene().editor["len"]
+
+            print("frame_len", frame_len)
+
             self.data.timeline_objct[-1].pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            self.data.timeline_objct[-1].pxf.set_sta_end_f(sta=0, end=frame_len)
+            #self.data.timeline_objct[-1].pxf.set_sta_end_f(sta=0, end=frame_len)
 
             #self.data.timeline_objct[-1].pxf.set_f_ratio(position=p, size=timeline_size)
 
-            self.data.timeline_objct[-1].pxf.set_f_ratio()
+            self.data.timeline_objct[-1].pxf.set_f_ratio(size=20)
 
-        # for i in range(1):
-        #    new_objct()
+        for i in range(1):
+            new_objct()
 
         def loading_movie_data():
             print("取得")
@@ -91,7 +94,7 @@ class InitialValue:
                     new_objct()
                     self.data.timeline_objct[-1].pxf.set_f_ratio(position=obj.installation[0], size=obj.installation[1] - obj.installation[0])
 
-            # new_objct()
+            # new_objct(s)
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
