@@ -24,11 +24,16 @@ class parts:
 
         data.pxf.set_draw_func(draw)
 
+        callback_ope = data.operation["plugin"]["other"]["callback"]
+        data.callback = callback_ope.CallBack(data)
+
         def click_start(event):
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
             data.view_pos_sta = data.edit_diagram_position("bar")[0]
             data.view_size_sta = data.edit_diagram_size("bar")[0]
+
+            data.run_scroll_sta_event()
 
         def click_position(event):
             if not data.click_flag:
@@ -51,10 +56,14 @@ class parts:
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
 
+            data.run_scroll_event()
+
         def click_end(event):
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("bar", del_mouse=True)
+
+            data.run_scroll_end_event()
 
         data.add_diagram_event("bar", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_position)

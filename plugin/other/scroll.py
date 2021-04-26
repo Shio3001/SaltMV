@@ -38,65 +38,13 @@ class CentralRole:
         data.pxf.set_sta_end_f(sta=0, end=100)
         data.pxf.set_draw_func(draw)
 
-        data.scroll_event = None
-        data.scroll_sta_event = None
-        data.scroll_end_event = None
+        # data.pxf.set_draw_func(draw)
 
-        def ratio_f_pos_edit():
-            #ratio_f = [0, 0]
+        callback_ope = data.operation["plugin"]["other"]["callback"]
 
-            #ratio_f[0] = copy.deepcopy(data.pxf.ratio_f[0])
-            #ratio_f[1] = copy.deepcopy(data.pxf.ratio_f[1])
+        data.callback = callback_ope.CallBack(data)
 
-            ratio_data = RatioData(data.pxf.ratio_f, data.pxf.sta_end_f)
-
-            return ratio_data
-
-        def set_scroll_event(func):  # コールバック設定
-            data.scroll_event = func
-            ratio = ratio_f_pos_edit()
-            data.scroll_event(ratio)
-
-        def set_scroll_sta_event(func):  # コールバック設定
-            data.scroll_sta_event = func
-            ratio = ratio_f_pos_edit()
-            data.scroll_sta_event(ratio)
-
-        def set_scroll_end_event(func):  # コールバック設定
-            data.scroll_end_event = func
-            ratio = ratio_f_pos_edit()
-            data.scroll_end_event(ratio)
-
-        data.set_scroll_event = set_scroll_event  # コールバック実行
-        data.set_scroll_event(data.event_not_func)
-
-        data.set_scroll_sta_event = set_scroll_sta_event  # コールバック実行
-        data.set_scroll_sta_event(data.event_not_func)
-
-        data.set_scroll_end_event = set_scroll_end_event  # コールバック実行
-        data.set_scroll_end_event(data.event_not_func)
-
-        def run_scroll_event():
-            if not str(type(data.scroll_event)) == "<class 'function'>":
-                return
-            ratio = ratio_f_pos_edit()
-            data.scroll_event(ratio)
-
-        def run_scroll_sta_event():
-            if not str(type(data.scroll_event)) == "<class 'function'>":
-                return
-            ratio = ratio_f_pos_edit()
-            data.scroll_sta_event(ratio)
-
-        def run_scroll_end_event():
-            if not str(type(data.scroll_event)) == "<class 'function'>":
-                return
-            ratio = ratio_f_pos_edit()
-            data.scroll_end_event(ratio)
-
-            # print("pos決定", pos, size)
-
-        data.pxf.set_draw_func(draw)
+        # print("pos決定", pos, size)
 
         # #print("scroll class ID", data)
 
@@ -115,7 +63,7 @@ class CentralRole:
             # 計算の基準は描画開始地点  data.drawing_area[0] : "# 配列0番 : territory起点からパーセント起点まで 実数表示!" です
             # つまりterritory起点+spaceからここまでどのぐらいの距離があるかどうかを判定します
 
-            run_scroll_sta_event()
+            data.run_scroll_sta_event()
 
         def click_mov(event):
             if not data.click_flag:
@@ -141,7 +89,7 @@ class CentralRole:
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 #print(now_mov, "C")
 
-            run_scroll_event()
+            data.run_scroll_event()
 
         def click_end(event):
 
@@ -150,7 +98,7 @@ class CentralRole:
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("view", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("view", del_mouse=True)
 
-            run_scroll_end_event()
+            data.run_scroll_end_event()
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -165,9 +113,3 @@ class CentralRole:
         # data.edit_percent_movement = edit_percent_movement
 
         return data
-
-
-class RatioData:
-    def __init__(self, ratio_f, sta_end_f):
-        self.ratio_f = copy.deepcopy(ratio_f)
-        self.sta_end_f = copy.deepcopy(sta_end_f)

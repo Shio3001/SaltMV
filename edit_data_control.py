@@ -100,7 +100,7 @@ class Storage:
 
         return self.scene().layer_group[layer_order]
 
-    def object(self, layer_order, object_order, data=None):
+    def media_object(self, layer_order, object_order, data=None):
         # self.operation["log"].write("object")
 
         if not data is None:

@@ -49,6 +49,17 @@ class InitialValue:
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
+        self.data.all_data.add_layer_elements()
+        self.data.all_data.add_object_elements(0)
+
+        def reflect_timeline_to_movie(scroll_data):
+            get_media_data = self.data.all_data.media_object(0, 0)
+            get_media_data.installation = [scroll_data.ratio_f[0], scroll_data.ratio_f[0] + scroll_data.ratio_f[1]]
+            self.data.all_data.media_object(0, 0, data=get_media_data)
+
+            print(self.data.all_data.media_object(0, 0).installation)
+            # self.data.timeline_objct[-1].
+
         def new_objct(p=0):
             self.data.timeline_objct.append(None)
             self.data.timeline_objct[-1] = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct")
@@ -59,6 +70,8 @@ class InitialValue:
 
             self.data.timeline_objct[-1].territory_stack(False)
             # self.data.timeline_objct[-1].territory_draw()
+
+            self.data.timeline_objct[-1].set_scroll_event(reflect_timeline_to_movie)  # コールバック関数登録
 
         for i in range(2):
             new_objct()
