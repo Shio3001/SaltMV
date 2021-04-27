@@ -52,6 +52,11 @@ class InitialValue:
 
         test_layer = self.data.all_data.add_layer_elements()
 
+        for i in range(10):
+            test_layer_loop = self.data.all_data.add_layer_elements()
+
+        self.scrollbar_sta_end = [0, 0]
+
         def reflect_timeline_to_movie(scroll_data):
 
             layer_id, media_id = test_layer.layer_id, scroll_data.option_data["media_id"]
@@ -85,17 +90,13 @@ class InitialValue:
             print("frame_len", frame_len)
 
             self.data.timeline_objct[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=0, end=frame_len)
+            self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
 
             obj_time = self.data.all_data.media_object(test_layer.layer_id, media_id)
 
-            self.data.timeline_objct[media_id].pxf.set_f_ratio(0, 20)
+            self.data.timeline_objct[media_id].pxf.set_f_ratio(position=0, size=20)
 
             window_size_edit(None)
-
-            # self.data.timeline_objct[timeline_objct_ID].timeline_objct_ID = copy.deepcopy(timeline_objct_ID)
-
-            # now_timeline_objct_ID += 1
 
         # for i in range(1):
         #    new_objct()
@@ -108,13 +109,11 @@ class InitialValue:
 
             print("layer個数", len(get_scene.layer_group))
 
-            for layer in get_scene.layer_group:
-                print("obj個数", len(layer.object_group))
-                for obj in layer.object_group:
+            for layer in get_scene.layer_group.values():
+                print("obj個数", len(layer.object_group), layer.object_group)
+                for obj in layer.object_group.values():
                     print(obj, "実行")
                     make_objct(media_id=obj.objct_Id)
-
-                    self.data.timeline_objct[obj.objct_Id].pxf.set_f_ratio(position=obj.installation[0], size=obj.installation[1] - obj.installation[0])
 
             # new_objct(s)
 
@@ -126,9 +125,11 @@ class InitialValue:
             sta_f = frame_len * (scroll_data.ratio_f[0] / 100)
             end_f = frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100)
 
+            self.scrollbar_sta_end = [sta_f, end_f]
+
             print(sta_f, end_f, "staend")
 
-            for i in self.data.timeline_objct:
+            for i in self.data.timeline_objct.values():
                 i.pxf.init_set_sta_end_f(sta=0, end=frame_len)
                 i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
                 i.pxf.set_f_ratio()

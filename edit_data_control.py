@@ -111,6 +111,8 @@ class Storage:
             edit_data.scenes[edit_data.now_scene].layer_group[layer_order] = copy.deepcopy(data)
             return
 
+        print("オブジェクト数", len(edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group))
+
         return copy.deepcopy(self.scene().layer_group[layer_order])
 
     def media_object(self, layer_order, object_order, data=None):
@@ -201,6 +203,9 @@ class Storage:
         # return all_elements, save_location
 
     def file_output(self, user_select):
+
+        for layer in edit_data.scenes[edit_data.now_scene].layer_group.values():
+            print("layer_obj len:", layer.object_group)
 
         user_select = self.extension_detection(user_select)
 
