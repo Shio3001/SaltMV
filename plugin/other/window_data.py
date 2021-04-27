@@ -138,7 +138,7 @@ class SendWindowData:  # window生成のためのデータ
 
     #####################################################################################
 
-    def new_parts(self, name, territory_name, parts_name=None):
+    def new_parts(self, name, territory_name, parts_name=None, option_data=None):
         window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event}
         canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event}
 
@@ -154,7 +154,8 @@ class SendWindowData:  # window生成のためのデータ
                                                   territory_name,
                                                   self.font_data,
                                                   self.tkFont,
-                                                  self.tkFont_list)
+                                                  self.tkFont_list,
+                                                  option_data)
 
         # new_UIdata.new_territory()
 
@@ -182,6 +183,9 @@ class SendWindowData:  # window生成のためのデータ
         if not send is None:
             self.window_name = send
         self.window.title(self.window_name)
+
+    def window_exit():
+        self.window.destroy()
 
     def menubar_set(self, send):
         if not send is None:

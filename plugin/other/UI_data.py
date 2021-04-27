@@ -19,7 +19,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
                  territory_name,
                  font_data,
                  tkFont,
-                 tkFont_list):
+                 tkFont_list,
+                 option_data):
 
         self.window = window
         self.canvas_data = canvas_data
@@ -39,6 +40,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.tkFont = tkFont
         self.tkFont_list = tkFont_list
 
+        self.option_data = option_data
+
+        print("option_data", self.option_data)
+
         self.new_territory()
 
         self.operation["log"].write("UIdata生成")
@@ -47,6 +52,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
         #self.timeline_calculation = None
 
         # self.operation["log"].write("UI生成")
+
+    def get_set_option_data(self, option_data=None):
+
+        if not option_data is None:
+            self.option_data = option_data
+            return
+
+        return self.option_data
 
     def event_not_func(self, event):
         pass

@@ -1,5 +1,6 @@
 import sys
 import copy
+import datetime
 
 
 class parts:
@@ -13,6 +14,8 @@ class parts:
         data.edit_diagram_position("bar", x=100, y=40)
         data.edit_diagram_color("bar", "#00ff00")
         data.territory_draw()
+
+        #data.timeline_objct_ID = None
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
 

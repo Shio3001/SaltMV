@@ -6,7 +6,7 @@ import base64
 import os
 
 edit_data = elements.AllElements()
-now_scene = 0  # 現在の操作シーン
+# edit_data.now_scene = 0  # 現在の操作シーン
 
 
 class Storage:
@@ -37,7 +37,10 @@ class Storage:
         self.font_name = {}
         self.read_font()
 
-        self.add_scene_elements()
+        new_scene = self.add_scene_elements()
+        edit_data.now_scene = new_scene.scene_id
+
+        print("now_key:", edit_data.now_scene)
 
     def input_debug(self, message=None):
         print("{0} 入力してください".format(message))
@@ -97,15 +100,15 @@ class Storage:
         # self.operation["log"].write("scene")
 
         if not data is None:
-            edit_data.scenes[now_scene] = copy.deepcopy(data)
+            edit_data.scenes[edit_data.now_scene] = copy.deepcopy(data)
             return
-        return copy.deepcopy(edit_data.scenes[now_scene])
+        return copy.deepcopy(edit_data.scenes[edit_data.now_scene])
 
     def layer(self, layer_order, data=None):
         # self.operation["log"].write("layer")
 
         if not data is None:
-            edit_data.scenes[now_scene].layer_group[layer_order] = copy.deepcopy(data)
+            edit_data.scenes[edit_data.now_scene].layer_group[layer_order] = copy.deepcopy(data)
             return
 
         return copy.deepcopy(self.scene().layer_group[layer_order])
@@ -114,7 +117,9 @@ class Storage:
         # self.operation["log"].write("object")
 
         if not data is None:
-            edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order] = copy.deepcopy(data)
+            print("ids :", edit_data.now_scene, layer_order, object_order)
+
+            edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order] = copy.deepcopy(data)
 
             print("受信しました", data.installation)
             return
@@ -124,35 +129,51 @@ class Storage:
         # self.operation["log"].write("effect")
 
         if not data is None:
-            edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order] = copy.deepcopy(data)
+            edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order] = copy.deepcopy(data)
             return
 
         return copy.deepcopy(self.object(layer_order, object_order).effect_group[effect_order])
 
     def add_scene_elements(self):
-        edit_data.scenes.append(elements.SceneElements())
+        new_scene = elements.SceneElements()
+        edit_data.scenes[new_scene.scene_id] = new_scene
+
+        print("key:", new_scene.scene_id)
+
+        return copy.deepcopy(edit_data.scenes[new_scene.scene_id])
 
     def add_layer_elements(self):
-        edit_data.scenes[now_scene].layer_group.append(elements.LayerElements())
-        print(edit_data.scenes[now_scene].layer_group)
+        new_layer = elements.LayerElements()
+        edit_data.scenes[edit_data.now_scene].layer_group[new_layer.layer_id] = new_layer
+        # print(edit_data.scenes[edit_data.now_scene].layer_group)
+
+        return copy.deepcopy(self.scene().layer_group[new_layer.layer_id])
 
     def add_object_elements(self, layer_order):
-        edit_data.scenes[now_scene].layer_group[layer_order].object_group.append(elements.ObjectElements())
+
+        new_obj = elements.ObjectElements()
+        edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[new_obj.obj_id] = new_obj
+
+        return copy.deepcopy(self.layer(layer_order).object_group[new_obj.obj_id])
 
     def add_effect_elements(self, layer_order, object_order):
-        edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group.append(elements.EffectElements())
+
+        new_effect = elements.EffectElements()
+        edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[new_effect.effect_id] = new_effect
+
+        return copy.deepcopy(self.object(layer_order, object_order).effect_group[new_effect.effect_id])
 
     def del_scene_elements(self, scene_order):
         del edit_data.scenes[scene_order]
 
     def del_layer_elements(self, layer_order):
-        del edit_data.scenes[now_scene].layer_group[layer_order]
+        del edit_data.scenes[edit_data.now_scene].layer_group[layer_order]
 
     def del_object_elements(self, layer_order, object_order):
-        del edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order]
+        del edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order]
 
     def del_effect_elements(self, layer_order, object_order, effect_order):
-        del edit_data.scenes[now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
+        del edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
 
     def file_input(self, user_select):
 

@@ -8,7 +8,7 @@ class CallBack:
         data.scroll_end_event = None
 
         def ratio_f_pos_edit():
-            ratio_data = RatioData(data.pxf.ratio_f, data.pxf.sta_end_f)
+            ratio_data = RatioData(data.option_data, data.pxf.ratio_f, data.pxf.sta_end_f)
 
             return ratio_data
 
@@ -60,6 +60,7 @@ class CallBack:
 
 
 class RatioData:
-    def __init__(self, ratio_f, sta_end_f):
+    def __init__(self, option_data, ratio_f, sta_end_f):
+        self.option_data = copy.deepcopy(option_data)
         self.ratio_f = copy.deepcopy(ratio_f)
         self.sta_end_f = copy.deepcopy(sta_end_f)

@@ -30,9 +30,6 @@ class InitialValue:
             return
         """
 
-        def window_exit():
-            self.data.window.destroy()
-
         def project_new():
             pass
 
@@ -55,7 +52,7 @@ class InitialValue:
             #scene_elements.user_select_range = [0, 100]
             self.operation["rendering"]["main"].video_output(self.operation,  scene_elements, "../log/test.mp4")
 
-        main_menubar_list = [("ファイル", "終了", window_exit, "新規作成", project_new, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit, "新規作成", project_new, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering)]
         self.data.menubar_set(main_menubar_list)
 
         display_size = self.data.display_size_get()

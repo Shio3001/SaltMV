@@ -10,7 +10,7 @@ class InitialValue:
         self.operation = self.data.operation
 
     def main(self):
-        pass
+        self.data.window_title_set("タイムライン設定")
 
 
 class CentralRole:

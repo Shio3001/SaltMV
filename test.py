@@ -1,13 +1,6 @@
-import tkinter as tk
+import datetime
 
+new_id = datetime.datetime.now()
 
-def test1(event):
-    print(event.delta)
-
-
-window = tk.Tk()
-
-window.bind("<{0}>".format("MouseWheel"), test1, "+")
-
-
-window.mainloop()
+a = new_id
+print(a)
