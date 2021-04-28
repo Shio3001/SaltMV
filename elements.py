@@ -4,11 +4,13 @@ import numpy as np
 import os
 import copy
 import datetime
+import uuid
 
 
 def make_id():
-    now_time = datetime.datetime.now()
-    new_id = now_time.strftime('%y%m%H%M%S%f')
+    #now_time = datetime.datetime.now()
+    #new_id = now_time.strftime('%y%m%H%M%S%f')
+    new_id = uuid.uuid1()
     return new_id
 
 
