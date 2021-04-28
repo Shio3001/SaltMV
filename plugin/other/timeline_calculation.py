@@ -89,16 +89,14 @@ class TimelineCalculation:
             flag += "A"
 
         if self.ratio_f[1] > frame_long_view:  # sizeが幅を超えた
-            self.ratio_f[1] = frame_long_view
+            self.ratio_f[0] = copy.deepcopy(self.sta_end_f_view[0])
+            self.ratio_f[1] = copy.deepcopy(frame_long_view)
+
             flag += "B"
 
         if self.ratio_f[0] + self.ratio_f[1] > frame_long_view:
             self.ratio_f[0] = frame_long_view - self.ratio_f[1]
             flag += "C"
-
-        if self.ratio_f[1] == frame_long_view:
-            self.ratio_f[0] == copy.deepcopy(frame_long_view)
-            flag += "D"
 
         # if self.ratio_f[0] * pos_rate / rate - self.sta_end_f[0] > self.sta_end_f_view[1]:  # posの値が幅を超えた
         #    self.ratio_f[0] = copy.deepcopy(self.sta_end_f_view[1] / pos_rate * rate + self.sta_end_f[0])
