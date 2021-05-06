@@ -50,10 +50,10 @@ class InitialValue:
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
-        test_layer = self.data.all_data.add_layer_elements()
+        # test_layer =
 
-        for i in range(10):
-            test_layer_loop = self.data.all_data.add_layer_elements()
+        # for i in range(10):
+        #    test_layer_loop = self.data.all_data.add_layer_elements()
 
         self.scrollbar_sta_end = [0, 0]
 
@@ -70,11 +70,18 @@ class InitialValue:
             #print(self.data.all_data.media_object(layer_id, media_id).installation, "installation", scroll_data.ratio_f)
             # self.data.timeline_objct[-1].
 
+        def new_layer():
+            new_layer = self.data.all_data.add_layer_elements()
+            make_layer(new_layer.layer_id)
+
+        def make_layer(layer_id):
+            pass
+
         def new_obj():
             new_object = self.data.all_data.add_object_elements(test_layer.layer_id)
             make_objct(new_object.obj_id)
 
-        def make_objct(media_id, p=0):
+        def make_objct(media_id):
 
             self.option_data = {"media_id": media_id}
 
@@ -83,7 +90,7 @@ class InitialValue:
             self.data.timeline_objct[media_id] = new_obj
             self.data.timeline_objct[media_id].edit_territory_position(x=timeline_left)
             self.data.timeline_objct[media_id].territory_stack(False)
-            self.data.timeline_objct[media_id].set_scroll_event(reflect_timeline_to_movie)  # コールバック関数登録
+            self.data.timeline_objct[media_id].set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
 
             frame_len = self.data.all_data.scene().editor["len"]
 
@@ -134,7 +141,7 @@ class InitialValue:
                 i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
                 i.pxf.set_f_ratio()
 
-        timeline_scroll.set_scroll_event(timeline_view_range)  # コールバック関数登録
+        timeline_scroll.set_event("mov", timeline_view_range)  # コールバック関数登録
 
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()
@@ -169,7 +176,7 @@ class InitialValue:
 
         self.data.all_data.fill_input_callback = loading_movie_data
 
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("追加", "動画", new_obj)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", None), ("追加", "動画", new_obj)]
         self.data.menubar_set(main_menubar_list)
         self.data.window_title_set("タイムライン")
         return self.data

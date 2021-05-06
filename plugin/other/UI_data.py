@@ -49,6 +49,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.operation["log"].write("UIdata生成")
         self.operation_timeline_calculation = self.operation["plugin"]["other"]["timeline_calculation"]
 
+        self.popup_list = None
+
         #self.timeline_calculation = None
 
         # self.operation["log"].write("UI生成")
@@ -396,6 +398,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
             print("font: {0} は 使用できません".format(font_name))
 
         return font_name
+
+    def popup_set(self, send):
+        if not send is None:
+            self.popup_list = send
 
     def edit_diagram_text(self,
                           di_name,

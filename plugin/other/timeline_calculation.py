@@ -65,12 +65,6 @@ class TimelineCalculation:
 
         rate = frame_long / scroll_long
 
-        if scroll_long != size:
-            pos_rate = frame_long / (scroll_long - size) if self.size_del else rate
-
-        else:
-            pos_rate = 0
-
         pos_f, size_f = None, None
 
         if not size is None and size < 1:
@@ -102,7 +96,7 @@ class TimelineCalculation:
         #    self.ratio_f[0] = copy.deepcopy(self.sta_end_f_view[1] / pos_rate * rate + self.sta_end_f[0])
         #    flag += "C"
 
-        print(self.debug_name, " :pxから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "position", position, "size", size, "flag", flag, "sta_end_f", self.sta_end_f, "sta_end_f_view,", self.sta_end_f_view)
+        #print(self.debug_name, " :pxから", "割合設定", self.ratio_f, "rate", rate, "pos_rate", pos_rate, "position", position, "size", size, "flag", flag, "sta_end_f", self.sta_end_f, "sta_end_f_view,", self.sta_end_f_view)
 
         if not flag == "":
             self.set_f_ratio()
@@ -134,5 +128,16 @@ class TimelineCalculation:
     def __draw(self, frame, px):
         self.draw_func(frame, px)
 
+    def get_event_data():
+        ratio_data = RatioData(self.option_data, self.pxf.ratio_f, self.sta_end_f)
+        return ratio_data
+
 # 複雑にしている原因分かったかもしれない
 # 原因、ストッパーの機能をpx側でもやろうとしてたからだ、普通にframe側でやればいいのでは
+
+
+class RatioData:
+    def __init__(self, option_data, ratio_f, sta_end_f):
+        self.option_data = copy.deepcopy(option_data)
+        self.ratio_f = copy.deepcopy(ratio_f)
+        self.sta_end_f = copy.deepcopy(sta_end_f)

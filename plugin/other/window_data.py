@@ -34,6 +34,9 @@ class SendWindowData:  # window生成のためのデータ
         self.tkFont_list = list(self.tkFont.families())  # これを使うにはtk.TK()をしたあとじゃないとダメらしい
         # print(self.tkFont_list)
 
+        self.window_menubar = None
+        self.pull_down = {}
+
         self.window.configure(bg=self.GUI_base_color)
 
     def window_open_close(self, select):
@@ -187,11 +190,11 @@ class SendWindowData:  # window生成のためのデータ
     def window_exit():
         self.window.destroy()
 
-    def menubar_set(self, send):
+    def menubar_set(self, send=None):
         if not send is None:
             self.menubar_list = send
 
-        window_menubar = tk.Menu(self.window)
+        self.window_menubar = tk.Menu(self.window)
 
         for bar in self.menubar_list:
 
@@ -202,27 +205,31 @@ class SendWindowData:  # window生成のためのデータ
             for i, content in enumerate(bar):
                 if i == 0:
                     main_bar = content
-                elif i % 2 == 0:
-                    bar_prg.append(content)
-                    # #print("bar偶数情報", content, i)
+
                 elif (i + 1) % 2 == 0:
                     bar_name.append(content)
-                    # #print("bar奇数情報", content, i)
 
-            pull_down = tk.Menu(window_menubar, tearoff=0)
+                elif i % 2 == 0:
+                    bar_prg.append(content)
 
-            window_menubar.add_cascade(label=main_bar, menu=pull_down)  # それぞれ
+            self.pull_down[main_bar] = tk.Menu(self.window_menubar, tearoff=0)
+
+            self.window_menubar.add_cascade(label=main_bar, menu=self.pull_down[main_bar])  # それぞれ
 
             for n, p in zip(bar_name, bar_prg):
-                pull_down.add_command(label=n, command=p)
+                self.pull_down[main_bar].add_command(label=n, command=p)
                 self.operation["log"].write("メニューバー登録 {0} {1}".format(n, p))
 
         self.operation["log"].write("バー設定終了{0}".format(self.window))
 
-        self.window.config(menu=window_menubar)
+        self.window.config(menu=self.window_menubar)
         self.window.update()
 
-        # self.window.mainloop()
+    def edit_menubar_bool(self, name, bool_data):
+        tk_bool = {True: tk.NORMAL, False: tk.DISABLED}
+        self.pull_down[main_bar].entryconfigure(name, state=tk_bool[bool_data])
+
+    # self.window.mainloop()
 
 
 class CanvasData:
