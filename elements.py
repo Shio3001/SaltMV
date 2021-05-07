@@ -23,7 +23,7 @@ class AllElements:  # えらい
 
 class SceneElements:  # えらい
     def __init__(self):
-        self.layer_group = {}  # 一番重要だと思われ
+        self.layer_group = []  # 一番重要だと思われ
         self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 100}  # 動画の画面サイズとかその辺
         self.scene_id = make_id()
         #self.user_select_range = [0, 100]
@@ -34,7 +34,7 @@ class SceneElements:  # えらい
 class LayerElements:  # 次にえらい
     def __init__(self):
         self.object_group = {}
-        self.layer_id = make_id()
+        #self.layer_id = make_id()
 
         print("レイヤーを追加しました : layerElements [ Elements ]")
 

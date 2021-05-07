@@ -10,14 +10,22 @@ class parts:
         data.click_flag = False
 
         data.new_diagram("bar")
-        data.edit_diagram_size("bar", x=100, y=40)
-        data.edit_diagram_position("bar", x=100, y=40)
+        data.edit_diagram_size("bar", x=100, y=20)
+        data.edit_diagram_position("bar", x=100, y=0)
         data.edit_diagram_color("bar", "#00ff00")
         data.territory_draw()
 
         #data.timeline_objct_ID = None
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
+
+        def pos_set_y(layer_number):
+            layer_pos = 20 * layer_number
+            data.edit_diagram_position("bar", y=layer_pos)
+
+            print(layer_pos)
+
+        #data.pos_add_y = pos_add_y
 
         def draw(px_pos, px_size):
             data.edit_diagram_position("bar", x=px_pos)
@@ -43,21 +51,22 @@ class parts:
                 return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("bar")
 
-            now_mov = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
-            pos = data.view_pos_sta + now_mov
+            now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
+            now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
+            pos = data.view_pos_sta + now_mov_x
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
                 #print(now_mov, "A")
-                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov)
+                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov_x)
+
                 # #print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
-                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov)
-                #print(now_mov, "B")
-                # #print("右側移動")
+                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
+                data.event("updown", info=(now_mov_y, data.edit_diagram_position("bar")[1], pos_set_y))
 
             data.event("mov", info=data.pxf.get_event_data())
 

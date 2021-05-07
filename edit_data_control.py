@@ -22,8 +22,8 @@ class Storage:
 
         self.main_path = main_path
 
-        self.fill_input_callback = None
-        self.fill_output_callback = None
+        #self.fill_input_callback = None
+        #self.fill_output_callback = None
 
         this_os = str(os.name)  # windowsか判定
         if this_os == "nt":
@@ -146,10 +146,11 @@ class Storage:
 
     def add_layer_elements(self):
         new_layer = elements.LayerElements()
-        edit_data.scenes[edit_data.now_scene].layer_group[new_layer.layer_id] = new_layer
+        edit_data.scenes[edit_data.now_scene].layer_group.append(new_layer)
         # print(edit_data.scenes[edit_data.now_scene].layer_group)
 
-        return copy.deepcopy(self.scene().layer_group[new_layer.layer_id])
+        leyer_length = self.get_layer_length()
+        return copy.deepcopy(self.scene().layer_group[leyer_length]), leyer_length
 
     def add_object_elements(self, layer_order):
 
@@ -176,6 +177,11 @@ class Storage:
 
     def del_effect_elements(self, layer_order, object_order, effect_order):
         del edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
+
+    def get_layer_length(self):
+        leyer_length = int(len(edit_data.scenes[edit_data.now_scene].layer_group)) - 1
+
+        return copy.deepcopy(leyer_length)
 
     def file_input(self, user_select):
 

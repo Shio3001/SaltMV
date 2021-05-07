@@ -6,11 +6,14 @@ class CallBack:
 
         data.event_data = {}
 
-        def set_event(name, func):
+        def set_event(name, func, run=False):
             if not name in data.event_data.keys():
                 data.event_data[name] = []
 
-            data.event_data[name].append(func)
+            data.event_data[name].append(func)  # 一度に複数の関数を実行できるようにするため
+
+            if run:
+                func(None)
 
         def event(name, info=None):
 

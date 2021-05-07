@@ -24,7 +24,7 @@ class InitialValue:
 
         timeline_left = 50  # タイムラインの左側のshape(x)
         timeline_up = 50  # タイムラインの上側のshape(y)
-        timeline_size = 10  # タイムラインの幅(y)
+        timeline_size = 20  # タイムラインの幅(y)
 
         left_up_color = "#ffffff"
 
@@ -50,6 +50,8 @@ class InitialValue:
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
+        now_layer = 0
+
         # test_layer =
 
         # for i in range(10):
@@ -59,53 +61,51 @@ class InitialValue:
 
         def reflect_timeline_to_movie(scroll_data):
 
-            a = self.data.all_data.scene()
-            b = list(a.layer_group.values())
-            print(b)
-            test_layer = b[0]
-
-            layer_id, media_id = test_layer.layer_id, scroll_data.option_data["media_id"]
+            media_id = scroll_data.option_data["media_id"]
 
             #print("id_s", test_layer.layer_id, scroll_data.option_data["media_id"])
-            get_media_data = self.data.all_data.media_object(layer_id, media_id)
+            get_media_data = self.data.all_data.media_object(now_layer, media_id)
 
             get_media_data.installation = [scroll_data.ratio_f[0], scroll_data.ratio_f[0] + scroll_data.ratio_f[1]]
-            self.data.all_data.media_object(layer_id, media_id, data=get_media_data)
+            self.data.all_data.media_object(now_layer, media_id, data=get_media_data)
 
             #print(self.data.all_data.media_object(layer_id, media_id).installation, "installation", scroll_data.ratio_f)
             # self.data.timeline_objct[-1].
 
         def new_layer():
-            new_layer = self.data.all_data.add_layer_elements()
-            make_layer(new_layer.layer_id)
-            print(new_layer.layer_id)
+            new_layer, leyer_number = self.data.all_data.add_layer_elements()
+            make_layer(leyer_number)
+            # print(new_layer.layer_id)
 
-        def make_layer(layer_id):
+        def make_layer(leyer_number):
             pass
 
         def new_obj():
-            a = self.data.all_data.scene()
-            b = list(a.layer_group.values())
-            print(b)
-            test_layer = b[0]
-
-            new_object = self.data.all_data.add_object_elements(test_layer.layer_id)
+            new_object = self.data.all_data.add_object_elements(now_layer)
             make_objct(new_object.obj_id)
 
+        def layer_updown(mouse_pos):
+            mouse, pos, pos_set_y = mouse_pos
+            now_layer = round((pos + mouse) / timeline_size)
+            print("now", now_layer, "移動量", mouse)
+            pos_set_y(now_layer)
+
+            # if mouse < timeline_size and now_layer > 0:
+            #    pos_set_y()
+
+            # if mouse > timeline_size:
+            #    pos_set_y(timeline_size)
+
         def make_objct(media_id):
-
-            a = self.data.all_data.scene()
-            b = list(a.layer_group.values())
-            test_layer = b[0]
-
             self.option_data = {"media_id": media_id}
 
             new_obj = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct", option_data=self.option_data)
 
             self.data.timeline_objct[media_id] = new_obj
-            self.data.timeline_objct[media_id].edit_territory_position(x=timeline_left)
-            self.data.timeline_objct[media_id].territory_stack(False)
+            self.data.timeline_objct[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
+            # self.data.timeline_objct[media_id].territory_stack(False)
             self.data.timeline_objct[media_id].set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
+            self.data.timeline_objct[media_id].set_event("updown", layer_updown)
 
             frame_len = self.data.all_data.scene().editor["len"]
 
@@ -113,9 +113,11 @@ class InitialValue:
             #print("scrollbar_sta_end", self.scrollbar_sta_end)
 
             self.data.timeline_objct[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=0, end=10)
+            self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
 
-            obj_time = self.data.all_data.media_object(test_layer.layer_id, media_id)
+            obj_time = self.data.all_data.media_object(0, media_id)
+
+            scroll_data = timeline_scroll.pxf.get_event_data()
 
             self.data.timeline_objct[media_id].pxf.set_f_ratio(position=0, size=20)
 
@@ -136,9 +138,11 @@ class InitialValue:
                 print("obj個数", len(layer.object_group), layer.object_group)
                 for obj in layer.object_group.values():
                     print(obj, "実行")
-                    make_objct(media_id=obj.objct_Id)
+                    make_objct(media_id=obj.objct_id)
 
             # new_objct(s)
+
+        # def sta_end_f_
 
         def timeline_view_range(scroll_data):
             frame_len = self.data.all_data.scene().editor["len"]
@@ -165,6 +169,7 @@ class InitialValue:
             self.data.edit_canvas_size("timeline",  x=size_x, y=size_y)
 
             timeline_width = size_x - timeline_left
+            timeline_hight = size_y - timeline_up
 
             shape[0].edit_territory_size(y=size_y)
             shape[1].edit_territory_size(x=timeline_width)
@@ -177,7 +182,7 @@ class InitialValue:
             timeline_scroll.pxf.set_f_ratio()
 
             for i in self.data.timeline_objct.values():
-                i.edit_territory_size(x=timeline_width)
+                i.edit_territory_size(x=timeline_width, y=timeline_hight)
                 i.pxf.set_sta_end_px(sta=timeline_left, end=size_x)
                 i.pxf.set_f_ratio()
 

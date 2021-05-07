@@ -74,7 +74,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.new_diagram("base")
         self.edit_diagram_fill("base", True)
-        self.edit_diagram_color("base", "#000000")
+        self.edit_diagram_color("base", self.GUI_alpha_color)
+        self.diagram_stack("base", False)
 
     def del_territory(self):
         self.territory_draw(te_del=True)
