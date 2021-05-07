@@ -14,10 +14,16 @@ class CallBack:
 
         def event(name, info=None):
 
-            for d in data.event_data[name]:
+            if not name in data.event_data.keys():
+                # print("返送")
+                return
 
-                if str(type(data.event_data[name])) == "<class 'function'>":
+            # print("実行")
+
+            for d in data.event_data[name]:
+                if str(type(d)) == "<class 'function'>":
                     d(info)
+                    # print("実行")
 
             """
             if str(type(data.event_data[name])) == "<class 'list'>":

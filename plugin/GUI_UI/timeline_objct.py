@@ -36,7 +36,7 @@ class parts:
             data.view_pos_sta = data.edit_diagram_position("bar")[0]
             data.view_size_sta = data.edit_diagram_size("bar")[0]
 
-            data.event("sta")
+            data.event("sta", info=data.pxf.get_event_data())
 
         def click_position(event):
             if not data.click_flag:
@@ -59,14 +59,14 @@ class parts:
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
 
-            data.event("mov")
+            data.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("bar", del_mouse=True)
 
-            data.event("end")
+            data.event("end", info=data.pxf.get_event_data())
 
         data.add_diagram_event("bar", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_position)

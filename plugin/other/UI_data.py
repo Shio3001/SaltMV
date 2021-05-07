@@ -56,7 +56,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         # self.operation["log"].write("UI生成")
 
     def get_set_option_data(self, option_data=None):
-
         if not option_data is None:
             self.option_data = option_data
             return
@@ -83,7 +82,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         del self.canvas_data.territory[self.te_name]
 
     def plus_px_frame_data(self, direction=None, debug_name=None, size_del=None):
-        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], direction=direction, debug_name=debug_name, size_del=size_del)
+        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], self.get_set_option_data, direction=direction, debug_name=debug_name, size_del=size_del)
         return timeline_calculation
 
     def edit_territory_size(self, x=None, y=None):

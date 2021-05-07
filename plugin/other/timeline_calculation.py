@@ -2,7 +2,7 @@ import copy
 
 
 class TimelineCalculation:
-    def __init__(self, UI_common_control, territory, direction=None, debug_name=None, size_del=None):
+    def __init__(self, UI_common_control, territory, get_set_option_data, direction=None, debug_name=None, size_del=None):
         self.common_control = UI_common_control
         self.territory = territory
 
@@ -30,6 +30,8 @@ class TimelineCalculation:
         self.size_del = False
         if not size_del is None:
             self.size_del = size_del
+
+        self.get_set_option_data = get_set_option_data
 
         print(debug_name, "===============================================")
 
@@ -110,6 +112,8 @@ class TimelineCalculation:
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
 
+        # print(self.sta_end_f)
+
         rate = scroll_long / frame_long
         #pos_rate = scroll_long / (frame_long - self.ratio_f[1])
 
@@ -128,8 +132,8 @@ class TimelineCalculation:
     def __draw(self, frame, px):
         self.draw_func(frame, px)
 
-    def get_event_data():
-        ratio_data = RatioData(self.option_data, self.pxf.ratio_f, self.sta_end_f)
+    def get_event_data(self):
+        ratio_data = RatioData(self.get_set_option_data(), self.ratio_f, self.sta_end_f)
         return ratio_data
 
 # 複雑にしている原因分かったかもしれない

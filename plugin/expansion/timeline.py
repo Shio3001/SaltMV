@@ -55,9 +55,14 @@ class InitialValue:
         # for i in range(10):
         #    test_layer_loop = self.data.all_data.add_layer_elements()
 
-        self.scrollbar_sta_end = [0, 0]
+        #self.scrollbar_sta_end = [0, 0]
 
         def reflect_timeline_to_movie(scroll_data):
+
+            a = self.data.all_data.scene()
+            b = list(a.layer_group.values())
+            print(b)
+            test_layer = b[0]
 
             layer_id, media_id = test_layer.layer_id, scroll_data.option_data["media_id"]
 
@@ -73,15 +78,25 @@ class InitialValue:
         def new_layer():
             new_layer = self.data.all_data.add_layer_elements()
             make_layer(new_layer.layer_id)
+            print(new_layer.layer_id)
 
         def make_layer(layer_id):
             pass
 
         def new_obj():
+            a = self.data.all_data.scene()
+            b = list(a.layer_group.values())
+            print(b)
+            test_layer = b[0]
+
             new_object = self.data.all_data.add_object_elements(test_layer.layer_id)
             make_objct(new_object.obj_id)
 
         def make_objct(media_id):
+
+            a = self.data.all_data.scene()
+            b = list(a.layer_group.values())
+            test_layer = b[0]
 
             self.option_data = {"media_id": media_id}
 
@@ -95,9 +110,10 @@ class InitialValue:
             frame_len = self.data.all_data.scene().editor["len"]
 
             print("frame_len", frame_len)
+            #print("scrollbar_sta_end", self.scrollbar_sta_end)
 
             self.data.timeline_objct[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
+            self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=0, end=10)
 
             obj_time = self.data.all_data.media_object(test_layer.layer_id, media_id)
 
@@ -142,6 +158,7 @@ class InitialValue:
                 i.pxf.set_f_ratio()
 
         timeline_scroll.set_event("mov", timeline_view_range)  # コールバック関数登録
+        timeline_scroll.event("mov", info=timeline_scroll.pxf.get_event_data())
 
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()
@@ -176,7 +193,7 @@ class InitialValue:
 
         self.data.all_data.fill_input_callback = loading_movie_data
 
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", None), ("追加", "動画", new_obj)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
         self.data.menubar_set(main_menubar_list)
         self.data.window_title_set("タイムライン")
         return self.data
