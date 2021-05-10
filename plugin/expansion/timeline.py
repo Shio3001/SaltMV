@@ -52,6 +52,11 @@ class InitialValue:
 
         now_layer = 0
 
+        def layer_elements(info):
+            pass
+
+        self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
+
         # test_layer =
 
         # for i in range(10):
@@ -85,16 +90,13 @@ class InitialValue:
             make_objct(new_object.obj_id)
 
         def layer_updown(mouse_pos):
-            mouse, pos, pos_set_y = mouse_pos
-            now_layer = round((pos + mouse) / timeline_size)
-            print("now", now_layer, "移動量", mouse)
+            pos, pos_set_y = mouse_pos
+            now_layer = round(pos / timeline_size)
+            now_layer = now_layer if now_layer > 0 else 0
+
+            print("現在のレイヤー", now_layer)
+
             pos_set_y(now_layer)
-
-            # if mouse < timeline_size and now_layer > 0:
-            #    pos_set_y()
-
-            # if mouse > timeline_size:
-            #    pos_set_y(timeline_size)
 
         def make_objct(media_id):
             self.option_data = {"media_id": media_id}
@@ -104,8 +106,8 @@ class InitialValue:
             self.data.timeline_objct[media_id] = new_obj
             self.data.timeline_objct[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
             # self.data.timeline_objct[media_id].territory_stack(False)
-            self.data.timeline_objct[media_id].set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
-            self.data.timeline_objct[media_id].set_event("updown", layer_updown)
+            self.data.timeline_objct[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
+            self.data.timeline_objct[media_id].callback_operation.set_event("updown", layer_updown)
 
             frame_len = self.data.all_data.scene().editor["len"]
 
@@ -154,15 +156,15 @@ class InitialValue:
 
             self.scrollbar_sta_end = [sta_f, end_f]
 
-            print(sta_f, end_f, "staend")
+            #print(sta_f, end_f, "staend")
 
             for i in self.data.timeline_objct.values():
                 i.pxf.init_set_sta_end_f(sta=0, end=frame_len)
                 i.pxf.set_sta_end_f(sta=sta_f, end=end_f)
                 i.pxf.set_f_ratio()
 
-        timeline_scroll.set_event("mov", timeline_view_range)  # コールバック関数登録
-        timeline_scroll.event("mov", info=timeline_scroll.pxf.get_event_data())
+        timeline_scroll.callback_operation.set_event("mov", timeline_view_range)  # コールバック関数登録
+        timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())
 
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()

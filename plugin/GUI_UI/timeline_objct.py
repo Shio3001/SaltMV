@@ -14,16 +14,19 @@ class parts:
         data.edit_diagram_position("bar", x=100, y=0)
         data.edit_diagram_color("bar", "#00ff00")
         data.territory_draw()
+        data.territory_stack(False)
+
+        #data.obj_now_layer = 0
 
         #data.timeline_objct_ID = None
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
 
         def pos_set_y(layer_number):
-            layer_pos = 20 * layer_number
+            layer_pos = layer_number
             data.edit_diagram_position("bar", y=layer_pos)
 
-            print(layer_pos)
+            print("layer_pos", layer_pos)
 
         #data.pos_add_y = pos_add_y
 
@@ -35,8 +38,7 @@ class parts:
 
         data.pxf.set_draw_func(draw)
 
-        callback_ope = data.operation["plugin"]["other"]["callback"]
-        callback_ope.CallBack(data)
+        data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
         def click_start(event):
             data.click_flag = True
@@ -44,7 +46,7 @@ class parts:
             data.view_pos_sta = data.edit_diagram_position("bar")[0]
             data.view_size_sta = data.edit_diagram_size("bar")[0]
 
-            data.event("sta", info=data.pxf.get_event_data())
+            data.callback_operation.event("sta", info=data.pxf.get_event_data())
 
         def click_position(event):
             if not data.click_flag:
@@ -56,26 +58,25 @@ class parts:
             pos = data.view_pos_sta + now_mov_x
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
-                #print(now_mov, "A")
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov_x)
-
-                # #print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
                 data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
-                data.event("updown", info=(now_mov_y, data.edit_diagram_position("bar")[1], pos_set_y))
+                after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
+                print(after_pos)
+                data.callback_operation.event("updown", info=(after_pos, pos_set_y))
 
-            data.event("mov", info=data.pxf.get_event_data())
+            data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("bar", del_mouse=True)
 
-            data.event("end", info=data.pxf.get_event_data())
+            data.callback_operation.event("end", info=data.pxf.get_event_data())
 
         data.add_diagram_event("bar", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_position)

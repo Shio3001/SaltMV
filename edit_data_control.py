@@ -40,6 +40,8 @@ class Storage:
         new_scene = self.add_scene_elements()
         edit_data.now_scene = new_scene.scene_id
 
+        self.callback_operation = None
+
         print("now_key:", edit_data.now_scene)
 
     def input_debug(self, message=None):
@@ -88,6 +90,7 @@ class Storage:
 
     def set_operation(self, send_operation):
         self.operation = send_operation
+        self.callback_operation = self.operation["plugin"]["other"]["callback"].CallBack()
 
     def get(self):
         return copy.deepcopy(edit_data)
@@ -156,7 +159,7 @@ class Storage:
 
         new_obj = elements.ObjectElements()
         edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[new_obj.obj_id] = new_obj
-
+        self.callback_operation.event("add_object_elements", info=(layer_order))
         return copy.deepcopy(self.layer(layer_order).object_group[new_obj.obj_id])
 
     def add_effect_elements(self, layer_order, object_order):
@@ -173,6 +176,7 @@ class Storage:
         del edit_data.scenes[edit_data.now_scene].layer_group[layer_order]
 
     def del_object_elements(self, layer_order, object_order):
+        #self.callback_operation.event("del_layer_elements", info=(layer_order, object_order))
         del edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order]
 
     def del_effect_elements(self, layer_order, object_order, effect_order):

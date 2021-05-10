@@ -40,8 +40,7 @@ class CentralRole:
 
         # data.pxf.set_draw_func(draw)
 
-        callback_ope = data.operation["plugin"]["other"]["callback"]
-        callback_ope.CallBack(data)
+        data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
         # print("pos決定", pos, size)
 
@@ -62,7 +61,7 @@ class CentralRole:
             # 計算の基準は描画開始地点  data.drawing_area[0] : "# 配列0番 : territory起点からパーセント起点まで 実数表示!" です
             # つまりterritory起点+spaceからここまでどのぐらいの距離があるかどうかを判定します
 
-            data.event("sta", info=data.pxf.get_event_data())
+            data.callback_operation.event("sta", info=data.pxf.get_event_data())
 
         def click_mov(event):
             if not data.click_flag:
@@ -88,7 +87,7 @@ class CentralRole:
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 #print(now_mov, "C")
 
-            data.event("mov", info=data.pxf.get_event_data())
+            data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
 
@@ -97,7 +96,7 @@ class CentralRole:
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("view", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("view", del_mouse=True)
 
-            data.event("end", info=data.pxf.get_event_data())
+            data.callback_operation.event("end", info=data.pxf.get_event_data())
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

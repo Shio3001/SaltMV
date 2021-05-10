@@ -65,12 +65,15 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def event_not_func(self, event):
         pass
 
-    def new_territory(self):
+    def new_territory(self, base=None):
         if self.te_name in self.canvas_data.territory.keys():
             self.operation["error"].action(message="テリトリーネーム(UIパーツタグ): {0} は すでに使用されています".format(self.te_name))
 
         self.canvas_data.territory[self.te_name] = TerritoryData()
         self.operation["log"].write("テリトリー生成 {0}".format(self.te_name))
+
+        if base != True:
+            return
 
         self.new_diagram("base")
         self.edit_diagram_fill("base", True)
