@@ -8,13 +8,13 @@ import uuid
 
 
 def make_id():
-    #now_time = datetime.datetime.now()
-    #new_id = now_time.strftime('%y%m%H%M%S%f')
-    new_id = uuid.uuid1()
+    now_time = datetime.datetime.now()
+    # new_id =
+    new_id = "u"+str(uuid.uuid1()) + "t" + now_time.strftime('%y%m%H%M%S%f')
     return new_id
 
 
-class AllElements:  # えらい
+class AllElements:  # すごくえらい
     def __init__(self):
         self.scenes = {}
         self.now_scene = None
@@ -33,8 +33,9 @@ class SceneElements:  # えらい
 
 class LayerElements:  # 次にえらい
     def __init__(self):
-        self.object_group = {}
+        self.object_group = {}  # later_id:obj
         #self.layer_id = make_id()
+        # self.layer_objs = {}  # layer_id:数字
 
         print("レイヤーを追加しました : layerElements [ Elements ]")
 
@@ -44,6 +45,8 @@ class ObjectElements:  # その次にえらい
         self.effect_group = {}
         self.installation = [0, 0]  # オブジェクト範囲
         self.synthetic = "normal"  # 合成方法
+
+        #self.belongs_layer_id = None
         self.obj_id = make_id()
 
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")

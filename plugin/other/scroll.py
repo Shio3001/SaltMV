@@ -67,6 +67,13 @@ class CentralRole:
             if not data.click_flag:
                 return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("view")
+
+            if now_mouse[0] < 0:
+                now_mouse[0] = 0
+
+            if now_mouse[0] > data.edit_territory_size()[0]:
+                now_mouse[0] = data.edit_territory_size()[0]
+
             now_mov = now_mouse[data.direction] - data.mouse_sta[data.direction]
 
             #print(now_mouse[data.direction], data.mouse_sta[data.direction])

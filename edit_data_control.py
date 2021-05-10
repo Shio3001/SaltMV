@@ -149,6 +149,7 @@ class Storage:
 
     def add_layer_elements(self):
         new_layer = elements.LayerElements()
+        #edit_data.scenes[edit_data.now_scene].layer_group[new_layer] = new_layer
         edit_data.scenes[edit_data.now_scene].layer_group.append(new_layer)
         # print(edit_data.scenes[edit_data.now_scene].layer_group)
 

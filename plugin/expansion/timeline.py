@@ -55,7 +55,7 @@ class InitialValue:
         def layer_elements(info):
             pass
 
-        self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
+        #self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
 
         # test_layer =
 

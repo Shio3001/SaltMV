@@ -53,6 +53,12 @@ class parts:
                 return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("bar")
 
+            if now_mouse[0] < 0:
+                now_mouse[0] = 0
+
+            if now_mouse[0] > data.edit_territory_size()[0]:
+                now_mouse[0] = data.edit_territory_size()[0]
+
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
             pos = data.view_pos_sta + now_mov_x
