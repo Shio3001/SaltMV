@@ -62,6 +62,15 @@ class InitialValue:
         def layer_elements(info):
             pass
 
+        def timeline_nowtime_approval_True(_):
+            nowtime_bar.click_flag = True
+
+        def timeline_nowtime_approval_False(_):
+            nowtime_bar.click_flag = False
+
+        timeline_scroll.callback_operation.set_event("sta", timeline_nowtime_approval_False)
+        timeline_scroll.callback_operation.set_event("end", timeline_nowtime_approval_True)
+
         #self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
 
         # test_layer =
@@ -152,6 +161,9 @@ class InitialValue:
             # self.data.timeline_object[media_id].territory_stack(False)
             self.data.timeline_object[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             self.data.timeline_object[media_id].callback_operation.set_event("updown", layer_updown)
+
+            self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
+            self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
 
             self.data.timeline_object[media_id].edit_layer(layer_number)
 

@@ -13,7 +13,7 @@ class parts:
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="now")
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
-        data.click_flag = False
+        data.click_flag = True
 
         def draw(px_pos, _):
             data.edit_diagram_position("now", x=px_pos)
@@ -36,8 +36,8 @@ class parts:
         """
 
         def click_position(event):
-            # if not data.click_flag:
-            #    return
+            if not data.click_flag:
+                return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("now")
 
             if now_mouse[0] < 0:
@@ -60,8 +60,9 @@ class parts:
             data.callback_operation.event("end", info=data.pxf.get_event_data())
         """
 
-        data.add_territory_event("Button-1", click_position)
-        #data.window_event_data["add"]("Motion", click_position)
-        #data.window_event_data["add"]("ButtonRelease-1", click_end)
+        #data.canvas_event_data.add_canvas_event("timeline", "Button-1", click_position)
+        #data.canvas_event_data.add_canvas_event("timeline", "B1-Motion", click_position)
+        data.canvas_event_data["add"]("timeline", "Button-1", click_position)
+        data.canvas_event_data["add"]("timeline", "B1-Motion", click_position)
 
         return data
