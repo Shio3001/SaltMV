@@ -18,7 +18,7 @@ class parts:
 
         #data.obj_now_layer = 0
 
-        data.timeline_objct_ID = None
+        #data.timeline_object_ID = None
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
 

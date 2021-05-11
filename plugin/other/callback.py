@@ -24,7 +24,11 @@ class CallBack:
 
         for d in self.__event_data[name]:
             if str(type(d)) == "<class 'function'>":
-                d(info)
+
+                if not info is None:
+                    d(info)
+                else:
+                    d()
                 # print("実行")
 
             """

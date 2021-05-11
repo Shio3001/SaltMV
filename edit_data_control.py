@@ -208,6 +208,8 @@ class Storage:
 
     def file_input(self, user_select):
 
+        self.callback_operation.event("file_input_before")
+
         user_select = self.extension_detection(user_select)
 
         try:
@@ -221,17 +223,19 @@ class Storage:
                 return
 
             print("input実行")
-            self.fill_input_callback()
 
         except:
             self.operation["log"].write("編集ファイルが存在しませんでした")
             save_path = ""
 
+        self.callback_operation.event("file_input_after")
         return save_path
 
         # return all_elements, save_location
 
     def file_output(self, user_select):
+
+        self.callback_operation.event("file_output_before")
 
         # for layer in self.edit_data.scenes[self.edit_data.now_scene].layer_group.values():
         #    print("layer_obj len:", layer.object_group)
@@ -247,6 +251,8 @@ class Storage:
         # if not str(type(self.fill_output_callback)) == "<class 'function'>":
         #    return
         # self.fill_output_callback()
+
+        self.callback_operation.event("file_output_after")
 
         return save_location
 

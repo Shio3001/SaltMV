@@ -24,23 +24,23 @@ class Rendering:
 
     def layer(self, this_layer, draw_base):
 
-        for this_objct in this_layer.object_group:
-            draw_base = self.obj(this_objct, draw_base)
+        for this_object in this_layer.object_group:
+            draw_base = self.obj(this_object, draw_base)
 
         return draw_base
 
-    def obj(self, this_objct, draw_base):
+    def obj(self, this_object, draw_base):
 
         ed_size = [int(self.editor["x"]), int(self.editor["y"])]
 
-        if this_objct.installation[0] <= self.now_f < this_objct.installation[1]:  # オブジェクト範囲外であれば返却
+        if this_object.installation[0] <= self.now_f < this_object.installation[1]:  # オブジェクト範囲外であれば返却
             return draw_base
 
         additions_point = [0, 0]
         source = copy.deepcopy(draw_base)
         additions = copy.deepcopy(draw_base)
 
-        for this_effect in this_objct.effect_group:
+        for this_effect in this_object.effect_group:
             additions, ef_additions_point = self.effect(this_effect, additions)
             additions_point = [d + r for d, r in zip(additions_point, ef_additions_point)]
 
@@ -71,7 +71,7 @@ class Rendering:
         additions_draw = additions[additions_margin[0][1]:additions_margin[1][1], additions_margin[0][0]:additions_margin[1][0]]
 
         # print(input_draw.shape)
-        output_draw = self.operation["plugin"]["synthetic"][this_objct.synthetic].main(input_draw, additions_draw)
+        output_draw = self.operation["plugin"]["synthetic"][this_object.synthetic].main(input_draw, additions_draw)
         source[source_margin[0][1]:source_margin[1][1], source_margin[0][0]:source_margin[1][0]] = output_draw
 
         return source
