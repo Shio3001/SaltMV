@@ -51,7 +51,13 @@ class InitialValue:
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
-        now_layer = 0
+        nowtime_bar = self.data.new_parts("timeline", "nowtime_bar", parts_name="timeline_nowtime")
+        nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=100)
+        nowtime_bar.edit_territory_size(y=10)
+        nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
+        nowtime_bar.territory_draw()
+
+        #now_layer = 0
 
         def layer_elements(info):
             pass
@@ -218,6 +224,9 @@ class InitialValue:
 
             self.scrollbar_sta_end = [sta_f, end_f]
 
+            nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
+            nowtime_bar.pxf.set_sta_end_f(sta=sta_f, end=end_f)
+            nowtime_bar.pxf.set_f_ratio()
             #print(sta_f, end_f, "staend")
 
             for i in self.data.timeline_object.values():
@@ -237,6 +246,11 @@ class InitialValue:
 
             shape[0].edit_territory_size(y=size_y)
             shape[1].edit_territory_size(x=timeline_width)
+
+            nowtime_bar.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
+            nowtime_bar.edit_territory_size(x=timeline_width, y=timeline_hight)
+            nowtime_bar.edit_diagram_size("now", y=timeline_hight)
+            nowtime_bar.pxf.set_f_ratio()
 
             # print("ウィンドウサイズ", size_x, size_y)
 
