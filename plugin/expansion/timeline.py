@@ -4,6 +4,7 @@ import os
 import copy
 
 import random
+import math
 
 
 class InitialValue:
@@ -69,34 +70,58 @@ class InitialValue:
             media_id = scroll_data.option_data["media_id"]
 
             #print("id_s", test_layer.layer_id, scroll_data.option_data["media_id"])
-            get_media_data = self.data.all_data.media_object(now_layer, media_id)
-
+            get_media_data = self.data.all_data.media_object(media_id)
             get_media_data.installation = [scroll_data.ratio_f[0], scroll_data.ratio_f[0] + scroll_data.ratio_f[1]]
-            self.data.all_data.media_object(now_layer, media_id, data=get_media_data)
+            self.data.all_data.media_object(media_id, data=get_media_data)
 
             #print(self.data.all_data.media_object(layer_id, media_id).installation, "installation", scroll_data.ratio_f)
             # self.data.timeline_objct[-1].
 
         def new_layer():
-            new_layer, leyer_number = self.data.all_data.add_layer_elements()
-            make_layer(leyer_number)
+            new_layer = self.data.all_data.add_layer_elements()
+            make_layer()
             # print(new_layer.layer_id)
 
-        def make_layer(leyer_number):
+        def make_layer():
             pass
 
         def new_obj():
-            new_object = self.data.all_data.add_object_elements(now_layer)
+            new_object = self.data.all_data.add_object_elements()
             make_objct(new_object.obj_id)
 
         def layer_updown(mouse_pos):
-            pos, pos_set_y = mouse_pos
-            now_layer = round(pos / timeline_size)
-            now_layer = now_layer if now_layer > 0 else 0
+            pos, obj_id, pos_set_y = mouse_pos
+            now_layer = self.data.all_data.get_now_layer_number(obj_id)
+
+            mov_layer = abs(math.floor(pos / timeline_size))
+
+            new_layer = now_layer
+
+            if pos < -1 * timeline_size:
+                new_layer = now_layer - mov_layer
+
+            if pos > timeline_size:
+                new_layer = now_layer + mov_layer
 
             print("現在のレイヤー", now_layer)
 
-            pos_set_y(now_layer)
+            if new_layer < 0:
+                new_layer = 0
+
+            if new_layer > self.data.all_data.get_layer_length() - 1:
+                new_layer = self.data.all_data.get_layer_length() - 1
+
+            new_layer_id = self.data.all_data.layer_number_to_layer_id(new_layer)
+
+            layer = self.data.all_data.layer()
+
+            layer.object_group[obj_id][1] = new_layer_id
+
+            self.data.all_data.layer(data=layer)
+
+            #self.data.all_data.edit_data.scenes[edit_data.now_scene].layer_group.object_group[new_obj.obj_id][1] = new_layer_id
+
+            pos_set_y(new_layer)
 
         def make_objct(media_id):
             self.option_data = {"media_id": media_id}
@@ -105,9 +130,12 @@ class InitialValue:
 
             self.data.timeline_objct[media_id] = new_obj
             self.data.timeline_objct[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
+            self.data.timeline_objct[media_id].edit_diagram_size("bar", y=timeline_size)
             # self.data.timeline_objct[media_id].territory_stack(False)
             self.data.timeline_objct[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             self.data.timeline_objct[media_id].callback_operation.set_event("updown", layer_updown)
+
+            # self.data.timeline_objct[media_id].timeline_objct_ID =
 
             frame_len = self.data.all_data.scene().editor["len"]
 
@@ -117,7 +145,7 @@ class InitialValue:
             self.data.timeline_objct[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
             self.data.timeline_objct[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
 
-            obj_time = self.data.all_data.media_object(0, media_id)
+            obj_time = self.data.all_data.media_object(media_id)
 
             scroll_data = timeline_scroll.pxf.get_event_data()
 
@@ -140,7 +168,7 @@ class InitialValue:
                 print("obj個数", len(layer.object_group), layer.object_group)
                 for obj in layer.object_group.values():
                     print(obj, "実行")
-                    make_objct(media_id=obj.objct_id)
+                    make_objct(media_id=obj[0].objct_id)
 
             # new_objct(s)
 

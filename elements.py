@@ -7,10 +7,10 @@ import datetime
 import uuid
 
 
-def make_id():
+def make_id(memo):
     now_time = datetime.datetime.now()
     # new_id =
-    new_id = "u"+str(uuid.uuid1()) + "t" + now_time.strftime('%y%m%H%M%S%f')
+    new_id = "u"+str(uuid.uuid1()) + "t" + now_time.strftime('%y%m%H%M%S%f') + str(memo)
     return new_id
 
 
@@ -23,9 +23,10 @@ class AllElements:  # すごくえらい
 
 class SceneElements:  # えらい
     def __init__(self):
-        self.layer_group = []  # 一番重要だと思われ
+        self.layer_group = LayerElements()
+
         self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 100}  # 動画の画面サイズとかその辺
-        self.scene_id = make_id()
+        self.scene_id = make_id("scene")
         #self.user_select_range = [0, 100]
 
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
@@ -33,7 +34,9 @@ class SceneElements:  # えらい
 
 class LayerElements:  # 次にえらい
     def __init__(self):
-        self.object_group = {}  # later_id:obj
+        self.object_group = {}    # objectID : [object,layerID]
+        # self.object_layer = {}    # objectID : layerID
+        self.layer_layer_id = {}  # layerID  : layer番号
         #self.layer_id = make_id()
         # self.layer_objs = {}  # layer_id:数字
 
@@ -47,7 +50,7 @@ class ObjectElements:  # その次にえらい
         self.synthetic = "normal"  # 合成方法
 
         #self.belongs_layer_id = None
-        self.obj_id = make_id()
+        self.obj_id = make_id("obj")
 
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
 
@@ -58,7 +61,7 @@ class EffectElements:  # えらくない
         self.effect_point = {}
         self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
-        self.effect_id = make_id()
+        self.effect_id = make_id("effect")
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

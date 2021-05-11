@@ -85,6 +85,17 @@ class Storage:
         print(self.font_data)
         print(self.font_name)
 
+    def layer_number_to_layer_id(self, layer_number):
+        layer_data = edit_data.scenes[edit_data.now_scene].layer_group.layer_layer_id
+        print(layer_data.items())
+        layer_id = [k for k, v in layer_data.items() if v == layer_number]
+        print(layer_id)
+        return copy.deepcopy(layer_id[0])
+
+    def layer_id_to_layer_number(self, layer_id):
+        layer_number = edit_data.scenes[edit_data.now_scene].layer_group.layer_layer_id[layer_id]
+        return copy.deepcopy(layer_number)
+
     def get_user(self):
         return os.environ.get("USER")
 
@@ -107,37 +118,38 @@ class Storage:
             return
         return copy.deepcopy(edit_data.scenes[edit_data.now_scene])
 
-    def layer(self, layer_order, data=None):
+    def layer(self, data=None):
         # self.operation["log"].write("layer")
 
         if not data is None:
-            edit_data.scenes[edit_data.now_scene].layer_group[layer_order] = copy.deepcopy(data)
+            edit_data.scenes[edit_data.now_scene].layer_group = copy.deepcopy(data)
             return
 
-        print("オブジェクト数", len(edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group))
+        #print("オブジェクト数", len(edit_data.scenes[edit_data.now_scene].layer_group.object_group[0]))
 
-        return copy.deepcopy(self.scene().layer_group[layer_order])
+        return copy.deepcopy(self.scene().layer_group)
 
-    def media_object(self, layer_order, object_order, data=None):
+    def media_object(self, object_order, data=None):
         # self.operation["log"].write("object")
 
         if not data is None:
-            print("ids :", edit_data.now_scene, layer_order, object_order)
+            print("ids :", edit_data.now_scene, object_order)
 
-            edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order] = copy.deepcopy(data)
+            print(edit_data.scenes[edit_data.now_scene].layer_group.object_group)
+            edit_data.scenes[edit_data.now_scene].layer_group.object_group[object_order][0] = copy.deepcopy(data)
 
             print("受信しました", data.installation)
             return
-        return copy.deepcopy(self.layer(layer_order).object_group[object_order])
+        return copy.deepcopy(self.layer().object_group[object_order][0])
 
-    def effect(self, layer_order, object_order, effect_order, data=None):
+    def effect(self, object_order, effect_order, data=None):
         # self.operation["log"].write("effect")
 
         if not data is None:
-            edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order] = copy.deepcopy(data)
+            edit_data.scenes[edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order] = copy.deepcopy(data)
             return
 
-        return copy.deepcopy(self.object(layer_order, object_order).effect_group[effect_order])
+        return copy.deepcopy(self.object(object_order).effect_group[effect_order])
 
     def add_scene_elements(self):
         new_scene = elements.SceneElements()
@@ -148,43 +160,45 @@ class Storage:
         return copy.deepcopy(edit_data.scenes[new_scene.scene_id])
 
     def add_layer_elements(self):
-        new_layer = elements.LayerElements()
-        #edit_data.scenes[edit_data.now_scene].layer_group[new_layer] = new_layer
-        edit_data.scenes[edit_data.now_scene].layer_group.append(new_layer)
-        # print(edit_data.scenes[edit_data.now_scene].layer_group)
+        edit_data.scenes[edit_data.now_scene].layer_group.layer_layer_id[elements.make_id("layer")] = self.get_layer_length()
 
-        leyer_length = self.get_layer_length()
-        return copy.deepcopy(self.scene().layer_group[leyer_length]), leyer_length
+        return copy.deepcopy(self.scene().layer_group)
 
-    def add_object_elements(self, layer_order):
-
+    def add_object_elements(self):
         new_obj = elements.ObjectElements()
-        edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[new_obj.obj_id] = new_obj
-        self.callback_operation.event("add_object_elements", info=(layer_order))
-        return copy.deepcopy(self.layer(layer_order).object_group[new_obj.obj_id])
+        edit_data.scenes[edit_data.now_scene].layer_group.object_group[new_obj.obj_id] = [None, None]
+        edit_data.scenes[edit_data.now_scene].layer_group.object_group[new_obj.obj_id][0] = new_obj
+        edit_data.scenes[edit_data.now_scene].layer_group.object_group[new_obj.obj_id][1] = self.layer_number_to_layer_id(0)
+        self.callback_operation.event("add_object_elements", info=())
+        return copy.deepcopy(self.layer().object_group[new_obj.obj_id][0])
 
-    def add_effect_elements(self, layer_order, object_order):
+    def add_effect_elements(self, object_order):
 
         new_effect = elements.EffectElements()
-        edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[new_effect.effect_id] = new_effect
+        edit_data.scenes[edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
 
-        return copy.deepcopy(self.object(layer_order, object_order).effect_group[new_effect.effect_id])
+        return copy.deepcopy(self.object(object_order).effect_group[new_effect.effect_id])
+
+    def get_now_layer_number(self, obj_id):
+        layer_id = edit_data.scenes[edit_data.now_scene].layer_group.object_group[obj_id][1]
+        layer_number = edit_data.scenes[edit_data.now_scene].layer_group.layer_layer_id[layer_id]
+        return layer_number
 
     def del_scene_elements(self, scene_order):
         del edit_data.scenes[scene_order]
 
-    def del_layer_elements(self, layer_order):
-        del edit_data.scenes[edit_data.now_scene].layer_group[layer_order]
+    def del_layer_elements(self):
+        del edit_data.scenes[edit_data.now_scene].layer_group
 
-    def del_object_elements(self, layer_order, object_order):
-        #self.callback_operation.event("del_layer_elements", info=(layer_order, object_order))
-        del edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order]
+    def del_object_elements(self, object_order):
+        #self.callback_operation.event("del_layer_elements", info=(object_order))
+        del edit_data.scenes[edit_data.now_scene].layer_group.object_group[object_order]
 
-    def del_effect_elements(self, layer_order, object_order, effect_order):
-        del edit_data.scenes[edit_data.now_scene].layer_group[layer_order].object_group[object_order].effect_group[effect_order]
+    def del_effect_elements(self, object_order, effect_order):
+        del edit_data.scenes[edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order]
 
     def get_layer_length(self):
-        leyer_length = int(len(edit_data.scenes[edit_data.now_scene].layer_group)) - 1
+        leyer_length = len(edit_data.scenes[edit_data.now_scene].layer_group.layer_layer_id.keys())
 
         return copy.deepcopy(leyer_length)
 
@@ -215,8 +229,8 @@ class Storage:
 
     def file_output(self, user_select):
 
-        for layer in edit_data.scenes[edit_data.now_scene].layer_group.values():
-            print("layer_obj len:", layer.object_group)
+        # for layer in edit_data.scenes[edit_data.now_scene].layer_group.values():
+        #    print("layer_obj len:", layer.object_group)
 
         user_select = self.extension_detection(user_select)
 
