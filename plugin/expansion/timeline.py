@@ -90,10 +90,12 @@ class InitialValue:
             make_objct(new_object.obj_id)
 
         def layer_updown(mouse_pos):
-            pos, obj_id, pos_set_y = mouse_pos
+            pos, obj_id, edit_layer, click_start = mouse_pos
             now_layer = self.data.all_data.get_now_layer_number(obj_id)
 
-            mov_layer = abs(math.floor(pos / timeline_size))
+            mov_layer = math.floor((abs(pos) - (timeline_size / 2)) / timeline_size)
+
+            print("pos", pos)
 
             new_layer = now_layer
 
@@ -112,18 +114,14 @@ class InitialValue:
                 new_layer = self.data.all_data.get_layer_length() - 1
 
             new_layer_id = self.data.all_data.layer_number_to_layer_id(new_layer)
-
             layer = self.data.all_data.layer()
-
             layer.object_group[obj_id][1] = new_layer_id
-
             self.data.all_data.layer(data=layer)
 
-            #self.data.all_data.edit_data.scenes[edit_data.now_scene].layer_group.object_group[new_obj.obj_id][1] = new_layer_id
+            edit_layer(new_layer)
+            # click_start(None)
 
-            pos_set_y(new_layer)
-
-        def make_objct(media_id):
+        def make_objct(media_id, sta=0, end=20, layer_number=0):
             self.option_data = {"media_id": media_id}
 
             new_obj = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_objct)), parts_name="timeline_objct", option_data=self.option_data)
@@ -134,6 +132,8 @@ class InitialValue:
             # self.data.timeline_objct[media_id].territory_stack(False)
             self.data.timeline_objct[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             self.data.timeline_objct[media_id].callback_operation.set_event("updown", layer_updown)
+
+            self.data.timeline_objct[media_id].edit_layer(layer_number)
 
             # self.data.timeline_objct[media_id].timeline_objct_ID =
 
@@ -149,7 +149,9 @@ class InitialValue:
 
             scroll_data = timeline_scroll.pxf.get_event_data()
 
-            self.data.timeline_objct[media_id].pxf.set_f_ratio(position=0, size=20)
+            self.data.timeline_objct[media_id].pxf.set_f_ratio(position=sta, size=end - sta)
+
+            # callback_operation.event("updown"
 
             window_size_edit(None)
 
@@ -159,10 +161,30 @@ class InitialValue:
         def loading_movie_data():
             print("取得")
             get_scene = self.data.all_data.scene()
-
             frame_len = get_scene.editor["len"]
 
-            print("layer個数", len(get_scene.layer_group))
+            timeline_scroll.pxf.init_set_sta_end_f(sta=0, end=frame_len)
+            timeline_scroll.pxf.set_f_ratio()
+            #print("layer個数", len(get_scene.layer_group))
+
+            print(get_scene.editor)
+            print(get_scene.layer_group)
+            print(get_scene.layer_group.object_group)
+
+            obj_list = [get_scene.layer_group.object_group.keys(), get_scene.layer_group.object_group.values()]
+
+            print(obj_list)
+
+            for obj_k, obj_v in zip(obj_list[0], obj_list[1]):
+                print(obj_k, "実行")
+                sta_f = obj_v[0].installation[0]
+                end_f = obj_v[0].installation[1]
+                layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]
+                make_objct(media_id=obj_k, sta=sta_f, end=end_f, layer_number=layer_number)
+
+            print("取得終了")
+
+            """
 
             for layer in get_scene.layer_group.values():
                 print("obj個数", len(layer.object_group), layer.object_group)
@@ -170,7 +192,12 @@ class InitialValue:
                     print(obj, "実行")
                     make_objct(media_id=obj[0].objct_id)
 
-            # new_objct(s)
+            """
+
+        def media_object_separate():
+            pass
+
+        # new_objct(s)
 
         # def sta_end_f_
 

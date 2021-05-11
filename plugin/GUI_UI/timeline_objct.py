@@ -22,11 +22,12 @@ class parts:
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
 
-        def pos_set_y(pos_y):
-            layer_pos = pos_y * data.edit_diagram_size("bar")[1]
+        def edit_layer(layer_number):
+            layer_pos = layer_number * data.edit_diagram_size("bar")[1]
             data.edit_diagram_position("bar", y=layer_pos)
 
-            #print("layer_pos", layer_pos)
+        data.edit_layer = edit_layer
+        #print("layer_pos", layer_pos)
 
         #data.pos_add_y = pos_add_y
 
@@ -73,7 +74,7 @@ class parts:
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 #after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # print(after_pos)
-                data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], pos_set_y))
+                data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
