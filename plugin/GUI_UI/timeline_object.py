@@ -4,7 +4,7 @@ import datetime
 
 
 class parts:
-    def UI_set(self, data):
+    def UI_set(self, data):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
 
         data.value = 0
         data.click_flag = False
@@ -38,6 +38,22 @@ class parts:
             data.territory_draw()
 
         data.pxf.set_draw_func(draw)
+
+        self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
+        popup_list = [("エフェクト", "分割", None)]
+        self.popup.set(popup_list)
+
+        def right_click(event):
+            mouse, _, _, xy = data.window_event_data["contact"]()
+            for i in range(2):
+                mouse[i] += xy[i]
+
+            self.popup.show(mouse[0], mouse[1])
+
+        data.add_diagram_event("bar", "Button-2", right_click)
+
+        #popup_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
+        # self.popup.set(popup_list)
 
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
@@ -74,6 +90,7 @@ class parts:
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 #after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # print(after_pos)
+                print("発火A", data.option_data["media_id"])
                 data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())

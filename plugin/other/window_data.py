@@ -35,7 +35,7 @@ class SendWindowData:  # window生成のためのデータ
         # print(self.tkFont_list)
 
         self.window_menubar = None
-        self.pull_down = {}
+        #self.pull_down = {}
 
         self.window.configure(bg=self.GUI_base_color)
 
@@ -82,6 +82,13 @@ class SendWindowData:  # window生成のためのデータ
 
         return x, y
 
+    def get_window_contact(self):
+        size_x, size_y = self.get_window_size()
+        x, y = self.get_window_position()
+        mouse, window_edge, window_join = self.common_control.contact_detection([x, y], [size_x, size_y])
+
+        return mouse, window_edge, window_join, [x, y]
+
         #####################################################################################
 
     def new_canvas(self, name):
@@ -109,7 +116,7 @@ class SendWindowData:  # window生成のためのデータ
         mouse, canvas_edge, canvas_join = self.common_control.contact_detection(self.canvas_data[name].position, self.canvas_data[name].size)
 
         for i in range(2):
-            mouse[i] -= self.canvas_data[name].position[0]
+            mouse[i] -= self.canvas_data[name].position[i]
 
         return mouse, canvas_edge, canvas_join
 
@@ -142,8 +149,8 @@ class SendWindowData:  # window生成のためのデータ
     #####################################################################################
 
     def new_parts(self, name, territory_name, parts_name=None, option_data=None):
-        window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event}
-        canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event}
+        window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event, "contact": self.get_window_contact}
+        canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event, "contact": self.get_canvas_contact}
 
         new_UIdata = self.UI_auxiliary.SendUIData(self.window,
                                                   self.canvas_data[name],
@@ -189,45 +196,6 @@ class SendWindowData:  # window生成のためのデータ
 
     def window_exit():
         self.window.destroy()
-
-    def menubar_set(self, send=None):
-        if not send is None:
-            self.menubar_list = send
-
-        self.window_menubar = tk.Menu(self.window)
-
-        for bar in self.menubar_list:
-
-            main_bar = ""
-            bar_name = []
-            bar_prg = []
-            # 奇数と偶数逆じゃん!とおもったら配列は0からはじまりました
-            for i, content in enumerate(bar):
-                if i == 0:
-                    main_bar = content
-
-                elif (i + 1) % 2 == 0:
-                    bar_name.append(content)
-
-                elif i % 2 == 0:
-                    bar_prg.append(content)
-
-            self.pull_down[main_bar] = tk.Menu(self.window_menubar, tearoff=0)
-
-            self.window_menubar.add_cascade(label=main_bar, menu=self.pull_down[main_bar])  # それぞれ
-
-            for n, p in zip(bar_name, bar_prg):
-                self.pull_down[main_bar].add_command(label=n, command=p)
-                self.operation["log"].write("メニューバー登録 {0} {1}".format(n, p))
-
-        self.operation["log"].write("バー設定終了{0}".format(self.window))
-
-        self.window.config(menu=self.window_menubar)
-        self.window.update()
-
-    def edit_menubar_bool(self, name, bool_data):
-        tk_bool = {True: tk.NORMAL, False: tk.DISABLED}
-        self.pull_down[main_bar].entryconfigure(name, state=tk_bool[bool_data])
 
     # self.window.mainloop()
 

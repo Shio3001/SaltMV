@@ -8,9 +8,10 @@ import math
 
 
 class InitialValue:
-    def __init__(self, data):
+    def __init__(self, data):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
         self.data = data
         self.operation = self.data.operation
+        self.now_tme = 0
 
     def main(self):
 
@@ -57,10 +58,13 @@ class InitialValue:
         nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
         nowtime_bar.territory_draw()
 
-        #now_layer = 0
+        def now_time_update(scroll_data):
+            self.now_tme = scroll_data.ratio_f[0]
+            print(self.now_tme)
 
-        def layer_elements(info):
-            pass
+        nowtime_bar.callback_operation.set_event("mov", now_time_update)
+
+        #now_layer = 0
 
         def timeline_nowtime_approval_True(_):
             nowtime_bar.click_flag = True
@@ -138,23 +142,34 @@ class InitialValue:
 
         def del_object_ui(media_id):
             self.data.timeline_object[media_id].del_territory()
+            #del self.data.timeline_object[media_id].callback_operation
             del self.data.timeline_object[media_id]
             self.data.all_data.del_object_elements(media_id)
 
         def all_del_object_ui():
             for media_id in self.data.timeline_object.keys():
                 self.data.timeline_object[media_id].del_territory()
+                #del self.data.timeline_object[media_id].callback_operation
                 self.data.all_data.del_object_elements(media_id)
 
+                print("削除 {0}".format(media_id))
+
             self.data.timeline_object = {}
+            print(self.data.timeline_object)
+
+        def media_object_separate(media_id):
+            pass
 
         def make_object(media_id, sta=0, end=20, layer_number=0):
-            self.option_data = {"media_id": media_id}
+            option_data = {"media_id": media_id}
+            print("new_id", option_data)
 
-            new_obj = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_object)), parts_name="timeline_object", option_data=self.option_data)
+            new_obj = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_object)), parts_name="timeline_object", option_data=option_data)
 
             self.data.timeline_object[media_id] = new_obj
             del new_obj
+
+            print("生成オブジェクトID", media_id)
 
             self.data.timeline_object[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
             self.data.timeline_object[media_id].edit_diagram_size("bar", y=timeline_size)
@@ -214,13 +229,18 @@ class InitialValue:
                 layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]  # 所属レイヤー解釈
                 make_object(media_id=obj_k, sta=sta_f, end=end_f, layer_number=layer_number)
 
+            # self.data.edit_menubar_bool("新規","シーン",False)
+
             print("取得終了")
 
+        def edit_data_reset():
+            all_del_object_ui()
+            self.data.all_data.new_edit_data()
+            loading_movie_data()
+
+        self.data.all_data.callback_operation.set_event("reset", edit_data_reset)
         self.data.all_data.callback_operation.set_event("file_input_before", all_del_object_ui)
         self.data.all_data.callback_operation.set_event("file_input_after", loading_movie_data)
-
-        def media_object_separate():
-            pass
 
         # new_object(s)
 
@@ -286,8 +306,9 @@ class InitialValue:
         self.data.add_window_event("Configure", window_size_edit)
         window_size_edit(None)
 
+        self.timeline_menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
         main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
-        self.data.menubar_set(main_menubar_list)
+        self.timeline_menubar.set(main_menubar_list)
         self.data.window_title_set("タイムライン")
         return self.data
 

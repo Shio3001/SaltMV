@@ -74,7 +74,7 @@ for plugin_folder_name in plugin_folder:  # Folder分だけまわす
             operation["plugin"][str(plugin_folder_name)][str(file_name.replace('.py', ''))] = import_data
 
 # plugin読み込み終了
-
+print(operation["plugin"])
 operation["log"].write(operation)
 #app_name = "NankokuMovieMaker"
 

@@ -11,7 +11,8 @@ import os
 
 class Storage:
     def __init__(self, main_path):
-        self.edit_data = elements.AllElements()
+        self.edit_data = None
+        self.new_edit_data()
         self.app_name = "NankokuMovieMaker"
         self.extension = ".json"
 
@@ -38,15 +39,17 @@ class Storage:
         self.font_name = {}
         self.read_font()
 
-        new_scene = self.add_scene_elements()
-        self.edit_data.now_scene = new_scene.scene_id
-
         self.callback_operation = None
 
         print("now_key:", self.edit_data.now_scene)
 
     # def __self.edit_data_set(self, new_self.edit_data):
     #    self.edit_data = copy.deepcopy(new_self.edit_data)
+
+    def new_edit_data(self):
+        self.edit_data = elements.AllElements()
+        new_scene = self.add_scene_elements()
+        self.edit_data.now_scene = new_scene.scene_id
 
     def input_debug(self, message=None):
         print("{0} 入力してください".format(message))
@@ -184,6 +187,7 @@ class Storage:
         return copy.deepcopy(self.object(object_order).effect_group[new_effect.effect_id])
 
     def get_now_layer_number(self, obj_id):
+        print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
         layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1]
         layer_number = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id[layer_id]
         return layer_number

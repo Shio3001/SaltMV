@@ -2,7 +2,7 @@ import copy
 
 
 class CentralRole:
-    def main(self, data, direction):
+    def main(self, data, direction):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
 
         data.direction = int(direction)
 

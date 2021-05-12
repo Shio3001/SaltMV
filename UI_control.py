@@ -34,7 +34,7 @@ class CommonControl:
 
         return mouse
 
-    def contact_detection(self, position, size, del_mouse):  # 辺に触れているか
+    def contact_detection(self, position, size, del_mouse=None):  # 辺に触れているか
         mouse = self.get_mouse_position()
         #position, size = self.get_position_size(data)
 
@@ -43,7 +43,7 @@ class CommonControl:
         edge_detection = [[False, False], [False, False]]  # 辺に対する #x左,x右,y上,y下
         join_detection = [False, False, False]  # 中に対する #x , y, xy
 
-        if del_mouse:
+        if not del_mouse is None and del_mouse:
             return mouse, edge_detection, join_detection
 
         for i in range(2):
