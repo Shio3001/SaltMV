@@ -65,7 +65,7 @@ class CommonControl:
     # def get_bind_name(self, key, func):
     #    func_name = str(func.__name__)
     ##    name = "{0}_{1}".format(key, func_name)
-    #    # print(name)
+    #    # #print(name)
     #    return name
 
     def get_tag_name(self, *text):
@@ -75,5 +75,5 @@ class CommonControl:
         for t in text:
             name = "{0}_{1}".format(name, str(t))
         #name = "{0}_{1}".format(te_name, di_name)
-        # print(name)
+        # #print(name)
         return name

@@ -60,7 +60,8 @@ class InitialValue:
 
         def now_time_update(scroll_data):
             self.now_tme = scroll_data.ratio_f[0]
-            print(self.now_tme)
+
+            # print(self.now_tme)
 
         nowtime_bar.callback_operation.set_event("mov", now_time_update)
 
@@ -77,6 +78,14 @@ class InitialValue:
 
         #self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
 
+        def media_object_separate(media_id):
+            scroll_data = self.data.timeline_object[media_id].pxf.get_event_data()
+            a_size = self.now_tme - scroll_data.ratio_f[0]
+            self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
+
+            copy_obj = self.data.all_data.copy_object_elements(media_id, sta=self.now_tme, end=scroll_data.ratio_f[1])
+            make_object(copy_obj.obj_id, sta=self.now_tme, end=scroll_data.ratio_f[1])
+
         # test_layer =
 
         # for i in range(10):
@@ -89,6 +98,7 @@ class InitialValue:
             media_id = scroll_data.option_data["media_id"]
 
             #print("id_s", test_layer.layer_id, scroll_data.option_data["media_id"])
+
             get_media_data = self.data.all_data.media_object(media_id)
             get_media_data.installation = [scroll_data.ratio_f[0], scroll_data.ratio_f[0] + scroll_data.ratio_f[1]]
             self.data.all_data.media_object(media_id, data=get_media_data)
@@ -99,7 +109,7 @@ class InitialValue:
         def new_layer():
             new_layer = self.data.all_data.add_layer_elements()
             make_layer()
-            # print(new_layer.layer_id)
+            # #print(new_layer.layer_id)
 
         def make_layer():
             pass
@@ -114,7 +124,7 @@ class InitialValue:
 
             mov_layer = math.floor((abs(pos) - (timeline_size / 2)) / timeline_size)
 
-            print("pos", pos)
+            #print("pos", pos)
 
             new_layer = now_layer
 
@@ -124,7 +134,7 @@ class InitialValue:
             if pos > timeline_size:
                 new_layer = now_layer + mov_layer
 
-            print("現在のレイヤー", now_layer)
+            #print("現在のレイヤー", now_layer)
 
             if new_layer < 0:
                 new_layer = 0
@@ -149,27 +159,24 @@ class InitialValue:
         def all_del_object_ui():
             for media_id in self.data.timeline_object.keys():
                 self.data.timeline_object[media_id].del_territory()
-                #del self.data.timeline_object[media_id].callback_operation
                 self.data.all_data.del_object_elements(media_id)
-
-                print("削除 {0}".format(media_id))
+                #print("削除 {0}".format(media_id))
 
             self.data.timeline_object = {}
-            print(self.data.timeline_object)
-
-        def media_object_separate(media_id):
-            pass
+            # print(self.data.timeline_object)
 
         def make_object(media_id, sta=0, end=20, layer_number=0):
             option_data = {"media_id": media_id}
-            print("new_id", option_data)
+            #print("new_id", option_data)
 
-            new_obj = self.data.new_parts("timeline", "t_{0}".format(len(self.data.timeline_object)), parts_name="timeline_object", option_data=option_data)
+            print(len(self.data.timeline_object))
+
+            new_obj = self.data.new_parts("timeline", media_id, parts_name="timeline_object", option_data=option_data)
 
             self.data.timeline_object[media_id] = new_obj
             del new_obj
 
-            print("生成オブジェクトID", media_id)
+            #print("生成オブジェクトID", media_id)
 
             self.data.timeline_object[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
             self.data.timeline_object[media_id].edit_diagram_size("bar", y=timeline_size)
@@ -177,6 +184,7 @@ class InitialValue:
             self.data.timeline_object[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             self.data.timeline_object[media_id].callback_operation.set_event("updown", layer_updown)
 
+            self.data.timeline_object[media_id].callback_operation.set_event("separate", media_object_separate)
             self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
             self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
 
@@ -186,7 +194,7 @@ class InitialValue:
 
             frame_len = self.data.all_data.scene().editor["len"]
 
-            print("frame_len", frame_len)
+            #print("frame_len", frame_len)
             #print("scrollbar_sta_end", self.scrollbar_sta_end)
 
             self.data.timeline_object[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
@@ -206,7 +214,7 @@ class InitialValue:
         #    new_object()
 
         def loading_movie_data():
-            print("取得")
+            # print("取得")
             get_scene = self.data.all_data.scene()
             frame_len = get_scene.editor["len"]
 
@@ -214,16 +222,16 @@ class InitialValue:
             timeline_scroll.pxf.set_f_ratio()
             #print("layer個数", len(get_scene.layer_group))
 
-            print(get_scene.editor)
-            print(get_scene.layer_group)
-            print(get_scene.layer_group.object_group)
+            # print(get_scene.editor)
+            # print(get_scene.layer_group)
+            # print(get_scene.layer_group.object_group)
 
             obj_list = [get_scene.layer_group.object_group.keys(), get_scene.layer_group.object_group.values()]
 
-            print(obj_list)
+            # print(obj_list)
 
             for obj_k, obj_v in zip(obj_list[0], obj_list[1]):
-                print(obj_k, "実行")
+                #print(obj_k, "実行")
                 sta_f = obj_v[0].installation[0]  # 開始地点解釈
                 end_f = obj_v[0].installation[1]  # 終了地点解釈
                 layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]  # 所属レイヤー解釈
@@ -231,7 +239,7 @@ class InitialValue:
 
             # self.data.edit_menubar_bool("新規","シーン",False)
 
-            print("取得終了")
+            # print("取得終了")
 
         def edit_data_reset():
             all_del_object_ui()
@@ -284,7 +292,7 @@ class InitialValue:
             nowtime_bar.edit_diagram_size("now", y=timeline_hight)
             nowtime_bar.pxf.set_f_ratio()
 
-            # print("ウィンドウサイズ", size_x, size_y)
+            # #print("ウィンドウサイズ", size_x, size_y)
 
             # length = self.data.all_data.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)

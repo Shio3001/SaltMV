@@ -39,8 +39,11 @@ class parts:
 
         data.pxf.set_draw_func(draw)
 
+        def media_object_separate():
+            data.callback_operation.event("separate", data.option_data["media_id"])
+
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
-        popup_list = [("エフェクト", "分割", None)]
+        popup_list = [("エフェクト", None), ("分割", media_object_separate)]
         self.popup.set(popup_list)
 
         def right_click(event):
@@ -90,7 +93,7 @@ class parts:
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 #after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # print(after_pos)
-                print("発火A", data.option_data["media_id"])
+                #print("発火A", data.option_data["media_id"])
                 data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())

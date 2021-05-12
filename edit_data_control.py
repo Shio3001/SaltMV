@@ -41,7 +41,7 @@ class Storage:
 
         self.callback_operation = None
 
-        print("now_key:", self.edit_data.now_scene)
+        #print("now_key:", self.edit_data.now_scene)
 
     # def __self.edit_data_set(self, new_self.edit_data):
     #    self.edit_data = copy.deepcopy(new_self.edit_data)
@@ -52,7 +52,7 @@ class Storage:
         self.edit_data.now_scene = new_scene.scene_id
 
     def input_debug(self, message=None):
-        print("{0} 入力してください".format(message))
+        #print("{0} 入力してください".format(message))
 
         in_data = str(input())
 
@@ -78,10 +78,10 @@ class Storage:
             for k, kv in zip(font_path.keys(), font_path.values()):
                 font_file_name = os.listdir(kv)
 
-                print("{0}ファイル量 : {1}".format(k, len(font_file_name)))
+                #print("{0}ファイル量 : {1}".format(k, len(font_file_name)))
 
                 for f in font_file_name:
-                    print(f)
+                    # print(f)
 
                     path = os.path.relpath(kv, self.main_path)
                     self.font_data[f] = os.path.join(path, f)
@@ -89,14 +89,14 @@ class Storage:
                     f_k = f[: -4]
                     self.font_name[f_k] = f
 
-        print(self.font_data)
-        print(self.font_name)
+        # print(self.font_data)
+        # print(self.font_name)
 
     def layer_number_to_layer_id(self, layer_number):
         layer_data = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id
-        print(layer_data.items())
+        # print(layer_data.items())
         layer_id = [k for k, v in layer_data.items() if v == layer_number]
-        print(layer_id)
+        # print(layer_id)
         return copy.deepcopy(layer_id[0])
 
     def layer_id_to_layer_number(self, layer_id):
@@ -132,7 +132,7 @@ class Storage:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group = copy.deepcopy(data)
             return
 
-        #print("オブジェクト数", len(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[0]))
+        ##print("オブジェクト数", len(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[0]))
 
         return copy.deepcopy(self.scene().layer_group)
 
@@ -140,12 +140,12 @@ class Storage:
         # self.operation["log"].write("object")
 
         if not data is None:
-            print("ids :", self.edit_data.now_scene, object_order)
+            #print("ids :", self.edit_data.now_scene, object_order)
 
-            print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
+            # print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0] = copy.deepcopy(data)
 
-            print("受信しました", data.installation)
+            #print("受信しました", data.installation)
             return
         return copy.deepcopy(self.layer().object_group[object_order][0])
 
@@ -162,7 +162,7 @@ class Storage:
         new_scene = elements.SceneElements()
         self.edit_data.scenes[new_scene.scene_id] = new_scene
 
-        print("key:", new_scene.scene_id)
+        #print("key:", new_scene.scene_id)
 
         return copy.deepcopy(self.edit_data.scenes[new_scene.scene_id])
 
@@ -170,6 +170,22 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id[elements.make_id("layer")] = self.get_layer_length()
 
         return copy.deepcopy(self.scene().layer_group)
+
+    def copy_object_elements(self, copy_target_id, sta=None, end=None):
+        new_copy_obj = copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][0])
+
+        if not sta is None:
+            new_copy_obj.installation[0] = sta
+        if not end is None:
+            new_copy_obj.installation[1] = end
+
+        copy_duplicate_id = "{0}_{1}".format(copy_target_id, "copy")
+        new_copy_obj.obj_id = copy_duplicate_id
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_duplicate_id] = [None, None]
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_duplicate_id][0] = new_copy_obj
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_duplicate_id][1] = self.layer_number_to_layer_id(0)
+        self.callback_operation.event("add_object_elements", info=())
+        return copy.deepcopy(self.layer().object_group[copy_duplicate_id][0])
 
     def add_object_elements(self):
         new_obj = elements.ObjectElements()
@@ -187,7 +203,7 @@ class Storage:
         return copy.deepcopy(self.object(object_order).effect_group[new_effect.effect_id])
 
     def get_now_layer_number(self, obj_id):
-        print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
+        #print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
         layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1]
         layer_number = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id[layer_id]
         return layer_number
@@ -226,7 +242,7 @@ class Storage:
             if not str(type(self.fill_input_callback)) == "<class 'function'>":
                 return
 
-            print("input実行")
+            # print("input実行")
 
         except:
             self.operation["log"].write("編集ファイルが存在しませんでした")
@@ -242,7 +258,7 @@ class Storage:
         self.callback_operation.event("file_output_before")
 
         # for layer in self.edit_data.scenes[self.edit_data.now_scene].layer_group.values():
-        #    print("layer_obj len:", layer.object_group)
+        #    #print("layer_obj len:", layer.object_group)
 
         user_select = self.extension_detection(user_select)
 
