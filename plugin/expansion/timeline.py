@@ -80,11 +80,19 @@ class InitialValue:
 
         def media_object_separate(media_id):
             scroll_data = self.data.timeline_object[media_id].pxf.get_event_data()
+
+            if not scroll_data.ratio_f[0] < self.now_tme < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
+                print("返送")
+                return
+
             a_size = self.now_tme - scroll_data.ratio_f[0]
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
 
-            copy_obj = self.data.all_data.copy_object_elements(media_id, sta=self.now_tme, end=scroll_data.ratio_f[1])
-            make_object(copy_obj.obj_id, sta=self.now_tme, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1])
+            copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=self.now_tme, end=scroll_data.ratio_f[1])
+
+            layer_number = self.data.all_data.layer_id_to_layer_number(layer_id)
+
+            make_object(copy_obj.obj_id, sta=self.now_tme, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
 
         # test_layer =
 

@@ -173,7 +173,7 @@ class Storage:
 
     def copy_object_elements(self, copy_target_id, sta=None, end=None):
         new_copy_obj = copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][0])
-        target_layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][1]
+        target_layer_id = copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][1])
 
         if not sta is None:
             new_copy_obj.installation[0] = sta
@@ -185,7 +185,7 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][0] = new_copy_obj
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][1] = target_layer_id
         self.callback_operation.event("add_object_elements", info=())
-        return copy.deepcopy(self.layer().object_group[new_copy_obj.obj_id][0])
+        return copy.deepcopy(self.layer().object_group[new_copy_obj.obj_id][0]), target_layer_id
 
     def add_object_elements(self):
         new_obj = elements.ObjectElements()
