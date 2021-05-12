@@ -84,7 +84,7 @@ class InitialValue:
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
 
             copy_obj = self.data.all_data.copy_object_elements(media_id, sta=self.now_tme, end=scroll_data.ratio_f[1])
-            make_object(copy_obj.obj_id, sta=self.now_tme, end=scroll_data.ratio_f[1])
+            make_object(copy_obj.obj_id, sta=self.now_tme, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1])
 
         # test_layer =
 
