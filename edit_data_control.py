@@ -173,19 +173,19 @@ class Storage:
 
     def copy_object_elements(self, copy_target_id, sta=None, end=None):
         new_copy_obj = copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][0])
+        target_layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][1]
 
         if not sta is None:
             new_copy_obj.installation[0] = sta
         if not end is None:
             new_copy_obj.installation[1] = end
 
-        copy_duplicate_id = "{0}_{1}".format(copy_target_id, "copy")
-        new_copy_obj.obj_id = copy_duplicate_id
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_duplicate_id] = [None, None]
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_duplicate_id][0] = new_copy_obj
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_duplicate_id][1] = self.layer_number_to_layer_id(0)
+        new_copy_obj.obj_id = elements.make_id("obj_copy")
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id] = [None, None]
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][0] = new_copy_obj
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][1] = self.layer_number_to_layer_id(target_layer_id)
         self.callback_operation.event("add_object_elements", info=())
-        return copy.deepcopy(self.layer().object_group[copy_duplicate_id][0])
+        return copy.deepcopy(self.layer().object_group[new_copy_obj.obj_id][0])
 
     def add_object_elements(self):
         new_obj = elements.ObjectElements()

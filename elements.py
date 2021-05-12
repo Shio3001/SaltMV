@@ -11,7 +11,7 @@ def make_id(memo):
     now_time = datetime.datetime.now()
     # new_id =
     new_id = "u"+str(uuid.uuid1()) + "t" + now_time.strftime('%y%m%H%M%S%f') + str(memo)
-    return new_id
+    return copy.deepcopy(new_id)
 
 
 class AllElements:  # すごくえらい
