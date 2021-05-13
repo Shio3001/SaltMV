@@ -20,7 +20,7 @@ class MenuPopup:
 
                 self.target_menubar.add_command(label=main_bar, command=bar_prg)
 
-            if len(bar) >= 2:
+            if len(bar) > 2:
                 # 奇数と偶数逆じゃん!とおもったら配列は0からはじまりました
                 main_bar = ""
                 bar_name = []

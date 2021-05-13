@@ -195,12 +195,17 @@ class Storage:
         self.callback_operation.event("add_object_elements", info=())
         return copy.deepcopy(self.layer().object_group[new_obj.obj_id][0])
 
-    def add_effect_elements(self, object_order):
+    def add_effect_elements(self, object_order, effect_name):
 
-        new_effect = elements.EffectElements()
+        effect_element = elements.EffectElements()
+
+        new_effect = self.operation["plugin"]["effect"][effect_name].InitialValue().main(effect_element)
+        new_effect.effect_id = self.elements.make_id("effect")
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
 
-        return copy.deepcopy(self.object(object_order).effect_group[new_effect.effect_id])
+        print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group)
+
+        return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
     def get_now_layer_number(self, obj_id):
         #print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)

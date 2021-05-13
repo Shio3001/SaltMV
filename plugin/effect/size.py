@@ -9,8 +9,7 @@ class InitialValue:
     def __init__(self):
         pass
 
-    def main(self, elements):
-        setting_effect = elements.effectElements()
+    def main(self, setting_effect):
         setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
         setting_effect.effect_point = [{"time": 0, "size_x": 100, "size_y": 100}]
         setting_effect.various_fixed = {"size_lnk": True}

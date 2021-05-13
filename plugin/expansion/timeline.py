@@ -69,9 +69,11 @@ class InitialValue:
 
         def timeline_nowtime_approval_True(_):
             nowtime_bar.click_flag = True
+            print("許可")
 
         def timeline_nowtime_approval_False(_):
             nowtime_bar.click_flag = False
+            print("停止")
 
         timeline_scroll.callback_operation.set_event("sta", timeline_nowtime_approval_False)
         timeline_scroll.callback_operation.set_event("end", timeline_nowtime_approval_True)
@@ -159,6 +161,7 @@ class InitialValue:
             # click_start(None)
 
         def del_object_ui(media_id):
+            print("削除対象物:", media_id)
             self.data.timeline_object[media_id].del_territory()
             #del self.data.timeline_object[media_id].callback_operation
             del self.data.timeline_object[media_id]
@@ -191,10 +194,13 @@ class InitialValue:
             # self.data.timeline_object[media_id].territory_stack(False)
             self.data.timeline_object[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             self.data.timeline_object[media_id].callback_operation.set_event("updown", layer_updown)
+            self.data.timeline_object[media_id].callback_operation.set_event("del", del_object_ui)
 
             self.data.timeline_object[media_id].callback_operation.set_event("separate", media_object_separate)
             self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
             self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
+
+            # .del_diagram_event("bar", "Button-1", click_start)
 
             self.data.timeline_object[media_id].edit_layer(layer_number)
 

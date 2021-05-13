@@ -61,7 +61,7 @@ class EffectElements:  # えらくない
         self.effect_point = {}
         self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
-        self.effect_id = make_id("effect")
+        self.effect_id = None
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

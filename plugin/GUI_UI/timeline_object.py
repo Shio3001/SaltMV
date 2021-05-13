@@ -39,11 +39,28 @@ class parts:
 
         data.pxf.set_draw_func(draw)
 
+        def media_object_del():
+            data.callback_operation.event("end", info=data.pxf.get_event_data())
+            data.callback_operation.event("del", data.option_data["media_id"])
+
         def media_object_separate():
             data.callback_operation.event("separate", data.option_data["media_id"])
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
-        popup_list = [("エフェクト", None), ("分割", media_object_separate)]
+
+        effect_dict = data.operation["plugin"]["effect"]
+
+        def effect_add():
+            pass
+
+        effect_user_list = ["エフェクト"]
+
+        for k in effect_dict.keys():
+            effect_get = EffectGet(data.all_data, data.option_data["media_id"], k)
+            effect_user_list.append(k)
+            effect_user_list.append(effect_get.add_element)
+
+        popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del)]
         self.popup.set(popup_list)
 
         def right_click(event):
@@ -109,6 +126,20 @@ class parts:
         data.window_event_data["add"]("Motion", click_position)
         data.add_diagram_event("bar", "ButtonRelease-1", click_end)
 
+        # data.all_del_diagram_event("bar")
+
+        #data.del_diagram_event("bar", "ButtonRelease-1", click_end)
+
         #data.edit_timeline_range = edit_timeline_range
 
         return data
+
+
+class EffectGet:
+    def __init__(self, all_data, media_id, effect_key):
+        self.all_data = all_data
+        self.effect_key = effect_key
+        self.media_id = media_id
+
+    def add_element(self):
+        self.all_data.add_effect_elements(self.media_id, self.effect_key)

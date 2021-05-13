@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
+import copy
 
 
 class SendWindowData:  # window生成のためのデータ
@@ -161,7 +162,7 @@ class SendWindowData:  # window生成のためのデータ
                                                   self.GUI_alpha_color,
                                                   window_event_data,
                                                   canvas_event_data,
-                                                  territory_name,
+                                                  copy.deepcopy(territory_name),
                                                   self.font_data,
                                                   self.tkFont,
                                                   self.tkFont_list,
