@@ -180,11 +180,6 @@ class SendWindowData:  # window生成のためのデータ
 
         del new_UIdata
 
-        # for i in self.canvas_data[name].territory[territory_name].diagram.values():
-        #    print("生成時イベント", i.event)
-
-        # new_parts_obj.
-
         self.operation["log"].write_func_list(new_parts_obj)
 
         return new_parts_obj

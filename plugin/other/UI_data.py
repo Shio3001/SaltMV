@@ -121,17 +121,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="ダイアグラムネーム(UI構成タグ): {0} は すでに使用されています".format(di_name))
 
         if diagram_type is None:
-            new = DiagramData()
-            self.canvas_data.territory[self.te_name].diagram[di_name] = copy.deepcopy(new)
+            self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramData()
 
         if diagram_type == "text":
-            new = DiagramTextData()
-            self.canvas_data.territory[self.te_name].diagram[di_name] = copy.deepcopy(new)
+            self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramTextData(self.canvas_data.canvas)
             self.del_diagram("base")
 
         if diagram_type == "textbox":
-            new = TextBoxData(self.canvas_data.canvas)
-            self.canvas_data.territory[self.te_name].diagram[di_name] = copy.deepcopy(new)
+            self.canvas_data.territory[self.te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
             self.del_diagram("base")
 
         #self.canvas_data.territory[self.te_name].diagram[di_name].event = {}
@@ -365,28 +362,32 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name):
 
-        xy = self.__center_target_calculation(territory_data, diagram_data,  di_name)
+        xy = self.__center_target_calculation(territory_data, diagram_data, di_name)
 
         self.operation["log"].write("text", xy, diagram_data.text)
 
         if diagram_data.draw_tag:
-            old_text_len = self.canvas_data.canvas.index(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), tk.END)  # 文字数の長さを取得
+            old_text_len = len(self.canvas_data.territory[self.te_name].diagram[di_name].label["text"])  # 文字数の長さを取得
             self.operation["log"].write(old_text_len)
             self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, old_text_len - 1)
             self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, diagram_data.text)
 
-        if not diagram_data.draw_tag:
-            self.canvas_data.canvas.create_text(0, 0, text="new", tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))
+        self.canvas_data.territory[self.te_name].diagram[di_name].label.place(
+            x=xy[0],
+            y=xy[1])
+
+        self.canvas_data.territory[self.te_name].diagram[di_name].label.configure(font=(diagram_data.font_type, diagram_data.font_size))
+        self.canvas_data.territory[self.te_name].diagram[di_name].label["text"] = diagram_data.text
 
         self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), text=diagram_data.text, font=(diagram_data.font_type, diagram_data.font_size))
 
+        """
         if diagram_data.anchor == 1:
             text_xy, text_size = self.get_diagram_position_size(di_name)
 
             xy[0] -= text_size[0] / 2
             xy[1] -= diagram_data.font_size / 2
-
-        # print("テキスト最終座標", xy[1], text_size)
+        """
 
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1])
 
@@ -396,6 +397,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation["log"].write_func_list(self.canvas_data.territory[self.te_name].diagram[di_name].entry.place)
 
+        if diagram_data.draw_tag:
+            old_text_len = int(len(self.get_textbox_text(di_name)))
+            self.operation["log"].write(old_text_len)
+            self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, old_text_len - 1)
+            self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, diagram_data.text)
+
         # print("テキストボックス決定座標", xy, size_xy)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.place(
@@ -403,6 +410,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             y=xy[1],
             width=size_xy[0],
             height=size_xy[1])
+
+        read = {True: "readonly", False: "normal"}
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=read[diagram_data.readonly])
 
     def __left_coordinate_calculation(self, territory_data, diagram_data):
 
@@ -418,7 +428,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         return xy, size_xy
 
-    def __center_target_calculatin(self, territory_data, diagram_data,  di_name):
+    def __center_target_calculation(self, territory_data, diagram_data,  di_name):
         xy = [0, 0]  # 領域基準
         for i in range(2):
             if not diagram_data.target is None:  # ターゲットが指定さてる場合
@@ -434,6 +444,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 xy[i] = (diagram_data.size[i] / 2) + diagram_data.position[i] + territory_data.position[i]
 
         return xy
+
+    def get_textbox_text(self, di_name):
+        text = self.canvas_data.territory[self.te_name].diagram[di_name].entry.get()
+        return text
 
     def get_diagram_position_size(self,  di_name):
         pos_size = self.canvas_data.canvas.bbox(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))
@@ -462,10 +476,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
                           y_center=None,
                           center=None,
                           target=None,
-                          anchor=None):
+                          anchor=None,
+                          readonly=None):
 
-        if not self.get_diagram_type(di_name, "DiagramTextData"):
+        if not self.get_diagram_type(di_name, "TextBoxData") and not self.get_diagram_type(di_name, "DiagramTextData"):
             self.operation["error"].action(message="これテキスト用じゃないぞ")
+
+        territory_data = self.canvas_data.territory[self.te_name]
+        diagram_data = self.canvas_data.territory[self.te_name].diagram[di_name]
 
         if not text is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].text = copy.deepcopy(str(text))
@@ -482,8 +500,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].center = copy.deepcopy([center, center])
         if not target is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].target = copy.deepcopy(target)
-        if not anchor is None:
+        if not anchor is None and self.get_diagram_type(di_name, "DiagramTextData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].anchor = copy.deepcopy(anchor)
+        if not readonly is None and self.get_diagram_type(di_name, "TextBoxData"):
+            self.canvas_data.territory[self.te_name].diagram[di_name].readonly = copy.deepcopy(readonly)
+
+        self.diagram_draw(di_name)
 
 
 class TerritoryData:
@@ -519,7 +541,7 @@ class DiagramData():
 
 
 class DiagramTextData():
-    def __init__(self):
+    def __init__(self, canvas):
         self.size = [0, 0]
         self.position = [0, 0]
         self.color = None
@@ -534,6 +556,8 @@ class DiagramTextData():
 
         self.target = None
         self.anchor = 1
+
+        self.label = tk.Label(canvas, text="None")
 
         # 配置可能なスペースに余裕がある場合、Widget をどこに配置するか指定します。
         # デフォルトは Tk.CENTER. そのほかに、Tk.W (左よせ）、Tk.E （右よせ）、Tk.N （上よせ）、Tk.S （下よせ）、 Tk.NW （左上）、Tk.SW （左下）、Tk.NE （右上）、Tk.SE （右下）
@@ -556,3 +580,5 @@ class TextBoxData():
         self.target = None
         self.center = [False, False]
         self.entry = tk.Entry(canvas, highlightthickness=0, relief="flat")
+        self.readonly = False
+        # <br/>があれば改行にしたいね
