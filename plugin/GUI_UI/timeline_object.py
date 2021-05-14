@@ -83,6 +83,8 @@ class parts:
             data.view_pos_sta = data.edit_diagram_position("bar")[0]
             data.view_size_sta = data.edit_diagram_size("bar")[0]
 
+            data.edit_diagram_color("bar", "#ff0000")
+            data.callback_operation.event("parameter_lord", data.option_data["media_id"])
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
 
         def click_position(event):
@@ -122,7 +124,9 @@ class parts:
 
             data.callback_operation.event("end", info=data.pxf.get_event_data())
 
-        data.add_diagram_event("bar", "Button-1", click_start)
+            data.edit_diagram_color("bar", "#00ff00")
+
+        data.add_diagram_event("bar", "ButtonPress-1", click_start)
         data.window_event_data["add"]("Motion", click_position)
         data.add_diagram_event("bar", "ButtonRelease-1", click_end)
 

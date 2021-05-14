@@ -197,9 +197,9 @@ class Storage:
 
     def add_effect_elements(self, object_order, effect_name):
 
-        effect_element = elements.EffectElements()
-
-        new_effect = self.operation["plugin"]["effect"][effect_name].InitialValue().main(effect_element)
+        new_effect = elements.EffectElements()
+        new_effect.effect_name = effect_name
+        self.operation["plugin"]["effect"][effect_name].InitialValue(new_effect)
         new_effect.effect_id = self.elements.make_id("effect")
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
 

@@ -153,6 +153,10 @@ class SendWindowData:  # window生成のためのデータ
         window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event, "contact": self.get_window_contact}
         canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event, "contact": self.get_canvas_contact}
 
+        #self.canvas_data[name].territory[territory_name].diagram = map(lambda x: copy.deepcopy(x.event), self.canvas_data[name].territory[territory_name].diagram)
+
+        # self.canvas_data[name].territory[territory_name].diagram.values() = self.canvas_data[name].territory[territory_name].diagram.values
+
         new_UIdata = self.UI_auxiliary.SendUIData(self.window,
                                                   self.canvas_data[name],
                                                   self.common_control,
@@ -175,6 +179,11 @@ class SendWindowData:  # window生成のためのデータ
         new_parts_obj = self.UI_parts[parts_name].parts().UI_set(new_UIdata)
 
         del new_UIdata
+
+        # for i in self.canvas_data[name].territory[territory_name].diagram.values():
+        #    print("生成時イベント", i.event)
+
+        # new_parts_obj.
 
         self.operation["log"].write_func_list(new_parts_obj)
 

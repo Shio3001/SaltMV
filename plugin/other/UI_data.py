@@ -1,8 +1,7 @@
 import tkinter as tk
-
 import copy
-
 import sys
+import inspect
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
@@ -53,9 +52,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         print(self.uidata_id, "生成しました＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊")
 
-        #self.popup_list = None
+        # self.popup_list = None
 
-        #self.timeline_calculation = None
+        # self.timeline_calculation = None
 
         # self.operation["log"].write("UI生成")
 
@@ -73,7 +72,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if self.te_name in self.canvas_data.territory.keys():
             self.operation["error"].action(message="テリトリーネーム(UIパーツタグ): {0} は すでに使用されています".format(self.te_name))
 
-        self.canvas_data.territory[self.te_name] = TerritoryData()
+        new = TerritoryData()
+        self.canvas_data.territory[self.te_name] = new
         self.operation["log"].write("テリトリー生成 {0}".format(self.te_name))
 
         if base != True:
@@ -121,15 +121,22 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="ダイアグラムネーム(UI構成タグ): {0} は すでに使用されています".format(di_name))
 
         if diagram_type is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramData()
+            new = DiagramData()
+            self.canvas_data.territory[self.te_name].diagram[di_name] = copy.deepcopy(new)
 
         if diagram_type == "text":
-            self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramTextData()
+            new = DiagramTextData()
+            self.canvas_data.territory[self.te_name].diagram[di_name] = copy.deepcopy(new)
             self.del_diagram("base")
 
         if diagram_type == "textbox":
-            self.canvas_data.territory[self.te_name].diagram[di_name] = TextBoxData(self.canvas_data.canvas)
+            new = TextBoxData(self.canvas_data.canvas)
+            self.canvas_data.territory[self.te_name].diagram[di_name] = copy.deepcopy(new)
             self.del_diagram("base")
+
+        #self.canvas_data.territory[self.te_name].diagram[di_name].event = {}
+
+        print("new_diagram_event", self.canvas_data.territory[self.te_name].diagram[di_name].event)
 
         self.operation["log"].write("ダイヤグラム生成 <テリトリー:{0}> {1}".format(self.te_name, self.canvas_data.territory[self.te_name].diagram))
 
@@ -169,6 +176,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             color = self.GUI_alpha_color
 
         self.canvas_data.territory[self.te_name].diagram[di_name].color = color
+        self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=self.canvas_data.territory[self.te_name].diagram[di_name].color)
 
     def get_diagram_contact(self,  di_name, del_mouse=False):
         pos, size = self.get_diagram_position_size(di_name)
@@ -218,14 +226,33 @@ class SendUIData:  # パーツひとつあたりのためのclass
     #####################################################################################
 
     def add_diagram_event(self,  di_name, key, func):  # event
+
+        print("呼び出し先", inspect.stack()[1].function)
+
         tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
         bind_id = self.canvas_data.canvas.tag_bind(tag, "<{0}>".format(key), func, "+")
+
+        print(self.canvas_data.territory)
+
+        print("テリトリーの数", len(self.canvas_data.territory))
+
+        """
+
+        for i in self.canvas_data.territory.values():
+            # print("i", i)
+            print("Diagramの数", len(i.diagram))
+
+            print("dia", i.diagram)
+
+            for j in i.diagram.values():
+                print("イベントの数", len(j.event))
+        """
 
         print(bind_id, self.uidata_id, self.te_name, di_name)
 
         print("追加前", self.canvas_data.territory[self.te_name].diagram[di_name].event)
 
-        self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = [key, func, bind_id, tag]
+        self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = copy.deepcopy([key, func, bind_id, tag])
         print("追加事項", self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)])
 
     def del_diagram_event(self,  di_name, key, func):  # event
@@ -238,9 +265,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         # self.operation["log"].write("tag unbind")
         del self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name]
 
-    def all_add_diagram_event(self,  di_name):
-        for k, f in zip(self.canvas_data.territory[self.te_name].diagram[di_name].event.keys(), self.canvas_data.territory[self.te_name].diagram[di_name].event.values()):
-            f[2] = self.canvas_data.territory[self.te_name].diagram[di_name].canvas.tag_bind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(f[0]), f[1], "+")
+    # def all_add_diagram_event(self,  di_name):
+    #    for k, f in zip(self.canvas_data.territory[self.te_name].diagram[di_name].event.keys(), self.canvas_data.territory[self.te_name].diagram[di_name].event.values()):
+    #        f[2] = self.canvas_data.territory[self.te_name].diagram[di_name].canvas.tag_bind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(f[0]), f[1], "+")
 
     def all_del_diagram_event(self,  di_name):  # canvasの再生成時の復元
         print(self.canvas_data.territory[self.te_name].diagram[di_name].event)
@@ -331,7 +358,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=color)
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
-            #print(xy, size_xy)
+            # print(xy, size_xy)
 
         if not diagram_data.draw_tag:
             self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))  # 塗りつぶし
@@ -359,7 +386,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             xy[0] -= text_size[0] / 2
             xy[1] -= diagram_data.font_size / 2
 
-        #print("テキスト最終座標", xy[1], text_size)
+        # print("テキスト最終座標", xy[1], text_size)
 
         self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1])
 
@@ -369,7 +396,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.operation["log"].write_func_list(self.canvas_data.territory[self.te_name].diagram[di_name].entry.place)
 
-        #print("テキストボックス決定座標", xy, size_xy)
+        # print("テキストボックス決定座標", xy, size_xy)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.place(
             x=xy[0],
@@ -441,22 +468,22 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.operation["error"].action(message="これテキスト用じゃないぞ")
 
         if not text is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].text = str(text)
+            self.canvas_data.territory[self.te_name].diagram[di_name].text = copy.deepcopy(str(text))
         if not font_size is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].font_size = font_size
+            self.canvas_data.territory[self.te_name].diagram[di_name].font_size = copy.deepcopy(font_size)
         if not font_type is None:
             self.tk_font_inquiry(font_type)
-            self.canvas_data.territory[self.te_name].diagram[di_name].font_type = font_type
+            self.canvas_data.territory[self.te_name].diagram[di_name].font_type = copy.deepcopy(font_type)
         if not x_center is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].center[0] = x_center
+            self.canvas_data.territory[self.te_name].diagram[di_name].center[0] = copy.deepcopy(x_center)
         if not y_center is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].center[1] = y_center
+            self.canvas_data.territory[self.te_name].diagram[di_name].center[1] = copy.deepcopy(y_center)
         if not center is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].center = [center, center]
+            self.canvas_data.territory[self.te_name].diagram[di_name].center = copy.deepcopy([center, center])
         if not target is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].target = target
+            self.canvas_data.territory[self.te_name].diagram[di_name].target = copy.deepcopy(target)
         if not anchor is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].anchor = anchor
+            self.canvas_data.territory[self.te_name].diagram[di_name].anchor = copy.deepcopy(anchor)
 
 
 class TerritoryData:
@@ -465,8 +492,9 @@ class TerritoryData:
         self.position = [0, 0]
         self.diagram = {}
         self.event = {}
-
         self.blank_space = [0, 0]
+
+        print("生成")
 
 
 class DiagramBase:  # 指定不可
@@ -477,14 +505,28 @@ class DiagramBase:  # 指定不可
     draw_tag = False
     event = {}
 
+#diagram_base = DiagramBase()
 
-class DiagramData(DiagramBase):
+
+class DiagramData():
     def __init__(self):
-        pass
+        self.size = [0, 0]
+        self.position = [0, 0]
+        self.color = None
+        self.fill = [False, False]
+        self.draw_tag = False
+        self.event = {}
 
 
-class DiagramTextData(DiagramBase):
+class DiagramTextData():
     def __init__(self):
+        self.size = [0, 0]
+        self.position = [0, 0]
+        self.color = None
+        self.fill = [False, False]
+        self.draw_tag = False
+        self.event = {}
+
         self.text = ""
         self.font_size = 0
         self.font_type = None
@@ -497,11 +539,18 @@ class DiagramTextData(DiagramBase):
         # デフォルトは Tk.CENTER. そのほかに、Tk.W (左よせ）、Tk.E （右よせ）、Tk.N （上よせ）、Tk.S （下よせ）、 Tk.NW （左上）、Tk.SW （左下）、Tk.NE （右上）、Tk.SE （右下）
         # must be n, ne, e, se, s, sw, w, nw, or center
 
-        #self.old_text_len = 0
+        # self.old_text_len = 0
 
 
-class TextBoxData(DiagramBase):
+class TextBoxData():
     def __init__(self, canvas):
+        self.size = [0, 0]
+        self.position = [0, 0]
+        self.color = None
+        self.fill = [False, False]
+        self.draw_tag = False
+        self.event = {}
+
         self.text = ""
         self.font_size = 0
         self.target = None

@@ -10,6 +10,7 @@ class Rendering:
     def main(self, draw_base, operation, this_scene, now_frame):  # 必要なもの
         self.now_f = now_frame
         self.operation = operation
+        self.time_search = self.operation["plugin"]["other"]["time_search"].time_search
         # print(draw_base.shape, self.now_f)
         draw_base = self.scene(this_scene, draw_base)
         # print(draw_base.shape)
@@ -79,33 +80,13 @@ class Rendering:
     def effect(self, this_effect, draw_base):
         # 二分探索すればいいよ <timeによる配列と配列の間位をさがす>
 
-        before_point, next_point = copy.deepcopy(self.time_search(this_effect))
+        before_point, next_point = self.time_search(self.now_f, this_effect)
         now_point = self.operation["rendering"]["point"].main(before_point, next_point, self.now_f)
 
         effect_send = EffectPluginElements(draw_base, now_point, before_point, next_point, self.now_f, self.editor, self.operation)
         draw_base, draw_point = this_effect.procedure(effect_send)
 
         return draw_base, draw_point
-
-    def time_search(self, this_effect):  # 二分探索
-        left = 0
-        right = len(this_effect.effect_point) - 1
-
-        if len(this_effect.effect_point) == 1:
-            return this_effect.effect_point[0], this_effect.effect_point[0]  # 前地点と次地点あわせ
-
-        while left <= right:  # 2つ以上のあたい
-            mid = (left + right) // 2
-            if this_effect.effect_point[mid] <= self.now_f < this_effect.effect_point[mid + 1]:
-                return this_effect.effect_point[mid], this_effect.effect_point[mid + 1]
-
-            elif this_effect.effect_point[mid] > self.now_f:  # 現在フレームより前地点がでかい場合
-                left -= 1
-
-            elif this_effect.effect_point[mid + 1] <= self.now_f:  # 現在フレームより次地点がちいさい場合
-                right += 1
-
-        return this_effect.effect_point[0], this_effect.effect_point[0]
 
     def center_to_upper_left(self, point, ed_size):
 
