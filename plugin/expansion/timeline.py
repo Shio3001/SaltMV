@@ -5,13 +5,14 @@ import copy
 
 import random
 import math
+import threading
 
 
 class InitialValue:
     def __init__(self, data):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
         self.data = data
         self.operation = self.data.operation
-        self.now_time = 0
+        self.data.all_data.now_time = 0
 
     def main(self):
 
@@ -59,9 +60,9 @@ class InitialValue:
         nowtime_bar.territory_draw()
 
         def now_time_update(scroll_data):
-            self.now_time = scroll_data.ratio_f[0]
+            self.data.all_data.now_time = scroll_data.ratio_f[0]
 
-            # print(self.now_time)
+            # print(self.data.all_data.now_time)
 
         nowtime_bar.callback_operation.set_event("mov", now_time_update)
 
@@ -83,18 +84,18 @@ class InitialValue:
         def media_object_separate(media_id):
             scroll_data = self.data.timeline_object[media_id].pxf.get_event_data()
 
-            if not scroll_data.ratio_f[0] < self.now_time < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
+            if not scroll_data.ratio_f[0] < self.data.all_data.now_time < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
                 print("返送")
                 return
 
-            a_size = self.now_time - scroll_data.ratio_f[0]
+            a_size = self.data.all_data.now_time - scroll_data.ratio_f[0]
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
 
-            copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=self.now_time, end=scroll_data.ratio_f[1])
+            copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=self.data.all_data.now_time, end=scroll_data.ratio_f[1])
 
             layer_number = self.data.all_data.layer_id_to_layer_number(layer_id)
 
-            make_object(copy_obj.obj_id, sta=self.now_time, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
+            make_object(copy_obj.obj_id, sta=self.data.all_data.now_time, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
 
         # test_layer =
 
@@ -166,6 +167,7 @@ class InitialValue:
             #del self.data.timeline_object[media_id].callback_operation
             del self.data.timeline_object[media_id]
             self.data.all_data.del_object_elements(media_id)
+            self.data.all_data.callback_operation.event("element_del")
 
         def all_del_object_ui():
             for media_id in self.data.timeline_object.keys():
@@ -174,14 +176,22 @@ class InitialValue:
                 #print("削除 {0}".format(media_id))
 
             self.data.timeline_object = {}
+            self.data.all_data.callback_operation.event("element_del")
             # print(self.data.timeline_object)
 
         # def media_objct_click():
 
+        """
         def parameter(media_id):
             obj = self.data.all_data.media_object(media_id)
             elements = obj.effect_group
-            self.data.all_data.callback_operation.event("media_lord", info=(elements, self.now_time))
+            #self.data.all_data.callback_operation.event("media_lord", info=())
+
+            send = (elements, self.data.all_data.now_time)
+            func = self.data.all_data.callback_operation.get_event("media_lord")[0]
+            thread = threading.Thread(target=func, args=(send,))
+            thread.start()
+        """
 
         def make_object(media_id, sta=0, end=20, layer_number=0):
             option_data = {"media_id": media_id}
@@ -206,7 +216,7 @@ class InitialValue:
             self.data.timeline_object[media_id].callback_operation.set_event("separate", media_object_separate)
             self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
             self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
-            self.data.timeline_object[media_id].callback_operation.set_event("parameter_lord", parameter)
+            #self.data.timeline_object[media_id].callback_operation.set_event("parameter_lord", parameter)
 
             # .del_diagram_event("bar", "Button-1", click_start)
 

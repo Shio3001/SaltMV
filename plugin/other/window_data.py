@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import copy
+import inspect
 
 
 class SendWindowData:  # window生成のためのデータ
@@ -149,13 +150,18 @@ class SendWindowData:  # window生成のためのデータ
 
     #####################################################################################
 
-    def new_parts(self, name, territory_name, parts_name=None, option_data=None):
+    def new_parts(self, name, territory_name, parts_name=None, option_data=None, base=None):
+
+        print("呼び出し先", inspect.stack()[1].function)
+
         window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event, "contact": self.get_window_contact}
         canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event, "contact": self.get_canvas_contact}
 
         #self.canvas_data[name].territory[territory_name].diagram = map(lambda x: copy.deepcopy(x.event), self.canvas_data[name].territory[territory_name].diagram)
 
         # self.canvas_data[name].territory[territory_name].diagram.values() = self.canvas_data[name].territory[territory_name].diagram.values
+
+        print("territory", self.canvas_data[name].territory)
 
         new_UIdata = self.UI_auxiliary.SendUIData(self.window,
                                                   self.canvas_data[name],
@@ -170,6 +176,7 @@ class SendWindowData:  # window生成のためのデータ
                                                   self.font_data,
                                                   self.tkFont,
                                                   self.tkFont_list,
+                                                  base,
                                                   option_data)
 
         # new_UIdata.new_territory()

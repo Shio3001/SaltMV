@@ -1,6 +1,7 @@
 import sys
 import copy
 import datetime
+import threading
 
 
 class parts:
@@ -16,9 +17,9 @@ class parts:
         data.territory_draw()
         data.territory_stack(False)
 
-        #data.obj_now_layer = 0
+        # data.obj_now_layer = 0
 
-        #data.timeline_object_ID = None
+        # data.timeline_object_ID = None
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="obj")
 
@@ -27,9 +28,9 @@ class parts:
             data.edit_diagram_position("bar", y=layer_pos)
 
         data.edit_layer = edit_layer
-        #print("layer_pos", layer_pos)
+        # print("layer_pos", layer_pos)
 
-        #data.pos_add_y = pos_add_y
+        # data.pos_add_y = pos_add_y
 
         def draw(px_pos, px_size):
             data.edit_diagram_position("bar", x=px_pos)
@@ -72,10 +73,11 @@ class parts:
 
         data.add_diagram_event("bar", "Button-2", right_click)
 
-        #popup_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
+        # popup_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
         # self.popup.set(popup_list)
-
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
+
+        data.flag = True
 
         def click_start(event):
             data.click_flag = True
@@ -84,8 +86,18 @@ class parts:
             data.view_size_sta = data.edit_diagram_size("bar")[0]
 
             data.edit_diagram_color("bar", "#ff0000")
-            data.callback_operation.event("parameter_lord", data.option_data["media_id"])
+
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
+
+            if data.flag:
+                data.flag = False
+                send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time)
+                func = data.all_data.callback_operation.get_event("media_lord")[0]
+                thread_1 = threading.Thread(target=func, args=(send,))
+                thread_1.start()
+                data.flag = True
+
+            print("非同期")
 
         def click_position(event):
             if not data.click_flag:
@@ -110,9 +122,9 @@ class parts:
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
-                #after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
-                # print(after_pos)
-                #print("発火A", data.option_data["media_id"])
+                # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
+                # #print(after_pos)
+                # print("発火A", data.option_data["media_id"])
                 data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
@@ -132,9 +144,9 @@ class parts:
 
         # data.all_del_diagram_event("bar")
 
-        #data.del_diagram_event("bar", "ButtonRelease-1", click_end)
+        # data.del_diagram_event("bar", "ButtonRelease-1", click_end)
 
-        #data.edit_timeline_range = edit_timeline_range
+        # data.edit_timeline_range = edit_timeline_range
 
         return data
 

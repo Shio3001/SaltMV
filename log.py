@@ -12,6 +12,7 @@ class LogPrint:
         self.permit = True
 
     def write(self, *text):
+        return
         if not self.permit:
             return  # 書き込みが許可されていない
 
@@ -33,6 +34,8 @@ class LogPrint:
         return nowtime
 
     def write_func_list(self, class_data):
+        return
+        """
         path_func = self.directory.path_support("../log/{0}.txt".format(str(class_data)))
 
         logfile_func = self.new_file(path_func)
@@ -42,6 +45,7 @@ class LogPrint:
             logfile_func.write(str(i))
 
         logfile_func.close()
+        """
 
     def new_file(self, path):
         file = open(path, mode='a')

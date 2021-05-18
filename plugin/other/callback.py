@@ -1,4 +1,6 @@
 import copy
+import inspect
+import asyncio
 
 
 class CallBack:
@@ -16,6 +18,8 @@ class CallBack:
 
     def event(self, name, info=None):
 
+        #print("呼び出し先[callback]", inspect.stack()[1].function)
+
         if not name in self.__event_data.keys():
             # print("返送")
             return
@@ -31,16 +35,8 @@ class CallBack:
                     d()
                 # print("実行")
 
-            """
-            if str(type(self.__event_data[name])) == "<class 'list'>":
-                for d in self.__event_data[name]:
-
-                    if str(type(self.__event_data[name])) == "<class 'function'>":
-                        d(info)
-
-            elif str(type(self.__event_data[name])) == "<class 'function'>":
-                self.__event_data[name](info)
-            """
+    def get_event(self, name):
+        return self.__event_data[name]
 
         #data.set_event = set_event
         #data.event = event

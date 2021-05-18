@@ -5,7 +5,8 @@ import pickle
 import base64
 import os
 
-
+import inspect
+import asyncio
 # self.edit_data.now_scene = 0  # 現在の操作シーン
 
 
@@ -23,6 +24,9 @@ class Storage:
         self.os_type = ""
 
         self.main_path = main_path
+
+        self.now_time = 0
+        #self.asyncio = asyncio
 
         #self.fill_input_callback = None
         #self.fill_output_callback = None
@@ -137,6 +141,7 @@ class Storage:
         return copy.deepcopy(self.scene().layer_group)
 
     def media_object(self, object_order, data=None):
+        #print("inspect", inspect.stack()[1].function)
         # self.operation["log"].write("object")
 
         if not data is None:
@@ -147,6 +152,7 @@ class Storage:
 
             #print("受信しました", data.installation)
             return
+        #print("oorder", object_order)
         return copy.deepcopy(self.layer().object_group[object_order][0])
 
     def effect(self, object_order, effect_order, data=None):
