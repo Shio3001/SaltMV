@@ -39,11 +39,15 @@ class MenuPopup:
                 self.pull_down[main_bar] = tk.Menu(self.target_menubar, tearoff=0)
                 for n, p in zip(bar_name, bar_prg):
                     self.pull_down[main_bar].add_command(label=n, command=p)
+                    self.pull_down[main_bar].update()
                 self.target_menubar.add_cascade(label=main_bar, menu=self.pull_down[main_bar])  # それぞれ
 
         # self.operation["log"].write("バー設定終了{0}".format(self.target))
 
         self.target.update()
+        self.target_menubar.update()
+
+        print("tkinter update", self.target.update)
 
     def show(self, x, y):
         self.target_menubar.post(x, y)

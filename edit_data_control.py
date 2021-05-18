@@ -8,6 +8,8 @@ import os
 import inspect
 import asyncio
 # self.edit_data.now_scene = 0  # 現在の操作シーン
+import threading
+from concurrent.futures.thread import ThreadPoolExecutor
 
 
 class Storage:
@@ -26,6 +28,9 @@ class Storage:
         self.main_path = main_path
 
         self.now_time = 0
+        self.threading = threading
+        self.threading_lock = threading.Lock()
+        self.ThreadPoolExecutor = ThreadPoolExecutor
         #self.asyncio = asyncio
 
         #self.fill_input_callback = None

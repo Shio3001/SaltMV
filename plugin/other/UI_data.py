@@ -355,7 +355,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].label.destroy()
             return
 
-        xy = self.__center_target_calculation(territory_data, diagram_data, di_name)
+        xy = self.__center_target_calculation(territory_data, diagram_data)
 
         self.operation["log"].write("text", xy, diagram_data.text)
 
@@ -410,34 +410,29 @@ class SendUIData:  # パーツひとつあたりのためのclass
         read = {True: "readonly", False: "normal"}
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=read[diagram_data.readonly])
 
-    def __left_coordinate_calculation(self, territory_data, diagram_data):
+    def __left_coordinate_calculation(self, territory_data, diagram_data):  # 中心部から左上への座標計算用 #主にshape向け
 
         xy, size_xy = [0, 0], [0, 0]  # 領域基準
         for i in range(2):
             if diagram_data.fill[i]:
-                xy[i] = territory_data.position[i]
-                size_xy[i] = territory_data.size[i]
+                xy[i] = copy.deepcopy(territory_data.position[i])
+                size_xy[i] = copy.deepcopy(territory_data.size[i])
 
             else:
                 xy[i] = territory_data.position[i] + diagram_data.position[i]
-                size_xy[i] = diagram_data.size[i]
+                size_xy[i] = copy.deepcopy(diagram_data.size[i])
 
         return xy, size_xy
 
-    def __center_target_calculation(self, territory_data, diagram_data,  di_name):
+    def __center_target_calculation(self, territory_data, diagram_data):
+
         xy = [0, 0]  # 領域基準
         for i in range(2):
-            if not diagram_data.target is None:  # ターゲットが指定さてる場合
-                diagram_target = copy.deepcopy(territory_data.diagram[str(diagram_data.target)])
-                if diagram_target.fill[i]:
-                    diagram_target.size[i] = territory_data.size[i]
-
-                xy[i] = diagram_target.position[i] + (diagram_target.size[i] / 2) + territory_data.position[i]
-
-            elif diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
-                xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
-            else:  # 普通の指定
-                xy[i] = (diagram_data.size[i] / 2) + diagram_data.position[i] + territory_data.position[i]
+            xy[i] = diagram_data.position[i] + territory_data.position[i]
+            # if diagram_data.center[i]:  # テリトリーの中心になるよう設定さてる場合
+            #xy[i] = territory_data.position[i] + (territory_data.size[i] / 2)
+            # else:  # 普通の指定
+            #    xy[i] = (diagram_data.size[i] / 2) + diagram_data.position[i] + territory_data.position[i]
 
         return xy
 
@@ -472,7 +467,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
                           x_center=None,
                           y_center=None,
                           center=None,
-                          target=None,
                           anchor=None,
                           readonly=None):
 
@@ -495,8 +489,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].center[1] = copy.deepcopy(y_center)
         if not center is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].center = copy.deepcopy([center, center])
-        if not target is None:
-            self.canvas_data.territory[self.te_name].diagram[di_name].target = copy.deepcopy(target)
+        # if not target is None:
+        #    self.canvas_data.territory[self.te_name].diagram[di_name].target = copy.deepcopy(target)
         if not anchor is None and self.get_diagram_type(di_name, "DiagramTextData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].anchor = copy.deepcopy(anchor)
         if not readonly is None and self.get_diagram_type(di_name, "TextBoxData"):
@@ -551,7 +545,7 @@ class DiagramTextData():
         self.font_type = None
         self.center = [False, False]
 
-        self.target = None
+        #self.target = None
         self.anchor = 1
 
         self.label = tk.Label(canvas, text="None")
@@ -574,7 +568,7 @@ class TextBoxData():
 
         self.text = ""
         self.font_size = 0
-        self.target = None
+        #self.target = None
         self.center = [False, False]
         self.entry = tk.Entry(canvas, highlightthickness=0, relief="flat")
         self.readonly = False

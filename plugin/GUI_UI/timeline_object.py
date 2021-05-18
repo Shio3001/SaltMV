@@ -77,7 +77,11 @@ class parts:
         # self.popup.set(popup_list)
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
-        data.flag = True
+        data.media_object_parameter_bool = True
+
+        # def set_parameter_permit(flag_bool):
+        #    data.media_object_parameter_bool = flag_bool
+        #    print("非同期 :", flag_bool)
 
         def click_start(event):
             data.click_flag = True
@@ -89,13 +93,12 @@ class parts:
 
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
 
-            if data.flag:
-                data.flag = False
-                send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time)
-                func = data.all_data.callback_operation.get_event("media_lord")[0]
-                thread_1 = threading.Thread(target=func, args=(send,))
-                thread_1.start()
-                data.flag = True
+            # set_parameter_permit(False)
+            print("非同期開始")
+            send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time)
+            func = data.all_data.callback_operation.get_event("media_lord")[0]
+            thread_1 = data.all_data.threading.Thread(target=func, args=(send,))
+            thread_1.start()
 
             print("非同期")
 
