@@ -17,9 +17,12 @@ class UIManagement:
 
         for i in range(sta, end):
             print(i, "削除")
+
             if not self.ui_list[i].te_name in self.ui_list[i].canvas_data.territory.keys():
+                print("返却")
                 continue
 
+            self.ui_list[i].callback_operation.event("del_control_ui")
             self.ui_list[i].del_territory()
         del self.ui_list[sta:end]
 

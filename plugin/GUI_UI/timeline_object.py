@@ -51,9 +51,6 @@ class parts:
 
         effect_dict = data.operation["plugin"]["effect"]
 
-        def effect_add():
-            pass
-
         effect_user_list = ["エフェクト"]
 
         for k in effect_dict.keys():

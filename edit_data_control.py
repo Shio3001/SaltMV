@@ -212,6 +212,10 @@ class Storage:
         new_effect.effect_name = effect_name
         self.operation["plugin"]["effect"][effect_name].InitialValue(new_effect)
         new_effect.effect_id = self.elements.make_id("effect")
+
+        if new_effect.effect_id is None:
+            new_effect.effect_name = effect_name
+
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
 
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group)

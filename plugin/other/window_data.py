@@ -37,6 +37,7 @@ class SendWindowData:  # window生成のためのデータ
         # print(self.tkFont_list)
 
         self.window_menubar = None
+        self.window_resizable = [True, True]
         #self.pull_down = {}
 
         self.window.configure(bg=self.GUI_base_color)
@@ -195,10 +196,11 @@ class SendWindowData:  # window生成のためのデータ
         display_size = [self.window.winfo_screenwidth(), self.window.winfo_screenheight()]
         return display_size
 
-    def window_size_set(self, send):
-        if not send is None:
-            self.window_size = send
-        self.window.resizable(width=True, height=True)
+    def window_size_set(self, x=None, y=None, lock_x=None, lock_y=None):
+        self.window_size = self.common_control.xy_compilation(self.window_size, x=x, y=y)
+        self.window_resizable = self.common_control.xy_compilation(self.window_resizable, x=lock_x, y=lock_y)
+
+        self.window.resizable(width=self.window_resizable[0], height=self.window_resizable[1])
         self.window.geometry("{0}x{1}".format(self.window_size[0], self.window_size[1]))
 
     def window_title_set(self, send):

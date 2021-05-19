@@ -61,8 +61,8 @@ class InitialValue:
 
         display_size = self.data.display_size_get()
         self.data.window_title_set("メインウインドウ")
-        size = [640, 360]
-        self.data.window_size_set(size)
+        #size = [640, 360]
+        self.data.window_size_set(x=640, y=360)
 
         # def window_size_change_event(self):
         #    pass

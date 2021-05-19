@@ -57,7 +57,7 @@ class ObjectElements:  # その次にえらい
 
 class EffectElements:  # えらくない
     def __init__(self):
-        self.effect_name = None
+        self.effect_name = None  # str(os.path.basename(__file__)).replace('.py', '')
         self.effect_point = {}
         self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定

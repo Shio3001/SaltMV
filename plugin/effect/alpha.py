@@ -8,7 +8,7 @@ import copy
 
 class InitialValue:
     def __init__(self, setting_effect):
-        setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
+        setting_effect.effect_name = "透明度"
         setting_effect.effect_point = [{"time": 0, "alpha": 100}]
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
