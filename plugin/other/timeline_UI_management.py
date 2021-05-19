@@ -22,15 +22,16 @@ class UIManagement:
                 print("返却")
                 continue
 
-            self.ui_list[i].callback_operation.event("del_control_ui")
+            if 'callback_operation' in locals():
+                self.ui_list[i].callback_operation.event("del_control_ui")
             self.ui_list[i].del_territory()
         del self.ui_list[sta:end]
 
-    def new_parameter_ui(self, now, canvas_name=None, UI_name=None):  # UIパーツを追加する
+    def new_parameter_ui(self, now, parts_name=None, canvas_name=None):  # UIパーツを追加する
         if now >= int(len(self.ui_list)):
             ui_id = self.data.all_data.elements.make_id("parameter_UI")
             self.ui_list.append([None, None])
-            self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=UI_name)
+            self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=parts_name)
 
     def set_old_elements_len(self):
         self.old_elements_len = int(len(self.ui_list))

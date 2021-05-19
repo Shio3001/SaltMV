@@ -3,6 +3,9 @@ class parts:
         print("")
 
     def UI_set(self, data):
+
+        data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
+
         data.edit_territory_position(x=100, y=100)
         data.edit_territory_size(x=100, y=20)
         data.new_diagram("background")
@@ -16,5 +19,11 @@ class parts:
         data.diagram_stack("text", True)
 
         data.territory_draw()
+
+        def click(event):
+            print(data.option_data)
+            data.callback_operation.event("button", info=data.option_data)
+
+        data.add_territory_event("ButtonPress-1", click)
 
         return data
