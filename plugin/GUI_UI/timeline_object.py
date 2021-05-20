@@ -11,8 +11,24 @@ class KeyFrame:
         self.uu_id = self.data.all_data.elements.make_id("keyframe")
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, center_x, center_y)  # ひし形
-        data.diagram_draw()
+        data.diagram_draw(self.uu_id)
         data.edit_diagram_color("bar", "#ffffff")
+
+        def draw(name, pos):
+            data.edit_diagram_position(name, x=pos)
+
+        def diagram_pos(info_send):
+            _, _, di_name = info_send
+
+            if di_name == "bar":
+                return
+
+            pos_y = data.edit_diagram_position("bar")[1]
+            data.edit_diagram_position(self.uu_id, y=pos_y)
+
+        data.callback_operation.set_event("diagram_draw", diagram_pos)
+
+        data.set_draw_sub_point_func(draw)
 
 
 class parts:
@@ -58,6 +74,13 @@ class parts:
         def media_object_separate():
             data.callback_operation.event("separate", data.option_data["media_id"])
 
+        def add_key_frame():
+            bar_pos = data.edit_diagram_position("bar")
+            size = data.edit_diagram_size("bar")[1] / 2
+            center_x = bar_pos[0]
+            center_y = bar_pos[1] - (data.edit_diagram_size("bar")[1] / 2)
+            KeyFrame(data, size, center_x, center_y)
+
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 
         effect_dict = data.operation["plugin"]["effect"]
@@ -69,7 +92,7 @@ class parts:
             effect_user_list.append(k)
             effect_user_list.append(effect_get.add_element)
 
-        popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", None), ("中間点削除", None)]
+        popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
         self.popup.set(popup_list)
 
         def right_click(event):

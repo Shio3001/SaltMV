@@ -56,6 +56,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.uidata_id = self.all_data.elements.make_id("ui_data")
 
+        self.callback_operation = self.operation["plugin"]["other"]["callback"].CallBack()
+
         #print(self.uidata_id, "生成しました＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊")
 
         # self.popup_list = None
@@ -378,6 +380,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if self.get_diagram_type(di_name, "TextBoxData"):
             self.__diagram_textbox_draw(territory_data, diagram_data,  di_name, di_del)
+
+        self.callback_operation.event("diagram_draw",info=(territory_data, diagram_data,di_name))
 
         diagram_data.draw_tag = True
         return
