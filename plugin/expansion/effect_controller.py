@@ -58,6 +58,9 @@ class InitialValue:
             self.now += 1
 
         def media_lord(send):
+
+            self.data.all_data.callback_operation.event("element_ui_all_del")
+
             self.elements_effect, now_f = send
             self.now = 0
 

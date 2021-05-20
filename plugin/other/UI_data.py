@@ -330,6 +330,42 @@ class SendUIData:  # パーツひとつあたりのためのclass
         else:
             return False
 
+
+    def set_shape_rhombus(self,di_name,size,center_x,center_y): #ひし形
+        if not self.get_diagram_type(di_name, "DiagramData"):
+            return
+
+        self.shape_point = [center_x - size/2 ,
+                            center_y, 
+                            center_x, 
+                            center_y - size/2,
+                            center_x + size/2,
+                            center_y,
+                            center_x,
+                            center_y + size/2
+                            ]
+
+        return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].shape_point)
+
+    def set_shape_point(self, di_name, shape_point, del_point=None, plus=None):
+        if not self.get_diagram_type(di_name, "DiagramData"):
+            return
+
+        if del_point:
+            self.canvas_data.territory[self.te_name].diagram[di_name].shape_point = None
+            return
+
+        if int(len(shape_point)) % 2 == 0:
+            # 偶数個ではないので設定不可
+            return
+
+        if plus:
+            self.canvas_data.territory[self.te_name].diagram[di_name].shape_point.append(shape_point)
+        else:
+            self.canvas_data.territory[self.te_name].diagram[di_name].shape_point = copy.deepcopy(shape_point)
+
+        return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].shape_point)
+
     def diagram_draw(self,  di_name, di_del=False):
         territory_data = self.canvas_data.territory[self.te_name]
         diagram_data = self.canvas_data.territory[self.te_name].diagram[di_name]
@@ -362,7 +398,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=color)
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
-        if not diagram_data.draw_tag:
+        if not diagram_data.draw_tag and not diagram_data.shape_point is None:
+            self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), joinstyle=tk.BEVEL)
+
+        elif not diagram_data.draw_tag:
             self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))  # 塗りつぶし
 
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name, di_del):
@@ -542,6 +581,7 @@ class DiagramData():
         self.fill = [False, False]
         self.draw_tag = False
         self.event = {}
+        self.shape_point = None
 
 
 class DiagramTextData():

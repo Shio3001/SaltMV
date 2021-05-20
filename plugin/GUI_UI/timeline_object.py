@@ -2,6 +2,17 @@ import sys
 import copy
 import datetime
 import threading
+import uuid
+
+
+class KeyFrame:
+    def __init__(self, data, size, center_x, center_y):
+        self.data = data
+        self.uu_id = self.data.all_data.elements.make_id("keyframe")
+        data.new_diagram(self.uu_id)
+        data.set_shape_rhombus(self.uu_id, size, center_x, center_y)  # ひし形
+        data.diagram_draw()
+        data.edit_diagram_color("bar", "#ffffff")
 
 
 class parts:
@@ -58,7 +69,7 @@ class parts:
             effect_user_list.append(k)
             effect_user_list.append(effect_get.add_element)
 
-        popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del)]
+        popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", None), ("中間点削除", None)]
         self.popup.set(popup_list)
 
         def right_click(event):

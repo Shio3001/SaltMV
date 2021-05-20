@@ -48,18 +48,21 @@ class InitialValue:
                 self.now += 1
 
         def element_lord(element):
+            self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
             self.now = 0
             self.data.ui_management.set_old_elements_len()
             make(element)
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
 
-        # def element_ui_all_del():
-        #    self.now = 0
-        #    self.data.ui_management.set_old_elements_len(set_number=0)
-        #    self.data.ui_management.del_ignition(self.now)
+        def element_ui_all_del():
+            self.now = 0
+            self.data.ui_management.set_old_elements_len()
+            self.data.ui_management.del_ignition(self.now)
 
-        #self.data.all_data.callback_operation.set_event("del_parameter_ui", element_ui_all_del)
+            self.data.window_title_set("タイムライン設定")
+
+        self.data.all_data.callback_operation.set_event("element_ui_all_del", element_ui_all_del)
         self.data.all_data.callback_operation.set_event("element_lord", element_lord)
         self.data.all_data.callback_operation.set_event("element_del", self.data.ui_management.element_del)
 

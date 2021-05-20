@@ -22,7 +22,7 @@ class UIManagement:
                 print("返却")
                 continue
 
-            if "callback_operation" in self.data.operation["class_dict"](self.ui_list[i]):
+            if self.data.operation["class_dict"](self.ui_list[i], inquiry="callback_operation"):
                 self.ui_list[i].callback_operation.event("del_parameter_ui")
 
             # if self.ui_list[i].te_name == "parameter_control":
