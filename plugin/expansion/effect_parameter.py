@@ -54,6 +54,12 @@ class InitialValue:
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
 
+        # def element_ui_all_del():
+        #    self.now = 0
+        #    self.data.ui_management.set_old_elements_len(set_number=0)
+        #    self.data.ui_management.del_ignition(self.now)
+
+        #self.data.all_data.callback_operation.set_event("del_parameter_ui", element_ui_all_del)
         self.data.all_data.callback_operation.set_event("element_lord", element_lord)
         self.data.all_data.callback_operation.set_event("element_del", self.data.ui_management.element_del)
 

@@ -18,12 +18,12 @@ class parts:
 
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
-        def del_control_ui():
-            print("del_control_ui 削除")
+        def del_parameter_ui():
+            print("del_parameter_ui 削除")
             data.button_parameter_control.del_territory()
             del data.button_parameter_control
 
-        data.callback_operation.set_event("del_control_ui", del_control_ui)
+        data.callback_operation.set_event("del_parameter_ui", del_parameter_ui)
 
         def parameter_ui_set(motion=False, column=0, text=None):
             pos_y = pos_y_normal * column

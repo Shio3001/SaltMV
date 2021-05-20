@@ -23,7 +23,7 @@ class UIManagement:
                 continue
 
             if "callback_operation" in self.data.operation["class_dict"](self.ui_list[i]):
-                self.ui_list[i].callback_operation.event("del_control_ui")
+                self.ui_list[i].callback_operation.event("del_parameter_ui")
 
             # if self.ui_list[i].te_name == "parameter_control":
             # self.ui_list[i].del_control_ui()
@@ -39,11 +39,17 @@ class UIManagement:
             self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=parts_name)
             print("生成", now, "parts_name", parts_name, "canvas_name", canvas_name)
 
-    def set_old_elements_len(self):
-        self.old_elements_len = int(len(self.ui_list))
+    def set_old_elements_len(self, set_number=None):
+        if set_number is None:
+            self.old_elements_len = int(len(self.ui_list))
+        if not set_number is None:
+            self.old_elements_len = copy.deepcopy(set_number)
 
-    def set_now_elements_len(self):
-        self.now_elements_len = int(len(self.ui_list))
+    def set_now_elements_len(self, set_number=None):
+        if set_number is None:
+            self.old_elements_len = int(len(self.ui_list))
+        if not set_number is None:
+            self.old_elements_len = copy.deepcopy(set_number)
 
     def del_ignition(self, now):
         if self.old_elements_len > now:
