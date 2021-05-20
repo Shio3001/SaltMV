@@ -19,6 +19,7 @@ class parts:
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
         def del_control_ui():
+            print("del_control_ui 削除")
             data.button_parameter_control.del_territory()
             del data.button_parameter_control
 
@@ -35,5 +36,6 @@ class parts:
             data.button_parameter_control.territory_draw()
 
         data.parameter_ui_set = parameter_ui_set
+        #data.del_control_ui = del_control_ui
 
         return data

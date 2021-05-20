@@ -22,10 +22,13 @@ class UIManagement:
                 print("返却")
                 continue
 
-            self.ui_list[i].del_territory()
-
-            if 'callback_operation' in locals():
+            if "callback_operation" in self.data.operation["class_dict"](self.ui_list[i]):
                 self.ui_list[i].callback_operation.event("del_control_ui")
+
+            # if self.ui_list[i].te_name == "parameter_control":
+            # self.ui_list[i].del_control_ui()
+
+            self.ui_list[i].del_territory()
 
         del self.ui_list[sta:end]
 

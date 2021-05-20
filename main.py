@@ -22,6 +22,7 @@ import error
 from chord_tool import file_path
 import edit_data_control
 import UI_control
+from chord_tool import class_var_to_dict
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
@@ -35,6 +36,7 @@ operation["rendering"]["main"] = rendering_main.Rendering()
 operation["rendering"]["frame"] = rendering_frame.Rendering()
 operation["rendering"]["point"] = rendering_point.PointAnalysis()
 
+operation["class_dict"] = class_var_to_dict.ClassVarToDict().get
 operation["file_path"] = file_path.DirectoryPath()
 operation["log"] = log.LogPrint(operation["file_path"])
 operation["log"].stop(True)

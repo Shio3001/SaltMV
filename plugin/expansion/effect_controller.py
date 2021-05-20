@@ -30,7 +30,8 @@ class InitialValue:
             print(self.elements_effect, option_data)
             key = option_data["element_key"]
 
-            if not key in self.elements_effect.values():
+            if not key in self.elements_effect.keys():
+                print("返送")
                 return
 
             element = self.elements_effect[key]
@@ -44,6 +45,8 @@ class InitialValue:
 
         def make(k, e):
             #ui_id = self.data.all_data.elements.make_id("parameter_control_UI")
+
+            print("make", k, e)
 
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)
