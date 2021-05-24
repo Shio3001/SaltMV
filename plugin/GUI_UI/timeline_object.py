@@ -10,7 +10,7 @@ class KeyFrame:
         self.data = data
         self.uu_id = self.data.all_data.elements.make_id("keyframe")
         data.new_diagram(self.uu_id)
-        data.set_shape_rhombus(self.uu_id, size, center_x, center_y)  # ひし形
+        data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
         data.diagram_draw(self.uu_id)
         data.edit_diagram_color(self.uu_id, "#ffff00")
 

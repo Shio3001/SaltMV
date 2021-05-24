@@ -406,6 +406,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
         if not diagram_data.draw_tag and not diagram_data.shape_point is None:
+            print(diagram_data.shape_point)
             self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), joinstyle=tk.BEVEL)
 
         elif not diagram_data.draw_tag:
