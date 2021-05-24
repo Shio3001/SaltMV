@@ -2,11 +2,12 @@ import copy
 
 
 class TimelineCalculation:
-    def __init__(self, UI_common_control, territory, get_set_option_data, direction=None, debug_name=None, size_del=None):
+    def __init__(self, UI_common_control, callback_operation, territory, get_set_option_data, direction=None, debug_name=None, size_del=None):
         self.common_control = UI_common_control
         self.territory = territory
 
         self.debug_name = debug_name
+        self.callback_operation = callback_operation
 
         self.direction = direction
         if self.direction is None:
@@ -25,8 +26,7 @@ class TimelineCalculation:
             pass
             # print(pos_size)
 
-        self.draw_func = test
-        self.draw_func_sub_point = test
+        #self.draw_func = test
 
         self.size_del = False
         if not size_del is None:
@@ -38,6 +38,8 @@ class TimelineCalculation:
 
         print(debug_name, "===============================================")
 
+    """
+
     def set_draw_func(self, func):
         if not str(type(func)) == "<class 'function'>":
             return
@@ -47,6 +49,7 @@ class TimelineCalculation:
         if not str(type(func)) == "<class 'function'>":
             return
         self.draw_func_sub_point = func
+    """
 
     def set_sta_end_px(self, sta=None, end=None, space=None):
         if not space is None:
@@ -73,9 +76,7 @@ class TimelineCalculation:
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
         frame_long_view = self.sta_end_f_view[1] - self.sta_end_f_view[0]
-
         rate = frame_long / scroll_long
-
         pos_f = (position - self.blank_space) * rate + self.sta_end_f[0]
 
         return pos_f
@@ -105,6 +106,7 @@ class TimelineCalculation:
 
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
         self.draw_func_sub_point(sub_name, position)
+        self.callback_operation.event("obj_sub_point", info=())  # 送るものはpx_pos
 
     def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
         position = copy.deepcopy(position)  # 参照渡し防止用
@@ -122,6 +124,7 @@ class TimelineCalculation:
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
 
         self.draw_func_sub_point(sub_name, pos_px + self.blank_space)
+        self.callback_operation.event("obj_sub_point", info=())  # 送るものはpx_pos
 
         return pos_px
 
@@ -170,7 +173,8 @@ class TimelineCalculation:
             self.set_f_ratio()
             return
 
-        self.draw_func(position, size)
+        self.callback_operation.event("draw_func", info=(position, size))
+        #self.draw_func(position, size)
 
     def set_f_ratio(self, position=None, size=None):
         self.ratio_f = self.common_control.xy_compilation(self.ratio_f, x=position, y=size)
@@ -178,22 +182,20 @@ class TimelineCalculation:
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
 
-        # print(self.sta_end_f)
-
         rate = scroll_long / frame_long
         now_view_start_f = (self.ratio_f[0] - self.sta_end_f[0])
 
-        #pos_px = now_f * rate * pos_plus if self.size_del else now_f * rate
         pos_px = self.f_to_px(self.ratio_f[0])
-        size_px = self.ratio_f[1] * rate
+        size_px = self.f_to_px(self.ratio_f[1])
 
         for k in self.sub_point_f.keys():
             self.set_f_ratio_sub_point(k)
 
-        self.draw_func(pos_px + self.blank_space, size_px)
+        self.callback_operation.event("draw_func", info=(pos_px + self.blank_space, size_px))
+        #self.draw_func(pos_px + self.blank_space, size_px)
 
-    def __draw(self, frame, px):
-        self.draw_func(frame, px)
+    # def __draw(self, frame, px):
+    #    self.callback_operation.event("draw_func", info=(frame, px))
 
     def get_event_data(self):
         ratio_data = RatioData(self.get_set_option_data(), self.ratio_f, self.sta_end_f)

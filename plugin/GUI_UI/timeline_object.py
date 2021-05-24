@@ -26,9 +26,8 @@ class KeyFrame:
             pos_y = data.edit_diagram_position("bar")[1]
             data.edit_diagram_position(self.uu_id, y=pos_y)
 
-        data.callback_operation.set_event("diagram_draw", diagram_pos)
-
-        data.set_draw_sub_point_func(draw)
+        #data.callback_operation.set_event("diagram_draw", diagram_pos)
+        data.callback_operation.set_event("obj_sub_point", draw)
 
 
 class parts:
@@ -59,13 +58,15 @@ class parts:
 
         # data.pos_add_y = pos_add_y
 
-        def draw(px_pos, px_size):
+        def draw(info):
+            px_pos, px_size = info
             data.edit_diagram_position("bar", x=px_pos)
             data.edit_diagram_size("bar", x=px_size)
 
             data.territory_draw()
 
-        data.pxf.set_draw_func(draw)
+        data.pxf.callback_operation.set_event("draw_func", draw)
+        # data.pxf.set_draw_func(draw)
 
         def media_object_del():
             data.callback_operation.event("end", info=data.pxf.get_event_data())

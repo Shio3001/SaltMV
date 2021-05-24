@@ -15,11 +15,12 @@ class parts:
 
         data.click_flag = True
 
-        def draw(px_pos, _):
+        def draw(info):
+            px_pos, _ = info
             data.edit_diagram_position("now", x=px_pos)
             data.territory_draw()
 
-        data.pxf.set_draw_func(draw)
+        data.pxf.callback_operation.set_event("draw_func", draw)
 
         data.pxf.init_set_sta_end_f(sta=0, end=100)
         data.pxf.set_sta_end_f(sta=0, end=100)

@@ -110,7 +110,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         #    self.all_del_diagram_event(di_name)
 
     def plus_px_frame_data(self, direction=None, debug_name=None, size_del=None):
-        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(self.common_control, self.canvas_data.territory[self.te_name], self.get_set_option_data, direction=direction, debug_name=debug_name, size_del=size_del)
+        send_callback_operation = self.operation["plugin"]["other"]["callback"].CallBack()
+        timeline_calculation = self.operation_timeline_calculation.TimelineCalculation(
+            self.common_control, send_callback_operation, self.canvas_data.territory[self.te_name], self.get_set_option_data, direction=direction, debug_name=debug_name, size_del=size_del)
         return timeline_calculation
 
     def edit_territory_size(self, x=None, y=None):
@@ -332,14 +334,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
         else:
             return False
 
-
-    def set_shape_rhombus(self,di_name,size,center_x,center_y): #ひし形
+    def set_shape_rhombus(self, di_name, size, center_x, center_y):  # ひし形
         if not self.get_diagram_type(di_name, "DiagramData"):
             return
 
-        self.shape_point = [center_x - size/2 ,
-                            center_y, 
-                            center_x, 
+        self.shape_point = [center_x - size/2,
+                            center_y,
+                            center_x,
                             center_y - size/2,
                             center_x + size/2,
                             center_y,
@@ -381,7 +382,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if self.get_diagram_type(di_name, "TextBoxData"):
             self.__diagram_textbox_draw(territory_data, diagram_data,  di_name, di_del)
 
-        self.callback_operation.event("diagram_draw",info=(territory_data, diagram_data,di_name))
+        self.callback_operation.event("diagram_draw", info=(territory_data, diagram_data, di_name))
 
         diagram_data.draw_tag = True
         return

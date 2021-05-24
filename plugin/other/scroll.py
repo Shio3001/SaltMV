@@ -29,14 +29,15 @@ class CentralRole:
 
         data.pxf = data.plus_px_frame_data(direction=0, debug_name="scroll", size_del=True)
 
-        def draw(px_pos, px_size):
+        def draw(info):
+            px_pos, px_size = info
             data.edit_diagram_position("view", x=px_pos)
             data.edit_diagram_size("view", x=px_size)
 
             data.territory_draw()
 
         data.pxf.set_sta_end_f(sta=0, end=100)
-        data.pxf.set_draw_func(draw)
+        data.pxf.callback_operation.set_event("draw_func", draw)
 
         # data.pxf.set_draw_func(draw)
 
