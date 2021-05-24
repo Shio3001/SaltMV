@@ -21,7 +21,7 @@ class TimelineCalculation:
 
         self.blank_space = 0
 
-        def test(pos_size):
+        def test(*test):
             pass
             # print(pos_size)
 
@@ -69,14 +69,17 @@ class TimelineCalculation:
     # def init_set_px_ratio_point(self,sub_name):
     #    self.sub_point_f[sub_name] = position
 
-    def px_to_f(self, position):
+    def px_to_f(self, position, size=None):
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
         frame_long_view = self.sta_end_f_view[1] - self.sta_end_f_view[0]
-
         rate = frame_long / scroll_long
 
         pos_f = (position - self.blank_space) * rate + self.sta_end_f[0]
+
+        if not size is None:
+            size_f = (size) * rate + self.sta_end_f[0]
+            return [pos_f, size_f]
 
         return pos_f
 
@@ -88,12 +91,15 @@ class TimelineCalculation:
 
         return pos_px
 
-    def set_sub_point(self, sub_name):
-        self.sub_point_f[sub_name] = 0
+    def sub_point(self, sub_name, pos):
+        self.sub_point_f[sub_name] = pos
+        print("入力", sub_name, pos)
 
-    def set_px_ratio_sub_point(self, sub_name, position):  # positionはpx入力
+    def px_ratio_sub_point(self, sub_name, position):  # positionはpx入力
         if position is None:
             return
+
+        print("position", position)
 
         pos_f = self.px_to_f(position)
 
@@ -103,13 +109,17 @@ class TimelineCalculation:
         if pos_f > self.sta_end_f_view[1]:  # posが0より手前になった
             pos_f = copy.deepcopy(self.sta_end_f_view[1])
 
-        self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
+        self.sub_point(sub_name, pos_f)
+        print("発火A", self.sub_point_f, self.sub_point_f[sub_name])
         self.draw_func_sub_point(sub_name, position)
 
-    def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
+    def f_ratio_sub_point(self, sub_name, position=None, add_pos=None):  # position は frame入力
         position = copy.deepcopy(position)  # 参照渡し防止用
 
         if not position is None:
+
+            position += add_pos
+
             if position < self.sta_end_f_view[0]:
                 position = copy.deepcopy(self.sta_end_f_view[0])
 
@@ -117,32 +127,28 @@ class TimelineCalculation:
                 position = copy.deepcopy(self.sta_end_f_view[1])
 
             if not position is None:
-                self.sub_point_f[sub_name] = copy.deepcopy(position)
+                self.sub_point(sub_name, position)
 
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
-
+        print("発火B", pos_px, self.sub_point_f, self.sub_point_f[sub_name])
         self.draw_func_sub_point(sub_name, pos_px + self.blank_space)
 
         return pos_px
 
     def set_px_ratio(self, position=None, size=None):
 
-        scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
-        frame_long = self.sta_end_f[1] - self.sta_end_f[0]
+        #scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
+        #frame_long = self.sta_end_f[1] - self.sta_end_f[0]
         frame_long_view = self.sta_end_f_view[1] - self.sta_end_f_view[0]
-
-        rate = frame_long / scroll_long
-
-        pos_f, size_f = None, None
 
         if not size is None and size < 1:
             size = 1
 
-        if not position is None:
-            self.ratio_f[0] = self.px_to_f(position)
+        if not size is None and not position is None:
+            self.ratio_f = self.px_to_f(position, size)
 
-        if not size is None:
-            self.ratio_f[1] = size * rate
+        elif not position is None:
+            self.ratio_f[0] = self.px_to_f(position)
 
         flag = ""
 
@@ -170,6 +176,9 @@ class TimelineCalculation:
             self.set_f_ratio()
             return
 
+        for k in self.sub_point_f.keys():
+            self.px_ratio_sub_point(k)
+
         self.draw_func(position, size)
 
     def set_f_ratio(self, position=None, size=None):
@@ -183,12 +192,11 @@ class TimelineCalculation:
         rate = scroll_long / frame_long
         now_view_start_f = (self.ratio_f[0] - self.sta_end_f[0])
 
-        #pos_px = now_f * rate * pos_plus if self.size_del else now_f * rate
         pos_px = self.f_to_px(self.ratio_f[0])
         size_px = self.ratio_f[1] * rate
 
         for k in self.sub_point_f.keys():
-            self.set_f_ratio_sub_point(k)
+            self.f_ratio_sub_point(k, add_pos=pos_px)
 
         self.draw_func(pos_px + self.blank_space, size_px)
 

@@ -332,20 +332,46 @@ class SendUIData:  # パーツひとつあたりのためのclass
         else:
             return False
 
-
-    def set_shape_rhombus(self,di_name,size,center_x,center_y): #ひし形
+    def set_shape_rhombus(self, di_name, size, center_x=0, center_y=0):  # ひし形
         if not self.get_diagram_type(di_name, "DiagramData"):
             return
 
-        self.shape_point = [center_x - size/2 ,
-                            center_y, 
-                            center_x, 
-                            center_y - size/2,
-                            center_x + size/2,
-                            center_y,
-                            center_x,
-                            center_y + size/2
-                            ]
+        #center_x, center_y = 0, 0
+
+        shape_point = [center_x - size/2,
+                       center_y,
+                       center_x,
+                       center_y - size/2,
+                       center_x + size/2,
+                       center_y,
+                       center_x,
+                       center_y + size/2
+                       ]
+
+        """
+        shape_point = [
+            x + size/2,
+            y,
+            x + size,
+
+
+
+        ]
+        """
+
+        """
+        shape_point = [size/2 + center_x,
+                       0 + center_y,
+                       size + center_x,
+                       size/2 + center_y,
+                       size/2 + center_x,
+                       size + center_y,
+                       0 + center_x,
+                       size/2 + center_y
+                       ]
+        """
+
+        self.canvas_data.territory[self.te_name].diagram[di_name].shape_point = shape_point
 
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].shape_point)
 
@@ -381,7 +407,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if self.get_diagram_type(di_name, "TextBoxData"):
             self.__diagram_textbox_draw(territory_data, diagram_data,  di_name, di_del)
 
-        self.callback_operation.event("diagram_draw",info=(territory_data, diagram_data,di_name))
+        #self.callback_operation.event("diagram_draw", info=(territory_data, diagram_data, di_name))
 
         diagram_data.draw_tag = True
         return
@@ -403,6 +429,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
         if not diagram_data.draw_tag and not diagram_data.shape_point is None:
+            print(diagram_data.shape_point)
             self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), joinstyle=tk.BEVEL)
 
         elif not diagram_data.draw_tag:

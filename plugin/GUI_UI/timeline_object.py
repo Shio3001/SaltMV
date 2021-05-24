@@ -6,29 +6,24 @@ import uuid
 
 
 class KeyFrame:
-    def __init__(self, data, size, center_x, center_y):
+    def __init__(self, data, size, mouse_pos):
         self.data = data
         self.uu_id = self.data.all_data.elements.make_id("keyframe")
         data.new_diagram(self.uu_id)
-        data.set_shape_rhombus(self.uu_id, size, center_x, center_y)  # ひし形
+        print("shpae_size", size)
+        data.set_shape_rhombus(self.uu_id, size)  # ひし形
         data.diagram_draw(self.uu_id)
-        data.edit_diagram_color("bar", "#ffffff")
+        data.edit_diagram_color(self.uu_id, "#0000ff")
 
         def draw(name, pos):
             data.edit_diagram_position(name, x=pos)
+            print(name, pos)
+            data.diagram_draw(name)
 
-        def diagram_pos(info_send):
-            _, _, di_name = info_send
-
-            if di_name == "bar":
-                return
-
-            pos_y = data.edit_diagram_position("bar")[1]
-            data.edit_diagram_position(self.uu_id, y=pos_y)
-
-        data.callback_operation.set_event("diagram_draw", diagram_pos)
-
-        data.set_draw_sub_point_func(draw)
+        data.pxf.set_draw_sub_point_func(draw)
+        data.pxf.sub_point(self.uu_id, 100)
+        print("mouse_pos[0]", mouse_pos[0])
+        data.pxf.px_ratio_sub_point(self.uu_id, mouse_pos[0])
 
 
 class parts:
@@ -77,9 +72,9 @@ class parts:
         def add_key_frame():
             bar_pos = data.edit_diagram_position("bar")
             size = data.edit_diagram_size("bar")[1] / 2
-            center_x = bar_pos[0]
-            center_y = bar_pos[1] - (data.edit_diagram_size("bar")[1] / 2)
-            KeyFrame(data, size, center_x, center_y)
+            mouse_pos, _, _ = data.get_diagram_contact("bar")
+
+            KeyFrame(data, size, mouse_pos)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 
