@@ -12,22 +12,22 @@ class KeyFrame:
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, center_x, center_y)  # ひし形
         data.diagram_draw(self.uu_id)
-        data.edit_diagram_color("bar", "#ffffff")
+        data.edit_diagram_color(self.uu_id, "#ffff00")
 
-        def draw(name, pos):
-            data.edit_diagram_position(name, x=pos)
+        now_mouse, _, _ = data.get_diagram_contact(self.uu_id)
 
-        def diagram_pos(info_send):
-            _, _, di_name = info_send
+        data.pxf.set_sub_point(self.uu_id)
+        data.pxf.set_px_ratio_sub_point(self.uu_id, now_mouse[0])
 
-            if di_name == "bar":
-                return
+        print("KeyFrame生成")
 
-            pos_y = data.edit_diagram_position("bar")[1]
-            data.edit_diagram_position(self.uu_id, y=pos_y)
+        def draw(send):
+            sub_name, pos_px = send
+            print(pos_px)
+            data.edit_diagram_position(self.uu_id, x=pos_px)
+            print("KeyFrame描画")
 
-        #data.callback_operation.set_event("diagram_draw", diagram_pos)
-        data.callback_operation.set_event("obj_sub_point", draw)
+        data.pxf.callback_operation.set_event("obj_sub_point", draw)
 
 
 class parts:

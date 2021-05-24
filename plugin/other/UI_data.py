@@ -338,15 +338,17 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not self.get_diagram_type(di_name, "DiagramData"):
             return
 
-        self.shape_point = [center_x - size/2,
-                            center_y,
-                            center_x,
-                            center_y - size/2,
-                            center_x + size/2,
-                            center_y,
-                            center_x,
-                            center_y + size/2
-                            ]
+        shape_point = [center_x - size/2,
+                       center_y,
+                       center_x,
+                       center_y - size/2,
+                       center_x + size/2,
+                       center_y,
+                       center_x,
+                       center_y + size/2
+                       ]
+
+        self.canvas_data.territory[self.te_name].diagram[di_name].shape_point = shape_point
 
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].shape_point)
 
