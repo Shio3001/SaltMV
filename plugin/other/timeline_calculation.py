@@ -75,26 +75,20 @@ class TimelineCalculation:
     def px_to_f(self, pos_px, size_bool=None):
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
-        frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
+        #frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
         rate = frame_long / scroll_long
 
-        if size_bool:
-            pos_f = pos_px * rate
-        else:
-            pos_f = (pos_px - self.blank_space) * rate + self.sta_end_f[0]
+        pos_f = pos_px * rate if size_bool else (pos_px - self.blank_space) * rate + self.sta_end_f[0]
 
         return pos_f
 
     def f_to_px(self, pos_f, size_bool=None):
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
-        frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
+        #frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
         rate = scroll_long / frame_long
 
-        if size_bool:
-            pos_px = pos_f * rate
-        else:
-            pos_px = (pos_f - self.sta_end_f[0]) * rate
+        pos_px = pos_f * rate if size_bool else (pos_f - self.sta_end_f[0]) * rate
 
         return pos_px
 
@@ -177,8 +171,6 @@ class TimelineCalculation:
 
         pos_completed = self.f_to_px(self.ratio_f[0])
         size_completed = self.f_to_px(self.ratio_f[1], size_bool=True)
-
-        print("pos_completed", pos_completed)
 
         self.callback_operation.event("draw_func", info=(pos_completed, size_completed))
         #self.draw_func(position, size)
