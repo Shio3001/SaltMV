@@ -23,9 +23,8 @@ class KeyFrame:
 
         def draw(send):
             sub_name, pos_px = send
-            print(pos_px)
-            data.edit_diagram_position(self.uu_id, x=pos_px)
-            print("KeyFrame描画")
+            data.edit_diagram_position(sub_name, x=pos_px)
+            print("KeyFrame描画", pos_px)
 
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
 
