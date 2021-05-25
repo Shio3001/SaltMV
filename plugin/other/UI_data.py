@@ -401,7 +401,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         xy, size_xy = self.__left_coordinate_calculation(territory_data, diagram_data)
 
         self.operation["log"].write("shape", xy, size_xy,  di_name)
-        if diagram_data.draw_tag:
+
+        if diagram_data.draw_tag and not diagram_data.shape_point is None:
+            self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1])
+
+        elif diagram_data.draw_tag:
             self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=color)
             self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 

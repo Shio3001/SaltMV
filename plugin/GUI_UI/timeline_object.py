@@ -11,22 +11,27 @@ class KeyFrame:
         self.uu_id = self.data.all_data.elements.make_id("keyframe")
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
+        data.edit_diagram_color(self.uu_id, "#000000")
         data.diagram_draw(self.uu_id)
-        data.edit_diagram_color(self.uu_id, "#ffff00")
 
         now_mouse, _, _ = data.get_diagram_contact(self.uu_id)
-
         data.pxf.set_sub_point(self.uu_id)
         data.pxf.set_px_ratio_sub_point(self.uu_id, now_mouse[0])
+
+        y_pos = data.edit_diagram_position("bar")[1]
+        data.edit_diagram_position(self.uu_id, y=y_pos)
 
         print("KeyFrame生成")
 
         def draw(send):
             sub_name, pos_px = send
-            data.edit_diagram_position(sub_name, x=pos_px)
-            print("KeyFrame描画", pos_px)
+            now = data.edit_diagram_position(sub_name, x=pos_px)
+            data.diagram_draw(sub_name)
+            print("KeyFrame描画", sub_name, now)
 
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
+
+        data.diagram_draw(self.uu_id)
 
 
 class parts:
@@ -52,6 +57,10 @@ class parts:
             layer_pos = layer_number * data.edit_diagram_size("bar")[1]
             data.edit_diagram_position("bar", y=layer_pos)
 
+            for k in data.pxf.sub_point_f.keys():
+                data.edit_diagram_position(k, y=layer_pos)
+                data.diagram_draw(k)
+
         data.edit_layer = edit_layer
         # print("layer_pos", layer_pos)
 
@@ -61,10 +70,10 @@ class parts:
             px_pos, px_size = info
             data.edit_diagram_position("bar", x=px_pos)
             data.edit_diagram_size("bar", x=px_size)
-
             data.territory_draw()
 
         data.pxf.callback_operation.set_event("draw_func", draw)
+
         # data.pxf.set_draw_func(draw)
 
         def media_object_del():

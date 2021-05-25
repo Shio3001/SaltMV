@@ -159,6 +159,7 @@ class InitialValue:
             self.data.all_data.layer(data=layer)
 
             edit_layer(new_layer)
+
             # click_start(None)
 
         def del_object_ui(media_id):

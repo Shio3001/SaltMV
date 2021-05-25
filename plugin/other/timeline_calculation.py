@@ -96,39 +96,24 @@ class TimelineCalculation:
         self.sub_point_f[sub_name] = 0
 
     def set_px_ratio_sub_point(self, sub_name, position):  # positionはpx入力
+        print("positionからの設定")
         if position is None:
             return
 
-        pos_f = self.px_to_f(position, size_bool=True)
-
-        # if pos_f < self.sta_end_f[0] + 1:  # posが0より手前になった
-        #    pos_f = copy.deepcopy(self.sta_end_f_init[0] + 1)
-
-        # if pos_f > self.sta_end_f[1] - 1:  # posが0より手前になった
-        #    pos_f = copy.deepcopy(self.sta_end_f_init[0] + self.sta_end_f_init[1] - 1)
-
+        pos_f = self.px_to_f(position)
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
-        #self.draw_func_sub_point(sub_name, self.f_to_px(pos_f))
-        self.callback_operation.event("obj_sub_point", info=(sub_name, self.f_to_px(pos_f, size_bool=True)))  # 送るものはpx_pos
+
+        pos_px = self.f_to_px(self.sub_point_f[sub_name])
+        self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
 
     def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
+        print("frameからの設定")
         position = copy.deepcopy(position)  # 参照渡し防止用
-
         if not position is None:
-            if position < self.sta_end_f_init[0]:
-                position = copy.deepcopy(self.sta_end_f_init[0])
+            self.sub_point_f[sub_name] = copy.deepcopy(position)
 
-            if position > self.sta_end_f_init[1]:
-                position = copy.deepcopy(self.sta_end_f_init[1])
-
-            if not position is None:
-                self.sub_point_f[sub_name] = copy.deepcopy(position)
-
-        pos_px = self.f_to_px(self.sub_point_f[sub_name], size_bool=True)
-
-        #self.draw_func_sub_point(sub_name, pos_px + self.blank_space)
-        self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px + self.blank_space))  # 送るものはpx_pos
-
+        pos_px = self.f_to_px(self.sub_point_f[sub_name])
+        self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
     def set_px_ratio(self, position=None, size=None):
@@ -166,8 +151,8 @@ class TimelineCalculation:
             print(flag)
             return
 
-        # for k in self.sub_point_f.keys():
-        #    self.set_f_ratio_sub_point(k)
+        for k in self.sub_point_f.keys():
+            self.set_f_ratio_sub_point(k)
 
         pos_completed = self.f_to_px(self.ratio_f[0])
         size_completed = self.f_to_px(self.ratio_f[1], size_bool=True)
@@ -180,6 +165,10 @@ class TimelineCalculation:
 
         pos_px = self.f_to_px(self.ratio_f[0])
         size_px = self.f_to_px(self.ratio_f[1], size_bool=True)
+
+        for k in self.sub_point_f.keys():
+            self.set_f_ratio_sub_point(k)
+
         self.callback_operation.event("draw_func", info=(pos_px + self.blank_space, size_px))
 
     def get_event_data(self):
