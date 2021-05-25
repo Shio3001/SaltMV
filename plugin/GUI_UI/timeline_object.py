@@ -14,12 +14,11 @@ class KeyFrame:
         data.edit_diagram_color(self.uu_id, "#000000")
         data.diagram_draw(self.uu_id)
 
-        now_mouse, _, _ = data.get_diagram_contact(self.uu_id)
         data.pxf.set_sub_point(self.uu_id)
-        data.pxf.set_px_ratio_sub_point(self.uu_id, now_mouse[0])
+        data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
 
-        y_pos = data.edit_diagram_position("bar")[1]
-        data.edit_diagram_position(self.uu_id, y=y_pos)
+        #y_pos = data.edit_diagram_position("bar")[1]
+        data.edit_diagram_position(self.uu_id, y=center_y)
 
         print("KeyFrame生成")
 
@@ -85,9 +84,10 @@ class parts:
 
         def add_key_frame():
             bar_pos = data.edit_diagram_position("bar")
+            now_mouse, _, _ = data.get_diagram_contact("bar")
             size = data.edit_diagram_size("bar")[1] / 2
-            center_x = bar_pos[0]
-            center_y = bar_pos[1] - (data.edit_diagram_size("bar")[1] / 2)
+            center_x = copy.deepcopy(now_mouse[0])
+            center_y = copy.deepcopy(bar_pos[1])
             KeyFrame(data, size, center_x, center_y)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)

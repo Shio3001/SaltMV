@@ -100,10 +100,10 @@ class TimelineCalculation:
         if position is None:
             return
 
-        pos_f = self.px_to_f(position)
+        pos_f = self.px_to_f(position) - self.ratio_f[0]
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
 
-        pos_px = self.f_to_px(self.sub_point_f[sub_name])
+        pos_px = self.f_to_px(self.sub_point_f[sub_name] + self.ratio_f[0])
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
 
     def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
@@ -112,7 +112,7 @@ class TimelineCalculation:
         if not position is None:
             self.sub_point_f[sub_name] = copy.deepcopy(position)
 
-        pos_px = self.f_to_px(self.sub_point_f[sub_name])
+        pos_px = self.f_to_px(self.sub_point_f[sub_name] + self.ratio_f[0])
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
