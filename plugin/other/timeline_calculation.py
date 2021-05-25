@@ -72,14 +72,11 @@ class TimelineCalculation:
     # def init_set_px_ratio_point(self,sub_name):
     #    self.sub_point_f[sub_name] = position
 
-    def px_to_f(self, pos_px, size_bool=None, frame_init_bool=None):
+    def px_to_f(self, pos_px, size_bool=None):
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
         rate = frame_long / scroll_long
-
-        if frame_init_bool:
-            rate = frame_long_init / scroll_long
 
         if size_bool:
             pos_f = pos_px * rate
@@ -88,14 +85,11 @@ class TimelineCalculation:
 
         return pos_f
 
-    def f_to_px(self, pos_f, size_bool=None, frame_init_bool=None):
+    def f_to_px(self, pos_f, size_bool=None):
         scroll_long = self.sta_end_px[1] - self.sta_end_px[0]
         frame_long = self.sta_end_f[1] - self.sta_end_f[0]
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
         rate = scroll_long / frame_long
-
-        if frame_init_bool:
-            rate = scroll_long / frame_long_init
 
         if size_bool:
             pos_px = pos_f * rate
