@@ -76,4 +76,7 @@ class CommonControl:
             name = "{0}_{1}".format(name, str(t))
         #name = "{0}_{1}".format(te_name, di_name)
         # #print(name)
+
+        print(name)
+
         return copy.deepcopy(name)

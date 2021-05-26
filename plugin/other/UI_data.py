@@ -194,7 +194,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             color = copy.deepcopy(self.GUI_alpha_color)
 
         self.canvas_data.territory[self.te_name].diagram[di_name].color = color
-        self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=self.canvas_data.territory[self.te_name].diagram[di_name].color)
+        self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, fill=self.canvas_data.territory[self.te_name].diagram[di_name].color)
 
     def get_diagram_contact(self,  di_name, del_mouse=False):
         pos, size = self.get_diagram_position_size(di_name)
@@ -212,7 +212,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         di_name_list = []
 
         for di_name in self.canvas_data.territory[self.te_name].diagram.keys():
-            new_bind_id = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(key), func, "+")
+            new_bind_id = self.canvas_data.canvas.tag_bind(self.canvas_data.territory[self.te_name].diagram[di_name].tag, "<{0}>".format(key), func, "+")
             bind_id_list.append(new_bind_id)
             di_name_list.append(di_name)
 
@@ -229,12 +229,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def all_add_territory_event(self):
         for v in self.canvas_data.territory[self.te_name].event.values():
             for di_name in self.canvas_data.territory[self.te_name].diagram.keys():
-                v[2] = self.canvas_data.canvas.tag_bind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(v[0]), v[1], "+")
+                v[2] = self.canvas_data.canvas.tag_bind(self.canvas_data.territory[self.te_name].diagram[di_name].tag, "<{0}>".format(v[0]), v[1], "+")
 
     def all_del_territory_event(self):  # canvasの再生成時の復元
         for bind in self.canvas_data.territory[self.te_name].event.values():
             for di_name, v in zip(self.canvas_data.territory[self.te_name].diagram.keys(), bind[2]):
-                self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(bind[0]), v)
+                self.canvas_data.canvas.tag_unbind(self.canvas_data.territory[self.te_name].diagram[di_name].tag, "<{0}>".format(bind[0]), v)
 
         self.canvas_data.territory[self.te_name].event = {}
 
@@ -245,7 +245,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def add_diagram_event(self,  di_name, key, func):  # event
 
-        tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+        tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
         bind_id = self.canvas_data.canvas.tag_bind(tag, "<{0}>".format(key), func, "+")
 
         # print(self.canvas_data.territory)
@@ -258,7 +258,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def del_diagram_event(self,  di_name, key, func):  # event
         bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name][2]
-        self.canvas_data.canvas.tag_unbind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(key), bind_id)
+        self.canvas_data.canvas.tag_unbind(self.canvas_data.territory[self.te_name].diagram[di_name].tag, "<{0}>".format(key), bind_id)
 
         #print(bind_id, self.uidata_id, self.te_name, di_name)
         # print(self.canvas_data.territory[self.te_name].diagram[di_name].event)
@@ -267,7 +267,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     # def all_add_diagram_event(self,  di_name):
     #    for k, f in zip(self.canvas_data.territory[self.te_name].diagram[di_name].event.keys(), self.canvas_data.territory[self.te_name].diagram[di_name].event.values()):
-    #        f[2] = self.canvas_data.territory[self.te_name].diagram[di_name].canvas.tag_bind(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), "<{0}>".format(f[0]), f[1], "+")
+    #        f[2] = self.canvas_data.territory[self.te_name].diagram[di_name].canvas.tag_bind(self.canvas_data.territory[self.te_name].diagram[di_name].tag, "<{0}>".format(f[0]), f[1], "+")
 
     def all_del_diagram_event(self,  di_name):  # canvasの再生成時の復元
         # print(self.canvas_data.territory[self.te_name].diagram[di_name].event)
@@ -285,7 +285,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def territory_stack(self,  move):
         for di_name in self.canvas_data.territory[self.te_name].diagram.keys():
-            tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+            tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
 
             # self.operation["log"].write(tag, move)
             if move == True:
@@ -295,7 +295,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
                 self.canvas_data.canvas.tag_lower(tag)
 
     def diagram_stack(self,  di_name, move, target=None):
-        tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+        tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
 
         print("diagram_stack 変更")
 
@@ -307,18 +307,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.tag_lower(tag)
             return
 
-        target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target)
-
-        print(target_tag in self.canvas_data.territory[self.te_name].diagram.keys())
-        print(self.canvas_data.territory[self.te_name].diagram)
+        target_tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
 
         if move == True:
-            target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target_tag)
             self.canvas_data.canvas.tag_raise(tag, target_tag)
             return
 
         elif move == False:
-            target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target_tag)
             self.canvas_data.canvas.tag_lower(tag, target_tag)
             return
 
@@ -397,7 +392,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def __diagram_shape_draw(self, territory_data, diagram_data,  di_name, di_del):
 
         if di_del:
-            self.canvas_data.canvas.delete(self, self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))
+            self.canvas_data.canvas.delete(self, self.canvas_data.territory[self.te_name].diagram[di_name].tag)
             diagram_data.draw_tag = False
             return
 
@@ -409,23 +404,25 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         if diagram_data.draw_tag and not diagram_data.shape_point is None:
             pos, size = self.get_diagram_position_size(di_name)
-            self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0]-size[0]/2, xy[1]-size[1]/2)
+            self.canvas_data.canvas.moveto(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0]-size[0]/2, xy[1]-size[1]/2)
 
         elif diagram_data.draw_tag:
-            self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=color)
-            self.canvas_data.canvas.coords(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
+            self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, fill=color)
+            self.canvas_data.canvas.coords(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
         if not diagram_data.draw_tag and not diagram_data.shape_point is None:
             print(diagram_data.shape_point)
-            self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), joinstyle=tk.BEVEL)
+            self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+            self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag, joinstyle=tk.BEVEL)
 
         elif not diagram_data.draw_tag:
-            self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))  # 塗りつぶし
+            self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+            self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag)  # 塗りつぶし
 
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name, di_del):
 
         if di_del:
-            self.canvas_data.canvas.delete(self, self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))
+            self.canvas_data.canvas.delete(self, self.canvas_data.territory[self.te_name].diagram[di_name].tag)
             diagram_data.draw_tag = False
             return
 
@@ -434,15 +431,16 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.operation["log"].write("text", xy, diagram_data.text)
 
         if diagram_data.draw_tag:
-            old_text_len = self.canvas_data.canvas.index(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), tk.END)  # 文字数の長さを取得
+            old_text_len = self.canvas_data.canvas.index(self.canvas_data.territory[self.te_name].diagram[di_name].tag, tk.END)  # 文字数の長さを取得
             self.operation["log"].write(old_text_len)
-            self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, old_text_len - 1)
-            self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, diagram_data.text)
+            self.canvas_data.canvas.dchars(self.canvas_data.territory[self.te_name].diagram[di_name].tag, 0, old_text_len - 1)
+            self.canvas_data.canvas.insert(self.canvas_data.territory[self.te_name].diagram[di_name].tag, 0, diagram_data.text)
 
         if not diagram_data.draw_tag:
-            self.canvas_data.canvas.create_text(0, 0, text="new", tags=self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))
+            self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+            self.canvas_data.canvas.create_text(0, 0, text="new", tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag)
 
-        self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), text=diagram_data.text, font=(diagram_data.font_type, diagram_data.font_size))
+        self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, text=diagram_data.text, font=(diagram_data.font_type, diagram_data.font_size))
 
         if diagram_data.anchor == 1:
             text_xy, text_size = self.get_diagram_position_size(di_name)
@@ -454,7 +452,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         print("テキスト最終座標", xy)
 
-        self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1])
+        self.canvas_data.canvas.moveto(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1])
 
     def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name, di_del):
 
@@ -474,8 +472,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         old_text_len = int(len(self.get_textbox_text(di_name)))
         self.operation["log"].write(old_text_len)
-        self.canvas_data.canvas.dchars(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, old_text_len - 1)
-        self.canvas_data.canvas.insert(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), 0, diagram_data.text)
+
+        if not diagram_data.draw_tag:
+            self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+
+        self.canvas_data.canvas.dchars(self.canvas_data.territory[self.te_name].diagram[di_name].tag, 0, old_text_len - 1)
+        self.canvas_data.canvas.insert(self.canvas_data.territory[self.te_name].diagram[di_name].tag, 0, diagram_data.text)
 
         read = {True: "readonly", False: "normal"}
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=read[diagram_data.readonly])
@@ -511,7 +513,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return text
 
     def get_diagram_position_size(self,  di_name):
-        pos_size = self.canvas_data.canvas.bbox(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name))
+        pos_size = self.canvas_data.canvas.bbox(self.canvas_data.territory[self.te_name].diagram[di_name].tag)
 
         position = pos_size[0], pos_size[1]
         size = pos_size[2] - pos_size[0], pos_size[3] - pos_size[1]
