@@ -307,13 +307,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.tag_lower(tag)
             return
 
+        target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target)
+
+        print(target_tag in self.canvas_data.territory[self.te_name].diagram.keys())
+        print(self.canvas_data.territory[self.te_name].diagram)
+
         if move == True:
-            target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target)
+            target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target_tag)
             self.canvas_data.canvas.tag_raise(tag, target_tag)
             return
 
         elif move == False:
-            target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target)
+            target_tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, target_tag)
             self.canvas_data.canvas.tag_lower(tag, target_tag)
             return
 
@@ -403,7 +408,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.operation["log"].write("shape", xy, size_xy,  di_name)
 
         if diagram_data.draw_tag and not diagram_data.shape_point is None:
-            self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0], xy[1])
+            pos, size = self.get_diagram_position_size(di_name)
+            self.canvas_data.canvas.moveto(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), xy[0]-size[0]/2, xy[1]-size[1]/2)
 
         elif diagram_data.draw_tag:
             self.canvas_data.canvas.itemconfigure(self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name), fill=color)
@@ -595,6 +601,8 @@ class DiagramData():
         self.event = {}
         self.shape_point = None
 
+        self.tag = None
+
 
 class DiagramTextData():
     def __init__(self, canvas):
@@ -612,6 +620,8 @@ class DiagramTextData():
 
         #self.target = None
         self.anchor = 1
+
+        self.tag = None
 
         #self.label = tk.Label(canvas, text="None")
 
@@ -637,4 +647,6 @@ class TextBoxData():
         self.center = [False, False]
         self.entry = tk.Entry(canvas, highlightthickness=0, relief="flat")
         self.readonly = False
+
+        self.tag = None
         # <br/>があれば改行にしたいね

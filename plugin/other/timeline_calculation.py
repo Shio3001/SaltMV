@@ -95,15 +95,18 @@ class TimelineCalculation:
     def set_sub_point(self, sub_name):
         self.sub_point_f[sub_name] = 0
 
-    def set_px_ratio_sub_point(self, sub_name, position):  # positionはpx入力
+    def set_px_ratio_sub_point(self, sub_name, position=None):  # positionはpx入力
         print("positionからの設定")
         if position is None:
             return
 
-        pos_f = self.px_to_f(position) - self.ratio_f[0]
+        print("座標指定", position)
+
+        pos_f = self.px_to_f(position)
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
 
-        pos_px = self.f_to_px(self.sub_point_f[sub_name] + self.ratio_f[0])
+        pos_px = self.f_to_px(self.sub_point_f[sub_name])
+        print("positionからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
 
     def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
@@ -112,11 +115,12 @@ class TimelineCalculation:
         if not position is None:
             self.sub_point_f[sub_name] = copy.deepcopy(position)
 
-        pos_px = self.f_to_px(self.sub_point_f[sub_name] + self.ratio_f[0])
+        pos_px = self.f_to_px(self.sub_point_f[sub_name])
+        print("frameからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
-    def set_px_ratio(self, position=None, size=None):
+    def set_px_ratio(self, position=None, size=None, sub_add=False):
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
 
         pos_f, size_f = None, None
@@ -160,7 +164,7 @@ class TimelineCalculation:
         self.callback_operation.event("draw_func", info=(pos_completed, size_completed))
         #self.draw_func(position, size)
 
-    def set_f_ratio(self, position=None, size=None):
+    def set_f_ratio(self, position=None, size=None, sub_add=False):
         self.ratio_f = self.common_control.xy_compilation(self.ratio_f, x=position, y=size)
 
         pos_px = self.f_to_px(self.ratio_f[0])

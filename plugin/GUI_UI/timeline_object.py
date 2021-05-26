@@ -11,14 +11,6 @@ class KeyFrame:
         self.uu_id = self.data.all_data.elements.make_id("keyframe")
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
-        data.edit_diagram_color(self.uu_id, "#000000")
-        data.diagram_draw(self.uu_id)
-
-        data.pxf.set_sub_point(self.uu_id)
-        data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
-
-        #y_pos = data.edit_diagram_position("bar")[1]
-        data.edit_diagram_position(self.uu_id, y=center_y)
 
         print("KeyFrame生成")
 
@@ -29,8 +21,18 @@ class KeyFrame:
             print("KeyFrame描画", sub_name, now)
 
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
+        data.pxf.set_sub_point(self.uu_id)
+        print("center_x", center_x)
+        data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
+
+        data.edit_diagram_color(self.uu_id, "#000000")
+        pos, size = data.get_diagram_position_size("bar")
+        data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
         data.diagram_draw(self.uu_id)
+
+        data.territory_stack(False)
+        data.diagram_stack(self.uu_id, True, "bar")
 
 
 class parts:
@@ -55,9 +57,11 @@ class parts:
         def edit_layer(layer_number):
             layer_pos = layer_number * data.edit_diagram_size("bar")[1]
             data.edit_diagram_position("bar", y=layer_pos)
+            pos, size = data.get_diagram_position_size("bar")
 
             for k in data.pxf.sub_point_f.keys():
-                data.edit_diagram_position(k, y=layer_pos)
+
+                data.edit_diagram_position(k, y=layer_pos + size[1]/2)
                 data.diagram_draw(k)
 
         data.edit_layer = edit_layer
@@ -84,10 +88,14 @@ class parts:
 
         def add_key_frame():
             bar_pos = data.edit_diagram_position("bar")
-            now_mouse, _, _ = data.get_diagram_contact("bar")
+
             size = data.edit_diagram_size("bar")[1] / 2
-            center_x = copy.deepcopy(now_mouse[0])
+
+            center_x = copy.deepcopy(data.popup_click_position[0])
             center_y = copy.deepcopy(bar_pos[1])
+
+            print("now_mouse", data.popup_click_position[0])
+
             KeyFrame(data, size, center_x, center_y)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
@@ -104,8 +112,12 @@ class parts:
         popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
         self.popup.set(popup_list)
 
+        data.popup_click_position = [0, 0]
+
         def right_click(event):
             mouse, _, _, xy = data.window_event_data["contact"]()
+            data.popup_click_position, _, _ = data.get_diagram_contact("bar")
+
             for i in range(2):
                 mouse[i] += xy[i]
 
@@ -155,13 +167,15 @@ class parts:
 
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
+
+            print("now_mouse", now_mouse[0])
             pos = data.view_pos_sta + now_mov_x
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov_x)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
-                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x)
+                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x, sub_add=True)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
