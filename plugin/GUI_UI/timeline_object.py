@@ -12,27 +12,28 @@ class KeyFrame:
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
 
-        print("KeyFrame生成")
+        # print("KeyFrame生成")
 
         def draw(send):
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
             data.diagram_draw(sub_name)
-            print("KeyFrame描画", sub_name, now)
+            #print("KeyFrame描画", sub_name, now)
 
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
         data.pxf.set_sub_point(self.uu_id)
-        print("center_x", center_x)
+        #print("center_x", center_x)
         data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
 
         data.edit_diagram_color(self.uu_id, "#000000")
         pos, size = data.get_diagram_position_size("bar")
         data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
-        data.diagram_draw(self.uu_id)
-
-        data.territory_stack(False)
+        #data.territory_stack(False)
+        data.diagram_stack(self.uu_id, False)
         data.diagram_stack(self.uu_id, True, "bar")
+
+        data.diagram_draw(self.uu_id)
 
 
 class parts:
@@ -65,7 +66,7 @@ class parts:
                 data.diagram_draw(k)
 
         data.edit_layer = edit_layer
-        # print("layer_pos", layer_pos)
+        # #print("layer_pos", layer_pos)
 
         # data.pos_add_y = pos_add_y
 
@@ -88,14 +89,10 @@ class parts:
 
         def add_key_frame():
             bar_pos = data.edit_diagram_position("bar")
-
             size = data.edit_diagram_size("bar")[1] / 2
-
             center_x = copy.deepcopy(data.popup_click_position[0])
             center_y = copy.deepcopy(bar_pos[1])
-
-            print("now_mouse", data.popup_click_position[0])
-
+            #print("now_mouse", data.popup_click_position[0])
             KeyFrame(data, size, center_x, center_y)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
@@ -133,7 +130,7 @@ class parts:
 
         # def set_parameter_permit(flag_bool):
         #    data.media_object_parameter_bool = flag_bool
-        #    print("非同期 :", flag_bool)
+        #    #print("非同期 :", flag_bool)
 
         def click_start(event):
             data.click_flag = True
@@ -146,13 +143,13 @@ class parts:
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
 
             # set_parameter_permit(False)
-            print("非同期開始")
+            # print("非同期開始")
             send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time)
             func = data.all_data.callback_operation.get_event("media_lord")[0]
             thread_1 = data.all_data.threading.Thread(target=func, args=(send,))
             thread_1.start()
 
-            print("非同期")
+            # print("非同期")
 
         def click_position(event):
             if not data.click_flag:
@@ -168,7 +165,7 @@ class parts:
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
 
-            print("now_mouse", now_mouse[0])
+            #print("now_mouse", now_mouse[0])
             pos = data.view_pos_sta + now_mov_x
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
@@ -180,8 +177,8 @@ class parts:
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
                 # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
-                # #print(after_pos)
-                # print("発火A", data.option_data["media_id"])
+                # ##print(after_pos)
+                # #print("発火A", data.option_data["media_id"])
                 data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())

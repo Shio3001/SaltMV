@@ -307,7 +307,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.tag_lower(tag)
             return
 
-        target_tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
+        target_tag = self.canvas_data.territory[self.te_name].diagram[target].tag
 
         if move == True:
             self.canvas_data.canvas.tag_raise(tag, target_tag)

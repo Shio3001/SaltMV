@@ -24,7 +24,7 @@ class TimelineCalculation:
 
         def test(pos_size):
             pass
-            # print(pos_size)
+            # #print(pos_size)
 
         #self.draw_func = test
 
@@ -36,7 +36,7 @@ class TimelineCalculation:
 
         self.sub_point_f = {}  # sub_point_name : frame_pox¥s
 
-        print(debug_name, "===============================================")
+        #print(debug_name, "===============================================")
 
     """
 
@@ -96,27 +96,27 @@ class TimelineCalculation:
         self.sub_point_f[sub_name] = 0
 
     def set_px_ratio_sub_point(self, sub_name, position=None):  # positionはpx入力
-        print("positionからの設定")
+        # print("positionからの設定")
         if position is None:
             return
 
-        print("座標指定", position)
+        #print("座標指定", position)
 
         pos_f = self.px_to_f(position)
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
 
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
-        print("positionからの設定pos_px", pos_px)
+        #print("positionからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
 
     def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
-        print("frameからの設定")
+        # print("frameからの設定")
         position = copy.deepcopy(position)  # 参照渡し防止用
         if not position is None:
             self.sub_point_f[sub_name] = copy.deepcopy(position)
 
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
-        print("frameからの設定pos_px", pos_px)
+        #print("frameからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
@@ -152,7 +152,7 @@ class TimelineCalculation:
 
         if not flag == "":
             self.set_f_ratio()
-            print(flag)
+            # print(flag)
             return
 
         for k in self.sub_point_f.keys():
