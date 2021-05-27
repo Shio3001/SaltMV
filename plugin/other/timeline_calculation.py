@@ -109,9 +109,13 @@ class TimelineCalculation:
         #print("positionからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
 
-    def set_f_ratio_sub_point(self, sub_name, position=None):  # position は frame入力
+    def set_f_ratio_sub_point(self, sub_name, position=None, add=None):  # position は frame入力
         # print("frameからの設定")
         position = copy.deepcopy(position)  # 参照渡し防止用
+
+        if not add is None:
+            self.sub_point_f[sub_name] += add
+
         if not position is None:
             self.sub_point_f[sub_name] = copy.deepcopy(position)
 
@@ -120,8 +124,10 @@ class TimelineCalculation:
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
-    def set_px_ratio(self, position=None, size=None, sub_add=False):
+    def set_px_ratio(self, position=None, size=None, sub_mov=False):
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
+
+        old_ratio_f_pos = copy.deepcopy(self.ratio_f)
 
         pos_f, size_f = None, None
 
@@ -151,27 +157,36 @@ class TimelineCalculation:
             flag += "C"
 
         if not flag == "":
-            self.set_f_ratio()
+            self.set_f_ratio(sub_mov=sub_mov)
             # print(flag)
             return
 
-        for k in self.sub_point_f.keys():
-            self.set_f_ratio_sub_point(k)
+        new_ratio_f_pos = copy.deepcopy(self.ratio_f)
+        difference = new_ratio_f_pos[0] - old_ratio_f_pos[0] if sub_mov else 0
 
-        pos_completed = self.f_to_px(self.ratio_f[0])
-        size_completed = self.f_to_px(self.ratio_f[1], size_bool=True)
+        for k in self.sub_point_f.keys():
+            self.set_f_ratio_sub_point(k, add=difference)
+
+        pos_completed = self.f_to_px(new_ratio_f_pos[0])
+        size_completed = self.f_to_px(new_ratio_f_pos[1], size_bool=True)
 
         self.callback_operation.event("draw_func", info=(pos_completed, size_completed))
         #self.draw_func(position, size)
 
-    def set_f_ratio(self, position=None, size=None, sub_add=False):
+    def set_f_ratio(self, position=None, size=None, sub_mov=False):
+
+        old_ratio_f_pos = copy.deepcopy(self.ratio_f)
+
         self.ratio_f = self.common_control.xy_compilation(self.ratio_f, x=position, y=size)
 
         pos_px = self.f_to_px(self.ratio_f[0])
         size_px = self.f_to_px(self.ratio_f[1], size_bool=True)
 
+        new_ratio_f_pos = copy.deepcopy(self.ratio_f)
+        difference = new_ratio_f_pos[0] - old_ratio_f_pos[0] if sub_mov else 0
+
         for k in self.sub_point_f.keys():
-            self.set_f_ratio_sub_point(k)
+            self.set_f_ratio_sub_point(k, add=difference)
 
         self.callback_operation.event("draw_func", info=(pos_px + self.blank_space, size_px))
 

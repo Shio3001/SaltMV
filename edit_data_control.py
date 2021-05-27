@@ -102,11 +102,16 @@ class Storage:
         # print(self.font_name)
 
     def layer_number_to_layer_id(self, layer_number):
-        layer_data = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id
+        layer_layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id
         # print(layer_data.items())
-        layer_id = [k for k, v in layer_data.items() if v == layer_number]
+
+        for k, v in layer_layer_id.items():
+            if v == layer_number:
+                return k
+
+        #layer_id = [k for k, v in layer_data.items() if v == layer_number]
         # print(layer_id)
-        return copy.deepcopy(layer_id[0])
+        # return copy.deepcopy(layer_id[0])
 
     def layer_id_to_layer_number(self, layer_id):
         layer_number = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id[layer_id]

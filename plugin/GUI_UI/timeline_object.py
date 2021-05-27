@@ -29,7 +29,7 @@ class KeyFrame:
         pos, size = data.get_diagram_position_size("bar")
         data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
-        #data.territory_stack(False)
+        # data.territory_stack(False)
         data.diagram_stack(self.uu_id, False)
         data.diagram_stack(self.uu_id, True, "bar")
 
@@ -175,7 +175,7 @@ class parts:
                 data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x, sub_add=True)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
+                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta, sub_mov=True)
                 # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # ##print(after_pos)
                 # #print("発火A", data.option_data["media_id"])
