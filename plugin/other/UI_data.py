@@ -47,7 +47,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.base = base
 
-        #print("option_data", self.option_data)
+        ##print("option_data", self.option_data)
 
         self.new_territory()
 
@@ -248,20 +248,20 @@ class SendUIData:  # パーツひとつあたりのためのclass
         tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
         bind_id = self.canvas_data.canvas.tag_bind(tag, "<{0}>".format(key), func, "+")
 
-        # print(self.canvas_data.territory)
+        # #print(self.canvas_data.territory)
 
-        #print("テリトリーの数", len(self.canvas_data.territory))
+        ##print("テリトリーの数", len(self.canvas_data.territory))
 
         self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = copy.deepcopy([key, func, bind_id, tag])
-        #print("追加事項", self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)])
+        ##print("追加事項", self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)])
 
     def del_diagram_event(self,  di_name, key, func):  # event
         bind_name = self.common_control.get_tag_name(key, func)
         bind_id = self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name][2]
         self.canvas_data.canvas.tag_unbind(self.canvas_data.territory[self.te_name].diagram[di_name].tag, "<{0}>".format(key), bind_id)
 
-        #print(bind_id, self.uidata_id, self.te_name, di_name)
-        # print(self.canvas_data.territory[self.te_name].diagram[di_name].event)
+        ##print(bind_id, self.uidata_id, self.te_name, di_name)
+        # #print(self.canvas_data.territory[self.te_name].diagram[di_name].event)
         # self.operation["log"].write("tag unbind")
         del self.canvas_data.territory[self.te_name].diagram[di_name].event[bind_name]
 
@@ -297,7 +297,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def diagram_stack(self,  di_name, move, target=None):
         tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
 
-        print("diagram_stack 変更")
+        #print("diagram_stack 変更")
 
         if move == True and target == None:
             self.canvas_data.canvas.tag_raise(tag)
@@ -323,7 +323,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             return
 
         for d in self.canvas_data.territory[self.te_name].diagram.keys():
-            print("territory_draw", self.te_name, te_del)
+            #print("territory_draw", self.te_name, te_del)
             self.diagram_draw(d, te_del)
 
     def get_diagram_type(self,  di_name, data_type):
@@ -411,7 +411,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.coords(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
         if not diagram_data.draw_tag and not diagram_data.shape_point is None:
-            print(diagram_data.shape_point)
+            # print(diagram_data.shape_point)
             self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
             self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag, joinstyle=tk.BEVEL)
 
@@ -448,9 +448,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             xy[0] -= text_size[0] / 2
             xy[1] -= text_size[1] / 2
 
-        # print("テキスト最終座標", xy[1], text_size)
+        # #print("テキスト最終座標", xy[1], text_size)
 
-        print("テキスト最終座標", xy)
+        #print("テキスト最終座標", xy)
 
         self.canvas_data.canvas.moveto(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1])
 
@@ -523,7 +523,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def tk_font_inquiry(self, font_name):
         if not font_name in self.tkFont_list:
             pass
-            #print("font: {0} は 使用できません".format(font_name))
+            ##print("font: {0} は 使用できません".format(font_name))
 
         return font_name
 
@@ -579,7 +579,7 @@ class TerritoryData:
         self.event = {}
         self.blank_space = [0, 0]
 
-        # print("生成")
+        # #print("生成")
 
 
 class DiagramBase:  # 指定不可

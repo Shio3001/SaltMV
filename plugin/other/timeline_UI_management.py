@@ -13,13 +13,13 @@ class UIManagement:
         if end is None:
             end = int(len(self.ui_list))
 
-        print(sta, end)
+        #print(sta, end)
 
         for i in range(sta, end):
-            print(i, "削除")
+            #print(i, "削除")
 
             if not self.ui_list[i].te_name in self.ui_list[i].canvas_data.territory.keys():
-                print("返却")
+                # print("返却")
                 continue
 
             if self.data.operation["class_dict"](self.ui_list[i], inquiry="callback_operation"):
@@ -37,7 +37,7 @@ class UIManagement:
             ui_id = self.data.all_data.elements.make_id("parameter_UI")
             self.ui_list.append(None)
             self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=parts_name)
-            print("生成", now, "parts_name", parts_name, "canvas_name", canvas_name)
+            #print("生成", now, "parts_name", parts_name, "canvas_name", canvas_name)
 
     def set_old_elements_len(self, set_number=None):
         if set_number is None:

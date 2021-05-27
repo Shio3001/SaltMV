@@ -172,7 +172,7 @@ class parts:
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov_x)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
-                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x, sub_add=True)
+                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 data.pxf.set_px_ratio(position=pos, size=data.view_size_sta, sub_mov=True)
