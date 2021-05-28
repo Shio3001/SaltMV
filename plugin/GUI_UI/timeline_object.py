@@ -5,6 +5,14 @@ import threading
 import uuid
 
 
+class KeyFrameMove:
+    def __init__(self, diagram, uu_id, sub_point_f):
+        self.diagram = copy.deepcopy(diagram)
+        self.uu_id = copy.deepcopy(uu_id)
+        print("sub_point_f", sub_point_f)
+        self.sub_point_f = copy.deepcopy(sub_point_f)
+
+
 class KeyFrame:
     def __init__(self, data, size, center_x, center_y):
         self.data = data
@@ -14,15 +22,26 @@ class KeyFrame:
 
         # print("KeyFrame生成")
 
+        def absorption():
+            te_name = self.data.te_name
+            return_data = KeyFrameMove(data.canvas_data.territory[te_name].diagram[self.uu_id], self.uu_id, data.pxf.sub_point_f[self.uu_id])
+            del data.pxf.sub_point_f[self.uu_id]
+            del data.canvas_data.territory[te_name].diagram[self.uu_id]
+            print(data.te_name, "中間点編入削除", return_data.sub_point_f)
+
+            return return_data
+
+        data.key_frame_absorption = absorption
+
         def draw(send):
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
             data.diagram_draw(sub_name)
-            #print("KeyFrame描画", sub_name, now)
+            # print("KeyFrame描画", sub_name, now)
 
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
         data.pxf.set_sub_point(self.uu_id)
-        #print("center_x", center_x)
+        # print("center_x", center_x)
         data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
 
         data.edit_diagram_color(self.uu_id, "#000000")
@@ -80,19 +99,30 @@ class parts:
 
         # data.pxf.set_draw_func(draw)
 
+        def injection(input_data):
+            te_name = data.te_name
+            data.canvas_data.territory[te_name].diagram[input_data.uu_id] = input_data.diagram
+            data.pxf.sub_point_f[input_data.uu_id] = input_data.sub_point_f
+            data.pxf.set_sub_point(input_data.uu_id)
+            data.pxf.set_f_ratio_sub_point(input_data.uu_id)
+            print(data.te_name, "中間点編入追加", input_data.sub_point_f)
+
+        data.key_frame_injection = injection
+
         def media_object_del():
             data.callback_operation.event("end", info=data.pxf.get_event_data())
             data.callback_operation.event("del", data.option_data["media_id"])
 
         def media_object_separate():
-            data.callback_operation.event("separate", data.option_data["media_id"])
+            click_f_pos = data.pxf.px_to_f(data.popup_click_position[0])
+            data.callback_operation.event("separate", info=(data.option_data["media_id"], click_f_pos))
 
         def add_key_frame():
             bar_pos = data.edit_diagram_position("bar")
             size = data.edit_diagram_size("bar")[1] / 2
             center_x = copy.deepcopy(data.popup_click_position[0])
             center_y = copy.deepcopy(bar_pos[1])
-            #print("now_mouse", data.popup_click_position[0])
+            # print("now_mouse", data.popup_click_position[0])
             KeyFrame(data, size, center_x, center_y)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
@@ -165,7 +195,7 @@ class parts:
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
 
-            #print("now_mouse", now_mouse[0])
+            # print("now_mouse", now_mouse[0])
             pos = data.view_pos_sta + now_mov_x
 
             if data.mouse_touch_sta[0][0]:  # 左側移動

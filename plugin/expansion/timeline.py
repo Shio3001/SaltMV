@@ -81,21 +81,30 @@ class InitialValue:
 
         # self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
 
-        def media_object_separate(media_id):
+        def media_object_separate(send):
+            media_id, click_f_pos = send
             scroll_data = self.data.timeline_object[media_id].pxf.get_event_data()
-
-            if not scroll_data.ratio_f[0] < self.data.all_data.now_time < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
+            if not scroll_data.ratio_f[0] < click_f_pos < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
                 print("返送")
                 return
 
-            a_size = self.data.all_data.now_time - scroll_data.ratio_f[0]
+            a_size = click_f_pos - scroll_data.ratio_f[0]
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
-
-            copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=self.data.all_data.now_time, end=scroll_data.ratio_f[1])
-
+            copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=click_f_pos, end=scroll_data.ratio_f[1])
             layer_number = self.data.all_data.layer_id_to_layer_number(layer_id)
+            make_object(copy_obj.obj_id, sta=click_f_pos, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
 
-            make_object(copy_obj.obj_id, sta=self.data.all_data.now_time, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
+            items = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f).items()
+
+            for k, v in items:
+                if v < click_f_pos:  # 左側
+                    pass
+                if v > click_f_pos:  # 右側
+                    return_data = self.data.timeline_object[media_id].key_frame_absorption()
+                    self.data.timeline_object[copy_obj.obj_id].key_frame_injection(return_data)
+                    #del self.data.timeline_object[media_id].pxf.sub_point_f[k]
+                if v == click_f_pos:  # ちょうど一緒
+                    del self.data.timeline_object[media_id].pxf.sub_point_f[k]
 
         # test_layer =
 
@@ -344,8 +353,6 @@ class InitialValue:
 
             shape[0].territory_draw()
             shape[1].territory_draw()
-
-            # new_object()
 
         self.data.add_window_event("Configure", window_size_edit)
         window_size_edit(None)
