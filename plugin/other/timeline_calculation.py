@@ -171,7 +171,9 @@ class TimelineCalculation:
         flag = ""
 
         if self.ratio_f[0] < self.sta_end_f_init[0]:  # posが0より手前になった
+            old_pos = copy.deepcopy(self.ratio_f[0])
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f_init[0])
+            self.ratio_f[1] -= self.ratio_f[0] - old_pos
             flag += "A"
 
         if self.ratio_f[1] > frame_long_init:  # sizeが幅を超えた

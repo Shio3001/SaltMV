@@ -137,6 +137,8 @@ class parts:
 
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
 
+            #data.temp_pos_size = [None, None]
+
             # set_parameter_permit(False)
             # print("非同期開始")
             send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time)
@@ -162,29 +164,40 @@ class parts:
 
             # print("now_mouse", now_mouse[0])
 
-            sub_extremity = data.pxf.get_extremity_px()
-
             if data.mouse_touch_sta[0][0]:  # 左側移動
-                pos = data.view_pos_sta + now_mov_x
-                size = data.view_size_sta-now_mov_x
 
-                if not sub_extremity is None and sub_extremity[0] <= pos and pos + size <= sub_extremity[1]:
+                pos = data.view_pos_sta + now_mov_x
+                size = data.view_size_sta - now_mov_x
+
+                sub_extremity = data.pxf.get_extremity_px()
+
+                if not sub_extremity is None and sub_extremity[0] <= pos:
+                    print("検知 A")
+                    old_pos = copy.deepcopy(pos)
                     pos = sub_extremity[0] - 1
+                    size += old_pos - pos
 
                 data.pxf.set_px_ratio(position=pos, size=size)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
+
                 pos = data.view_pos_sta
                 size = data.view_size_sta+now_mov_x
 
-                if not sub_extremity is None and sub_extremity[0] <= pos and pos + size <= sub_extremity[1]:
-                    size = sub_extremity[1] + 1
+                sub_extremity = data.pxf.get_extremity_px()
+
+                if not sub_extremity is None and pos + size <= sub_extremity[1]:
+                    print("検知 B")
+                    #old_size = copy.deepcopy(size)
+                    size = sub_extremity[1] - pos + 1
+                    #size -= old_size + size
 
                 data.pxf.set_px_ratio(position=pos, size=size)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 pos = data.view_pos_sta + now_mov_x
                 size = data.view_size_sta
+
                 data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True)
                 # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # ##print(after_pos)
