@@ -177,7 +177,7 @@ class parts:
                     pos = sub_extremity[0] - 1
                     size += old_pos - pos
 
-                data.pxf.set_px_ratio(position=pos, size=size)
+                data.pxf.set_px_ratio(position=pos, size=size, left_move=True)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
 

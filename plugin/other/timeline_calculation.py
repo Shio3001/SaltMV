@@ -152,7 +152,7 @@ class TimelineCalculation:
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
-    def set_px_ratio(self, position=None, size=None, sub_mov=False):
+    def set_px_ratio(self, position=None, size=None, sub_mov=False, left_move=False):
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
 
         old_ratio_f_pos = copy.deepcopy(self.ratio_f)
@@ -173,7 +173,7 @@ class TimelineCalculation:
         if self.ratio_f[0] < self.sta_end_f_init[0]:  # posが0より手前になった
             old_pos = copy.deepcopy(self.ratio_f[0])
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f_init[0])
-            self.ratio_f[1] -= self.ratio_f[0] - old_pos
+            self.ratio_f[1] -= self.ratio_f[0] - old_pos if left_move else 0
             flag += "A"
 
         if self.ratio_f[1] > frame_long_init:  # sizeが幅を超えた
@@ -188,7 +188,7 @@ class TimelineCalculation:
 
         if not flag == "":
             self.set_f_ratio(sub_mov=sub_mov)
-            # print(flag)
+            print(flag)
             return
 
         new_ratio_f_pos = copy.deepcopy(self.ratio_f)
