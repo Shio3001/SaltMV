@@ -177,6 +177,10 @@ class parts:
                     pos = sub_extremity[0] - 1
                     size += old_pos - pos
 
+                if size < 1:
+                    old_size = copy.deepcopy(size)
+                    size = 1
+                    pos += old_size - size
                 data.pxf.set_px_ratio(position=pos, size=size, left_move=True)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
@@ -191,6 +195,11 @@ class parts:
                     #old_size = copy.deepcopy(size)
                     size = sub_extremity[1] - pos + 1
                     #size -= old_size + size
+
+                if size < 1:
+                    #    old_size = copy.deepcopy(size)
+                    size = 1
+                #    pos += size - old_size
 
                 data.pxf.set_px_ratio(position=pos, size=size)
 

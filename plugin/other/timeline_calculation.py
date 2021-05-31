@@ -152,15 +152,15 @@ class TimelineCalculation:
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
-    def set_px_ratio(self, position=None, size=None, sub_mov=False, left_move=False):
+    def set_px_ratio(self, position=None, size=None, sub_mov=False, left_move=False, right_move=False):
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
 
         old_ratio_f_pos = copy.deepcopy(self.ratio_f)
 
         pos_f, size_f = None, None
 
-        if not size is None and size < 1:
-            size = 1
+        # if not size is None and size < 1:
+        #    size = 1
 
         if not position is None:
             self.ratio_f[0] = self.px_to_f(position)
