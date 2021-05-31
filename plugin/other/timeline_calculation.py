@@ -51,6 +51,34 @@ class TimelineCalculation:
         self.draw_func_sub_point = func
     """
 
+    def get_extremity_f(self):
+        minimum = 0
+        maximum = 0
+
+        point_values = self.sub_point_f.values()
+
+        if len(point_values) <= 0:
+            return None
+
+        minimum = min(point_values)
+        maximum = max(point_values)
+
+        return minimum, maximum
+
+    def get_extremity_px(self):
+        minimum = 0
+        maximum = 0
+
+        point_values = self.sub_point_f.values()
+
+        if len(point_values) <= 0:
+            return None
+
+        minimum = self.f_to_px(min(point_values))
+        maximum = self.f_to_px(max(point_values))
+
+        return minimum, maximum
+
     def set_sta_end_px(self, sta=None, end=None, space=None):
         if not space is None:
             self.blank_space = space

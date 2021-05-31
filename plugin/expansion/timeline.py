@@ -97,12 +97,11 @@ class InitialValue:
             items = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f).items()
 
             for k, v in items:
-                if v < click_f_pos:  # 左側
-                    pass
-                if v > click_f_pos:  # 右側
-                    return_data = self.data.timeline_object[media_id].key_frame_absorption()
-                    self.data.timeline_object[copy_obj.obj_id].key_frame_injection(return_data)
-                    #del self.data.timeline_object[media_id].pxf.sub_point_f[k]
+                print(k, v)
+                if click_f_pos > v:  # 左側
+                    print("左側")
+                if click_f_pos < v:  # 右側
+                    print("右側")
                 if v == click_f_pos:  # ちょうど一緒
                     del self.data.timeline_object[media_id].pxf.sub_point_f[k]
 

@@ -43,9 +43,9 @@ operation["log"].stop(True)
 operation["log"].write("ログ起動")
 operation["error"] = error.ErrorAction(operation["log"])
 
-
-py_path = (os.path.abspath(__file__)).replace('main.py', '')
-plugin_path = os.path.join(py_path.replace('main.py', ''), "plugin")
+this_name = str(os.path.basename(__file__))
+py_path = (os.path.abspath(__file__)).replace(this_name, '')
+plugin_path = os.path.join(py_path.replace(this_name, ''), "plugin")
 
 
 operation["log"].write(now_path)
@@ -94,6 +94,10 @@ class CentralRole:
         read_time = datetime.datetime.now() - start_time
         operation["log"].write("読込時間: {0}".format(read_time))
 
+        self.main_GUI()
+
+        """
+
         if __name__ == "__main__":
             operation["log"].write("コマンドライン からの入力を確認")
             if len(sys.argv) == 1:
@@ -107,6 +111,7 @@ class CentralRole:
 
         else:
             self.main_GUI()
+        """
 
         return
 

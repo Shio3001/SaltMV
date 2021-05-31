@@ -5,43 +5,19 @@ import threading
 import uuid
 
 
-class KeyFrameMove:
-    def __init__(self, diagram, uu_id, sub_point_f):
-        self.diagram = copy.deepcopy(diagram)
-        self.uu_id = copy.deepcopy(uu_id)
-        print("sub_point_f", sub_point_f)
-        self.sub_point_f = copy.deepcopy(sub_point_f)
-
-
 class KeyFrame:
     def __init__(self, data, size, center_x, center_y):
-        self.data = data
-        self.uu_id = self.data.all_data.elements.make_id("keyframe")
+        self.uu_id = data.all_data.elements.make_id("keyframe")
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
-
-        # print("KeyFrame生成")
-
-        def absorption():
-            te_name = self.data.te_name
-            return_data = KeyFrameMove(data.canvas_data.territory[te_name].diagram[self.uu_id], self.uu_id, data.pxf.sub_point_f[self.uu_id])
-            del data.pxf.sub_point_f[self.uu_id]
-            del data.canvas_data.territory[te_name].diagram[self.uu_id]
-            print(data.te_name, "中間点編入削除", return_data.sub_point_f)
-
-            return return_data
-
-        data.key_frame_absorption = absorption
 
         def draw(send):
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
             data.diagram_draw(sub_name)
-            # print("KeyFrame描画", sub_name, now)
 
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
         data.pxf.set_sub_point(self.uu_id)
-        # print("center_x", center_x)
         data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
 
         data.edit_diagram_color(self.uu_id, "#000000")
@@ -51,7 +27,6 @@ class KeyFrame:
         # data.territory_stack(False)
         data.diagram_stack(self.uu_id, False)
         data.diagram_stack(self.uu_id, True, "bar")
-
         data.diagram_draw(self.uu_id)
 
 
@@ -98,16 +73,6 @@ class parts:
         data.pxf.callback_operation.set_event("draw_func", draw)
 
         # data.pxf.set_draw_func(draw)
-
-        def injection(input_data):
-            te_name = data.te_name
-            data.canvas_data.territory[te_name].diagram[input_data.uu_id] = input_data.diagram
-            data.pxf.sub_point_f[input_data.uu_id] = input_data.sub_point_f
-            data.pxf.set_sub_point(input_data.uu_id)
-            data.pxf.set_f_ratio_sub_point(input_data.uu_id)
-            print(data.te_name, "中間点編入追加", input_data.sub_point_f)
-
-        data.key_frame_injection = injection
 
         def media_object_del():
             data.callback_operation.event("end", info=data.pxf.get_event_data())
@@ -196,16 +161,31 @@ class parts:
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
 
             # print("now_mouse", now_mouse[0])
-            pos = data.view_pos_sta + now_mov_x
+
+            sub_extremity = data.pxf.get_extremity_px()
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
-                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov_x)
+                pos = data.view_pos_sta + now_mov_x
+                size = data.view_size_sta-now_mov_x
+
+                if not sub_extremity is None and sub_extremity[0] <= pos and pos + size <= sub_extremity[1]:
+                    pos = sub_extremity[0] - 1
+
+                data.pxf.set_px_ratio(position=pos, size=size)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
-                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov_x)
+                pos = data.view_pos_sta
+                size = data.view_size_sta+now_mov_x
+
+                if not sub_extremity is None and sub_extremity[0] <= pos and pos + size <= sub_extremity[1]:
+                    size = sub_extremity[1] + 1
+
+                data.pxf.set_px_ratio(position=pos, size=size)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta, sub_mov=True)
+                pos = data.view_pos_sta + now_mov_x
+                size = data.view_size_sta
+                data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True)
                 # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # ##print(after_pos)
                 # #print("発火A", data.option_data["media_id"])

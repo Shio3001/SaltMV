@@ -36,7 +36,10 @@ class CallBack:
                 # print("実行")
 
     def get_event(self, name):
-        return self.__event_data[name]
+        return copy.deepcopy(self.__event_data[name])
+
+    def del_event(self, name):
+        del self.__event_data[name]
 
         #data.set_event = set_event
         #data.event = event
