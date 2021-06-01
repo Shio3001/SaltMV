@@ -133,11 +133,13 @@ class TimelineCalculation:
         pos_f = self.px_to_f(position)
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
 
-        if self.sub_point_f[sub_name] < self.sta_end_f[0]:
-            self.sub_point_f[sub_name] = self.sta_end_f[0] - 1
+        if self.sub_point_f[sub_name] < self.ratio_f[0] + 1:
+            self.sub_point_f[sub_name] = self.ratio_f[0] + 1
+            print("中-pxA")
 
-        if self.sub_point_f[sub_name] > self.sta_end_f[0]:
-            self.sub_point_f[sub_name] = self.sta_end_f[1] + 1
+        if self.sub_point_f[sub_name] > self.ratio_f[0] + self.ratio_f[1] - 1:
+            self.sub_point_f[sub_name] = self.ratio_f[0] + self.ratio_f[1] - 1
+            print("中-pxB")
 
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
         #print("positionからの設定pos_px", pos_px)
@@ -153,18 +155,23 @@ class TimelineCalculation:
         if not position is None:
             self.sub_point_f[sub_name] = copy.deepcopy(position)
 
-        if self.sub_point_f[sub_name] < self.sta_end_f[0]:
-            self.sub_point_f[sub_name] = self.sta_end_f[0] - 1
+        ratio_bool_left = self.sub_point_f[sub_name] < self.ratio_f[0] + 1
+        ratio_bool_right = self.sub_point_f[sub_name] > self.ratio_f[0] + self.ratio_f[1] - 1
 
-        if self.sub_point_f[sub_name] > self.sta_end_f[0]:
-            self.sub_point_f[sub_name] = self.sta_end_f[1] + 1
+        if ratio_bool_left:
+            self.sub_point_f[sub_name] = self.ratio_f[0] + 1
+            print("中-fA")
+
+        if ratio_bool_right:
+            self.sub_point_f[sub_name] = self.ratio_f[0] + self.ratio_f[1] - 1
+            print("中-fB")
 
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
         #print("frameからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
         return pos_px
 
-    def set_px_ratio(self, position=None, size=None, sub_mov=False, left_move=False, right_move=False):
+    def set_px_ratio(self, position=None, size=None, sub_mov=False, left_move=False, right_move=False, main_mov=False):
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
 
         old_ratio_f_pos = copy.deepcopy(self.ratio_f)
@@ -186,17 +193,35 @@ class TimelineCalculation:
             old_pos = copy.deepcopy(self.ratio_f[0])
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f_init[0])
             self.ratio_f[1] -= self.ratio_f[0] - old_pos if left_move else 0
-            flag += 1
+            flag += 3
 
         if self.ratio_f[1] > frame_long_init:  # sizeが幅を超えた
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f_init[0])
             self.ratio_f[1] = copy.deepcopy(frame_long_init)
 
-            flag += 10
+            flag += 5
 
         if self.ratio_f[0] + self.ratio_f[1] > frame_long_init:
             self.ratio_f[0] = frame_long_init - self.ratio_f[1]
-            flag += 100
+            flag += 7
+
+        extremity_f = self.get_extremity_f()
+
+        if not extremity_f is None:
+
+            ratio_bool_left = extremity_f[0] < self.ratio_f[0] + 1
+            ratio_bool_right = extremity_f[1] > self.ratio_f[0] + self.ratio_f[1] - 1
+
+            if ratio_bool_left and left_move:
+                old = copy.deepcopy(self.ratio_f[0])
+                self.ratio_f[0] = extremity_f[0] - 1
+                self.ratio_f[1] += old - self.ratio_f[0]
+                flag += 11
+
+            if ratio_bool_right and right_move:
+                old = copy.deepcopy(self.ratio_f[1])
+                self.ratio_f[1] = extremity_f[1] - self.ratio_f[0] + 1
+                flag += 13
 
         if not flag == 0:
             self.set_f_ratio(sub_mov=sub_mov)

@@ -35,7 +35,7 @@ class KeyFrame:
             self.click_flag = True
             self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = data.get_diagram_contact(self.uu_id)
             self.view_pos_sta = data.edit_diagram_position(self.uu_id)[0]
-            data.callback_operation.event("{0}_sub_sta".format(self.uu_id), info=data.pxf.get_event_data())
+            data.callback_operation.event("sub_sta", info=data.pxf.get_event_data())
 
         def click_position(event):
             if not self.click_flag:
@@ -49,13 +49,13 @@ class KeyFrame:
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
-            data.callback_operation.event("{0}_sub_mov".format(self.uu_id), info=data.pxf.get_event_data())
+            data.callback_operation.event("sub_mov", info=data.pxf.get_event_data())
 
         def click_end(event):
             self.click_flag = False
             self.mouse_sta, _, self.diagram_join_sta = data.get_diagram_contact(self.uu_id, del_mouse=True)
             _, _, self.diagram_join = data.get_diagram_contact(self.uu_id, del_mouse=True)
-            data.callback_operation.event("{0}_sub_end".format(self.uu_id), info=data.pxf.get_event_data())
+            data.callback_operation.event("sub_end", info=data.pxf.get_event_data())
 
         data.add_diagram_event(self.uu_id, "Button-1", click_start)
         data.add_diagram_event(self.uu_id, "Motion", click_position)
@@ -220,11 +220,17 @@ class parts:
 
                 sub_extremity = data.pxf.get_extremity_px()
 
+                # - data.pxf.f_to_px(1)
+
+                """
+
                 if not sub_extremity is None and sub_extremity[0] <= pos:
                     print("検知 A")
                     old_pos = copy.deepcopy(pos)
                     pos = sub_extremity[0] - 1
                     size += old_pos - pos
+
+                """
 
                 if size < 1:
                     old_size = copy.deepcopy(size)
@@ -240,20 +246,23 @@ class parts:
 
                 sub_extremity = data.pxf.get_extremity_px()
 
+                """
+
                 if not sub_extremity is None and pos + size <= sub_extremity[1]:
                     print("検知 B")
                     size = sub_extremity[1] - pos + 1
+                """
 
                 if size < 1:
                     size = 1
 
-                data.pxf.set_px_ratio(position=pos, size=size)
+                data.pxf.set_px_ratio(position=pos, size=size, right_move=True)
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
                 pos = data.view_pos_sta + now_mov_x
                 size = data.view_size_sta
 
-                data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True)
+                data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True,main_mov=False)
                 # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
                 # ##print(after_pos)
                 # #print("発火A", data.option_data["media_id"])
