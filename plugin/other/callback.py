@@ -41,6 +41,8 @@ class CallBack:
     def del_event(self, name):
         del self.__event_data[name]
 
+    def all_del_event(self):
+        del self.__event_data
         #data.set_event = set_event
         #data.event = event
 

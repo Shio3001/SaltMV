@@ -159,7 +159,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not di_name in self.canvas_data.territory[self.te_name].diagram:
             return
 
-        self.all_del_diagram_event()
+        self.all_del_diagram_event(di_name)
 
         self.diagram_draw(di_name, di_del=True)
         self.operation["log"].write("ダイヤグラム削除 <テリトリー:{0}> {1}".format(self.uidata_id, self.te_name, di_name))

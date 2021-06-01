@@ -123,6 +123,10 @@ class TimelineCalculation:
     def set_sub_point(self, sub_name):
         self.sub_point_f[sub_name] = 0
 
+    def del_sub_point(self, sub_name):
+        del self.sub_point_f[sub_name]
+
+
     def set_px_ratio_sub_point(self, sub_name, position=None):  # positionはpx入力
         # print("positionからの設定")
         if position is None:
