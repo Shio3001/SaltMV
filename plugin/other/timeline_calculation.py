@@ -51,6 +51,13 @@ class TimelineCalculation:
         self.draw_func_sub_point = func
     """
 
+    def get_same_value(self, time):  # frameでもらう
+        for k, v in zip(self.sub_point_f.keys(), self.sub_point_f.values()):
+            if v == time:
+                return k, v
+
+        return None
+
     def get_extremity_f(self):
         minimum = 0
         maximum = 0
@@ -108,6 +115,8 @@ class TimelineCalculation:
 
         pos_f = pos_px * rate if size_bool else (pos_px - self.blank_space) * rate + self.sta_end_f[0]
 
+        pos_f = round(pos_f)
+
         return pos_f
 
     def f_to_px(self, pos_f, size_bool=None):
@@ -125,7 +134,6 @@ class TimelineCalculation:
 
     def del_sub_point(self, sub_name):
         del self.sub_point_f[sub_name]
-
 
     def set_px_ratio_sub_point(self, sub_name, position=None):  # positionはpx入力
         # print("positionからの設定")

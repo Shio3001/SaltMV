@@ -55,3 +55,7 @@ class MenuPopup:
     def edit_bool(self, main_bar, name, bool_data):
         tk_bool = {True: tk.NORMAL, False: tk.DISABLED}
         self.pull_down[main_bar].entryconfigure(name, state=tk_bool[bool_data])
+
+    def edit_bool_twice(self, name, bool_data):
+        tk_bool = {True: tk.NORMAL, False: tk.DISABLED}
+        self.target_menubar.entryconfigure(name, state=tk_bool[bool_data])

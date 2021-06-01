@@ -8,7 +8,7 @@ import uuid
 class KeyFrame:
     def __init__(self, data, size, center_x, center_y):
         self.uu_id = data.all_data.elements.make_id("keyframe")
-        self.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
+        data.pxf.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
 
@@ -36,7 +36,9 @@ class KeyFrame:
             self.click_flag = True
             self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = data.get_diagram_contact(self.uu_id)
             self.view_pos_sta = data.edit_diagram_position(self.uu_id)[0]
-            self.callback_operation.event("sub_sta", info=data.pxf.get_event_data())
+            data.pxf.callback_operation.event("sub_sta_{0}".format(self.uu_id), info=data.pxf.get_event_data())
+
+            data.edit_diagram_color(self.uu_id, "#ff0000")
 
         def click_position(event):
             if not self.click_flag:
@@ -50,13 +52,15 @@ class KeyFrame:
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
-            self.callback_operation.event("sub_mov", info=data.pxf.get_event_data())
+            data.pxf.callback_operation.event("sub_mov_{0}".format(self.uu_id), info=data.pxf.get_event_data())
 
         def click_end(event):
             self.click_flag = False
             self.mouse_sta, _, self.diagram_join_sta = data.get_diagram_contact(self.uu_id, del_mouse=True)
             _, _, self.diagram_join = data.get_diagram_contact(self.uu_id, del_mouse=True)
-            self.callback_operation.event("sub_end", info=data.pxf.get_event_data())
+            data.pxf.callback_operation.event("sub_end_{0}".format(self.uu_id), info=data.pxf.get_event_data())
+
+            data.edit_diagram_color(self.uu_id, "#000000")
 
         data.add_diagram_event(self.uu_id, "Button-1", click_start)
         data.add_diagram_event(self.uu_id, "Motion", click_position)
@@ -64,12 +68,14 @@ class KeyFrame:
 
         def this_del():
             data.del_diagram(self.uu_id)
-            data.callback_operation.event("sub_del", self.uu_id)
+
             data.pxf.del_sub_point(self.uu_id)
-            self.callback_operation.all_del_event()
+            data.pxf.callback_operation.all_del_event()
+
+        data.pxf.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), this_del)
 
         self.popup2 = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
-        popup_list = [("削除", this_del)]
+        popup_list = [("中間点削除", this_del)]
         self.popup2.set(popup_list)
 
         def right_click(event):
@@ -135,6 +141,11 @@ class parts:
             data.callback_operation.event("del", data.option_data["media_id"])
 
         def media_object_separate():
+
+            same_value = data.pxf.get_same_value(data.pxf.px_to_f(data.popup_click_position[0]))
+            if not same_value is None:
+                data.pxf.callback_operation.event("tihs_del_{0}".format(same_value[0]))
+
             click_f_pos = data.pxf.px_to_f(data.popup_click_position[0])
             data.callback_operation.event("separate", info=(data.option_data["media_id"], click_f_pos))
 
@@ -145,8 +156,8 @@ class parts:
             center_y = copy.deepcopy(bar_pos[1])
             # print("now_mouse", data.popup_click_position[0])
             new_key_frame = KeyFrame(data, size, center_x, center_y)
-            new_key_frame.callback_operation.set_event("sub_sta", data.timeline_nowtime_approval_False)
-            new_key_frame.callback_operation.set_event("sub_end", data.timeline_nowtime_approval_True)
+            data.pxf.callback_operation.set_event("sub_sta_{0}".format(new_key_frame.uu_id), data.timeline_nowtime_approval_False)
+            data.pxf.callback_operation.set_event("sub_end_{0}".format(new_key_frame.uu_id), data.timeline_nowtime_approval_True)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 
@@ -171,7 +182,13 @@ class parts:
             for i in range(2):
                 mouse[i] += xy[i]
 
+            same_value = data.pxf.get_same_value(data.pxf.px_to_f(data.popup_click_position[0]))
+
+            if not same_value is None:
+                self.popup.edit_bool_twice("中間点追加", False)
+
             self.popup.show(mouse[0], mouse[1])
+            self.popup.edit_bool_twice("中間点追加", True)
 
         data.add_diagram_event("bar", "Button-2", right_click)
 
@@ -228,13 +245,11 @@ class parts:
                 # - data.pxf.f_to_px(1)
 
                 """
-
                 if not sub_extremity is None and sub_extremity[0] <= pos:
                     print("検知 A")
                     old_pos = copy.deepcopy(pos)
                     pos = sub_extremity[0] - 1
                     size += old_pos - pos
-
                 """
 
                 if size < 1:
@@ -252,7 +267,6 @@ class parts:
                 sub_extremity = data.pxf.get_extremity_px()
 
                 """
-
                 if not sub_extremity is None and pos + size <= sub_extremity[1]:
                     print("検知 B")
                     size = sub_extremity[1] - pos + 1

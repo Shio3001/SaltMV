@@ -62,6 +62,8 @@ class InitialValue:
         def now_time_update(scroll_data):
             self.data.all_data.now_time = scroll_data.ratio_f[0]
 
+            print("now", self.data.all_data.now_time)
+
             # print(self.data.all_data.now_time)
 
         nowtime_bar.callback_operation.set_event("mov", now_time_update)
