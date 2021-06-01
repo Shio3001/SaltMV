@@ -29,6 +29,59 @@ class KeyFrame:
         data.diagram_stack(self.uu_id, True, "bar")
         data.diagram_draw(self.uu_id)
 
+        self.click_flag = False
+
+        def click_start(event):
+            self.click_flag = True
+            self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = data.get_diagram_contact(self.uu_id)
+            self.view_pos_sta = data.edit_diagram_position(self.uu_id)[0]
+            data.callback_operation.event("{0}_sub_sta".format(self.uu_id), info=data.pxf.get_event_data())
+
+        def click_position(event):
+            if not self.click_flag:
+                return
+            self.now_mouse, _, self.diagram_join = data.get_diagram_contact(self.uu_id)
+
+            self.now_mov_x = copy.deepcopy(self.now_mouse[0] - self.mouse_sta[0])
+
+            self.pos = self.view_pos_sta + self.now_mov_x
+            print("sub_pos", self.pos)
+
+            # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
+            data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
+            data.callback_operation.event("{0}_sub_mov".format(self.uu_id), info=data.pxf.get_event_data())
+
+        def click_end(event):
+            self.click_flag = False
+            self.mouse_sta, _, self.diagram_join_sta = data.get_diagram_contact(self.uu_id, del_mouse=True)
+            _, _, self.diagram_join = data.get_diagram_contact(self.uu_id, del_mouse=True)
+            data.callback_operation.event("{0}_sub_end".format(self.uu_id), info=data.pxf.get_event_data())
+
+        data.add_diagram_event(self.uu_id, "Button-1", click_start)
+        data.add_diagram_event(self.uu_id, "Motion", click_position)
+        data.add_diagram_event(self.uu_id, "ButtonRelease-1", click_end)
+
+        def this_del():
+            data.del_diagram(self.uu_id)
+            data.callback_operation.event("sub_del", self.uu_id)
+
+        self.popup2 = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
+        popup_list = [("削除", this_del)]
+        self.popup2.set(popup_list)
+
+        def right_click(event):
+            mouse, _, _, xy = data.window_event_data["contact"]()
+            data.popup_click_position, _, _ = data.get_diagram_contact("bar")
+
+            for i in range(2):
+                mouse[i] += xy[i]
+
+            self.popup2.show(mouse[0], mouse[1])
+
+        data.add_diagram_event(self.uu_id, "Button-2", right_click)
+
+        print("追加終了")
+
 
 class parts:
     def UI_set(self, data):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
@@ -127,6 +180,8 @@ class parts:
         #    data.media_object_parameter_bool = flag_bool
         #    #print("非同期 :", flag_bool)
 
+        data.click_flag = False
+
         def click_start(event):
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
@@ -153,12 +208,6 @@ class parts:
                 return
             now_mouse, _, data.diagram_join = data.get_diagram_contact("bar")
 
-            # if now_mouse[0] < 0:
-            #    now_mouse[0] = 0
-
-            # if now_mouse[0] > data.edit_territory_size()[0]:
-            #    now_mouse[0] = data.edit_territory_size()[0]
-
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
 
@@ -181,6 +230,7 @@ class parts:
                     old_size = copy.deepcopy(size)
                     size = 1
                     pos += old_size - size
+
                 data.pxf.set_px_ratio(position=pos, size=size, left_move=True)
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
@@ -192,14 +242,10 @@ class parts:
 
                 if not sub_extremity is None and pos + size <= sub_extremity[1]:
                     print("検知 B")
-                    #old_size = copy.deepcopy(size)
                     size = sub_extremity[1] - pos + 1
-                    #size -= old_size + size
 
                 if size < 1:
-                    #    old_size = copy.deepcopy(size)
                     size = 1
-                #    pos += size - old_size
 
                 data.pxf.set_px_ratio(position=pos, size=size)
 

@@ -226,7 +226,8 @@ class InitialValue:
             self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
             self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
             # self.data.timeline_object[media_id].callback_operation.set_event("parameter_lord", parameter)
-
+            self.data.timeline_object[media_id].callback_operation.set_event("sub_sta", timeline_nowtime_approval_False)
+            self.data.timeline_object[media_id].callback_operation.set_event("sub_end", timeline_nowtime_approval_True)
             # .del_diagram_event("bar", "Button-1", click_start)
 
             self.data.timeline_object[media_id].edit_layer(layer_number)

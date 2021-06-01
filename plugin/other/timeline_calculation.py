@@ -133,6 +133,12 @@ class TimelineCalculation:
         pos_f = self.px_to_f(position)
         self.sub_point_f[sub_name] = copy.deepcopy(pos_f)
 
+        if self.sub_point_f[sub_name] < self.sta_end_f[0]:
+            self.sub_point_f[sub_name] = self.sta_end_f[0] - 1
+
+        if self.sub_point_f[sub_name] > self.sta_end_f[0]:
+            self.sub_point_f[sub_name] = self.sta_end_f[1] + 1
+
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
         #print("positionからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
@@ -147,6 +153,12 @@ class TimelineCalculation:
         if not position is None:
             self.sub_point_f[sub_name] = copy.deepcopy(position)
 
+        if self.sub_point_f[sub_name] < self.sta_end_f[0]:
+            self.sub_point_f[sub_name] = self.sta_end_f[0] - 1
+
+        if self.sub_point_f[sub_name] > self.sta_end_f[0]:
+            self.sub_point_f[sub_name] = self.sta_end_f[1] + 1
+
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
         #print("frameからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
@@ -159,8 +171,8 @@ class TimelineCalculation:
 
         pos_f, size_f = None, None
 
-        # if not size is None and size < 1:
-        #    size = 1
+        if not size is None and size < 1:
+            size = 1
 
         if not position is None:
             self.ratio_f[0] = self.px_to_f(position)
@@ -168,25 +180,25 @@ class TimelineCalculation:
         if not size is None:
             self.ratio_f[1] = self.px_to_f(size, size_bool=True)
 
-        flag = ""
+        flag = 0
 
         if self.ratio_f[0] < self.sta_end_f_init[0]:  # posが0より手前になった
             old_pos = copy.deepcopy(self.ratio_f[0])
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f_init[0])
             self.ratio_f[1] -= self.ratio_f[0] - old_pos if left_move else 0
-            flag += "A"
+            flag += 1
 
         if self.ratio_f[1] > frame_long_init:  # sizeが幅を超えた
             self.ratio_f[0] = copy.deepcopy(self.sta_end_f_init[0])
             self.ratio_f[1] = copy.deepcopy(frame_long_init)
 
-            flag += "B"
+            flag += 10
 
         if self.ratio_f[0] + self.ratio_f[1] > frame_long_init:
             self.ratio_f[0] = frame_long_init - self.ratio_f[1]
-            flag += "C"
+            flag += 100
 
-        if not flag == "":
+        if not flag == 0:
             self.set_f_ratio(sub_mov=sub_mov)
             print(flag)
             return
