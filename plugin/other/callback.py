@@ -6,6 +6,7 @@ import asyncio
 class CallBack:
     def __init__(self):
         self.__event_data = {}
+        self.__tag_data = {}  # tag:[name]
 
     def set_event(self, name, func, run=False):
         if not name in self.__event_data.keys():
@@ -39,10 +40,15 @@ class CallBack:
         return copy.deepcopy(self.__event_data[name])
 
     def del_event(self, name):
+
         del self.__event_data[name]
 
     def all_del_event(self):
         del self.__event_data
+
+    def all_get_event(self):
+        return copy.deepcopy(self.__event_data)
+
         #data.set_event = set_event
         #data.event = event
 

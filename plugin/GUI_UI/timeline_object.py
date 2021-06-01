@@ -8,16 +8,22 @@ import uuid
 class KeyFrame:
     def __init__(self, data, size, center_x, center_y):
         self.uu_id = data.all_data.elements.make_id("keyframe")
-        data.pxf.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
+
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
+        self.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
         def draw(send):
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
             data.diagram_draw(sub_name)
-
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
         data.pxf.callback_operation.set_event("obj_sub_point", draw)
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
         data.pxf.set_sub_point(self.uu_id)
         data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
 
@@ -26,8 +32,7 @@ class KeyFrame:
         data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
         # data.territory_stack(False)
-        data.diagram_stack(self.uu_id, False)
-        data.diagram_stack(self.uu_id, True, "bar")
+
         data.diagram_draw(self.uu_id)
 
         self.click_flag = False
@@ -36,7 +41,7 @@ class KeyFrame:
             self.click_flag = True
             self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = data.get_diagram_contact(self.uu_id)
             self.view_pos_sta = data.edit_diagram_position(self.uu_id)[0]
-            data.pxf.callback_operation.event("sub_sta_{0}".format(self.uu_id), info=data.pxf.get_event_data())
+            self.callback_operation.event("sub_sta", info=data.pxf.get_event_data())
 
             data.edit_diagram_color(self.uu_id, "#ff0000")
 
@@ -52,13 +57,13 @@ class KeyFrame:
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
-            data.pxf.callback_operation.event("sub_mov_{0}".format(self.uu_id), info=data.pxf.get_event_data())
+            self.callback_operation.event("sub_mov", info=data.pxf.get_event_data())
 
         def click_end(event):
             self.click_flag = False
             self.mouse_sta, _, self.diagram_join_sta = data.get_diagram_contact(self.uu_id, del_mouse=True)
             _, _, self.diagram_join = data.get_diagram_contact(self.uu_id, del_mouse=True)
-            data.pxf.callback_operation.event("sub_end_{0}".format(self.uu_id), info=data.pxf.get_event_data())
+            self.callback_operation.event("sub_end", info=data.pxf.get_event_data())
 
             data.edit_diagram_color(self.uu_id, "#000000")
 
@@ -68,11 +73,22 @@ class KeyFrame:
 
         def this_del():
             data.del_diagram(self.uu_id)
+            #data.pxf.callback_operation.event("sub_del", self.uu_id)
+            # data.callback_operation.event("tihs_del")
 
             data.pxf.del_sub_point(self.uu_id)
-            data.pxf.callback_operation.all_del_event()
+            data.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
+            self.callback_operation.all_del_event()
 
-        data.pxf.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), this_del)
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
+        data.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), this_del)  # これはdata指定!!!!!!slef.じゃないよ！気をつけて!!!!!!!!1
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
+        # 気をつけて!!!!!!!!
+
+        print(self.callback_operation.all_get_event())
 
         self.popup2 = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
         popup_list = [("中間点削除", this_del)]
@@ -88,6 +104,9 @@ class KeyFrame:
             self.popup2.show(mouse[0], mouse[1])
 
         data.add_diagram_event(self.uu_id, "Button-2", right_click)
+
+        data.diagram_stack(self.uu_id, False)
+        data.diagram_stack(self.uu_id, True, "bar")
 
         print("追加終了")
 
@@ -141,12 +160,12 @@ class parts:
             data.callback_operation.event("del", data.option_data["media_id"])
 
         def media_object_separate():
-
             same_value = data.pxf.get_same_value(data.pxf.px_to_f(data.popup_click_position[0]))
             if not same_value is None:
-                data.pxf.callback_operation.event("tihs_del_{0}".format(same_value[0]))
+                data.callback_operation.event("tihs_del_{0}".format(same_value[0]))
 
             click_f_pos = data.pxf.px_to_f(data.popup_click_position[0])
+            print(data.callback_operation.all_get_event())
             data.callback_operation.event("separate", info=(data.option_data["media_id"], click_f_pos))
 
         def add_key_frame():
@@ -156,8 +175,8 @@ class parts:
             center_y = copy.deepcopy(bar_pos[1])
             # print("now_mouse", data.popup_click_position[0])
             new_key_frame = KeyFrame(data, size, center_x, center_y)
-            data.pxf.callback_operation.set_event("sub_sta_{0}".format(new_key_frame.uu_id), data.timeline_nowtime_approval_False)
-            data.pxf.callback_operation.set_event("sub_end_{0}".format(new_key_frame.uu_id), data.timeline_nowtime_approval_True)
+            new_key_frame.callback_operation.set_event("sub_sta", data.timeline_nowtime_approval_False)
+            new_key_frame.callback_operation.set_event("sub_end", data.timeline_nowtime_approval_True)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 
