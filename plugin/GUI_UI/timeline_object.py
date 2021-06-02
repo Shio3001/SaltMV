@@ -173,15 +173,18 @@ class parts:
             #click_f_pos = data.pxf.px_to_f(frame)
             data.callback_operation.event("separate", info=(data.option_data["media_id"], frame))
 
-        def make_KeyFrame(uu_id=None):
+        def make_KeyFrame(uu_id=None, pos_f=None):
             bar_pos = data.edit_diagram_position("bar")
 
             size = data.edit_diagram_size("bar")[1] / 2
-            center_x = copy.deepcopy(data.popup_click_position[0])
+            center_x = copy.deepcopy(data.popup_click_position[0]) if pos_f is None else data.pxf.f_to_px(pos_f)
             center_y = copy.deepcopy(bar_pos[1])
             new_key_frame = KeyFrame(data, size, center_x, center_y, uu_id=uu_id)
             new_key_frame.callback_operation.set_event("sub_sta", data.timeline_nowtime_approval_False)
             new_key_frame.callback_operation.set_event("sub_end", data.timeline_nowtime_approval_True)
+
+            # if not pos_f is None:
+            #    data.pxf.set_f_ratio_sub_point(new_key_frame.uu_id, pos_f)
 
             return new_key_frame
 
@@ -189,7 +192,6 @@ class parts:
 
         def add_key_frame():
 
-            # print("now_mouse", data.popup_click_position[0])
             new_key_frame = make_KeyFrame()
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)

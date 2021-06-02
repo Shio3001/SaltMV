@@ -107,9 +107,10 @@ class InitialValue:
                     print("右側")
                     # self.data.timeline_object[media_id].pxf.sub_point_f[k]
 
-                    self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f[k] = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
+                    frame = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
+                    #self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f[k] = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
                     self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k))
-                    self.data.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k)
+                    self.data.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k, pos_f=frame)
 
                 if v == click_f_pos:  # ちょうど一緒
                     print("等")
