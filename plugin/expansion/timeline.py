@@ -1,4 +1,5 @@
 # coding:utf-8
+from elements import make_id
 import sys
 import os
 import copy
@@ -91,7 +92,7 @@ class InitialValue:
                 return
 
             a_size = click_f_pos - scroll_data.ratio_f[0]
-            self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
+
             copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=click_f_pos, end=scroll_data.ratio_f[1])
             layer_number = self.data.all_data.layer_id_to_layer_number(layer_id)
             make_object(copy_obj.obj_id, sta=click_f_pos, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
@@ -104,8 +105,17 @@ class InitialValue:
                     print("左側")
                 if click_f_pos < v:  # 右側
                     print("右側")
+                    # self.data.timeline_object[media_id].pxf.sub_point_f[k]
+
+                    self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f[k] = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
+                    self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k))
+                    self.data.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k)
+
                 if v == click_f_pos:  # ちょうど一緒
-                    del self.data.timeline_object[media_id].pxf.sub_point_f[k]
+                    print("等")
+                    self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k))
+
+            self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
 
         # test_layer =
 

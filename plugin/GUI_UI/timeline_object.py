@@ -6,8 +6,8 @@ import uuid
 
 
 class KeyFrame:
-    def __init__(self, data, size, center_x, center_y):
-        self.uu_id = data.all_data.elements.make_id("keyframe")
+    def __init__(self, data, size, center_x, center_y, uu_id):
+        self.uu_id = data.all_data.elements.make_id("keyframe") if uu_id is None else uu_id
 
         data.new_diagram(self.uu_id)
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
@@ -57,6 +57,7 @@ class KeyFrame:
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
+
             self.callback_operation.event("sub_mov", info=data.pxf.get_event_data())
 
         def click_end(event):
@@ -72,12 +73,17 @@ class KeyFrame:
         data.add_diagram_event(self.uu_id, "ButtonRelease-1", click_end)
 
         def this_del():
+
+            print("thisdel")
+
             data.del_diagram(self.uu_id)
             #data.pxf.callback_operation.event("sub_del", self.uu_id)
             # data.callback_operation.event("tihs_del")
 
             data.pxf.del_sub_point(self.uu_id)
             data.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
+            data.pxf.callback_operation.del_event("obj_sub_point", func=draw)
+
             self.callback_operation.all_del_event()
 
         # 気をつけて!!!!!!!!
@@ -160,23 +166,31 @@ class parts:
             data.callback_operation.event("del", data.option_data["media_id"])
 
         def media_object_separate():
-            same_value = data.pxf.get_same_value(data.pxf.px_to_f(data.popup_click_position[0]))
-            if not same_value is None:
-                data.callback_operation.event("tihs_del_{0}".format(same_value[0]))
+            frame = data.pxf.px_to_f(data.popup_click_position[0])
 
-            click_f_pos = data.pxf.px_to_f(data.popup_click_position[0])
-            print(data.callback_operation.all_get_event())
-            data.callback_operation.event("separate", info=(data.option_data["media_id"], click_f_pos))
+            # data.callback_operation.event("tihs_del_{0}".format(k))
 
-        def add_key_frame():
+            #click_f_pos = data.pxf.px_to_f(frame)
+            data.callback_operation.event("separate", info=(data.option_data["media_id"], frame))
+
+        def make_KeyFrame(uu_id=None):
             bar_pos = data.edit_diagram_position("bar")
+
             size = data.edit_diagram_size("bar")[1] / 2
             center_x = copy.deepcopy(data.popup_click_position[0])
             center_y = copy.deepcopy(bar_pos[1])
-            # print("now_mouse", data.popup_click_position[0])
-            new_key_frame = KeyFrame(data, size, center_x, center_y)
+            new_key_frame = KeyFrame(data, size, center_x, center_y, uu_id=uu_id)
             new_key_frame.callback_operation.set_event("sub_sta", data.timeline_nowtime_approval_False)
             new_key_frame.callback_operation.set_event("sub_end", data.timeline_nowtime_approval_True)
+
+            return new_key_frame
+
+        data.make_KeyFrame = make_KeyFrame
+
+        def add_key_frame():
+
+            # print("now_mouse", data.popup_click_position[0])
+            new_key_frame = make_KeyFrame()
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 
@@ -206,8 +220,13 @@ class parts:
             if not same_value is None:
                 self.popup.edit_bool_twice("中間点追加", False)
 
+            if data.pxf.ratio_f[1] <= 1:
+                self.popup.edit_bool_twice("分割", False)
+                self.popup.edit_bool_twice("中間点追加", False)
+
             self.popup.show(mouse[0], mouse[1])
             self.popup.edit_bool_twice("中間点追加", True)
+            self.popup.edit_bool_twice("分割", True)
 
         data.add_diagram_event("bar", "Button-2", right_click)
 
@@ -271,9 +290,9 @@ class parts:
                     size += old_pos - pos
                 """
 
-                if size < 1:
+                if size < data.pxf.f_to_px(1):
                     old_size = copy.deepcopy(size)
-                    size = 1
+                    size = data.pxf.f_to_px(1)
                     pos += old_size - size
 
                 data.pxf.set_px_ratio(position=pos, size=size, left_move=True)
@@ -291,8 +310,8 @@ class parts:
                     size = sub_extremity[1] - pos + 1
                 """
 
-                if size < 1:
-                    size = 1
+                if size < data.pxf.f_to_px(1):
+                    size = data.pxf.f_to_px(1)
 
                 data.pxf.set_px_ratio(position=pos, size=size, right_move=True)
 
