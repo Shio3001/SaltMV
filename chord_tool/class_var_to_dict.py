@@ -8,4 +8,6 @@ class ClassVarToDict:
             ans = True if str(inquiry) in class_data.__dict__.keys() else False
             return ans
 
-        return class_data.__dict__
+        dict_data = class_data.__dict__
+
+        return dict_data

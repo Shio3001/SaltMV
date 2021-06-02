@@ -28,7 +28,7 @@ class InitialValue:
 
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
-                    if not "time" in before_point.keys() or pk_b == "time":
+                    if not "time" in before_point.keys() or pk_b in self.data.all_data.effect_point_default_keys:
                         continue
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None)
@@ -36,7 +36,7 @@ class InitialValue:
 
             else:
                 for pk_b, pv_b, pk_n, pv_n in zip(before_point.keys(), before_point.values(), next_point.keys(), next_point.values()):
-                    if not "time" in before_point.keys() or pk_b == "time":
+                    if not "time" in before_point.keys() or pk_b in self.data.all_data.effect_point_default_keys:
                         continue
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n)

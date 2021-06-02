@@ -91,11 +91,15 @@ class InitialValue:
                 print("返送")
                 return
 
+            self.data.timeline_object[media_id].mov_lock = True
+
             a_size = click_f_pos - scroll_data.ratio_f[0]
 
             copy_obj, layer_id = self.data.all_data.copy_object_elements(media_id, sta=click_f_pos, end=scroll_data.ratio_f[1])
             layer_number = self.data.all_data.layer_id_to_layer_number(layer_id)
             make_object(copy_obj.obj_id, sta=click_f_pos, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
+
+            self.data.timeline_object[copy_obj.obj_id].mov_lock = True
 
             items = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f).items()
 
@@ -117,6 +121,9 @@ class InitialValue:
                     self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k))
 
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
+            self.data.timeline_object[media_id].mov_lock = False
+            self.data.timeline_object[copy_obj.obj_id].mov_lock = False
+
 
         # test_layer =
 
@@ -226,6 +233,9 @@ class InitialValue:
             self.data.timeline_object[media_id] = new_obj
             del new_obj
 
+            self.data.timeline_object[media_id].timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
+            self.data.timeline_object[media_id].timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
+            
             # print("生成オブジェクトID", media_id)
 
             self.data.timeline_object[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
@@ -239,8 +249,6 @@ class InitialValue:
             self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
             self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
 
-            self.data.timeline_object[media_id].timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
-            self.data.timeline_object[media_id].timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
             # self.data.timeline_object[media_id].callback_operation.set_event("parameter_lord", parameter)
 
             # .del_diagram_event("bar", "Button-1", click_start)
@@ -376,6 +384,7 @@ class InitialValue:
         main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
         self.timeline_menubar.set(main_menubar_list)
         self.data.window_title_set("タイムライン")
+        self.data.window_size_set(x=1200, y=700)
         return self.data
 
 

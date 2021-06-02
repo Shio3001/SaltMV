@@ -81,6 +81,9 @@ operation["log"].write(operation)
 #app_name = "NankokuMovieMaker"
 
 all_data.set_operation(operation)
+
+operation["rendering"]["main"].set_all_data(all_data)
+
 #all_data.main_path = now_path
 print(all_data.main_path)
 

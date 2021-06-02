@@ -9,7 +9,7 @@ import copy
 class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = "座標"
-        setting_effect.effect_point = [{"time": 0, "x": 0, "y": 0}]
+        setting_effect.effect_point = {"x": 0, "y": 0}
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 

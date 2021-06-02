@@ -9,7 +9,7 @@ import copy
 class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
-        setting_effect.effect_point = [{"time": 0, "letter_spacing": 0}]
+        setting_effect.effect_point = {"letter_spacing": 0}
         setting_effect.various_fixed = {"text": "", "placement_width": 0, "placement_height": 0}
         setting_effect.procedure = CentralRole()
 

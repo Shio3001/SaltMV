@@ -1,8 +1,9 @@
 class PointAnalysis:
     def __init__(self):
-        pass
+        self.effect_point_default_keys = []
 
-    def main(self, before_point, next_point, now_f):
+    def main(self, before_point, next_point, now_f, effect_point_default_keys):
+        self.effect_point_default_keys = effect_point_default_keys
         if before_point["time"] == next_point["time"]:
             next_point["time"] += 1
 
@@ -15,8 +16,9 @@ class PointAnalysis:
         t = next_point["time"] - before_point["time"]
         nt = now_f - before_point["time"]
 
-        del before_point["time"]
-        del next_point["time"]
+        for k in self.effect_point_default_keys:
+            del before_point[k]
+            del next_point[k]
 
         now_point = {bk: ((nv - bv) / t) * nt for bk, nk, bv, nv in zip(before_point.keys(), next_point.keys(), before_point.vales(), next_point.vales())}
 

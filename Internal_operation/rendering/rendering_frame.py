@@ -6,8 +6,10 @@ class Rendering:
         self.now_f = 0
         self.operation = {}
         self.editor = {}
+        self.all_data = None
 
-    def main(self, draw_base, operation, this_scene, now_frame):  # 必要なもの
+    def main(self, all_data, draw_base, operation, this_scene, now_frame):  # 必要なもの
+        self.all_data = all_data
         self.now_f = now_frame
         self.operation = operation
         self.time_search = self.operation["plugin"]["other"]["time_search"].time_search
@@ -81,7 +83,7 @@ class Rendering:
         # 二分探索すればいいよ <timeによる配列と配列の間位をさがす>
 
         before_point, next_point = self.time_search(self.now_f, this_effect)
-        now_point = self.operation["rendering"]["point"].main(before_point, next_point, self.now_f)
+        now_point = self.operation["rendering"]["point"].main(before_point, next_point, self.now_f, self.all_data.effect_point_default_keys)
 
         effect_send = EffectPluginElements(draw_base, now_point, before_point, next_point, self.now_f, self.editor, self.operation)
         draw_base, draw_point = this_effect.procedure(effect_send)

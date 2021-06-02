@@ -17,6 +17,8 @@ class KeyFrame:
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
             data.diagram_draw(sub_name)
+
+            data.all_data.move_key_frame(data.pxf.sub_point_f[self.uu_id], data.option_data["media_id"], self.uu_id)
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
@@ -71,6 +73,9 @@ class KeyFrame:
         data.add_diagram_event(self.uu_id, "Button-1", click_start)
         data.add_diagram_event(self.uu_id, "Motion", click_position)
         data.add_diagram_event(self.uu_id, "ButtonRelease-1", click_end)
+
+        def make_internal_key_frame():
+            pass
 
         def this_del():
 
@@ -243,8 +248,12 @@ class parts:
         #    #print("非同期 :", flag_bool)
 
         data.click_flag = False
+        data.mov_lock = False
 
         def click_start(event):
+            if data.mov_lock:
+                return
+
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
             data.view_pos_sta = data.edit_diagram_position("bar")[0]
@@ -266,8 +275,9 @@ class parts:
             # print("非同期")
 
         def click_position(event):
-            if not data.click_flag:
+            if not data.click_flag or data.mov_lock:
                 return
+
             now_mouse, _, data.diagram_join = data.get_diagram_contact("bar")
 
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
@@ -330,6 +340,7 @@ class parts:
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
+
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("bar", del_mouse=True)

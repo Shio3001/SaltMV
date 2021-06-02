@@ -7,6 +7,10 @@ class Rendering:
     def __init__(self):
         self.recoed_frame = {}
         self.recoed_media = {}
+        self.all_data = None
+
+    def set_all_data(self, all_data):
+        self.all_data = all_data
 
     def video_output(self, operation, this_scene, path):
         operation["log"].stop(True)
@@ -26,7 +30,7 @@ class Rendering:
             print("\r進捗: {0} / {1} 進捗率: {2} %".format(t + 1, this_scene.editor["len"], round(((t + 1) / this_scene.editor["len"]) * 100)), end='')
             #operation["log"].write("進捗: {0} / {1} 進捗率: {2} %".format(t + 1, this_scene.editor["len"], round(((t + 1) / this_scene.editor["len"]) * 100)))
 
-            export_draw = operation["rendering"]["frame"].main(draw_base, operation, this_scene, t)
+            export_draw = operation["rendering"]["frame"].main(self.all_data, draw_base, operation, this_scene, t)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
 

@@ -153,6 +153,8 @@ class TimelineCalculation:
             self.sub_point_f[sub_name] = self.ratio_f[0] + self.ratio_f[1] - 1
             print("中-pxB")
 
+        #self.all_data.add_key_frame(self.sub_point_f[self.uu_id], data.option_data["media_id"], self.uu_id)
+
         pos_px = self.f_to_px(self.sub_point_f[sub_name])
         #print("positionからの設定pos_px", pos_px)
         self.callback_operation.event("obj_sub_point", info=(sub_name, pos_px))  # 送るものはpx_pos
