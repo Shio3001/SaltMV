@@ -44,7 +44,7 @@ class Rendering:
         additions = copy.deepcopy(draw_base)
 
         for this_effect in this_object.effect_group:
-            additions, ef_additions_point = self.effect(this_effect, additions)
+            additions, ef_additions_point = self.effect(this_effect, this_object.effect_point_internal_id_time, additions)
             additions_point = [d + r for d, r in zip(additions_point, ef_additions_point)]
 
         # ここより上は座標中心区域
@@ -79,10 +79,10 @@ class Rendering:
 
         return source
 
-    def effect(self, this_effect, draw_base):
+    def effect(self, this_effect, effect_point_internal_id_time,draw_base):
         # 二分探索すればいいよ <timeによる配列と配列の間位をさがす>
 
-        before_point, next_point = self.time_search(self.now_f, this_effect)
+        before_point, next_point = self.time_search(self.now_f, this_effect,effect_point_internal_id_time)
         now_point = self.operation["rendering_py"]["point"].main(before_point, next_point, self.now_f, self.effect_point_default_keys)
 
         effect_send = EffectPluginElements(draw_base, now_point, before_point, next_point, self.now_f, self.editor, self.operation)

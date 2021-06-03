@@ -216,9 +216,6 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id][1] = self.layer_number_to_layer_id(0)
         self.callback_operation.event("add_object_elements", info=())
 
-        time = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id][0].installation[0]
-        self.add_key_frame(time, new_obj.obj_id, "default")
-
         return copy.deepcopy(self.layer().object_group[new_obj.obj_id][0])
 
     def add_effect_elements(self, object_order, effect_name):
@@ -238,12 +235,18 @@ class Storage:
 
             new_effect.effect_point[k] = 0
 
-        # new_effect.effect_point_internal.append([copy.deepcopy(new_effect.seffect_point)])
-
-        #new = {}
-        #new["effect"] = copy.deepcopy(new_effect.effect_point)
-
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
+        print("aaaaaaa")
+
+        time = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].installation[0]
+        self.add_key_frame(time, object_order, "default")
+
+        for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
+            print(e, e.effect_point_internal_id_point, "対象")
+            for ev in e.effect_point_internal_id_point.values():
+                print(e, e.effect_point_internal_id_point, "追加前")
+                ev["effect"] = copy.deepcopy(e.effect_point)
+                print(e, e.effect_point_internal_id_point, "追加処理")
 
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group)
 
@@ -252,30 +255,29 @@ class Storage:
     def add_key_frame(self, time, obj_id, key_frame_id):
         print("新規追加受付")
 
-        for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group.values():
+        effect_group_v = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group.values()
+        effect_group_v_len = int(len(effect_group_v))
 
-            print("EE", e.effect_point_internal)
+        new = {}
+        new_effect = copy.deepcopy(effect_group_v.effect_point) if effect_group_v_len != 0 else None
+        new["time"] = time
+        new["effect"] = new_effect
 
-            new = {}
-            new_effect = copy.deepcopy(e.effect_point)
-            new["time"] = time
-            #new["key_frame_id"] = key_frame_id
-            new["effect"] = new_effect
-            e.effect_point_internal[key_frame_id] = new
+        effect_group_v.effect_point_internal_id_point[key_frame_id] = new
 
-            print("新規生成", e.effect_point_internal[key_frame_id], new)
+        print("新規生成", effect_group_v.effect_point_internal_id_point[key_frame_id], new)
 
     def move_key_frame(self, time, obj_id, key_frame_id):
         print("c", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group.values())
         for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group.values():
 
-            if not key_frame_id in e.effect_point_internal.keys():
-                print("返却")
+            if not key_frame_id in e.effect_point_internal_id_point.keys():
+                print(key_frame_id, "返却")
                 continue
 
-            e.effect_point_internal[key_frame_id]["time"] = time
+            e.effect_point_internal_id_point[key_frame_id]["time"] = time
 
-            print(e.effect_point_internal)
+            print(e.effect_point_internal_id_point)
 
     def get_now_layer_number(self, obj_id):
         #print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)

@@ -17,8 +17,8 @@ class KeyFrame:
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
             data.diagram_draw(sub_name)
-
             data.all_data.move_key_frame(data.pxf.sub_point_f[self.uu_id], data.option_data["media_id"], self.uu_id)
+
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
@@ -161,6 +161,7 @@ class parts:
             data.edit_diagram_position("bar", x=px_pos)
             data.edit_diagram_size("bar", x=px_size)
             data.territory_draw()
+            data.all_data.move_key_frame(data.pxf.ratio_f[0], data.option_data["media_id"], "default")
 
         data.pxf.callback_operation.set_event("draw_func", draw)
 

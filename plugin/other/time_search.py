@@ -2,8 +2,8 @@ import copy
 
 
 class TimeSearch:
-    def time_search(now_f, this_effect, number=None):  # 二分探索
-        ef_po = list(this_effect.effect_point_internal.values())
+    def time_search(now_f, this_effect, number=None,effect_point_internal_id_time):  # 二分探索
+        ef_po = list(this_effect.effect_point_internal_id_point.values())
 
         left = 0
         right = len(ef_po) - 1

@@ -52,6 +52,8 @@ class ObjectElements:  # その次にえらい
         #self.belongs_layer_id = None
         self.obj_id = make_id("obj")
 
+        self.effect_point_internal_id_time = {}
+
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
 
 
@@ -63,7 +65,7 @@ class EffectElements:  # えらくない
         self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
         self.effect_id = None
-        self.effect_point_internal = {}
+        self.effect_point_internal_id_point = {}
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")
