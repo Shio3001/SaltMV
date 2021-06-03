@@ -24,7 +24,7 @@ class InitialValue:
 
         def make(element):
             # for i, e in enumerate(elements_effect.values()):
-            before_point, next_point = self.time_search(self.now_f, element)
+            before_point, next_point = self.time_search(self.now_f, this_object.effect_point_internal_id_time, element)
 
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
