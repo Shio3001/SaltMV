@@ -1,7 +1,7 @@
 # coding:utf-8
-from Internal_operation.rendering import rendering_point
-from Internal_operation.rendering import rendering_frame
-from Internal_operation.rendering import rendering_main
+from Internal_operation.rendering_py import rendering_point
+from Internal_operation.rendering_py import rendering_frame
+from Internal_operation.rendering_py import rendering_main
 import sys
 import numpy as np
 import os
@@ -31,10 +31,10 @@ all_UI_data = UI_control
 
 operation = {}
 
-operation["rendering"] = {}
-operation["rendering"]["main"] = rendering_main.Rendering()
-operation["rendering"]["frame"] = rendering_frame.Rendering()
-operation["rendering"]["point"] = rendering_point.PointAnalysis()
+operation["rendering_py"] = {}
+operation["rendering_py"]["main"] = rendering_main.Rendering()
+operation["rendering_py"]["frame"] = rendering_frame.Rendering()
+operation["rendering_py"]["point"] = rendering_point.PointAnalysis()
 
 operation["class_dict"] = class_var_to_dict.ClassVarToDict().get
 operation["file_path"] = file_path.DirectoryPath()
@@ -82,7 +82,7 @@ operation["log"].write(operation)
 
 all_data.set_operation(operation)
 
-operation["rendering"]["main"].set_all_data(all_data)
+operation["rendering_py"]["main"].set_all_data(all_data)
 
 #all_data.main_path = now_path
 print(all_data.main_path)

@@ -188,16 +188,13 @@ class parts:
             new_key_frame.callback_operation.set_event("sub_sta", data.timeline_nowtime_approval_False)
             new_key_frame.callback_operation.set_event("sub_end", data.timeline_nowtime_approval_True)
 
-            # if not pos_f is None:
-            #    data.pxf.set_f_ratio_sub_point(new_key_frame.uu_id, pos_f)
-
             return new_key_frame
 
         data.make_KeyFrame = make_KeyFrame
 
         def add_key_frame():
-
             new_key_frame = make_KeyFrame()
+            data.all_data.add_key_frame(data.pxf.sub_point_f[new_key_frame.uu_id], data.option_data["media_id"], new_key_frame.uu_id)
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 

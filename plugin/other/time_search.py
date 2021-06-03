@@ -9,7 +9,7 @@ class TimeSearch:
         right = len(ef_po) - 1
 
         if len(ef_po) == 1:
-            return ef_po[0], None  # 前地点と次地点あわせ
+            return ef_po[0]["time"],  ef_po[0]["time"]  # 前地点と次地点あわせ
 
         while left <= right:  # 2つ以上のあたい
             mid = (left + right) // 2
@@ -27,4 +27,4 @@ class TimeSearch:
         if number:
             return left, right
 
-        return copy.deepcopy(ef_po[left], ef_po[right])
+        return copy.deepcopy(ef_po[left]["effect"], ef_po[right]["effect"])

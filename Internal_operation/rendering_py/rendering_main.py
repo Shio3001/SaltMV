@@ -22,6 +22,8 @@ class Rendering:
         writer = cv2.VideoWriter(path, fmt, this_scene.editor["fps"], size)  # ライター作成
         start_time = time.time()
 
+        effect_point_default_keys = self.all_data.effect_point_default_keys
+
         for t in range(s, e):
             draw_base = np.zeros((this_scene.editor["y"], this_scene.editor["x"], 4))  # numpyって指定する時縦横逆なんだな、めんどくさい #真っ黒な画面を生成
 
@@ -30,7 +32,7 @@ class Rendering:
             print("\r進捗: {0} / {1} 進捗率: {2} %".format(t + 1, this_scene.editor["len"], round(((t + 1) / this_scene.editor["len"]) * 100)), end='')
             #operation["log"].write("進捗: {0} / {1} 進捗率: {2} %".format(t + 1, this_scene.editor["len"], round(((t + 1) / this_scene.editor["len"]) * 100)))
 
-            export_draw = operation["rendering"]["frame"].main(self.all_data, draw_base, operation, this_scene, t)
+            export_draw = operation["rendering_py"]["frame"].main(draw_base, operation, this_scene, effect_point_default_keys)
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             writer.write(output_data)
 
