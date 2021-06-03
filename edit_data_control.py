@@ -231,7 +231,7 @@ class Storage:
             new_effect.effect_point[k] = 0
 
         # new_effect.effect_point_internal.append([copy.deepcopy(new_effect.seffect_point)])
-        new_effect.effect_point_internal["default"] = [copy.deepcopy(new_effect.effect_point), 0]
+        new_effect.effect_point_internal["default"] = [copy.deepcopy(new_effect.effect_point), 0, 0]
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
 
@@ -242,9 +242,12 @@ class Storage:
     def add_key_frame(self, time, obj_id, key_frame_id):
         for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group.values():
             for p in e.effect_point_internal:
-                new = copy.deepcopy(e.effect_point)
+                new = {}
+                new_effect = copy.deepcopy(e.effect_point)
                 new["time"] = time
-                e.effect_point_internal[key_frame_id] = [copy.deepcopy(e.effect_point), time]
+                new["key_frame_id"] = key_frame_id
+                new["effect"] = new_effect
+                e.effect_point_internal[key_frame_id] = new
 
     def move_key_frame(self, time, obj_id, key_frame_id):
         for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group.values():

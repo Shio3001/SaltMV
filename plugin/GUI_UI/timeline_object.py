@@ -55,7 +55,7 @@ class KeyFrame:
             self.now_mov_x = copy.deepcopy(self.now_mouse[0] - self.mouse_sta[0])
 
             self.pos = self.view_pos_sta + self.now_mov_x
-            print("sub_pos", self.pos)
+            #print("sub_pos", self.pos)
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
@@ -79,7 +79,7 @@ class KeyFrame:
 
         def this_del():
 
-            print("thisdel")
+            # print("thisdel")
 
             data.del_diagram(self.uu_id)
             #data.pxf.callback_operation.event("sub_del", self.uu_id)
@@ -99,7 +99,7 @@ class KeyFrame:
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
 
-        print(self.callback_operation.all_get_event())
+        # print(self.callback_operation.all_get_event())
 
         self.popup2 = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
         popup_list = [("中間点削除", this_del)]
@@ -119,7 +119,7 @@ class KeyFrame:
         data.diagram_stack(self.uu_id, False)
         data.diagram_stack(self.uu_id, True, "bar")
 
-        print("追加終了")
+        # print("追加終了")
 
 
 class parts:
@@ -152,7 +152,7 @@ class parts:
                 data.diagram_draw(k)
 
         data.edit_layer = edit_layer
-        # #print("layer_pos", layer_pos)
+        #print("layer_pos", layer_pos)
 
         # data.pos_add_y = pos_add_y
 
@@ -283,7 +283,7 @@ class parts:
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
 
-            # print("now_mouse", now_mouse[0])
+            #print("now_mouse", now_mouse[0])
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
 
@@ -296,7 +296,7 @@ class parts:
 
                 """
                 if not sub_extremity is None and sub_extremity[0] <= pos:
-                    print("検知 A")
+                    #print("検知 A")
                     old_pos = copy.deepcopy(pos)
                     pos = sub_extremity[0] - 1
                     size += old_pos - pos
@@ -318,7 +318,7 @@ class parts:
 
                 """
                 if not sub_extremity is None and pos + size <= sub_extremity[1]:
-                    print("検知 B")
+                    #print("検知 B")
                     size = sub_extremity[1] - pos + 1
                 """
 
@@ -333,8 +333,8 @@ class parts:
 
                 data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True, main_mov=False)
                 # after_pos = data.edit_diagram_position("bar")[1] + now_mov_y
-                # ##print(after_pos)
-                # #print("発火A", data.option_data["media_id"])
+                # print(after_pos)
+                #print("発火A", data.option_data["media_id"])
                 data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
