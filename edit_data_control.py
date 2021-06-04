@@ -205,7 +205,9 @@ class Storage:
         self.callback_operation.event("add_object_elements", info=())
 
         time = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][0].installation[0]
-        self.add_key_frame(time, new_copy_obj.obj_id, "default")
+
+        self.add_key_frame_point_onely(time[0], new_copy_obj.obj_id, "default_sta")
+        self.add_key_frame_point_onely(time[1], new_copy_obj.obj_id, "default_end")
 
         return copy.deepcopy(self.layer().object_group[new_copy_obj.obj_id][0]), target_layer_id
 
@@ -215,6 +217,10 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id][0] = new_obj
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id][1] = self.layer_number_to_layer_id(0)
         self.callback_operation.event("add_object_elements", info=())
+
+        time = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id][0].installation
+        self.add_key_frame_point_onely(time[0], new_obj.obj_id, "default_sta")
+        self.add_key_frame_point_onely(time[1], new_obj.obj_id, "default_end")
 
         return copy.deepcopy(self.layer().object_group[new_obj.obj_id][0])
 
@@ -238,16 +244,12 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
         print("aaaaaaa")
 
-        time = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].installation[0]
-        self.add_key_frame(time, object_order, "default")
-
         ob = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys()
         effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group
 
-        for opk in ob:
-            for eg in effect_group.values():
-                effect_point = copy.deepcopy(eg.effect_point)
-                eg.effect_point_internal_id_point[opk] = effect_point
+        for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
+            for ek, ev in zip(e.effect_point_internal_id_point.keys(), e.effect_point_internal_id_point.values()):
+                self.add_key_frame_inside_data(object_order, ek)
 
         """
 
@@ -265,19 +267,28 @@ class Storage:
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
     def add_key_frame(self, time, obj_id, key_frame_id):
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
+        self.add_key_frame_point_onely(time, obj_id, key_frame_id)
         self.add_key_frame_inside_data(obj_id, key_frame_id)
+
+    def add_key_frame_point_onely(self, time, obj_id, key_frame_id):
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
 
     def add_key_frame_inside_data(self, obj_id, key_frame_id):
         effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group
         if len(effect_group) == 0:
+            print("0返却")
             return
 
         for eg in effect_group.values():
             new_effect = copy.deepcopy(eg.effect_point)
             eg.effect_point_internal_id_point[key_frame_id] = new_effect
 
+            print("eg", eg, eg.effect_point_internal_id_point)
+
     def move_key_frame(self, time, obj_id, key_frame_id):
+        if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
+            self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
+
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 

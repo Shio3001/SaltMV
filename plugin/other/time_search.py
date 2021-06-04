@@ -3,21 +3,24 @@ import copy
 
 class TimeSearch:
     def time_search(now_f, this_effect, effect_point_internal_id_time, number=None):  # 二分探索
-        ef_po = list(effect_point_internal_id_time.values())
+        print("time_search", effect_point_internal_id_time)
+
+        effect_point_internal_id_time_sort = dict(sorted(effect_point_internal_id_time.items(), key=lambda x: x[1]))
+
+        print("time_search_sort", effect_point_internal_id_time_sort)
+
+        ef_key = list(effect_point_internal_id_time_sort.keys())
+        ef_val = list(effect_point_internal_id_time_sort.values())
 
         left = 0
-        right = len(ef_po) - 1
+        right = len(ef_val) - 1
 
-        if len(ef_po) == 1:
-            return ef_po[0],  ef_po[0]  # 前地点と次地点あわせ
-
-        effect_point_internal_id_time = sorted(effect_point_internal_id_time.items(), key=lambda x: x[1])
-
-        ef_key = list(effect_point_internal_id_time.keys())
-        ef_val = list(effect_point_internal_id_time.values())
+        if len(ef_val) == 1:
+            return ef_val[0],  ef_val[0]  # 前地点と次地点あわせ
 
         while left <= right:  # 2つ以上のあたい
             mid = (left + right) // 2
+            print(mid)
             if ef_val[mid] <= now_f < ef_val[mid + 1]:
                 return ef_val[mid], ef_val[mid + 1]
 

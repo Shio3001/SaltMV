@@ -13,6 +13,8 @@ class KeyFrame:
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
         self.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
+        data.all_data.add_key_frame(0, data.option_data["media_id"], self.uu_id)
+
         def draw(send):
             sub_name, pos_px = send
             now = data.edit_diagram_position(sub_name, x=pos_px)
@@ -26,6 +28,7 @@ class KeyFrame:
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
+
         data.pxf.set_sub_point(self.uu_id)
         data.pxf.set_px_ratio_sub_point(self.uu_id, center_x)
 
@@ -161,7 +164,8 @@ class parts:
             data.edit_diagram_position("bar", x=px_pos)
             data.edit_diagram_size("bar", x=px_size)
             data.territory_draw()
-            data.all_data.move_key_frame(data.pxf.ratio_f[0], data.option_data["media_id"], "default")
+            data.all_data.move_key_frame(data.pxf.ratio_f[0], data.option_data["media_id"], "default_sta")
+            data.all_data.move_key_frame(data.pxf.ratio_f[0] + data.pxf.ratio_f[1], data.option_data["media_id"], "default_end")
 
         data.pxf.callback_operation.set_event("draw_func", draw)
 
@@ -265,7 +269,7 @@ class parts:
 
             # set_parameter_permit(False)
             # print("非同期開始")
-            send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time)
+            send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time, data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time)
             func = data.all_data.callback_operation.get_event("media_lord")[0]
             thread_1 = data.all_data.threading.Thread(target=func, args=(send,))
             thread_1.start()
