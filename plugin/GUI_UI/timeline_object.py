@@ -267,9 +267,11 @@ class parts:
 
             #data.temp_pos_size = [None, None]
 
+            now_f = data.pxf.px_to_f(data.mouse_sta[0])
+
             # set_parameter_permit(False)
             # print("非同期開始")
-            send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, data.all_data.now_time, data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time)
+            send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, now_f, data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time)
             func = data.all_data.callback_operation.get_event("media_lord")[0]
             thread_1 = data.all_data.threading.Thread(target=func, args=(send,))
             thread_1.start()

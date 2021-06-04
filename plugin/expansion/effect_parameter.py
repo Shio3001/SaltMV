@@ -11,7 +11,7 @@ class InitialValue:
         self.operation = self.data.operation
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
         self.now = 0
-        self.now_f = 0
+        self.push_f = 0
 
     def main(self):
         self.data.window_title_set("タイムライン設定")
@@ -24,7 +24,7 @@ class InitialValue:
 
         def make(element, effect_point_internal_id_time):
             # for i, e in enumerate(elements_effect.values()):
-            before_point, next_point = self.time_search(self.now_f, element, effect_point_internal_id_time)
+            before_point, next_point = self.time_search(self.push_f, element, effect_point_internal_id_time)
 
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
@@ -48,9 +48,10 @@ class InitialValue:
                 self.now += 1
 
         def element_lord(element_send):
-            element, effect_point_internal_id_time = element_send
+            element, effect_point_internal_id_time, now_f = element_send
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
             self.now = 0
+            self.push_f = now_f
             self.data.ui_management.set_old_elements_len()
             make(element, effect_point_internal_id_time)
             self.data.ui_management.del_ignition(self.now)

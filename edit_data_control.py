@@ -244,12 +244,10 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
         print("aaaaaaa")
 
-        ob = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys()
-        effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group
-
         for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
-            for ek, ev in zip(e.effect_point_internal_id_point.keys(), e.effect_point_internal_id_point.values()):
-                self.add_key_frame_inside_data(object_order, ek)
+            for ek in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys():
+                e.effect_point_internal_id_point[ek] = copy.deepcopy(e.effect_point)
+                print("ek", ek, e.effect_point_internal_id_point)
 
         """
 

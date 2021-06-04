@@ -36,15 +36,16 @@ class InitialValue:
 
             element = self.elements_effect[key]
             effect_point_internal_id_time = option_data["effect_point_internal_id_time"]
+            now_f = option_data["now_f"]
             print("element", element)
-            self.data.all_data.callback_operation.event("element_lord", info=(element, effect_point_internal_id_time))
+            self.data.all_data.callback_operation.event("element_lord", info=(element, effect_point_internal_id_time, now_f))
 
         def new_button_for_parameter_control():
             ui_id = self.data.all_data.elements.make_id("parameter_UI")
             button = self.data.new_parts("parameter_control", ui_id, parts_name="button")
             return button
 
-        def make(k, e,effect_point_internal_id_time):
+        def make(k, e, effect_point_internal_id_time, now_f):
             #ui_id = self.data.all_data.elements.make_id("parameter_control_UI")
 
             print("make", k, e)
@@ -52,7 +53,7 @@ class InitialValue:
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)
 
-            option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time}
+            option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time, "now_f": now_f}
             self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(option_data, overwrite=False)
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
 
@@ -70,7 +71,7 @@ class InitialValue:
 
             self.data.ui_management.set_old_elements_len()
             with self.data.all_data.ThreadPoolExecutor() as executor:
-                [executor.submit(make(k, e, effect_point_internal_id_time)) for k, e in zip(self.elements_effect.keys(), self.elements_effect.values())]
+                [executor.submit(make(k, e, effect_point_internal_id_time, now_f)) for k, e in zip(self.elements_effect.keys(), self.elements_effect.values())]
 
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
