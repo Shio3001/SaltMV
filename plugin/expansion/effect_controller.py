@@ -27,17 +27,17 @@ class InitialValue:
         # def make
 
         def element_lord_ignition(option_data):
-            print(self.elements_effect, option_data)
+            #print(self.elements_effect, option_data)
             key = option_data["element_key"]
 
             if not key in self.elements_effect.keys():
-                print("返送")
+                #print("返送")
                 return
 
             element = self.elements_effect[key]
             effect_point_internal_id_time = option_data["effect_point_internal_id_time"]
             now_f = option_data["now_f"]
-            print("element", element)
+            #print("element", element)
             self.data.all_data.callback_operation.event("element_lord", info=(element, effect_point_internal_id_time, now_f))
 
         def new_button_for_parameter_control():
@@ -48,7 +48,7 @@ class InitialValue:
         def make(k, e, effect_point_internal_id_time, now_f):
             #ui_id = self.data.all_data.elements.make_id("parameter_control_UI")
 
-            print("make", k, e)
+            #print("make", k, e)
 
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)

@@ -124,7 +124,6 @@ class InitialValue:
             self.data.timeline_object[media_id].mov_lock = False
             self.data.timeline_object[copy_obj.obj_id].mov_lock = False
 
-
         # test_layer =
 
         # for i in range(10):
@@ -235,7 +234,7 @@ class InitialValue:
 
             self.data.timeline_object[media_id].timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
             self.data.timeline_object[media_id].timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
-            
+
             # print("生成オブジェクトID", media_id)
 
             self.data.timeline_object[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
