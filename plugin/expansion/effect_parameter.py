@@ -5,20 +5,40 @@ import copy
 import datetime
 
 
-class TextReceive:
-
-    def __init__(self, data, edia_id, effect_id, effect_uuid_key, val_key):
+class TextReceivePoint:
+    def __init__(self, data, media_id, effect_id, effect_uuid_key, val_key, int_type=None):
         self.data = data
-        self.edia_id = edia_id
+        self.media_id = media_id
         self.effect_id = effect_id
         self.effect_uuid_key = effect_uuid_key
         self.val_key = val_key
 
+        self.int_type = int_type
+
+    def text_func(self, text):
+        if self.int_type:
+            text = int(text)
+
+        self.data.all_data.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.val_key, text)
+    #obj_id, effect_id, various_fixed_key, various_fixed_val
+
     #send.media_id, element.effect_id, left_key, pk_b, int(text)
     #send.media_id, element.effect_id, right_key, pk_n, int(text)
 
+
+class TextReceiveVariousFixed:
+    def __init__(self, data, media_id, effect_id, various_fixed_key, int_type=None):
+        self.data = data
+        self.media_id = media_id
+        self.effect_id = effect_id
+        self.various_fixed_key = various_fixed_key
+        self.int_type = int_type
+
     def text_func(self, text):
-        self.data.all_data.edit_key_frame_val(self.edia_id, self.effect_id, self.effect_uuid_key, self.val_key, int(text))
+        if self.int_type:
+            text = int(text)
+
+        self.data.all_data.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key, text)
 
 
 class InitialValue:
@@ -49,7 +69,7 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
 
-                    left = TextReceive(self.data, send.media_id, element.effect_id, left_key, pk_b)
+                    left = TextReceivePoint(self.data, send.media_id, element.effect_id, left_key, pk_b, int_type=True)
 
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None, text_a_return=left.text_func)
@@ -60,16 +80,19 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
 
-                    left = TextReceive(self.data, send.media_id, element.effect_id, left_key, pk_b)
-                    right = TextReceive(self.data, send.media_id, element.effect_id, right_key, pk_n)
+                    left = TextReceivePoint(self.data, send.media_id, element.effect_id, left_key, pk_b, int_type=True)
+                    right = TextReceivePoint(self.data, send.media_id, element.effect_id, right_key, pk_n, int_type=True)
 
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
                     self.now += 1
 
             for vk, vv in zip(element.various_fixed.keys(), element.various_fixed.values()):
+
+                text = TextReceiveVariousFixed(self.data, send.media_id, element.effect_id, vk)
+
                 self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
-                self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None)
+                self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None, text_a_return=text.text_func)
                 self.now += 1
 
         def element_lord(send):
