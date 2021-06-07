@@ -28,11 +28,11 @@ class parts:
         def textbox2(text):
             print(text)
 
-        def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None):
+        def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None, text_a_return=None, text_b_return=None):
             pos_y = pos_y_normal * column
             data.edit_diagram_text("text", text=text)
-            data.edit_diagram_text("textbox1", text=text_a,  entry_event=textbox1)
-            data.edit_diagram_text("textbox2", readonly=1-motion, text=text_b, entry_event=textbox2)
+            data.edit_diagram_text("textbox1", text=text_a,  entry_event=text_a_return)
+            data.edit_diagram_text("textbox2", readonly=1-motion, text=text_b, entry_event=text_b_return)
             data.edit_diagram_position("text", x=text_x, y=pos_y)
             data.edit_diagram_position("textbox1", x=textbox1_x, y=pos_y)
             data.edit_diagram_position("textbox2", x=textbox2_x, y=pos_y)

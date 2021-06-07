@@ -22,7 +22,9 @@ class InitialValue:
 
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
-        def make(element, effect_point_internal_id_time):
+        def make(send):
+            element, effect_point_internal_id_time = send.effect_group, send.effect_point_internal_id_time
+
             # for i, e in enumerate(elements_effect.values()):
             before_point, next_point = self.time_search(self.push_f, element, effect_point_internal_id_time)
 
@@ -47,13 +49,14 @@ class InitialValue:
                 self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None)
                 self.now += 1
 
-        def element_lord(element_send):
-            element, effect_point_internal_id_time, now_f = element_send
+        def element_lord(send):
+            #element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_send
+            element = send.effect_group
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
             self.now = 0
-            self.push_f = now_f
+            self.push_f = send.now_f
             self.data.ui_management.set_old_elements_len()
-            make(element, effect_point_internal_id_time)
+            make(send)
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
 

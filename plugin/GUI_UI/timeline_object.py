@@ -271,9 +271,16 @@ class parts:
 
             # set_parameter_permit(False)
             # #print("非同期開始")
-            send = (data.all_data.media_object(data.option_data["media_id"]).effect_group, now_f, data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time)
+
+            send_data = ParameterSendData()
+            send_data.effect_group = data.all_data.media_object(data.option_data["media_id"]).effect_group
+            send_data.now_f = now_f
+            send_data.effect_point_internal_id_time = data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time
+            #send_data.text_a_return = text_a_return
+            #send_data.text_b_return = text_b_return
+
             func = data.all_data.callback_operation.get_event("media_lord")[0]
-            thread_1 = data.all_data.threading.Thread(target=func, args=(send,))
+            thread_1 = data.all_data.threading.Thread(target=func, args=(send_data,))
             thread_1.start()
 
             # #print("非同期")
@@ -374,3 +381,8 @@ class EffectGet:
 
     def add_element(self):
         self.all_data.add_effect_elements(self.media_id, self.effect_key)
+
+
+class ParameterSendData:
+    def __init__(self):
+        pass

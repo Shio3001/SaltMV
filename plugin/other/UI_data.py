@@ -79,10 +79,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def set_option_data(self, option_data, overwrite=None):
 
         if not option_data is None and overwrite:
-            self.option_data = copy.deepcopy(option_data)
+            self.option_data = option_data
+            return
 
         elif not option_data is None:
             self.option_data.update(option_data)
+            return
 
     def new_territory(self):
         ###print("呼び出し先", inspect.stack()[1].function)
