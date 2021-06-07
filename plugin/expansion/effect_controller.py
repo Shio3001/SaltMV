@@ -74,8 +74,11 @@ class InitialValue:
 
             print("あ", elements_effect)
 
-            with self.data.all_data.ThreadPoolExecutor() as executor:
-                [executor.submit(make(k, e, send)) for k, e in zip(elements_effect.keys(), elements_effect.values())]
+            for k, e in zip(elements_effect.keys(), elements_effect.values()):
+                make(k, e, send)
+
+            # with self.data.all_data.ThreadPoolExecutor() as executor:
+            #    [executor.submit(make(k, e, send)) for k, e in zip(elements_effect.keys(), elements_effect.values())]
 
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
