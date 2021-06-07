@@ -23,7 +23,7 @@ class InitialValue:
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
         def make(send):
-            element, effect_point_internal_id_time = send.effect_group, send.effect_point_internal_id_time
+            element, effect_point_internal_id_time = send.effect_element, send.effect_point_internal_id_time
 
             # for i, e in enumerate(elements_effect.values()):
             before_point, next_point = self.time_search(self.push_f, element, effect_point_internal_id_time)
@@ -51,7 +51,7 @@ class InitialValue:
 
         def element_lord(send):
             #element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_send
-            element = send.effect_group
+            element = send.effect_element
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
             self.now = 0
             self.push_f = send.now_f

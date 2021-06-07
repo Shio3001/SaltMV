@@ -33,6 +33,10 @@ class InitialValue:
                 # print("返送")
                 return
 
+            print("key", key)
+
+            send.effect_element = send.effect_group[key]
+
             self.data.all_data.callback_operation.event("element_lord", info=(send))
 
         def new_button_for_parameter_control():
@@ -48,10 +52,10 @@ class InitialValue:
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)
 
-            send.element_key = k
+            send.element_key = copy.deepcopy(k)
 
             #option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time, "now_f": now_f, "text_a_return": text_a_return, "text_a_return": text_b_return}
-            self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(send, overwrite=True)
+            self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(copy.deepcopy(send), overwrite=True)
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
 
             self.now += 1
@@ -67,6 +71,9 @@ class InitialValue:
             self.data.all_data.threading_lock.acquire()
 
             self.data.ui_management.set_old_elements_len()
+
+            print("あ", elements_effect)
+
             with self.data.all_data.ThreadPoolExecutor() as executor:
                 [executor.submit(make(k, e, send)) for k, e in zip(elements_effect.keys(), elements_effect.values())]
 
