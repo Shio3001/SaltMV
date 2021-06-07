@@ -281,30 +281,23 @@ class Storage:
             new_effect = copy.deepcopy(eg.effect_point)
             eg.effect_point_internal_id_point[key_frame_id] = new_effect
 
-            #print("eg", eg, eg.effect_point_internal_id_point)
-
     def move_key_frame(self, time, obj_id, key_frame_id):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
-        # print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def edit_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key, mov_val):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
 
-        print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
-
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
-        # print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def edit_various_fixed(self, obj_id, effect_id, various_fixed_key, various_fixed_val):
         if not various_fixed_key in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(various_fixed_key))
 
-        print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed)
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key] = various_fixed_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed)
 

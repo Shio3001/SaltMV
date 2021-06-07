@@ -1,3 +1,4 @@
+
 import tkinter as tk
 import copy
 import sys
@@ -384,7 +385,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.__diagram_text_draw(territory_data, diagram_data,  di_name, di_del)
 
         if self.get_diagram_type(di_name, "TextBoxData"):
-            self.__diagram_textbox_draw(territory_data, diagram_data,  di_name, di_del)
+            self.__diagram_textbox_draw(territory_data, diagram_data,  di_name, di_del, diagram_data.forget)
 
         self.callback_operation.event("diagram_draw", info=(territory_data, diagram_data, di_name))
 
@@ -456,10 +457,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas_data.canvas.moveto(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1])
 
-    def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name, di_del):
+    def __diagram_textbox_draw(self, territory_data, diagram_data,  di_name, di_del, forget):
 
         if di_del:
             self.canvas_data.territory[self.te_name].diagram[di_name].entry.destroy()
+            return
+
+        if forget:
+            self.canvas_data.territory[self.te_name].diagram[di_name].entry.place_forget()
             return
 
         xy, size_xy = self.__left_coordinate_calculation(territory_data, diagram_data)
@@ -478,13 +483,18 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not diagram_data.draw_tag:
             self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
 
-        self.canvas_data.canvas.dchars(self.canvas_data.territory[self.te_name].diagram[di_name].tag, 0, old_text_len - 1)
-        self.canvas_data.canvas.insert(self.canvas_data.territory[self.te_name].diagram[di_name].tag, 0, diagram_data.text)
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry.delete(0, "end")
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry.insert(0, diagram_data.text)
+
+        print("text", diagram_data.text)
 
         read = {True: "readonly", False: "normal"}
         state = read[diagram_data.readonly]
         ##print("state", state)
         self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=state)
+
+    def diagram_forget(self, di_name, forget):
+        self.canvas_data.territory[self.te_name].diagram[di_name].forget = forget
 
     def __left_coordinate_calculation(self, territory_data, diagram_data):  # 中心部から左上への座標計算用 #主にshape向け
 
@@ -655,6 +665,7 @@ class TextBoxData():
         self.center = [False, False]
         self.entry = tk.Entry(canvas, highlightthickness=0, relief="flat")
         self.readonly = False
+        self.forget = False
 
         self.entry.bind("<{0}>".format("Return"), self.entry_event, "+")
 
@@ -663,7 +674,7 @@ class TextBoxData():
 
     def entry_event(self, event):
         # #print("イベント受信")
-        self.entry_event_callback(self.entry.get())
+        self.entry_event_callback(copy.deepcopy(self.entry.get()))
 
     def not_event(self, text):
         pass

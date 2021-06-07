@@ -37,6 +37,7 @@ class UIManagement:
             ui_id = self.data.all_data.elements.make_id("parameter_UI")
             self.ui_list.append(None)
             self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=parts_name)
+
             #print("生成", now, "parts_name", parts_name, "canvas_name", canvas_name)
 
     def set_old_elements_len(self, set_number=None):
