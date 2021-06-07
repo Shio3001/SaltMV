@@ -5,6 +5,22 @@ import copy
 import datetime
 
 
+class TextReceive:
+
+    def __init__(self, data, edia_id, effect_id, effect_uuid_key, val_key):
+        self.data = data
+        self.edia_id = edia_id
+        self.effect_id = effect_id
+        self.effect_uuid_key = effect_uuid_key
+        self.val_key = val_key
+
+    #send.media_id, element.effect_id, left_key, pk_b, int(text)
+    #send.media_id, element.effect_id, right_key, pk_n, int(text)
+
+    def text_func(self, text):
+        self.data.all_data.edit_key_frame_val(self.edia_id, self.effect_id, self.effect_uuid_key, self.val_key, int(text))
+
+
 class InitialValue:
     def __init__(self, data):
         self.data = data
@@ -26,22 +42,29 @@ class InitialValue:
             element, effect_point_internal_id_time = send.effect_element, send.effect_point_internal_id_time
 
             # for i, e in enumerate(elements_effect.values()):
-            before_point, next_point = self.time_search(self.push_f, element, effect_point_internal_id_time)
+            before_point, next_point, left_key, right_key = self.time_search(self.push_f, element, effect_point_internal_id_time, key_get=True)
 
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
+
+                    left = TextReceive(self.data, send.media_id, element.effect_id, left_key, pk_b)
+
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
-                    self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None)
+                    self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None, text_a_return=left.text_func)
                     self.now += 1
 
             else:
                 for pk_b, pv_b, pk_n, pv_n in zip(before_point.keys(), before_point.values(), next_point.keys(), next_point.values()):
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
+
+                    left = TextReceive(self.data, send.media_id, element.effect_id, left_key, pk_b)
+                    right = TextReceive(self.data, send.media_id, element.effect_id, right_key, pk_n)
+
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
-                    self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n)
+                    self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
                     self.now += 1
 
             for vk, vv in zip(element.various_fixed.keys(), element.various_fixed.values()):

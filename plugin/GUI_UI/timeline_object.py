@@ -275,6 +275,7 @@ class parts:
             send_data = ParameterSendData()
             send_data.effect_group = data.all_data.media_object(data.option_data["media_id"]).effect_group
             send_data.now_f = now_f
+            send_data.media_id = data.option_data["media_id"]
             send_data.effect_point_internal_id_time = data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time
             #send_data.text_a_return = text_a_return
             #send_data.text_b_return = text_b_return
