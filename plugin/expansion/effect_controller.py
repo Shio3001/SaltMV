@@ -46,19 +46,16 @@ class InitialValue:
             return button
 
         def make(k, e, send):
-            # ui_id = self.data.all_data.elements.make_id("parameter_control_UI")
-
-            # print("make", k, e)
-
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)
 
             send.element_key = copy.deepcopy(k)
 
             # option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time, "now_f": now_f, "text_a_return": text_a_return, "text_a_return": text_b_return}
+            self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.all_del_event()
             self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(copy.deepcopy(send), overwrite=True)
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
-
+            # ここが悪さしてる可能性あり
             self.now += 1
 
         def media_lord(send):

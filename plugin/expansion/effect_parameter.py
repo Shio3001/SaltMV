@@ -96,9 +96,9 @@ class InitialValue:
             self.now = 0
             self.push_f = send.now_f
 
-            # self.data.ui_management.set_old_elements_len()
+            self.data.ui_management.set_old_elements_len()
             make(send)
-            # self.data.ui_management.del_ignition(self.now)
+            self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
 
         def element_ui_all_del():

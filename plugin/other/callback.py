@@ -60,7 +60,7 @@ class CallBack:
         del self.__event_data[name]
 
     def all_del_event(self):
-        del self.__event_data
+        self.__event_data = {}
 
     def all_get_event(self):
         return copy.deepcopy(self.__event_data)
