@@ -280,9 +280,11 @@ class parts:
             #send_data.text_a_return = text_a_return
             #send_data.text_b_return = text_b_return
 
-            func = data.all_data.callback_operation.get_event("media_lord")[0]
-            thread_1 = data.all_data.threading.Thread(target=func, args=(send_data,))
-            thread_1.start()
+            #func = data.all_data.callback_operation.get_event("media_lord")[0]
+            #thread_1 = data.all_data.threading.Thread(target=func, args=(send_data,))
+            # thread_1.start()
+
+            data.all_data.callback_operation.get_event("media_lord")[0](send_data)
 
             # #print("非同期")
 

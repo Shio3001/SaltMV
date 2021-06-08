@@ -10,7 +10,7 @@ class InitialValue:
         self.data = data
         self.operation = self.data.operation
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
-        #self.parameter_button_ui_list = []
+        # self.parameter_button_ui_list = []
         self.now = 0
         self.now_f = 0
 
@@ -26,7 +26,7 @@ class InitialValue:
         # def make
 
         def element_lord_ignition(send):
-            #print(elements_effect, option_data)
+            # print(elements_effect, option_data)
             key = send.element_key
 
             if not key in send.effect_group.keys():
@@ -35,7 +35,8 @@ class InitialValue:
 
             print("key", key)
 
-            send.effect_element = send.effect_group[key]
+            # send.effect_element = send.effect_group[key]
+            send.effect_element = self.data.all_data.effect(send.media_id, key)
 
             self.data.all_data.callback_operation.event("element_lord", info=(send))
 
@@ -45,16 +46,16 @@ class InitialValue:
             return button
 
         def make(k, e, send):
-            #ui_id = self.data.all_data.elements.make_id("parameter_control_UI")
+            # ui_id = self.data.all_data.elements.make_id("parameter_control_UI")
 
-            #print("make", k, e)
+            # print("make", k, e)
 
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)
 
             send.element_key = copy.deepcopy(k)
 
-            #option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time, "now_f": now_f, "text_a_return": text_a_return, "text_a_return": text_b_return}
+            # option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time, "now_f": now_f, "text_a_return": text_a_return, "text_a_return": text_b_return}
             self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(copy.deepcopy(send), overwrite=True)
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
 
@@ -89,7 +90,7 @@ class InitialValue:
 
         self.data.window_size_set(x=220, y=360, lock_x=False)
         self.data.window.update()
-        #self.data.all_data.callback_operation.set_event("element_del", element_del)
+        # self.data.all_data.callback_operation.set_event("element_del", element_del)
 
         # data.element_lord = element_lord
 
