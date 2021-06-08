@@ -32,6 +32,14 @@ class TimeSearch:
 
         #print(ef_key, ef_val, now_f)
 
+        for i in range(len(ef_key) - 1):
+            if ef_val[i] <= now_f < ef_val[i + 1]:
+                left = i
+                right = i + 1
+                break
+
+        """
+
         while left <= right:  # 2つ以上のあたい
             mid = (left + right) // 2
             # print(mid)
@@ -43,6 +51,10 @@ class TimeSearch:
 
             elif ef_val[mid + 1] <= now_f:  # 現在フレームより次地点がちいさい場合
                 right += 1
+
+        print(ef_key, left, right)
+
+        """
 
         left_key = ef_key[left]
         right_key = ef_key[right]

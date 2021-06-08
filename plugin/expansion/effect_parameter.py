@@ -12,7 +12,6 @@ class TextReceivePoint:
         self.effect_id = effect_id
         self.effect_uuid_key = effect_uuid_key
         self.val_key = val_key
-
         self.int_type = int_type
 
     def text_func(self, text):
@@ -35,7 +34,6 @@ class TextReceiveVariousFixed:
         #self.int_type = int_type
 
     def text_func(self, text):
-
         self.data.all_data.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key, text)
 
 
@@ -66,7 +64,7 @@ class InitialValue:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
-                    print("pk_b, pv_b", pk_b, pv_b)
+                    #print("pk_b, pv_b", pk_b, pv_b)
                     left = TextReceivePoint(self.data, send.media_id, element.effect_id, left_key, pk_b, int_type=True)
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None, text_a_return=left.text_func)
@@ -80,7 +78,7 @@ class InitialValue:
                     left = TextReceivePoint(self.data, send.media_id, element.effect_id, left_key, pk_b, int_type=True)
                     right = TextReceivePoint(self.data, send.media_id, element.effect_id, right_key, pk_n, int_type=True)
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
-                    print("pk_b, pv_b, pk_n, pv_n", pk_b, pv_b, pk_n, pv_n)
+                    #print("pk_b, pv_b, pk_n, pv_n", pk_b, pv_b, pk_n, pv_n)
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
                     self.now += 1
 
@@ -97,9 +95,10 @@ class InitialValue:
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
             self.now = 0
             self.push_f = send.now_f
-            self.data.ui_management.set_old_elements_len()
+
+            # self.data.ui_management.set_old_elements_len()
             make(send)
-            self.data.ui_management.del_ignition(self.now)
+            # self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
 
         def element_ui_all_del():
