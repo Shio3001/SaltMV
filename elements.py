@@ -48,8 +48,6 @@ class ObjectElements:  # その次にえらい
         self.effect_group = {}
         self.installation = [0, 0]  # オブジェクト範囲
         self.synthetic = "normal"  # 合成方法
-
-        #self.belongs_layer_id = None
         self.obj_id = make_id("obj")
 
         self.effect_point_internal_id_time = {}

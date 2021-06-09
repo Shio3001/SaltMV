@@ -3,6 +3,7 @@ import tkinter as tk
 import copy
 import sys
 import inspect
+import datetime
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
@@ -375,6 +376,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].shape_point)
 
     def diagram_draw(self,  di_name, di_del=False):
+
         territory_data = self.canvas_data.territory[self.te_name]
         diagram_data = self.canvas_data.territory[self.te_name].diagram[di_name]
 
@@ -400,11 +402,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             return
 
         color = diagram_data.color
-
         xy, size_xy = self.__left_coordinate_calculation(territory_data, diagram_data)
-
         self.operation["log"].write("shape", xy, size_xy,  di_name)
-
         if diagram_data.draw_tag and not diagram_data.shape_point is None:
             pos, size = self.get_diagram_position_size(di_name)
             self.canvas_data.canvas.moveto(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0]-size[0]/2, xy[1]-size[1]/2)

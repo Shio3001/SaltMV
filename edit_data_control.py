@@ -150,7 +150,7 @@ class Storage:
 
         ###print("オブジェクト数", len(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[0]))
 
-        return copy.deepcopy(self.scene().layer_group)
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group)
 
     def media_object(self, object_order, data=None):
         ##print("inspect", inspect.stack()[1].function)
@@ -165,7 +165,7 @@ class Storage:
             ##print("受信しました", data.installation)
             return
         ##print("oorder", object_order)
-        return copy.deepcopy(self.layer().object_group[object_order][0])
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0])
 
     def effect(self, object_order, effect_order, data=None):
         # self.operation["log"].write("effect")
@@ -174,7 +174,7 @@ class Storage:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order] = copy.deepcopy(data)
             return
 
-        return copy.deepcopy(self.media_object(object_order).effect_group[effect_order])
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order])
 
     def add_scene_elements(self):
         new_scene = elements.SceneElements()
