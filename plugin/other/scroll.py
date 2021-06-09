@@ -79,20 +79,37 @@ class CentralRole:
 
             #print(now_mouse[data.direction], data.mouse_sta[data.direction])
 
-            pos = data.view_pos_sta + now_mov
-
             if data.mouse_touch_sta[0][0]:  # 左側移動
+
+                pos = data.view_pos_sta + now_mov
+                size = data.view_size_sta-now_mov
+
+                if size < data.pxf.f_to_px(1):
+                    old_size = copy.deepcopy(size)
+                    size = data.pxf.f_to_px(1)
+                    pos += old_size - size
                 #print(now_mov, "A")
-                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta-now_mov)
+                data.pxf.set_px_ratio(position=pos, size=size)
                 # #print("左側移動")
 
             elif data.mouse_touch_sta[0][1]:  # 右側移動
-                data.pxf.set_px_ratio(position=data.view_pos_sta, size=data.view_size_sta+now_mov)
+
+                pos = data.view_pos_sta
+                size = data.view_size_sta+now_mov
+
+                if size < data.pxf.f_to_px(1):
+                    size = data.pxf.f_to_px(1)
+
+                data.pxf.set_px_ratio(position=data.view_pos_sta, size=size)
                 #print(now_mov, "B")
                 # #print("右側移動")
 
             elif data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-                data.pxf.set_px_ratio(position=pos, size=data.view_size_sta)
+
+                pos = data.view_pos_sta + now_mov
+                size = data.view_size_sta
+
+                data.pxf.set_px_ratio(position=pos, size=size)
                 #print(now_mov, "C")
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())

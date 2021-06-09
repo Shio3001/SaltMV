@@ -232,7 +232,6 @@ class InitialValue:
 
         def make_object(media_id, sta=0, end=20, layer_number=0):
             option_data = {"media_id": media_id}
-            # print("new_id", option_data)
 
             print(len(self.data.timeline_object))
 
@@ -244,43 +243,26 @@ class InitialValue:
             self.data.timeline_object[media_id].timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
             self.data.timeline_object[media_id].timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
 
-            # print("生成オブジェクトID", media_id)
-
             self.data.timeline_object[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
             self.data.timeline_object[media_id].edit_diagram_size("bar", y=timeline_size)
-            # self.data.timeline_object[media_id].territory_stack(False)
             self.data.timeline_object[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             self.data.timeline_object[media_id].callback_operation.set_event("updown", layer_updown)
             self.data.timeline_object[media_id].callback_operation.set_event("del", del_object_ui)
-
             self.data.timeline_object[media_id].callback_operation.set_event("separate", media_object_separate)
             self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
             self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
-
-            # self.data.timeline_object[media_id].callback_operation.set_event("parameter_lord", parameter)
-
-            # .del_diagram_event("bar", "Button-1", click_start)
-
             self.data.timeline_object[media_id].edit_layer(layer_number)
 
-            # self.data.timeline_object[media_id].timeline_object_ID =
-
             frame_len = self.data.all_data.scene().editor["len"]
-
-            # print("frame_len", frame_len)
-            # print("scrollbar_sta_end", self.scrollbar_sta_end)
 
             self.data.timeline_object[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
             self.data.timeline_object[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
 
-            obj_time = self.data.all_data.media_object(media_id)
+            #obj_time = self.data.all_data.media_object(media_id)
 
-            scroll_data = timeline_scroll.pxf.get_event_data()
+            #scroll_data = timeline_scroll.pxf.get_event_data()
 
             self.data.timeline_object[media_id].pxf.set_f_ratio(position=sta, size=end - sta)
-
-            # callback_operation.event("updown"
-
             window_size_edit(None)
 
         def loading_movie_data():
