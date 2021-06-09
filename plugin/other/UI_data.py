@@ -543,6 +543,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not send is None:
             self.popup_list = send
 
+    def get_text(self,di_name):
+        return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].text)
+
     def edit_diagram_text(self,
                           di_name,
                           text=None,

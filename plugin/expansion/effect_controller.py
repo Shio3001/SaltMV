@@ -45,16 +45,52 @@ class InitialValue:
             button = self.data.new_parts("parameter_control", ui_id, parts_name="button")
             return button
 
+        def effect_updown(B):
+
+            con_len = len(self.data.ui_management.ui_list)
+
+            end_click_effect = B // 25
+
+            if end_click_effect < 0:
+                end_click_effect = 0
+
+            if end_click_effect > con_len - 1:
+                end_click_effect = con_len - 1
+
+            textA = self.data.ui_management.ui_list[self.sta_click_effect].button_parameter_control.get_text("text")
+            textB = self.data.ui_management.ui_list[end_click_effect].button_parameter_control.get_text("text")
+
+            self.data.ui_management.ui_list[self.sta_click_effect].button_parameter_control.edit_diagram_text("text", textB)
+            self.data.ui_management.ui_list[self.sta_click_effect].button_parameter_control.territory_draw()
+
+            self.data.ui_management.ui_list[end_click_effect].button_parameter_control.edit_diagram_text("text", textA)
+            self.data.ui_management.ui_list[end_click_effect].button_parameter_control.territory_draw()
+
+        def click_start(event):
+            self.background_mouse, _, _ = self.data.ui_management.ui_list[self.now].button_parameter_control.get_diagram_contact("background")
+            self.sta_click_effect = self.background_mouse[1] // 25
+
+        def click_position(event):
+            self.background_now_mouse, _, _ = self.data.ui_management.ui_list[self.now].button_parameter_control.get_diagram_contact("background")
+            effect_updown(self.background_now_mouse[1])
+
+        def click_end(event):
+            self.background_mouse, _, _ = self.data.ui_management.ui_list[self.now].button_parameter_control.get_diagram_contact("background", del_mouse=True)
+            self.background_now_mouse, _, _ = self.data.ui_management.ui_list[self.now].button_parameter_control.get_diagram_contact("background", del_mouse=True)
+
         def make(k, e, send):
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
             self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=e.effect_name)
 
             send.element_key = copy.deepcopy(k)
 
-            # option_data = {"element_key": k, "effect_point_internal_id_time": effect_point_internal_id_time, "now_f": now_f, "text_a_return": text_a_return, "text_a_return": text_b_return}
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.all_del_event()
             self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(copy.deepcopy(send), overwrite=True)
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
+            self.data.ui_management.ui_list[self.now].button_parameter_control.add_diagram_event("text", "Button-1", click_start)
+            self.data.ui_management.ui_list[self.now].button_parameter_control.window_event_data["add"]("Motion", click_position)
+            self.data.ui_management.ui_list[self.now].button_parameter_control.add_diagram_event("text", "ButtonRelease-1", click_end)
+
             # ここが悪さしてる可能性あり
             self.now += 1
 
@@ -74,9 +110,6 @@ class InitialValue:
 
             for k, e in zip(elements_effect.keys(), elements_effect.values()):
                 make(k, e, send)
-
-            # with self.data.all_data.ThreadPoolExecutor() as executor:
-            #    [executor.submit(make(k, e, send)) for k, e in zip(elements_effect.keys(), elements_effect.values())]
 
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()

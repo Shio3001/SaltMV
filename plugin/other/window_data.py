@@ -35,7 +35,6 @@ class SendWindowData:  # window生成のためのデータ
 
         self.tkFont = tkFont
         self.tkFont_list = list(self.tkFont.families())  # これを使うにはtk.TK()をしたあとじゃないとダメらしい
-        # print(self.tkFont_list)
 
         self.window_menubar = None
         self.window_resizable = [True, True]
@@ -209,7 +208,7 @@ class SendWindowData:  # window生成のためのデータ
             self.window_name = send
         self.window.title(self.window_name)
 
-    def window_exit():
+    def window_exit(self):
         self.window.destroy()
 
     # self.window.mainloop()

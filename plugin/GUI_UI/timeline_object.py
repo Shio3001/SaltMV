@@ -150,7 +150,6 @@ class parts:
             pos, size = data.get_diagram_position_size("bar")
 
             for k in data.pxf.sub_point_f.keys():
-
                 data.edit_diagram_position(k, y=layer_pos + size[1]/2)
                 data.diagram_draw(k)
 
@@ -346,8 +345,7 @@ class parts:
                 size = data.view_size_sta
 
                 data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True, main_mov=False)
-
-                data.callback_operation.event("updown", info=(now_mov_y, data.option_data["media_id"], edit_layer, click_start))
+                data.callback_operation.event("updown", info=(data.mouse_sta[1], now_mouse[1],  data.option_data["media_id"], edit_layer))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 

@@ -125,13 +125,6 @@ class InitialValue:
             self.data.timeline_object[media_id].mov_lock = False
             self.data.timeline_object[copy_obj.obj_id].mov_lock = False
 
-        # test_layer =
-
-        # for i in range(10):
-        #    test_layer_loop = self.data.all_data.add_layer_elements()
-
-        # self.scrollbar_sta_end = [0, 0]
-
         def reflect_timeline_to_movie(scroll_data):
 
             media_id = scroll_data.option_data["media_id"]
@@ -139,9 +132,6 @@ class InitialValue:
 
             get_media_data.installation = [scroll_data.ratio_f[0], scroll_data.ratio_f[0] + scroll_data.ratio_f[1]]
             self.data.all_data.media_object(media_id, data=get_media_data)
-
-            # print(self.data.all_data.media_object(layer_id, media_id).installation, "installation", scroll_data.ratio_f)
-            # self.data.timeline_object[-1].
 
         def new_layer():
             new_layer = self.data.all_data.add_layer_elements()
@@ -156,47 +146,25 @@ class InitialValue:
             make_object(new_object.obj_id)
 
         def layer_updown(mouse_pos):  # この関数重たそうだから要調整かな
-
-            time = []
-
-            pos, obj_id, edit_layer, click_start = mouse_pos
+            sta, end,  obj_id, edit_layer = mouse_pos
             now_layer = self.data.all_data.get_now_layer_number(obj_id)
 
-            mov_layer = math.floor((abs(pos) - (timeline_size / 2)) / timeline_size)
+            layer_num = len(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.layer_layer_id)
 
-            # print("pos", pos)
+            #old_layer = sta // timeline_size
+            new_layer = end // timeline_size
 
-            new_layer = now_layer
-
-            if pos < -1 * timeline_size:
-                new_layer = now_layer - mov_layer
-
-            if pos > timeline_size:
-                new_layer = now_layer + mov_layer
-
-            # print("現在のレイヤー", now_layer)
+            if new_layer > layer_num - 1:
+                new_layer = layer_num - 1
 
             if new_layer < 0:
                 new_layer = 0
 
-            if new_layer > self.data.all_data.get_layer_length() - 1:
-                new_layer = self.data.all_data.get_layer_length() - 1
+            print("new_layer", new_layer)
 
             new_layer_id = self.data.all_data.layer_number_to_layer_id(new_layer)
-
-            #layer = self.data.all_data.layer()
-            # これが重たい
-
-            #layer.object_group[obj_id][1] = new_layer_id
-
             self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[obj_id][1] = new_layer_id
-
-            # self.data.all_data.layer(data=layer)
-            # これが重たい
-
             edit_layer(new_layer)
-
-            # click_start(None)
 
         def del_object_ui(media_id):
             print("削除対象物:", media_id)
@@ -306,28 +274,28 @@ class InitialValue:
 
         # def sta_end_f_
 
-        def obj_long_edit(media_obj, frame_len, sta_f, end_f):
-            media_obj.pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            media_obj.pxf.set_sta_end_f(sta=sta_f, end=end_f)
+        def obj_long_edit(media_obj, view_frame_len, view_sta_f, view_end_f):
+            media_obj.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
+            media_obj.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
             media_obj.pxf.set_f_ratio()
 
         def timeline_view_range(scroll_data):
-            frame_len = self.data.all_data.scene().editor["len"]
+            view_frame_len = self.data.all_data.scene().editor["len"]
 
-            sta_end_long = scroll_data.sta_end_f[1] - scroll_data.sta_end_f[0]
+            #sta_end_long = scroll_data.sta_end_f[1] - scroll_data.sta_end_f[0]
 
-            sta_f = frame_len * (scroll_data.ratio_f[0] / 100)
-            end_f = frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100)
+            view_sta_f = view_frame_len * (scroll_data.ratio_f[0] / 100)
+            view_end_f = view_frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100)
 
-            self.scrollbar_sta_end = [sta_f, end_f]
+            self.scrollbar_sta_end = [view_sta_f, view_end_f]
 
-            nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            nowtime_bar.pxf.set_sta_end_f(sta=sta_f, end=end_f)
+            nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
+            nowtime_bar.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
             nowtime_bar.pxf.set_f_ratio()
-            # print(sta_f, end_f, "staend")
+            [obj_long_edit(media_obj, view_frame_len, view_sta_f, view_end_f) for media_obj in self.data.timeline_object.values()]
 
-            with self.data.all_data.ThreadPoolExecutor() as executor:
-                [executor.submit(obj_long_edit(media_obj, frame_len, sta_f, end_f)) for media_obj in self.data.timeline_object.values()]
+            # with self.data.all_data.ThreadPoolExecutor() as executor:
+            #    [executor.submit(obj_long_edit(media_obj, frame_len, sta_f, end_f)) for media_obj in self.data.timeline_object.values()]
 
         timeline_scroll.callback_operation.set_event("mov", timeline_view_range)  # コールバック関数登録
         timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())

@@ -13,20 +13,12 @@ class UIManagement:
         if end is None:
             end = int(len(self.ui_list))
 
-        #print(sta, end)
-
         for i in range(sta, end):
-            #print(i, "削除")
-
             if not self.ui_list[i].te_name in self.ui_list[i].canvas_data.territory.keys():
-                # print("返却")
                 continue
 
             if self.data.operation["class_dict"](self.ui_list[i], inquiry="callback_operation"):
                 self.ui_list[i].callback_operation.event("del_parameter_ui")
-
-            # if self.ui_list[i].te_name == "parameter_control":
-            # self.ui_list[i].del_control_ui()
 
             self.ui_list[i].del_territory()
 
