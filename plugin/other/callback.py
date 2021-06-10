@@ -9,6 +9,9 @@ class CallBack:
         self.__tag_data = {}  # tag:[name]
 
     def set_event(self, name, func, run=False):
+
+        print("呼び出し先[set_event]", inspect.stack()[1].filename, inspect.stack()[1].function)
+
         if not name in self.__event_data.keys():
             self.__event_data[name] = []
 
@@ -19,7 +22,7 @@ class CallBack:
 
     def event(self, name, info=None):
 
-        #print("呼び出し先[callback]", inspect.stack()[1].function)
+        print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function)
 
         if not name in self.__event_data.keys():
             # print("返送")

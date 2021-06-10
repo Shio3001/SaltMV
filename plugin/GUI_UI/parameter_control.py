@@ -8,7 +8,7 @@ class parts:
         box_size = 20
 
         new_button_for_parameter_control = data.all_data.callback_operation.get_event("new_button_for_parameter_control")[0]
-        data.button_parameter_control = new_button_for_parameter_control()
+        data.button_parameter_control = new_button_for_parameter_control()  # effect_controller ←40行付近呼び出し先
 
         data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
@@ -31,5 +31,20 @@ class parts:
 
         data.parameter_ui_set = parameter_ui_set
         #data.del_control_ui = del_control_ui
+
+        def click_start(event):
+            self.background_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background")
+
+        def click_position(event):
+            self.background_now_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background")
+            data.callback_operation.event("effect_updown", (self.background_mouse[1], self.background_now_mouse[1]))
+
+        def click_end(event):
+            self.background_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background", del_mouse=True)
+            self.background_now_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background", del_mouse=True)
+
+        data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
+        data.button_parameter_control.window_event_data["add"]("Motion", click_position)
+        data.button_parameter_control.add_diagram_event("background", "ButtonRelease-1", click_end)
 
         return data
