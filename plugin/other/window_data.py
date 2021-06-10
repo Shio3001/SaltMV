@@ -178,7 +178,8 @@ class SendWindowData:  # window生成のためのデータ
                                                   self.tkFont,
                                                   self.tkFont_list,
                                                   base,
-                                                  option_data)
+                                                  option_data,
+                                                  self.get_window_contact)
 
         # new_UIdata.new_territory()
 

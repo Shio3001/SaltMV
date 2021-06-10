@@ -22,8 +22,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
                  tkFont,
                  tkFont_list,
                  base,
-                 option_data):
+                 option_data,
+                 get_window_contact
+                 ):
 
+        self.get_window_contact = get_window_contact
+
+        
         self.window = window
         self.canvas_data = canvas_data
         self.all_data = all_data
@@ -68,6 +73,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         # self.operation["log"].write("UI生成")
 
+
+        
     def get_set_option_data(self, option_data=None):
         if not option_data is None:
             self.option_data = option_data
@@ -543,7 +550,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not send is None:
             self.popup_list = send
 
-    def get_text(self,di_name):
+    def get_text(self, di_name):
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].text)
 
     def edit_diagram_text(self,

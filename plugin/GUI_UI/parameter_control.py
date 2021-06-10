@@ -32,16 +32,27 @@ class parts:
         data.parameter_ui_set = parameter_ui_set
         #data.del_control_ui = del_control_ui
 
+        data.click_stop = False
+
         def click_start(event):
-            self.background_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background")
+            data.click_stop = True
+            self.background_mouse, _, _, _ = data.get_window_contact()
 
         def click_position(event):
-            self.background_now_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background")
-            data.callback_operation.event("effect_updown", (self.background_mouse[1], self.background_now_mouse[1]))
+            if not data.click_stop:
+                return
+            self.background_now_mouse, _, _, _ = data.get_window_contact()
+            data.callback_operation.event("effect_updown_destination", (self.background_mouse[1], self.background_now_mouse[1]))
 
         def click_end(event):
-            self.background_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background", del_mouse=True)
-            self.background_now_mouse, _, _ = data.button_parameter_control.get_diagram_contact("background", del_mouse=True)
+            if not data.click_stop:
+                return
+            data.callback_operation.event("effect_updown", (self.background_mouse[1], self.background_now_mouse[1]))
+
+            self.background_mouse = [0, 0]
+            self.background_now_mouse = [0, 0]
+
+            data.click_stop = False
 
         data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
         data.button_parameter_control.window_event_data["add"]("Motion", click_position)
