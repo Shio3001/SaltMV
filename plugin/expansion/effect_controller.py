@@ -12,7 +12,7 @@ class InitialValue:
         self.operation = self.data.operation
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
         # self.parameter_button_ui_list = []
-        self.now = 0
+        #self.now = 0
         self.now_f = 0
 
         self.now_media_id = ""
@@ -55,14 +55,14 @@ class InitialValue:
         shape_updown_destination.diagram_shape_view_status("0", 2)
         shape_updown_destination.territory_draw()
 
-        def effect_updown_destination(send):
+        def effect_updown_destination(A, B, box_pos, gap, sta_point):
 
             shape_updown_destination.diagram_shape_view_status("0", 0)
-            A, B, box_pos, gap, sta_point = send
+            #A, B, box_pos, gap, sta_point = send
 
             con_len = len(self.data.ui_management.ui_list)
 
-            click_effect_point_destination = (B - sta_point) // 25
+            click_effect_point_destination = (B - sta_point) // box_pos
 
             if click_effect_point_destination < 0:
                 click_effect_point_destination = 0
@@ -73,7 +73,7 @@ class InitialValue:
             shape_updown_destination.edit_territory_position(y=click_effect_point_destination * box_pos - gap + sta_point)
             shape_updown_destination.territory_draw()
 
-        def effect_updown(send):
+        def effect_updown(A, B, box_pos, gap, sta_point):
 
             #print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function)
 
@@ -82,14 +82,16 @@ class InitialValue:
 
             print("呼ばれました")
 
-            A, B, box_pos, sta_point = send
+            #A, B, box_pos, gap, sta_point = send
 
             con_len = len(self.data.ui_management.ui_list)
 
             click_effect_point = [0, 0]
 
-            click_effect_point[0] = (A-sta_point) // 25
-            click_effect_point[1] = (B-sta_point) // 25
+            click_effect_point[0] = (A-sta_point) // box_pos
+            click_effect_point[1] = (B-sta_point) // box_pos
+
+            print("N", click_effect_point, A, B, box_pos, gap, sta_point)
 
             if click_effect_point[0] < 0:
                 click_effect_point[0] = 0
@@ -114,12 +116,12 @@ class InitialValue:
             new_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             new_val = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
 
-            if con_len - 1 == len(new_key):
-                new_key.append(old_key_data)
-                new_val.append(old_val_data)
-            else:
-                new_key.insert(click_effect_point[1], old_key_data)
-                new_val.insert(click_effect_point[1], old_val_data)
+            # if con_len - 1 == len(new_key):
+            #    new_key.append(old_key_data)
+            #    new_val.append(old_val_data)
+            # else:
+            new_key.insert(click_effect_point[1], old_key_data)
+            new_val.insert(click_effect_point[1], old_val_data)
 
             zip_data = dict(zip(new_key, new_val))
 
@@ -142,20 +144,22 @@ class InitialValue:
 
             # self.data.ui_management.del_ignition(now_exchange)
 
-        def make(k, e):
-            self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
+        def make(i, k, e):
+            self.data.ui_management.new_parameter_ui(i, canvas_name="parameter_control", parts_name="parameter_control")
             self.send.element_key = copy.deepcopy(k)
-            self.data.ui_management.ui_list[self.now].parameter_ui_set(column=self.now, text=e.effect_name)
-            self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(copy.deepcopy(self.send), overwrite=True)
-            self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.all_del_event()
-            self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
+            self.data.ui_management.ui_list[i].parameter_ui_set(column=i, text=e.effect_name)
+            self.data.ui_management.ui_list[i].button_parameter_control.set_option_data(copy.deepcopy(self.send), overwrite=True)
+            self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.all_del_event()
+            self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
+            self.data.ui_management.ui_list[i].effect_updown = effect_updown
+            self.data.ui_management.ui_list[i].effect_updown_destination = effect_updown_destination
 
-            self.data.ui_management.ui_list[self.now].callback_operation.all_del_event()
-            self.data.ui_management.ui_list[self.now].callback_operation.set_event("effect_updown", effect_updown)
-            self.data.ui_management.ui_list[self.now].callback_operation.set_event("effect_updown_destination", effect_updown_destination)
+            # self.data.ui_management.ui_list[self.now].callback_operation.all_del_event()
+            #self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("effect_updown", effect_updown)
+            #self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("effect_updown_destination", effect_updown_destination)
 
             # ここが悪さしてる可能性あり
-            self.now += 1
+            #self.now += 1
 
         def media_lord(send):
             self.send = send
@@ -163,19 +167,19 @@ class InitialValue:
             self.data.all_data.callback_operation.event("element_ui_all_del")
 
             elements_effect = self.send.effect_group
-            self.now = 0
-
             elements_len = int(len(elements_effect.values()))
-            # self.data.all_data.threading_lock.acquire()
-
             self.now_media_id = copy.deepcopy(self.send.media_id)
 
             self.data.ui_management.set_old_elements_len()
 
-            for k, e in zip(elements_effect.keys(), elements_effect.values()):
-                make(k, e)
+            key_list = list(elements_effect.keys())
+            val_list = list(elements_effect.values())
+            list_len = len(elements_effect)
 
-            self.data.ui_management.del_ignition(self.now)
+            for i in range(list_len):
+                make(i, key_list[i], val_list[i])
+
+            self.data.ui_management.del_ignition(list_len)
             self.data.window.update()
             # self.data.all_data.threading_lock.release()
 

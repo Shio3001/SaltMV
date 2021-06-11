@@ -3,10 +3,24 @@ import inspect
 import asyncio
 
 
+class CallBackOne:
+    def __init__(self):
+        self.__event_data = None
+
+    def set_event(self, func):
+        self.__event_data = func
+
+    def event(self, info=None):
+
+        if not info is None:
+            self.__event_data(info)
+        else:
+            self.__event_data()
+
+
 class CallBack:
     def __init__(self):
         self.__event_data = {}
-        self.__tag_data = {}  # tag:[name]
 
     def set_event(self, name, func, run=False):
 
