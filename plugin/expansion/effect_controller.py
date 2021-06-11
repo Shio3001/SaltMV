@@ -143,15 +143,13 @@ class InitialValue:
 
         def make(k, e):
             self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter_control", parts_name="parameter_control")
-
             self.send.element_key = copy.deepcopy(k)
-
             self.data.ui_management.ui_list[self.now].parameter_ui_set(column=self.now, text=e.effect_name)
             self.data.ui_management.ui_list[self.now].button_parameter_control.set_option_data(copy.deepcopy(self.send), overwrite=True)
-
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.all_del_event()
-
             self.data.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
+
+            self.data.ui_management.ui_list[self.now].callback_operation.all_del_event()
             self.data.ui_management.ui_list[self.now].callback_operation.set_event("effect_updown", effect_updown)
             self.data.ui_management.ui_list[self.now].callback_operation.set_event("effect_updown_destination", effect_updown_destination)
 
