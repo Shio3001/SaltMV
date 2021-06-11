@@ -52,16 +52,17 @@ class InitialValue:
         shape_updown_destination.edit_territory_size(x=220, y=5)
         shape_updown_destination.edit_territory_position(x=0, y=0)
         shape_updown_destination.edit_diagram_color("0", "#0000ff")
+        shape_updown_destination.diagram_shape_view_status("0", 2)
         shape_updown_destination.territory_draw()
 
         def effect_updown_destination(send):
 
             shape_updown_destination.diagram_shape_view_status("0", 0)
-            A, B = send
+            A, B, box_pos, gap, sta_point = send
 
             con_len = len(self.data.ui_management.ui_list)
 
-            click_effect_point_destination = B // 25
+            click_effect_point_destination = (B - sta_point) // 25
 
             if click_effect_point_destination < 0:
                 click_effect_point_destination = 0
@@ -69,7 +70,7 @@ class InitialValue:
             if click_effect_point_destination > con_len:
                 click_effect_point_destination = copy.deepcopy(con_len)
 
-            shape_updown_destination.edit_territory_position(y=click_effect_point_destination * 25 - 5)
+            shape_updown_destination.edit_territory_position(y=click_effect_point_destination * box_pos - gap + sta_point)
             shape_updown_destination.territory_draw()
 
         def effect_updown(send):
@@ -81,14 +82,14 @@ class InitialValue:
 
             print("呼ばれました")
 
-            A, B = send
+            A, B, box_pos, sta_point = send
 
             con_len = len(self.data.ui_management.ui_list)
 
             click_effect_point = [0, 0]
 
-            click_effect_point[0] = A // 25
-            click_effect_point[1] = B // 25
+            click_effect_point[0] = (A-sta_point) // 25
+            click_effect_point[1] = (B-sta_point) // 25
 
             if click_effect_point[0] < 0:
                 click_effect_point[0] = 0

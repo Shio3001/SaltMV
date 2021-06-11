@@ -5,9 +5,11 @@ class parts:
     def UI_set(self, data):
 
         print("インスタンス 化")
-        pos_y_normal = 25
 
         box_size = 20
+        gap = 5
+        pos_y_normal = box_size + gap
+        sta_point = 10
 
         new_button_for_parameter_control = data.all_data.callback_operation.get_event("new_button_for_parameter_control")[0]
         data.button_parameter_control = new_button_for_parameter_control()  # effect_controller ←40行付近呼び出し先
@@ -23,10 +25,10 @@ class parts:
         data.callback_operation.set_event("del_parameter_ui", del_parameter_ui)
 
         def parameter_ui_set(column=0, text=None):
-            pos_y = pos_y_normal * column
+            #pos_y = pos_y_normal * column + sta_point
 
             data.button_parameter_control.edit_diagram_text("text", text)
-            data.button_parameter_control.edit_territory_position(x=10, y=column*(box_size + 5))
+            data.button_parameter_control.edit_territory_position(x=10, y=column*(box_size + gap) + sta_point)
             data.button_parameter_control.edit_territory_size(x=200, y=box_size)
             data.button_parameter_control.edit_diagram_color("background", "#44ff44")
             data.button_parameter_control.diagram_stack("text", True)
@@ -48,7 +50,7 @@ class parts:
             if not data.click_stop:
                 return
             data.background_now_mouse, _, _, _ = data.get_window_contact()
-            data.callback_operation.event("effect_updown_destination", (data.background_mouse[1], data.background_now_mouse[1]))
+            data.callback_operation.event("effect_updown_destination", (data.background_mouse[1], data.background_now_mouse[1], pos_y_normal, gap, sta_point))
 
         def click_end(event):
             if not data.click_stop:
@@ -60,7 +62,7 @@ class parts:
             data.click_stop = False
 
             print(data.callback_operation.all_get_event())
-            data.callback_operation.event("effect_updown", (data.background_mouse[1], data.background_now_mouse[1]))
+            data.callback_operation.event("effect_updown", (data.background_mouse[1], data.background_now_mouse[1], pos_y_normal, sta_point))
 
             data.background_mouse = [0, 0]
             data.background_now_mouse = [0, 0]
