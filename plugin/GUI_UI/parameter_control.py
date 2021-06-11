@@ -49,10 +49,14 @@ class parts:
         def click_position(event):
             if not data.click_stop:
                 return
+
             data.background_now_mouse, _, _, _ = data.get_window_contact()
             data.effect_updown_destination(data.background_mouse[1], data.background_now_mouse[1], pos_y_normal, gap, sta_point)
+            data.shape_updown_destination_view_True()
 
         def click_end(event):
+            data.shape_updown_destination_view_False()
+
             if not data.click_stop:
                 return
             print("終端処理")
