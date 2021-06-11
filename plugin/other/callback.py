@@ -10,8 +10,6 @@ class CallBack:
 
     def set_event(self, name, func, run=False):
 
-        #print("呼び出し先[set_event]", inspect.stack()[1].filename, inspect.stack()[1].function)
-
         if not name in self.__event_data.keys():
             self.__event_data[name] = []
 
@@ -20,9 +18,15 @@ class CallBack:
         if run:
             func(None)
 
+        if name == "effect_updown":
+            print("呼び出し先[callback_set]", inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
+
+        #print("呼び出し先[set_event]", inspect.stack()[1].filename, inspect.stack()[1].function, name, func, self.__event_data[name])
+
     def event(self, name, info=None):
 
-        #print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function)
+        if name == "effect_updown":
+            print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         if not name in self.__event_data.keys():
             # print("返送")

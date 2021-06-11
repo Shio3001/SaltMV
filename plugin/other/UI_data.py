@@ -28,7 +28,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.get_window_contact = get_window_contact
 
-        
         self.window = window
         self.canvas_data = canvas_data
         self.all_data = all_data
@@ -73,8 +72,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         # self.operation["log"].write("UI生成")
 
-
-        
     def get_set_option_data(self, option_data=None):
         if not option_data is None:
             self.option_data = option_data
@@ -382,6 +379,13 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].shape_point)
 
+    # tkinter.NORMAL：通常状態
+    # tkinter.DISABLED：無効状態（マウスイベント発生しない）
+    # tkinter.HIDDEN：非表示状態（画面に表示されない）
+
+    # def diagram_draw_temp_del(slef, di_name):
+    #    self.canvas_data.canvas(state=state)
+
     def diagram_draw(self,  di_name, di_del=False):
 
         territory_data = self.canvas_data.territory[self.te_name]
@@ -401,6 +405,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         diagram_data.draw_tag = True
         return
 
+    def diagram_shape_view_status(self,di_name,view):
+        self.canvas_data.territory[self.te_name].diagram[di_name].view_state = copy.deepcopy(view)
+
     def __diagram_shape_draw(self, territory_data, diagram_data,  di_name, di_del):
 
         if di_del:
@@ -416,7 +423,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.canvas.moveto(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0]-size[0]/2, xy[1]-size[1]/2)
 
         elif diagram_data.draw_tag:
-            self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, fill=color)
+            view_state = self.canvas_data.territory[self.te_name].diagram[di_name].view_state
+            tk_view = {0:tk.NORMAL,1:tk.DISABLED,2:tk.HIDDEN}
+            state = tk_view[view_state]
+            self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, fill=color, state=state)
             self.canvas_data.canvas.coords(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])
 
         if not diagram_data.draw_tag and not diagram_data.shape_point is None:
@@ -626,6 +636,8 @@ class DiagramData():
         self.draw_tag = False
         self.event = {}
         self.shape_point = None
+
+        self.view_state = 0  # 0,1,2 #通常 #選択不可 #非表示
 
         self.tag = None
 

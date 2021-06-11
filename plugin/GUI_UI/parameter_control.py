@@ -1,8 +1,10 @@
+import copy
 
 
 class parts:
     def UI_set(self, data):
 
+        print("インスタンス 化")
         pos_y_normal = 25
 
         box_size = 20
@@ -15,11 +17,12 @@ class parts:
         def del_parameter_ui():
             #print("del_parameter_ui 削除")
             data.button_parameter_control.del_territory()
+
             del data.button_parameter_control
 
         data.callback_operation.set_event("del_parameter_ui", del_parameter_ui)
 
-        def parameter_ui_set(motion=False, column=0, text=None):
+        def parameter_ui_set(column=0, text=None):
             pos_y = pos_y_normal * column
 
             data.button_parameter_control.edit_diagram_text("text", text)
@@ -34,25 +37,33 @@ class parts:
 
         data.click_stop = False
 
+        data.background_mouse = [0, 0]
+        data.background_now_mouse = [0, 0]
+
         def click_start(event):
             data.click_stop = True
-            self.background_mouse, _, _, _ = data.get_window_contact()
+            data.background_mouse, _, _, _ = data.get_window_contact()
 
         def click_position(event):
             if not data.click_stop:
                 return
-            self.background_now_mouse, _, _, _ = data.get_window_contact()
-            data.callback_operation.event("effect_updown_destination", (self.background_mouse[1], self.background_now_mouse[1]))
+            data.background_now_mouse, _, _, _ = data.get_window_contact()
+            data.callback_operation.event("effect_updown_destination", (data.background_mouse[1], data.background_now_mouse[1]))
 
         def click_end(event):
             if not data.click_stop:
                 return
-            data.callback_operation.event("effect_updown", (self.background_mouse[1], self.background_now_mouse[1]))
+            print("終端処理")
 
-            self.background_mouse = [0, 0]
-            self.background_now_mouse = [0, 0]
+            data.background_now_mouse, _, _, _ = data.get_window_contact()
 
             data.click_stop = False
+
+            print(data.callback_operation.all_get_event())
+            data.callback_operation.event("effect_updown", (data.background_mouse[1], data.background_now_mouse[1]))
+
+            data.background_mouse = [0, 0]
+            data.background_now_mouse = [0, 0]
 
         data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
         data.button_parameter_control.window_event_data["add"]("Motion", click_position)
