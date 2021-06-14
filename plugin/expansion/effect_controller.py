@@ -161,7 +161,7 @@ class InitialValue:
             click_effect_point = [0, 0]
 
             click_effect_point[0] = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
-            click_effect_point[1] = effect_updown_measurement(B, box_pos, sta_point, con_len-1)
+            click_effect_point[1] = effect_updown_measurement(B, box_pos, sta_point, con_len)
 
             old_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             old_values = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())

@@ -266,6 +266,34 @@ class InitialValue:
             self.data.all_data.new_edit_data()
             loading_movie_data()
 
+        self.popup = self.data.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window, popup=True)
+
+        def scene_change(option_data):
+            scene_name_list = self.data.all_data.get_scene_name_list()
+
+            pop_list = []
+
+            for k in scene_name_list:
+                scene_get = SceneGet(k, loading_movie_data, self.data.all_data.change_now_scene)
+                scene_name_func = (k, scene_get.change)
+                pop_list.append(scene_name_func)
+
+            print(scene_name_list, pop_list)
+
+            self.popup.set(pop_list)
+
+            background_mouse, _, _, xy = self.data.get_window_contact()
+            mouse = [0, 0]
+            for i in range(2):
+                mouse[i] = background_mouse[i] + xy[i]
+
+            self.popup.show(mouse[0], mouse[1])
+
+        scene_list_button = self.data.new_parts("timeline", "scene_list_button", parts_name="button")  # 左側のやつ
+        scene_list_button.edit_territory_size(x=20, y=10)
+        scene_list_button.edit_territory_position(x=0, y=0)
+        scene_list_button.territory_draw()
+        scene_list_button.callback_operation.set_event("button", scene_change)
         self.data.all_data.callback_operation.set_event("reset", edit_data_reset)
         self.data.all_data.callback_operation.set_event("file_input_before", all_del_object_ui)
         self.data.all_data.callback_operation.set_event("file_input_after", loading_movie_data)
@@ -345,3 +373,14 @@ class InitialValue:
 
 class CentralRole:
     pass
+
+
+class SceneGet:
+    def __init__(self, scene_id, loading_movie_data, change_now_scene):
+        self.scene_id = scene_id
+        self.loading_movie_data = loading_movie_data
+        self.change_now_scene = change_now_scene
+
+    def change(self):
+        self.change_now_scene(self.scene_id)
+        self.loading_movie_data()

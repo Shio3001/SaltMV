@@ -28,9 +28,9 @@ class Storage:
         self.main_path = main_path
 
         self.now_time = 0
-        self.threading = threading
-        self.threading_lock = threading.Lock()
-        self.ThreadPoolExecutor = ThreadPoolExecutor
+        #self.threading = threading
+        #self.threading_lock = threading.Lock()
+        #self.ThreadPoolExecutor = ThreadPoolExecutor
         #self.asyncio = asyncio
 
         #self.fill_input_callback = None
@@ -56,6 +56,13 @@ class Storage:
 
     # def __self.edit_data_set(self, new_self.edit_data):
     #    self.edit_data = copy.deepcopy(new_self.edit_data)
+
+    def change_now_scene(self, scene_name):
+        if scene_name in self.edit_data.scenes.keys():
+            self.edit_data.now_scene = scene_name
+
+    def get_scene_name_list(self):
+        return list(self.edit_data.scenes.keys())
 
     def new_edit_data(self):
         self.edit_data = elements.AllElements()
@@ -176,8 +183,10 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order])
 
-    def add_scene_elements(self):
+    def add_scene_elements(self, new_scene_name=None):
         new_scene = elements.SceneElements()
+        if not new_scene_name is None:
+            new_scene.scene_id = str(new_scene_name)
         self.edit_data.scenes[new_scene.scene_id] = new_scene
 
         ##print("key:", new_scene.scene_id)
