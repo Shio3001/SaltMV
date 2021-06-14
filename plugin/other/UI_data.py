@@ -405,7 +405,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         diagram_data.draw_tag = True
         return
 
-    def diagram_shape_view_status(self,di_name,view):
+    def diagram_shape_view_status(self, di_name, view):
         self.canvas_data.territory[self.te_name].diagram[di_name].view_state = copy.deepcopy(view)
 
     def __diagram_shape_draw(self, territory_data, diagram_data,  di_name, di_del):
@@ -424,7 +424,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         elif diagram_data.draw_tag:
             view_state = self.canvas_data.territory[self.te_name].diagram[di_name].view_state
-            tk_view = {0:tk.NORMAL,1:tk.DISABLED,2:tk.HIDDEN}
+            tk_view = {0: tk.NORMAL, 1: tk.DISABLED, 2: tk.HIDDEN}
             state = tk_view[view_state]
             self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, fill=color, state=state)
             self.canvas_data.canvas.coords(self.canvas_data.territory[self.te_name].diagram[di_name].tag, xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1])

@@ -30,7 +30,9 @@ class InitialValue:
 
         # def make
 
-        def color_edit(push_effect, push_color="#ff0000"):
+        def color_edit(push_effect=None, push_color="#44ff44", other_del=True):
+
+            #print("カラー変更の受付", push_effect, push_color)
 
             con_len = len(self.data.ui_management.ui_list)
 
@@ -42,22 +44,25 @@ class InitialValue:
 
             for now_exchange, now_UI in enumerate(self.data.ui_management.ui_list):
                 if now_exchange == push_effect and not push_effect is None:
-                    now_UI.button_parameter_control.edit_diagram_color("background", push_color)
-                else:
+                    now_UI.button_parameter_control.edit_diagram_color("background", copy.deepcopy(push_color))
+                    #print(now_exchange, push_effect, push_color)
+
+                elif other_del:
                     now_UI.button_parameter_control.edit_diagram_color("background", "#44ff44")
+                    #print(now_exchange, push_effect, "G")
 
                 now_UI.button_parameter_control.diagram_draw("background")
 
         def element_lord_ignition(send):
-            # print(elements_effect, option_data) #now_send.push_effect
+            # #print(elements_effect, option_data) #now_send.push_effect
             key = send.element_key
 
             if not key in send.effect_group.keys():
                 return
 
-            print("key", key)
+            #print("key", key)
 
-            color_edit(send.push_effect)
+            color_edit(send.push_effect, push_color="#ff0000")
 
             send.effect_element = self.data.all_data.effect(send.media_id, key)
             self.data.all_data.callback_operation.event("element_lord", info=(send))
@@ -78,10 +83,12 @@ class InitialValue:
         def shape_updown_destination_view_True():
             shape_updown_destination.diagram_shape_view_status("0", 1)
             shape_updown_destination.territory_draw()
+            self.data.window.update()
 
         def shape_updown_destination_view_False():
             shape_updown_destination.diagram_shape_view_status("0", 2)
             shape_updown_destination.territory_draw()
+            self.data.window.update()
 
         def effect_updown_destination(A, B, box_pos, gap, sta_point):
 
@@ -136,7 +143,7 @@ class InitialValue:
                 self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
                 self.data.ui_management.ui_list[now_exchange].click_end(None)
 
-                print(now_exchange, e.effect_name)
+                #print(now_exchange, e.effect_name)
 
                 now_exchange += 1
 
@@ -148,7 +155,7 @@ class InitialValue:
 
             #print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function)
 
-            print("呼ばれました")
+            # print("呼ばれました")
 
             #A, B, box_pos, gap, sta_point = send
 
@@ -188,15 +195,15 @@ class InitialValue:
             if con_len == len(new_key):
                 new_key.append(old_key_data)
                 new_val.append(old_val_data)
-                print("パターンA")
+                # print("パターンA")
             else:
                 new_key.insert(click_effect_point[1], old_key_data)
                 new_val.insert(click_effect_point[1], old_val_data)
-                print("パターンB")
+                # print("パターンB")
 
             zip_data = dict(zip(new_key, new_val))
 
-            print(A, B, click_effect_point, "zipdata", zip_data)
+            #print(A, B, click_effect_point, "zipdata", zip_data)
 
             self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group = copy.deepcopy(zip_data)
             self.send.effect_element = copy.deepcopy(zip_data)
@@ -213,11 +220,11 @@ class InitialValue:
                 self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
                 self.data.ui_management.ui_list[now_exchange].click_end(None)
 
-                print(now_exchange, e.effect_name)
+                #print(now_exchange, e.effect_name)
 
                 now_exchange += 1
 
-            color_edit(click_effect_point[1])
+            color_edit(click_effect_point[1], push_color="#ff0000")
 
             #self.send.push_effect = click_effect_point[1]
 

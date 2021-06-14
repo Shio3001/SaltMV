@@ -4,7 +4,7 @@ import copy
 class parts:
     def UI_set(self, data):
 
-        print("インスタンス 化")
+        #print("インスタンス 化")
 
         box_size = 20
         gap = 5
@@ -17,7 +17,7 @@ class parts:
         # data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBackOne()
 
         def del_parameter_ui():
-            # print("del_parameter_ui 削除")
+            # #print("del_parameter_ui 削除")
             data.button_parameter_control.del_territory()
 
             del data.button_parameter_control
@@ -52,20 +52,23 @@ class parts:
         self.popup.set(popup_list)
 
         def click_right(event):
-            #mouse, _, _, xy = data.window_event_data["contact"]()
+            data.click_stop = False
             data.background_mouse, _, _, xy = data.get_window_contact()
-
             click_effect_point = (data.background_mouse[1]-sta_point) // pos_y_normal
-            data.color_edit(click_effect_point, push_color="#0000ff")
+            data.color_edit(click_effect_point, push_color="#1111ff")
+            data.window.update()
+            data.all_data.callback_operation.event("element_ui_all_del")
+
+            # print("開始")
 
             mouse = [0, 0]
-
             for i in range(2):
                 mouse[i] = data.background_mouse[i] + xy[i]
 
             self.popup.show(mouse[0], mouse[1])
 
-            data.color_edit(None)
+            data.color_edit(click_effect_point)
+            data.shape_updown_destination_view_False()
 
         def click_start(event):
             data.click_stop = True
@@ -88,12 +91,12 @@ class parts:
             if not data.click_stop:
                 return
 
-            print("終端処理")
+            # print("終端処理")
 
             data.background_now_mouse, _, _, _ = data.get_window_contact()
 
             data.click_stop = False
-            # print(data.button_parameter_control.callback_operation.all_get_event())
+            # #print(data.button_parameter_control.callback_operation.all_get_event())
             data.effect_updown(data.background_mouse[1], data.background_now_mouse[1],   pos_y_normal, gap, sta_point)
 
             #data.background_mouse = [0, 0]
