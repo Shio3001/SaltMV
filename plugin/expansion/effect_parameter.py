@@ -105,7 +105,7 @@ class InitialValue:
             self.now = 0
             self.data.ui_management.set_old_elements_len()
             self.data.ui_management.del_ignition(self.now)
-            self.data.window.update()
+            # self.data.window.update()
 
             self.data.window_title_set("タイムライン設定")
 

@@ -30,10 +30,7 @@ class InitialValue:
 
         # def make
 
-        def color_edit(push_effect=None, push_color="#44ff44", other_del=True):
-
-            #print("カラー変更の受付", push_effect, push_color)
-
+        def color_edit(push_effect=None, push_color="#44ff44"):
             con_len = len(self.data.ui_management.ui_list)
 
             if not push_effect is None and push_effect < 0:
@@ -47,7 +44,7 @@ class InitialValue:
                     now_UI.button_parameter_control.edit_diagram_color("background", copy.deepcopy(push_color))
                     #print(now_exchange, push_effect, push_color)
 
-                elif other_del:
+                else:
                     now_UI.button_parameter_control.edit_diagram_color("background", "#44ff44")
                     #print(now_exchange, push_effect, "G")
 
@@ -59,8 +56,6 @@ class InitialValue:
 
             if not key in send.effect_group.keys():
                 return
-
-            #print("key", key)
 
             color_edit(send.push_effect, push_color="#ff0000")
 
@@ -83,41 +78,43 @@ class InitialValue:
         def shape_updown_destination_view_True():
             shape_updown_destination.diagram_shape_view_status("0", 1)
             shape_updown_destination.territory_draw()
-            self.data.window.update()
+            # self.data.window.update()
 
         def shape_updown_destination_view_False():
             shape_updown_destination.diagram_shape_view_status("0", 2)
             shape_updown_destination.territory_draw()
-            self.data.window.update()
+            # self.data.window.update()
+
+        def effect_updown_measurement(pos, box_pos, sta_point, con_len):
+
+            layer_number = (pos - sta_point) // box_pos
+            if layer_number < 0:
+                layer_number = 0
+            if layer_number > con_len:
+                layer_number = copy.deepcopy(con_len)
+
+            return layer_number
 
         def effect_updown_destination(A, B, box_pos, gap, sta_point):
-
-            # shape_updown_destination_view_True()
-            #A, B, box_pos, gap, sta_point = send
-
             con_len = len(self.data.ui_management.ui_list)
 
-            click_effect_point_destination = (B - sta_point) // box_pos
+            click_effect_point_destination = [0, 0]
+            click_effect_point_destination[0] = effect_updown_measurement(A, box_pos, sta_point, con_len)
+            click_effect_point_destination[1] = effect_updown_measurement(B, box_pos, sta_point, con_len)
 
-            if click_effect_point_destination < 0:
-                click_effect_point_destination = 0
+            shape_updown_destination.edit_territory_position(y=click_effect_point_destination[1] * box_pos - gap + sta_point)
 
-            if click_effect_point_destination > con_len:
-                click_effect_point_destination = copy.deepcopy(con_len)
+            if click_effect_point_destination[0] == click_effect_point_destination[1]:
+                shape_updown_destination_view_False()
+            else:
+                shape_updown_destination_view_True()
 
-            shape_updown_destination.edit_territory_position(y=click_effect_point_destination * box_pos - gap + sta_point)
-            shape_updown_destination.territory_draw()
+            # shape_updown_destination.territory_draw()
 
         def effect_del(A, box_pos, gap, sta_point):
             con_len = len(self.data.ui_management.ui_list)
 
-            click_effect_point = (A-sta_point) // box_pos
-
-            if click_effect_point < 0:
-                click_effect_point = 0
-
-            if click_effect_point > con_len - 1:
-                click_effect_point = con_len - 1
+            click_effect_point = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
 
             old_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             #old_values = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
@@ -163,20 +160,8 @@ class InitialValue:
 
             click_effect_point = [0, 0]
 
-            click_effect_point[0] = (A-sta_point) // box_pos
-            click_effect_point[1] = (B-sta_point) // box_pos
-
-            if click_effect_point[0] < 0:
-                click_effect_point[0] = 0
-
-            if click_effect_point[0] > con_len - 1:
-                click_effect_point[0] = con_len - 1
-
-            if click_effect_point[1] < 0:
-                click_effect_point[1] = 0
-
-            if click_effect_point[1] > con_len:
-                click_effect_point[1] = con_len
+            click_effect_point[0] = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
+            click_effect_point[1] = effect_updown_measurement(B, box_pos, sta_point, con_len-1)
 
             old_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             old_values = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
@@ -225,14 +210,6 @@ class InitialValue:
                 now_exchange += 1
 
             color_edit(click_effect_point[1], push_color="#ff0000")
-
-            #self.send.push_effect = click_effect_point[1]
-
-            # color_edit()
-            # self.data.ui_management.set_old_elements_len()
-            # self.data.ui_management.del_ignition(0)
-
-            # self.data.ui_management.del_ignition(now_exchange)
 
         def make(i, k, e):
             self.data.ui_management.new_parameter_ui(i, canvas_name="parameter_control", parts_name="parameter_control")

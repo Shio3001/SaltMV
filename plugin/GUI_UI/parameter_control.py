@@ -52,7 +52,7 @@ class parts:
         self.popup.set(popup_list)
 
         def click_right(event):
-            data.click_stop = False
+            """
             data.background_mouse, _, _, xy = data.get_window_contact()
             click_effect_point = (data.background_mouse[1]-sta_point) // pos_y_normal
             data.color_edit(click_effect_point, push_color="#1111ff")
@@ -69,6 +69,8 @@ class parts:
 
             data.color_edit(click_effect_point)
             data.shape_updown_destination_view_False()
+            data.click_stop = False
+            """
 
         def click_start(event):
             data.click_stop = True
@@ -79,8 +81,8 @@ class parts:
                 return
 
             data.background_now_mouse, _, _, _ = data.get_window_contact()
+
             data.effect_updown_destination(data.background_mouse[1], data.background_now_mouse[1], pos_y_normal, gap, sta_point)
-            data.shape_updown_destination_view_True()
 
         def click_end(event):
             # data.button_parameter_control.edit_diagram_color("background", "#44ff44")
