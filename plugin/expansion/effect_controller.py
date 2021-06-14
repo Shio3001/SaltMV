@@ -30,8 +30,26 @@ class InitialValue:
 
         # def make
 
+        def color_edit(push_effect, push_color="#ff0000"):
+
+            con_len = len(self.data.ui_management.ui_list)
+
+            if not push_effect is None and push_effect < 0:
+                push_effect = 0
+
+            if not push_effect is None and push_effect > con_len - 1:
+                push_effect = con_len - 1
+
+            for now_exchange, now_UI in enumerate(self.data.ui_management.ui_list):
+                if now_exchange == push_effect and not push_effect is None:
+                    now_UI.button_parameter_control.edit_diagram_color("background", push_color)
+                else:
+                    now_UI.button_parameter_control.edit_diagram_color("background", "#44ff44")
+
+                now_UI.button_parameter_control.diagram_draw("background")
+
         def element_lord_ignition(send):
-            # print(elements_effect, option_data)
+            # print(elements_effect, option_data) #now_send.push_effect
             key = send.element_key
 
             if not key in send.effect_group.keys():
@@ -39,15 +57,10 @@ class InitialValue:
 
             print("key", key)
 
+            color_edit(send.push_effect)
+
             send.effect_element = self.data.all_data.effect(send.media_id, key)
             self.data.all_data.callback_operation.event("element_lord", info=(send))
-
-            for i in self.data.ui_management.ui_list:
-                i.button_parameter_control.edit_diagram_color("background", "#44ff44")
-                i.button_parameter_control.territory_draw()
-
-            self.data.ui_management.ui_list[send.ui_management_number].button_parameter_control.edit_diagram_color("background", "#ff0000")
-            self.data.ui_management.ui_list[send.ui_management_number].button_parameter_control.territory_draw()
 
         def new_button_for_parameter_control():
             ui_id = self.data.all_data.elements.make_id("parameter_UI")
@@ -88,6 +101,49 @@ class InitialValue:
             shape_updown_destination.edit_territory_position(y=click_effect_point_destination * box_pos - gap + sta_point)
             shape_updown_destination.territory_draw()
 
+        def effect_del(A, box_pos, gap, sta_point):
+            con_len = len(self.data.ui_management.ui_list)
+
+            click_effect_point = (A-sta_point) // box_pos
+
+            if click_effect_point < 0:
+                click_effect_point = 0
+
+            if click_effect_point > con_len - 1:
+                click_effect_point = con_len - 1
+
+            old_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
+            #old_values = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+
+            old_key_data = old_key[click_effect_point]
+            #old_val_data = old_values[click_effect_point]
+
+            self.data.ui_management.set_old_elements_len()
+            del self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
+
+            new_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
+            new_val = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+
+            zip_data = dict(zip(new_key, new_val))
+
+            now_exchange = 0
+            for k, e in zip(zip_data.keys(), zip_data.values()):
+                now_send = copy.deepcopy(self.send)
+                now_send.element_key = copy.deepcopy(k)
+                now_send.push_effect = copy.deepcopy(now_exchange)
+                self.data.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
+                self.data.ui_management.ui_list[now_exchange].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
+                self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
+                self.data.ui_management.ui_list[now_exchange].click_end(None)
+
+                print(now_exchange, e.effect_name)
+
+                now_exchange += 1
+
+            self.data.ui_management.del_ignition(con_len - 1)
+
+            self.data.all_data.callback_operation.event("element_ui_all_del")
+
         def effect_updown(A, B, box_pos, gap, sta_point):
 
             #print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function)
@@ -102,8 +158,6 @@ class InitialValue:
 
             click_effect_point[0] = (A-sta_point) // box_pos
             click_effect_point[1] = (B-sta_point) // box_pos
-
-            print("N", click_effect_point, A, B, box_pos, gap, sta_point)
 
             if click_effect_point[0] < 0:
                 click_effect_point[0] = 0
@@ -150,31 +204,42 @@ class InitialValue:
             # self.data.ui_management.set_old_elements_len()
             now_exchange = 0
             for k, e in zip(zip_data.keys(), zip_data.values()):
-                self.send.element_key = copy.deepcopy(k)
 
+                now_send = copy.deepcopy(self.send)
+                now_send.element_key = copy.deepcopy(k)
+                now_send.push_effect = copy.deepcopy(now_exchange)
                 self.data.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
-                self.data.ui_management.ui_list[now_exchange].button_parameter_control.set_option_data(copy.deepcopy(self.send), overwrite=True)
+                self.data.ui_management.ui_list[now_exchange].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
+                self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
+                self.data.ui_management.ui_list[now_exchange].click_end(None)
 
                 print(now_exchange, e.effect_name)
 
                 now_exchange += 1
 
-            self.data.ui_management.set_old_elements_len()
-            self.data.ui_management.del_ignition(0)
+            color_edit(click_effect_point[1])
+
+            #self.send.push_effect = click_effect_point[1]
+
+            # color_edit()
+            # self.data.ui_management.set_old_elements_len()
+            # self.data.ui_management.del_ignition(0)
 
             # self.data.ui_management.del_ignition(now_exchange)
 
         def make(i, k, e):
             self.data.ui_management.new_parameter_ui(i, canvas_name="parameter_control", parts_name="parameter_control")
-            self.send.element_key = copy.deepcopy(k)
-            self.send.ui_management_number = copy.deepcopy(i)
+            now_send = copy.deepcopy(self.send)
+            now_send.element_key = copy.deepcopy(k)
+            now_send.push_effect = copy.deepcopy(i)
             self.data.ui_management.ui_list[i].parameter_ui_set(column=i, text=e.effect_name)
-            self.data.ui_management.ui_list[i].button_parameter_control.set_option_data(copy.deepcopy(self.send), overwrite=True)
+            self.data.ui_management.ui_list[i].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
             self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.all_del_event()
             self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
             self.data.ui_management.ui_list[i].effect_updown = effect_updown
             self.data.ui_management.ui_list[i].effect_updown_destination = effect_updown_destination
-
+            self.data.ui_management.ui_list[i].effect_del = effect_del
+            self.data.ui_management.ui_list[i].color_edit = color_edit
             self.data.ui_management.ui_list[i].shape_updown_destination_view_True = shape_updown_destination_view_True
             self.data.ui_management.ui_list[i].shape_updown_destination_view_False = shape_updown_destination_view_False
 

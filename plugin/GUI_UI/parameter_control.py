@@ -14,10 +14,10 @@ class parts:
         new_button_for_parameter_control = data.all_data.callback_operation.get_event("new_button_for_parameter_control")[0]
         data.button_parameter_control = new_button_for_parameter_control()  # effect_controller ←40行付近呼び出し先
 
-        #data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBackOne()
+        # data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBackOne()
 
         def del_parameter_ui():
-            #print("del_parameter_ui 削除")
+            # print("del_parameter_ui 削除")
             data.button_parameter_control.del_territory()
 
             del data.button_parameter_control
@@ -25,7 +25,7 @@ class parts:
         data.callback_operation.set_event("del_parameter_ui", del_parameter_ui)
 
         def parameter_ui_set(column=0, text=None):
-            #pos_y = pos_y_normal * column + sta_point
+            # pos_y = pos_y_normal * column + sta_point
 
             data.button_parameter_control.edit_diagram_text("text", text)
             data.button_parameter_control.edit_territory_position(x=10, y=column*(box_size + gap) + sta_point)
@@ -35,12 +35,37 @@ class parts:
             data.button_parameter_control.territory_draw()
 
         data.parameter_ui_set = parameter_ui_set
-        #data.del_control_ui = del_control_ui
+        # data.del_control_ui = del_control_ui
 
         data.click_stop = False
 
         data.background_mouse = [0, 0]
         data.background_now_mouse = [0, 0]
+
+        self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
+
+        def popup_del():
+            data.effect_del(data.background_mouse[1], pos_y_normal, gap, sta_point)
+            data.shape_updown_destination_view_False()
+
+        popup_list = [("削除", popup_del)]
+        self.popup.set(popup_list)
+
+        def click_right(event):
+            #mouse, _, _, xy = data.window_event_data["contact"]()
+            data.background_mouse, _, _, xy = data.get_window_contact()
+
+            click_effect_point = (data.background_mouse[1]-sta_point) // pos_y_normal
+            data.color_edit(click_effect_point, push_color="#0000ff")
+
+            mouse = [0, 0]
+
+            for i in range(2):
+                mouse[i] = data.background_mouse[i] + xy[i]
+
+            self.popup.show(mouse[0], mouse[1])
+
+            data.color_edit(None)
 
         def click_start(event):
             data.click_stop = True
@@ -55,10 +80,14 @@ class parts:
             data.shape_updown_destination_view_True()
 
         def click_end(event):
+            # data.button_parameter_control.edit_diagram_color("background", "#44ff44")
+            # data.button_parameter_control.diagram_draw("background")
+
             data.shape_updown_destination_view_False()
 
             if not data.click_stop:
                 return
+
             print("終端処理")
 
             data.background_now_mouse, _, _, _ = data.get_window_contact()
@@ -67,11 +96,18 @@ class parts:
             # print(data.button_parameter_control.callback_operation.all_get_event())
             data.effect_updown(data.background_mouse[1], data.background_now_mouse[1],   pos_y_normal, gap, sta_point)
 
-            data.background_mouse = [0, 0]
-            data.background_now_mouse = [0, 0]
+            #data.background_mouse = [0, 0]
+            #data.background_now_mouse = [0, 0]
 
+        data.click_end = click_end
+
+        data.button_parameter_control.add_diagram_event("text", "Button-2", click_right)
+        data.button_parameter_control.add_diagram_event("background", "Button-2", click_right)
+
+        data.button_parameter_control.add_diagram_event("text", "Button-1", click_start)
         data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
         data.button_parameter_control.window_event_data["add"]("Motion", click_position)
+        data.button_parameter_control.add_diagram_event("text", "ButtonRelease-1", click_end)
         data.button_parameter_control.add_diagram_event("background", "ButtonRelease-1", click_end)
 
         return data
