@@ -195,7 +195,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data.territory[self.te_name].diagram[di_name].fill[direction] = select
 
     def edit_diagram_color(self,  di_name, color=None):
-        if not self.get_diagram_type(di_name, "DiagramData"):
+        if not self.get_diagram_type(di_name, "DiagramData") and not self.get_diagram_type(di_name, "DiagramTextData"):
             return
 
         if color is None or not color[0] == "#":
@@ -459,7 +459,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
             self.canvas_data.canvas.create_text(0, 0, text="new", tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag)
 
-        self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, text=diagram_data.text, font=(diagram_data.font_type, diagram_data.font_size))
+        print("色情報", diagram_data.color)
+        self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, text=diagram_data.text, font=(
+            diagram_data.font_type, diagram_data.font_size), fill=diagram_data.color)
+        # self.canvas_data.canvas.tag_config(self.canvas_data.territory[self.te_name].diagram[di_name].tag)
 
         if diagram_data.anchor == 1:
             text_xy, text_size = self.get_diagram_position_size(di_name)

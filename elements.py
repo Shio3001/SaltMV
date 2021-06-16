@@ -27,6 +27,9 @@ class SceneElements:  # えらい
 
         self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 100}  # 動画の画面サイズとかその辺
         self.scene_id = make_id("scene")
+
+        self.now_time = self.editor["len"] / 10
+
         #self.user_select_range = [0, 100]
 
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
@@ -37,6 +40,7 @@ class LayerElements:  # 次にえらい
         self.object_group = {}    # objectID : [object,layerID]
         # self.object_layer = {}    # objectID : layerID
         self.layer_layer_id = {}  # layerID  : layer番号
+
         #self.layer_id = make_id()
         # self.layer_objs = {}  # layer_id:数字
 

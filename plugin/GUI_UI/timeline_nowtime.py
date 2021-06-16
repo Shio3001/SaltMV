@@ -1,4 +1,5 @@
 import copy
+import inspect
 
 
 class parts:
@@ -17,6 +18,7 @@ class parts:
 
         def draw(info):
             px_pos, _ = info
+            print("実際の描画発火")
             data.edit_diagram_position("now", x=px_pos)
             data.territory_draw()
 
@@ -36,6 +38,13 @@ class parts:
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
         """
 
+        def frame_set(frame):
+            print("A", inspect.stack()[1].filename, inspect.stack()[1].function)
+            data.pxf.set_f_ratio(position=frame)
+            data.callback_operation.event("mov", info=data.pxf.get_event_data())
+
+        data.frame_set = frame_set
+
         def click_position(event):
             if not data.click_flag:
                 return
@@ -49,7 +58,6 @@ class parts:
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio(position=now_mouse[0])
-
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         """

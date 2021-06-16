@@ -61,14 +61,9 @@ class InitialValue:
         nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
         nowtime_bar.territory_draw()
 
-        def now_time_update(scroll_data):
-            self.data.all_data.now_time = scroll_data.ratio_f[0]
+        # print(self.data.all_data.now_time)
 
-            print("now", self.data.all_data.now_time)
-
-            # print(self.data.all_data.now_time)
-
-        nowtime_bar.callback_operation.set_event("mov", now_time_update)
+        nowtime_bar.callback_operation.set_event("mov", self.data.all_data.now_time_update)
 
         # now_layer = 0
 
@@ -225,75 +220,60 @@ class InitialValue:
 
             self.data.timeline_object[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
             self.data.timeline_object[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
-
-            #obj_time = self.data.all_data.media_object(media_id)
-
-            #scroll_data = timeline_scroll.pxf.get_event_data()
-
             self.data.timeline_object[media_id].pxf.set_f_ratio(position=sta, size=end - sta)
             window_size_edit(None)
 
-        def loading_movie_data():
-            # print("取得")
+        def loading_movie_data(new=None):
+
+            for media_ui in self.data.timeline_object.values():
+                media_ui.del_territory()
+
+            self.data.timeline_object = {}
+
+            if not new is None:
+                self.data.all_data.change_now_scene(new)
+            # ここで現在シーンが変わる
+
+            print("取得")
             get_scene = self.data.all_data.scene()
             frame_len = get_scene.editor["len"]
 
             timeline_scroll.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             timeline_scroll.pxf.set_f_ratio()
-            # print("layer個数", len(get_scene.layer_group))
-
-            # print(get_scene.editor)
-            # print(get_scene.layer_group)
-            # print(get_scene.layer_group.object_group)
-
             obj_list = [get_scene.layer_group.object_group.keys(), get_scene.layer_group.object_group.values()]
 
-            # print(obj_list)
+            print(get_scene, obj_list)
 
             for obj_k, obj_v in zip(obj_list[0], obj_list[1]):
-                # print(obj_k, "実行")
+                print(obj_k, "実行")
                 sta_f = obj_v[0].installation[0]  # 開始地点解釈
                 end_f = obj_v[0].installation[1]  # 終了地点解釈
                 layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]  # 所属レイヤー解釈
                 make_object(media_id=obj_k, sta=sta_f, end=end_f, layer_number=layer_number)
 
-            # self.data.edit_menubar_bool("新規","シーン",False)
+                for point_key, point_val in zip(obj_v[0].effect_point_internal_id_time.keys(), obj_v[0].effect_point_internal_id_time.values()):
+                    self.data.all_data.add_key_frame(point_val, obj_k, point_key)
 
-            # print("取得終了")
+                    if point_key in ["default_sta", "default_end"]:
+                        continue
+
+                    self.data.timeline_object[obj_k].make_KeyFrame(uu_id=point_key, pos_f=point_val)
+
+            nowtime = self.data.all_data.now_time_update()
+            nowtime_bar.frame_set(nowtime)
+
+            print("代入すべき値[frame]", nowtime)
+
+            timeline_scroll.pxf.init_set_sta_end_f(sta=0, end=frame_len)
+            timeline_scroll.pxf.set_sta_end_f(sta=0, end=frame_len)
+            timeline_scroll.pxf.set_f_ratio()
+            timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())
 
         def edit_data_reset():
             all_del_object_ui()
             self.data.all_data.new_edit_data()
             loading_movie_data()
 
-        self.popup = self.data.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window, popup=True)
-
-        def scene_change(option_data):
-            scene_name_list = self.data.all_data.get_scene_name_list()
-
-            pop_list = []
-
-            for k in scene_name_list:
-                scene_get = SceneGet(k, loading_movie_data, self.data.all_data.change_now_scene)
-                scene_name_func = (k, scene_get.change)
-                pop_list.append(scene_name_func)
-
-            print(scene_name_list, pop_list)
-
-            self.popup.set(pop_list)
-
-            background_mouse, _, _, xy = self.data.get_window_contact()
-            mouse = [0, 0]
-            for i in range(2):
-                mouse[i] = background_mouse[i] + xy[i]
-
-            self.popup.show(mouse[0], mouse[1])
-
-        scene_list_button = self.data.new_parts("timeline", "scene_list_button", parts_name="button")  # 左側のやつ
-        scene_list_button.edit_territory_size(x=20, y=10)
-        scene_list_button.edit_territory_position(x=0, y=0)
-        scene_list_button.territory_draw()
-        scene_list_button.callback_operation.set_event("button", scene_change)
         self.data.all_data.callback_operation.set_event("reset", edit_data_reset)
         self.data.all_data.callback_operation.set_event("file_input_before", all_del_object_ui)
         self.data.all_data.callback_operation.set_event("file_input_after", loading_movie_data)
@@ -363,8 +343,56 @@ class InitialValue:
         self.data.add_window_event("Configure", window_size_edit)
         window_size_edit(None)
 
+        """
+        scene_now_view = self.data.new_parts("timeline", "scene_now_view", parts_name="textbox") 
+        scene_now_view.edit_territory_position(x=0, y=0)
+        scene_now_view.edit_territory_size(x=20, y=10)
+        scene_now_view.territory_draw()
+        """
+
+        def scene_change(option_data):
+            timeline_nowtime_approval_False(None)
+
+            self.popup = self.data.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window, popup=True)
+
+            scene_name_list = self.data.all_data.get_scene_name_list()
+
+            pop_list = []
+
+            for k in scene_name_list:
+                scene_get = SceneGet(k, loading_movie_data)
+
+                scene_name_func = ("　　 : " + k, scene_get.change) if k != self.data.all_data.edit_data.now_scene else ("現在 : " + k, scene_get.change)
+                pop_list.append(scene_name_func)
+
+            print(scene_name_list, pop_list)
+
+            self.popup.set(pop_list)
+
+            background_mouse, _, _, xy = self.data.get_window_contact()
+            mouse = [0, 0]
+            for i in range(2):
+                mouse[i] = background_mouse[i] + xy[i]
+
+            self.popup.show(mouse[0], mouse[1])
+
+            timeline_nowtime_approval_True(None)
+
+        scene_list_button = self.data.new_parts("timeline", "scene_list_button", parts_name="button")  # 左側のやつ
+        scene_list_button.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
+        scene_list_button.edit_territory_position(x=timeline_left, y=5)
+        scene_list_button.edit_diagram_color("background", "#229922")
+        scene_list_button.edit_diagram_color("text", "#ffffff")
+        scene_list_button.diagram_stack("text", True)
+        scene_list_button.edit_diagram_text("text", text="シーン選択")
+        scene_list_button.territory_draw()
+        scene_list_button.callback_operation.set_event("button", scene_change)
+
+        def add_scene():
+            self.data.all_data.add_scene_elements()
+
         self.timeline_menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", None, "レイヤー", new_layer), ("追加", "動画", new_obj)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", add_scene, "レイヤー", new_layer), ("追加", "動画", new_obj)]
         self.timeline_menubar.set(main_menubar_list)
         self.data.window_title_set("タイムライン")
         self.data.window_size_set(x=1200, y=700)
@@ -376,11 +404,14 @@ class CentralRole:
 
 
 class SceneGet:
-    def __init__(self, scene_id, loading_movie_data, change_now_scene):
-        self.scene_id = scene_id
+    def __init__(self, scene_id, loading_movie_data):
+        self.scene_id = copy.deepcopy(scene_id)
         self.loading_movie_data = loading_movie_data
-        self.change_now_scene = change_now_scene
+        #self.change_now_scene = change_now_scene
+        #self.scene_now_view = scene_now_view
 
     def change(self):
-        self.change_now_scene(self.scene_id)
-        self.loading_movie_data()
+        self.loading_movie_data(new=self.scene_id)
+
+        #self.scene_now_view.edit_diagram_text("textbox1", text=self.scene_id)
+        # self.scene_now_view.territory_draw()

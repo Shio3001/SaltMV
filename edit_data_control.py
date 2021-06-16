@@ -57,6 +57,13 @@ class Storage:
     # def __self.edit_data_set(self, new_self.edit_data):
     #    self.edit_data = copy.deepcopy(new_self.edit_data)
 
+    def now_time_update(self, scroll_data=None):
+        if scroll_data is None:
+            return self.edit_data.scenes[self.edit_data.now_scene].now_time
+
+        self.edit_data.scenes[self.edit_data.now_scene].now_time = scroll_data.ratio_f[0]
+        print("now",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
+
     def change_now_scene(self, scene_name):
         if scene_name in self.edit_data.scenes.keys():
             self.edit_data.now_scene = scene_name

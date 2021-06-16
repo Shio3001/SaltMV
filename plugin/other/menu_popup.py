@@ -47,6 +47,8 @@ class MenuPopup:
         self.target.update()
         self.target_menubar.update()
 
+        # self.data.window.update()
+
         print("tkinter update", self.target.update)
 
     def show(self, x, y):

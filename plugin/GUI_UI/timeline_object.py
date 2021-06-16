@@ -174,6 +174,8 @@ class parts:
             data.callback_operation.event("end", info=data.pxf.get_event_data())
             data.callback_operation.event("del", data.option_data["media_id"])
 
+        data.media_object_del = media_object_del
+
         def media_object_separate():
             frame = data.pxf.px_to_f(data.popup_click_position[0])
 

@@ -1,4 +1,5 @@
 import copy
+import inspect
 
 
 class TimelineCalculation:
@@ -186,6 +187,8 @@ class TimelineCalculation:
         return pos_px
 
     def set_px_ratio(self, position=None, size=None, sub_mov=False, left_move=False, right_move=False, main_mov=False):
+        print("set_px_ratio", inspect.stack()[1].filename, inspect.stack()[1].function)
+
         frame_long_init = self.sta_end_f_init[1] - self.sta_end_f_init[0]
 
         old_ratio_f_pos = copy.deepcopy(self.ratio_f)
@@ -255,6 +258,8 @@ class TimelineCalculation:
         #self.draw_func(position, size)
 
     def set_f_ratio(self, position=None, size=None, sub_mov=False):
+
+        print("set_f_ratio", inspect.stack()[1].filename, inspect.stack()[1].function)
 
         old_ratio_f_pos = copy.deepcopy(self.ratio_f)
 
