@@ -155,7 +155,7 @@ class InitialValue:
             if new_layer < 0:
                 new_layer = 0
 
-            print("new_layer", new_layer)
+            #print("new_layer", new_layer)
 
             new_layer_id = self.data.all_data.layer_number_to_layer_id(new_layer)
             self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[obj_id][1] = new_layer_id
@@ -200,27 +200,27 @@ class InitialValue:
 
             new_obj = self.data.new_parts("timeline", media_id, parts_name="timeline_object", option_data=option_data)
 
-            self.data.timeline_object[media_id] = new_obj
-            del new_obj
-
-            self.data.timeline_object[media_id].timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
-            self.data.timeline_object[media_id].timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
-
-            self.data.timeline_object[media_id].edit_territory_position(x=timeline_left, y=timeline_up)
-            self.data.timeline_object[media_id].edit_diagram_size("bar", y=timeline_size)
-            self.data.timeline_object[media_id].callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
-            self.data.timeline_object[media_id].callback_operation.set_event("updown", layer_updown)
-            self.data.timeline_object[media_id].callback_operation.set_event("del", del_object_ui)
-            self.data.timeline_object[media_id].callback_operation.set_event("separate", media_object_separate)
-            self.data.timeline_object[media_id].callback_operation.set_event("sta", timeline_nowtime_approval_False)
-            self.data.timeline_object[media_id].callback_operation.set_event("end", timeline_nowtime_approval_True)
-            self.data.timeline_object[media_id].edit_layer(layer_number)
+            new_obj.timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
+            new_obj.timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
+            new_obj.edit_territory_position(x=timeline_left, y=timeline_up)
+            new_obj.edit_diagram_size("bar", y=timeline_size)
+            new_obj.callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
+            new_obj.callback_operation.set_event("updown", layer_updown)
+            new_obj.callback_operation.set_event("del", del_object_ui)
+            new_obj.callback_operation.set_event("separate", media_object_separate)
+            new_obj.callback_operation.set_event("sta", timeline_nowtime_approval_False)
+            new_obj.callback_operation.set_event("end", timeline_nowtime_approval_True)
+            new_obj.edit_layer(layer_number)
 
             frame_len = self.data.all_data.scene().editor["len"]
 
-            self.data.timeline_object[media_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            self.data.timeline_object[media_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
-            self.data.timeline_object[media_id].pxf.set_f_ratio(position=sta, size=end - sta)
+            new_obj.pxf.init_set_sta_end_f(sta=0, end=frame_len)
+            new_obj.pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
+            new_obj.pxf.set_f_ratio(position=sta, size=end - sta)
+
+            self.data.timeline_object[media_id] = new_obj
+            del new_obj
+
             window_size_edit(None)
 
         def loading_movie_data(new=None):
@@ -238,8 +238,6 @@ class InitialValue:
             get_scene = self.data.all_data.scene()
             frame_len = get_scene.editor["len"]
 
-            timeline_scroll.pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            timeline_scroll.pxf.set_f_ratio()
             obj_list = [get_scene.layer_group.object_group.keys(), get_scene.layer_group.object_group.values()]
 
             print(get_scene, obj_list)
@@ -259,14 +257,11 @@ class InitialValue:
 
                     self.data.timeline_object[obj_k].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
-            nowtime = self.data.all_data.now_time_update()
-            nowtime_bar.frame_set(nowtime)
+            #nowtime = self.data.all_data.now_time_update()
+            # nowtime_bar.frame_set(nowtime)
 
-            print("代入すべき値[frame]", nowtime)
+            #print("代入すべき値[frame]", nowtime)
 
-            timeline_scroll.pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            timeline_scroll.pxf.set_sta_end_f(sta=0, end=frame_len)
-            timeline_scroll.pxf.set_f_ratio()
             timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())
 
         def edit_data_reset():

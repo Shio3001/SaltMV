@@ -18,7 +18,7 @@ class parts:
 
         def draw(info):
             px_pos, _ = info
-            print("実際の描画発火")
+            # print("実際の描画発火")
             data.edit_diagram_position("now", x=px_pos)
             data.territory_draw()
 
@@ -39,7 +39,7 @@ class parts:
         """
 
         def frame_set(frame):
-            print("A", inspect.stack()[1].filename, inspect.stack()[1].function)
+            #print("A", inspect.stack()[1].filename, inspect.stack()[1].function)
             data.pxf.set_f_ratio(position=frame)
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
