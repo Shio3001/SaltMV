@@ -125,7 +125,7 @@ class CentralRole:
 
         # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-        data.pxf.set_sta_end_px(sta=0, end=100, space=0)
+        data.pxf.set_sta_end_px(sta=0, end=100, space=0)  # 0~100は絶対!!!
         data.pxf.set_f_ratio(position=0, size=5)
         data.add_diagram_event("view", "Button-1", click_start)
         data.window_event_data["add"]("Motion", click_mov)

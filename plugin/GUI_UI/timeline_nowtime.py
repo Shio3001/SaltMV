@@ -45,9 +45,16 @@ class parts:
 
         data.frame_set = frame_set
 
+        data.scene_change_flag = True
+
         def click_position(event):
             if not data.click_flag:
                 return
+
+            if not data.scene_change_flag:
+                data.scene_change_flag = True
+                return
+
             now_mouse, _, data.diagram_join = data.get_diagram_contact("now")
 
             if now_mouse[0] < 0:

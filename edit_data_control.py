@@ -52,21 +52,17 @@ class Storage:
 
         self.callback_operation = None
 
-        ##print("now_key:", self.edit_data.now_scene)
-
-    # def __self.edit_data_set(self, new_self.edit_data):
-    #    self.edit_data = copy.deepcopy(new_self.edit_data)
-
     def now_time_update(self, scroll_data=None):
         if scroll_data is None:
             return self.edit_data.scenes[self.edit_data.now_scene].now_time
 
-        self.edit_data.scenes[self.edit_data.now_scene].now_time = scroll_data.ratio_f[0]
-        print("now",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
+        self.edit_data.scenes[self.edit_data.now_scene].now_time = copy.deepcopy(scroll_data.ratio_f[0])
+        print("現在時刻変更",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
 
     def change_now_scene(self, scene_name):
+        print("現在シーン切り替え", self.edit_data.now_scene, " → ", scene_name)
         if scene_name in self.edit_data.scenes.keys():
-            self.edit_data.now_scene = scene_name
+            self.edit_data.now_scene = copy.deepcopy(scene_name)
 
     def get_scene_name_list(self):
         return list(self.edit_data.scenes.keys())
@@ -114,9 +110,6 @@ class Storage:
                     f_k = f[: -4]
                     self.font_name[f_k] = f
 
-        # #print(self.font_data)
-        # #print(self.font_name)
-
     def layer_number_to_layer_id(self, layer_number):
         layer_layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id
         # #print(layer_data.items())
@@ -124,10 +117,6 @@ class Storage:
         for k, v in layer_layer_id.items():
             if v == layer_number:
                 return k
-
-        #layer_id = [k for k, v in layer_data.items() if v == layer_number]
-        # #print(layer_id)
-        # return copy.deepcopy(layer_id[0])
 
     def layer_id_to_layer_number(self, layer_id):
         layer_number = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id[layer_id]
@@ -148,8 +137,6 @@ class Storage:
         return
 
     def scene(self, data=None):
-        # self.operation["log"].write("scene")
-
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene] = copy.deepcopy(data)
             return
@@ -162,28 +149,16 @@ class Storage:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group = copy.deepcopy(data)
             return
 
-        ###print("オブジェクト数", len(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[0]))
-
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group)
 
     def media_object(self, object_order, data=None):
-        ##print("inspect", inspect.stack()[1].function)
-        # self.operation["log"].write("object")
-
         if not data is None:
-            ##print("ids :", self.edit_data.now_scene, object_order)
-
-            # #print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0] = copy.deepcopy(data)
-
-            ##print("受信しました", data.installation)
             return
-        ##print("oorder", object_order)
+
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0])
 
     def effect(self, object_order, effect_order, data=None):
-        # self.operation["log"].write("effect")
-
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order] = copy.deepcopy(data)
             return
@@ -240,6 +215,9 @@ class Storage:
 
         return copy.deepcopy(self.layer().object_group[new_obj.obj_id][0])
 
+    def edit_object_installation(self, media_id, sta, end):
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[media_id][0].installation = [sta, end]
+
     def add_effect_elements(self, object_order, effect_name):
         new_effect = elements.EffectElements()
         new_effect.effect_name = effect_name
@@ -258,25 +236,10 @@ class Storage:
             new_effect.effect_point[k] = 0
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
-        # print("aaaaaaa")
 
         for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
             for ek in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys():
                 e.effect_point_internal_id_point[ek] = copy.deepcopy(e.effect_point)
-                #print("ek", ek, e.effect_point_internal_id_point)
-
-        """
-
-        for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
-            #print(e, e.effect_point_internal_id_point, "対象")
-            for ek,ev in zip(e.effect_point_internal_id_point.keys() , e.effect_point_internal_id_point.values()):
-                #print(e, e.effect_point_internal_id_point, "追加前")
-                self.add_key_frame_inside_data(object_order, ek)
-                #print(e, e.effect_point_internal_id_point, "追加処理")
-
-        """
-
-        # print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group)
 
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
@@ -296,6 +259,9 @@ class Storage:
         for eg in effect_group.values():
             new_effect = copy.deepcopy(eg.effect_point)
             eg.effect_point_internal_id_point[key_frame_id] = new_effect
+
+    def layer_id_set(self, obj_id, new_layer_id):
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1] = copy.deepcopy(new_layer_id)
 
     def move_key_frame(self, time, obj_id, key_frame_id):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
@@ -330,7 +296,6 @@ class Storage:
         del self.edit_data.scenes[self.edit_data.now_scene].layer_group
 
     def del_object_elements(self, object_order):
-        #self.callback_operation.event("del_layer_elements", info=(object_order))
         del self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order]
 
     def del_effect_elements(self, object_order, effect_order):
