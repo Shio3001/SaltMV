@@ -18,15 +18,10 @@ class Storage:
         self.new_edit_data()
         self.app_name = "NankokuMovieMaker"
         self.extension = ".json"
-
         self.operation = None
-
         self.elements = elements
-
         self.os_type = ""
-
         self.main_path = main_path
-
         self.now_time = 0
         #self.threading = threading
         #self.threading_lock = threading.Lock()
@@ -216,7 +211,7 @@ class Storage:
         return copy.deepcopy(self.layer().object_group[new_obj.obj_id][0])
 
     def edit_object_installation(self, media_id, sta, end):
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[media_id][0].installation = [sta, end]
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[media_id][0].installation = copy.deepcopy([sta, end])
 
     def add_effect_elements(self, object_order, effect_name):
         new_effect = elements.EffectElements()
@@ -269,12 +264,18 @@ class Storage:
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
 
+    def get_key_frame(self, obj_id, key_frame_id):
+        return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id]
+
     def edit_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key, mov_val):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
+
+    def get_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key):
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
 
     def edit_various_fixed(self, obj_id, effect_id, various_fixed_key, various_fixed_val):
         if not various_fixed_key in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed.keys():

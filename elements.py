@@ -24,13 +24,9 @@ class AllElements:  # すごくえらい
 class SceneElements:  # えらい
     def __init__(self):
         self.layer_group = LayerElements()
-
         self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 100}  # 動画の画面サイズとかその辺
         self.scene_id = make_id("scene")
-
         self.now_time = self.editor["len"] / 10
-
-        #self.user_select_range = [0, 100]
 
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
@@ -38,11 +34,7 @@ class SceneElements:  # えらい
 class LayerElements:  # 次にえらい
     def __init__(self):
         self.object_group = {}    # objectID : [object,layerID]
-        # self.object_layer = {}    # objectID : layerID
         self.layer_layer_id = {}  # layerID  : layer番号
-
-        #self.layer_id = make_id()
-        # self.layer_objs = {}  # layer_id:数字
 
         print("レイヤーを追加しました : layerElements [ Elements ]")
 
@@ -53,7 +45,6 @@ class ObjectElements:  # その次にえらい
         self.installation = [0, 0]  # オブジェクト範囲
         self.synthetic = "normal"  # 合成方法
         self.obj_id = make_id("obj")
-
         self.effect_point_internal_id_time = {}
 
         print("オブジェクトを追加しました : ObjectElements [ Elements ]")
@@ -63,7 +54,6 @@ class EffectElements:  # えらくない
     def __init__(self):
         self.effect_name = None  # str(os.path.basename(__file__)).replace('.py', '')
         self.effect_point = {}
-
         self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
         self.effect_id = None

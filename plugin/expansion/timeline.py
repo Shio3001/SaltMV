@@ -15,6 +15,7 @@ class InitialValue:
         self.data = data
         self.operation = self.data.operation
         self.data.all_data.now_time = 0
+        self.redo_undo_stack = []
 
     def main(self):
 
@@ -161,7 +162,7 @@ class InitialValue:
             print("new_layer", new_layer)
 
             new_layer_id = self.data.all_data.layer_number_to_layer_id(new_layer)
-            self.data.all_data.layer_id_set(new_layer_id)
+            self.data.all_data.layer_id_set(obj_id, new_layer_id)
             #self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[obj_id][1] = new_layer_id
             edit_layer(new_layer)
 
@@ -388,6 +389,8 @@ class InitialValue:
 
         def add_scene():
             self.data.all_data.add_scene_elements()
+
+        new_layer()
 
         self.timeline_menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
         main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", add_scene, "レイヤー", new_layer), ("追加", "動画", new_obj)]

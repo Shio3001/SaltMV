@@ -6,34 +6,42 @@ import datetime
 
 
 class TextReceivePoint:
-    def __init__(self, data, media_id, effect_id, effect_uuid_key, val_key, int_type=None):
+    def __init__(self, data, media_id, effect_id, effect_uuid_key, mov_key, stack_add, undo_stack, redo_stack, int_type=None):
         self.data = data
         self.media_id = media_id
         self.effect_id = effect_id
         self.effect_uuid_key = effect_uuid_key
-        self.val_key = val_key
+        self.mov_key = mov_key
         self.int_type = int_type
+        self.stack_add, self.undo_stack, self.redo_stack = stack_add, undo_stack, redo_stack
 
     def text_func(self, text):
-        if self.int_type:
-            text = int(text)
+        old_text = self.data.all_data.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key)
+        self.stack_add(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, old_text)
 
-        self.data.all_data.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.val_key, text)
-    #obj_id, effect_id, various_fixed_key, various_fixed_val
+        try:
+            if self.int_type:
+                text = int(text)
 
-    #send.media_id, element.effect_id, left_key, pk_b, int(text)
-    #send.media_id, element.effect_id, right_key, pk_n, int(text)
+        except:
+            return
+
+        self.data.all_data.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
 
 
 class TextReceiveVariousFixed:
-    def __init__(self, data, media_id, effect_id, various_fixed_key):
+    def __init__(self, data, media_id, effect_id, various_fixed_key, stack_add, undo_stack, redo_stack,):
         self.data = data
         self.media_id = media_id
         self.effect_id = effect_id
         self.various_fixed_key = various_fixed_key
+        self.stack_add, self.undo_stack, self.redo_stack = stack_add, undo_stack, redo_stack
         #self.int_type = int_type
 
     def text_func(self, text):
+        old_text = self.data.all_data.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.val_ke)
+
+        self.stack_add(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, old_text)
         self.data.all_data.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key, text)
 
 
@@ -44,6 +52,13 @@ class InitialValue:
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
         self.now = 0
         self.push_f = 0
+        self.redo_undo_stack = []
+        self.redo_undo_stack_now = 0
+
+    def stack_add(self, media_id, effect_id, point_key, mov_key, old_data):
+        stack_data = {"media_id": media_id, "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key, "old_data": old_data}
+        self.redo_undo_stack.append(stack_data)
+        self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
 
     def main(self):
         self.data.window_title_set("タイムライン設定")
@@ -54,8 +69,37 @@ class InitialValue:
 
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
-        def make(send):
-            element, effect_point_internal_id_time = send.effect_element, send.effect_point_internal_id_time
+        def undo_stack(event):
+            self.redo_undo_stack_now -= 1
+            self.redo_undo_stack.append(self.redo_undo_stack[self.redo_undo_stack_now])
+
+            stack_data = self.redo_undo_stack[self.redo_undo_stack_number]
+            media_id = stack_data["media_id"]
+            effect_id = stack_data["effect_id"]
+            effect_uuid_key = stack_data["point_key"]
+            mov_key = stack_data["mov_key"]
+            text = stack_data["old_data"]
+            self.data.all_data.edit_key_frame_val(media_id, effect_id, effect_uuid_key, mov_key, text)
+
+            self.data.ui_management.set_old_elements_len()
+            self.send.effect_point_internal_id_time = self.data.all_data.get_key_frame(media_id, effect_id)
+
+            make()
+            self.data.ui_management.del_ignition(self.now)
+
+        self.data.add_window_event("Control-Key-x", undo_stack)
+
+        def redo_stack():
+            self.redo_undo_stack_now += 1
+            self.redo_undo_stack.append(self.redo_undo_stack[self.redo_undo_stack_now])
+
+            self.data.ui_management.set_old_elements_len()
+            make()
+            self.data.ui_management.del_ignition(self.now)
+
+        def make():
+            media_id, element, effect_point_internal_id_time = self.send.media_id, self.send.effect_element, self.send.effect_point_internal_id_time
+            #element, effect_point_internal_id_time, media_id = self.send.effect_element, self.send.effect_point_internal_id_time, self.send.media_id
 
             # for i, e in enumerate(elements_effect.values()):
             before_point, next_point, left_key, right_key = self.time_search(self.push_f, element, effect_point_internal_id_time, key_get=True)
@@ -65,7 +109,7 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
                     #print("pk_b, pv_b", pk_b, pv_b)
-                    left = TextReceivePoint(self.data, send.media_id, element.effect_id, left_key, pk_b, int_type=True)
+                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, undo_stack, redo_stack, int_type=True)
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None, text_a_return=left.text_func)
                     self.now += 1
@@ -75,8 +119,8 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
 
-                    left = TextReceivePoint(self.data, send.media_id, element.effect_id, left_key, pk_b, int_type=True)
-                    right = TextReceivePoint(self.data, send.media_id, element.effect_id, right_key, pk_n, int_type=True)
+                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, undo_stack, redo_stack, int_type=True)
+                    right = TextReceivePoint(self.data, media_id, element.effect_id, right_key, pk_n, self.stack_add, undo_stack, redo_stack, int_type=True)
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     #print("pk_b, pv_b, pk_n, pv_n", pk_b, pv_b, pk_n, pv_n)
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
@@ -84,20 +128,23 @@ class InitialValue:
 
             for vk, vv in zip(element.various_fixed.keys(), element.various_fixed.values()):
 
-                text = TextReceiveVariousFixed(self.data, send.media_id, element.effect_id, vk)
+                text = TextReceiveVariousFixed(self.data, media_id, element.effect_id, vk, self.stack_add, self.undo_stack, self.redo_stack)
                 self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                 self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None, text_a_return=text.text_func, text_fixed=True)
                 self.now += 1
 
         def element_lord(send):
-            #element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_send
-            element = send.effect_element
+            self.send = send
+            self.redo_undo_stack = []
+            self.redo_undo_stack_number = 0
+            #element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_self.send
+            element = self.send.effect_element
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
             self.now = 0
-            self.push_f = send.now_f
+            self.push_f = self.send.now_f
 
             self.data.ui_management.set_old_elements_len()
-            make(send)
+            make()
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()
 
@@ -105,8 +152,6 @@ class InitialValue:
             self.now = 0
             self.data.ui_management.set_old_elements_len()
             self.data.ui_management.del_ignition(self.now)
-            # self.data.window.update()
-
             self.data.window_title_set("タイムライン設定")
 
         self.data.all_data.callback_operation.set_event("element_ui_all_del", element_ui_all_del)

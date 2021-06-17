@@ -11,13 +11,10 @@ class InitialValue:
         self.data = data
         self.operation = self.data.operation
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
-        # self.parameter_button_ui_list = []
-        #self.now = 0
         self.now_f = 0
-
         self.now_media_id = ""
-
         self.send = None
+        self.redo_undo_stack = []
 
     def main(self):
         self.data.window_title_set("パラメーターコントロール")
