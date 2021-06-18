@@ -15,7 +15,7 @@ class TextReceivePoint:
         self.int_type = int_type
         self.stack_add = stack_add
 
-    def text_func(self, text):
+    def text_func(self, text, stack_add=True):
         old_text_data = self.data.all_data.get_key_frame_val_list(self.media_id, self.effect_id)
 
         if not text:
@@ -32,12 +32,12 @@ class TextReceivePoint:
 
 
 class TextReceiveVariousFixed:
-    def __init__(self, data, media_id, effect_id, various_fixed_key, stack_add, undo_stack, redo_stack,):
+    def __init__(self, data, media_id, effect_id, various_fixed_key, stack_add):
         self.data = data
         self.media_id = media_id
         self.effect_id = effect_id
         self.various_fixed_key = various_fixed_key
-        self.stack_add, self.undo_stack, self.redo_stack = stack_add, undo_stack, redo_stack
+        self.stack_add = stack_add
         #self.int_type = int_type
 
     def text_func(self, text):
@@ -58,11 +58,13 @@ class InitialValue:
         self.redo_undo_stack_now = 0
 
     def stack_add(self, media_id, effect_id, old_data):
-        print("stack_add")
+
         stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
         # "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key,
         self.redo_undo_stack.append(stack_data)
         self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
+
+        print("stack_add", self.redo_undo_stack_now)
 
         #self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
 
@@ -80,7 +82,7 @@ class InitialValue:
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
         def undo_stack(event):
-            self.redo_undo_stack_now += -1
+            self.redo_undo_stack_now -= 1
 
             for i in self.redo_undo_stack:
                 print(i, self.redo_undo_stack_now)

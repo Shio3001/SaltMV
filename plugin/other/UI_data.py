@@ -691,12 +691,31 @@ class TextBoxData():
         self.forget = False
 
         self.entry.bind("<{0}>".format("Return"), self.entry_event, "+")
+        self.entry.bind("<{0}>".format("KeyPress"), self.entry_event_push_ban, "+")
         self.entry.bind("<{0}>".format("KeyRelease"), self.entry_event, "+")
 
         self.tag = None
         self.entry_event_callback = self.not_event
+        self.block_key = {}
+        self.event_ban_set()
 
-    def entry_event(self, event):
+    def event_ban_set(self):
+        self.block_key = {"Meta": False, "Control": False, "Alt": False, "Shift": False}
+        print("破棄再生")
+
+    def entry_event_push_ban(self, event):
+        print("検査")
+        for k in self.block_key.keys():
+            if k in event.keysym:
+                self.block_key[k] = True
+
+
+    def entry_event(self, event):  # event.keysym
+        print("終了したもの", event.keysym)
+        if True in list(self.block_key.values()):
+            print("返却")
+            return
+
         get_text = copy.deepcopy(self.entry.get())
         self.text = copy.deepcopy(get_text)
         self.entry_event_callback(copy.deepcopy(get_text))
