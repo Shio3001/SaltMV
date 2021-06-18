@@ -15,7 +15,7 @@ class TextReceivePoint:
         self.int_type = int_type
         self.stack_add = stack_add
 
-    def text_func(self, text, stack_add=True):
+    def text_func(self, text):
         old_text_data = self.data.all_data.get_key_frame_val_list(self.media_id, self.effect_id)
 
         if not text:
@@ -95,6 +95,8 @@ class InitialValue:
             media_id = stack_data["media_id"]
             effect_id = stack_data["effect_id"]
             data = stack_data["old_data"]
+
+            self.redo_undo_stack.append(stack_data)
 
             self.data.all_data.override_key_frame_val_list(media_id, effect_id, data)
             self.send.effect_element.effect_point_internal_id_point = data
