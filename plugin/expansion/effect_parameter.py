@@ -57,15 +57,6 @@ class InitialValue:
         self.redo_undo_stack = []
         self.redo_undo_stack_now = 0
 
-    def stack_add(self, media_id, effect_id, old_data):
-
-        stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
-        # "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key,
-        self.redo_undo_stack.append(stack_data)
-        self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
-
-        print("stack_add", self.redo_undo_stack_now)
-
         #self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
 
     def stack_add_location_designation(self, number, media_id, effect_id, old_data):
@@ -80,6 +71,14 @@ class InitialValue:
         self.data.edit_canvas_position("parameter", x=0, y=0)
 
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
+
+        def stack_add(media_id, effect_id, old_data):
+            stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
+            # "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key,
+            self.redo_undo_stack.append(stack_data)
+            self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
+
+            print("stack_add", stack_data, self.redo_undo_stack_now)
 
         def undo_stack(event):
             self.redo_undo_stack_now -= 1
@@ -129,7 +128,7 @@ class InitialValue:
                         continue
                     #print("pk_b, pv_b", pk_b, pv_b)
 
-                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, int_type=True)
+                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, stack_add, int_type=True)
 
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None, text_a_return=left.text_func)
@@ -140,8 +139,8 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
 
-                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, int_type=True)
-                    right = TextReceivePoint(self.data, media_id, element.effect_id, right_key, pk_n, self.stack_add, int_type=True)
+                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, stack_add, int_type=True)
+                    right = TextReceivePoint(self.data, media_id, element.effect_id, right_key, pk_n, stack_add, int_type=True)
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     #print("pk_b, pv_b, pk_n, pv_n", pk_b, pv_b, pk_n, pv_n)
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
@@ -149,7 +148,7 @@ class InitialValue:
 
             for vk, vv in zip(element.various_fixed.keys(), element.various_fixed.values()):
 
-                text = TextReceiveVariousFixed(self.data, media_id, element.effect_id, vk, self.stack_add, self.undo_stack, self.redo_stack)
+                text = TextReceiveVariousFixed(self.data, media_id, element.effect_id, vk, stack_add)
                 self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                 self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None, text_a_return=text.text_func, text_fixed=True)
                 self.now += 1

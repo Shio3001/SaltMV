@@ -576,7 +576,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
                           center=None,
                           anchor=None,
                           readonly=None,
-                          entry_event=None):
+                          entry_event=None,
+                          set_int_type=None):
 
         if not self.get_diagram_type(di_name, "TextBoxData") and not self.get_diagram_type(di_name, "DiagramTextData"):
             self.operation["error"].action(message="これテキスト用じゃないぞ")
@@ -604,6 +605,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].readonly = copy.deepcopy(bool(readonly))
         if not entry_event is None and self.get_diagram_type(di_name, "TextBoxData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].entry_event_callback = entry_event
+        if not set_int_type is None and self.get_diagram_type(di_name, "TextBoxData"):
+            self.canvas_data.territory[self.te_name].diagram[di_name].set_int_type(set_int_type)
 
         self.diagram_draw(di_name)
 
@@ -697,10 +700,21 @@ class TextBoxData():
         self.tag = None
         self.entry_event_callback = self.not_event
         self.block_key = {}
+        self.type_int = False
+
+        self.event_ban_set()
+
+    def set_int_type(self, type_int):
+        self.type_int = type_int
         self.event_ban_set()
 
     def event_ban_set(self):
         self.block_key = {"Meta": False, "Control": False, "Alt": False, "Shift": False}
+
+        if self.type_int:
+            for i in range(10):
+                self.block_key[str(i)] = False
+
         print("破棄再生")
 
     def entry_event_push_ban(self, event):
@@ -709,11 +723,14 @@ class TextBoxData():
             if k in event.keysym:
                 self.block_key[k] = True
 
-
     def entry_event(self, event):  # event.keysym
         print("終了したもの", event.keysym)
+
         if True in list(self.block_key.values()):
             print("返却")
+            for k in self.block_key.keys():
+                if k in event.keysym:
+                    self.block_key[k] = False
             return
 
         get_text = copy.deepcopy(self.entry.get())
