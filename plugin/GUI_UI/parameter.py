@@ -44,14 +44,14 @@ class parts:
             if text_fixed:
                 data.diagram_forget("textbox2", True)
                 data.edit_diagram_size("textbox1", x=textbox2_x - textbox1_x + 100)
-                data.edit_diagram_text("textbox1", set_int_type=False)
-                data.edit_diagram_text("textbox2", set_int_type=False)
+                #data.edit_diagram_text("textbox1", set_int_type=False)
+                #data.edit_diagram_text("textbox2", set_int_type=False)
 
             else:
                 data.diagram_forget("textbox2", False)
                 data.edit_diagram_size("textbox1", x=100, y=20)
-                data.edit_diagram_text("textbox1", set_int_type=True)
-                data.edit_diagram_text("textbox2", set_int_type=True)
+                #data.edit_diagram_text("textbox1", set_int_type=True)
+                #data.edit_diagram_text("textbox2", set_int_type=True)
 
             data.territory_draw()
 
