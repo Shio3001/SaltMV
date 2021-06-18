@@ -725,7 +725,7 @@ class TextBoxData():
 
         flag = False
 
-        if self.push_key[event.keysym]:
+        if event.keysym in self.push_key.keys() and self.push_key[event.keysym]:
             del self.push_key[event.keysym]
 
             flag = True

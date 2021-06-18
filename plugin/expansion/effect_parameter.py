@@ -27,7 +27,11 @@ class TextReceivePoint:
         except:
             return
 
-        self.stack_add(self.media_id, self.effect_id, old_text_data)
+        old_s = str(old_text_data[self.effect_uuid_key][self.mov_key])
+        now_s = str(text)
+
+        if old_s != now_s:
+            self.stack_add(self.media_id, self.effect_id, old_text_data)
         self.data.all_data.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
 
 
@@ -55,9 +59,9 @@ class InitialValue:
         self.now = 0
         self.push_f = 0
         self.redo_undo_stack = []
-        self.redo_undo_stack_now = 0
+        self.undo_stack_now = 0
 
-        #self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
+        #self.undo_stack_now = len(self.redo_undo_stack) - 1
 
     def stack_add_location_designation(self, number, media_id, effect_id, old_data):
         stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
@@ -76,22 +80,14 @@ class InitialValue:
             stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
             # "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key,
             self.redo_undo_stack.append(stack_data)
-            self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
+            self.undo_stack_now = len(self.redo_undo_stack) - 1
 
-            print("stack_add", stack_data, self.redo_undo_stack_now)
+            print("stack_add", stack_data, self.undo_stack_now)
 
-        def undo_stack(event):
-            self.redo_undo_stack_now -= 1
+        def __undo_redo_set(stack_data):
 
-            for i in self.redo_undo_stack:
-                print(i, self.redo_undo_stack_now)
+            print(stack_data)
 
-            if self.redo_undo_stack_now < 0:
-                self.redo_undo_stack_now = 0
-
-            print(self.redo_undo_stack_now)
-            stack_data = self.redo_undo_stack[self.redo_undo_stack_now]
-            #print("stack_data", self.redo_undo_stack,self.redo_undo_stack_now)
             media_id = stack_data["media_id"]
             effect_id = stack_data["effect_id"]
             data = stack_data["old_data"]
@@ -106,16 +102,39 @@ class InitialValue:
             make(stack=False)
             self.data.ui_management.del_ignition(self.now)
 
+        def undo_stack(event):
+            self.undo_stack_now -= 1
+            self.redo_stack_now = len(self.redo_undo_stack) - 1
+
+            if self.undo_stack_now < 0:
+                self.undo_stack_now = 0
+
+            if self.undo_stack_now > len(self.redo_undo_stack) - 1:
+                self.undo_stack_now = len(self.redo_undo_stack) - 1
+
+            stack_data = self.redo_undo_stack[self.undo_stack_now + 1]
+
+            __undo_redo_set(stack_data)
+
+            print("undo")
+
         self.data.add_window_event("Command-Key-z", undo_stack)
 
-        def redo_stack():
-            self.redo_undo_stack_now += 1
-            self.redo_undo_stack.append(self.redo_undo_stack[self.redo_undo_stack_now])
+        def redo_stack(event):
+            self.redo_stack_now -= 1
 
-            self.now = 0
-            self.data.ui_management.set_old_elements_len()
-            make(stack=False)
-            self.data.ui_management.del_ignition(self.now)
+            if self.redo_stack_now < 0:
+                self.redo_stack_now = 0
+
+            if self.redo_stack_now > len(self.redo_undo_stack) - 1:
+                self.redo_stack_now = len(self.redo_undo_stack) - 1
+
+            stack_data = self.redo_undo_stack[self.redo_stack_now]
+
+            __undo_redo_set(stack_data)
+            print("redo")
+
+        self.data.add_window_event("Command-Shift-Key-Z", redo_stack)
 
         def make(stack=True):
             media_id, element, effect_point_internal_id_time = self.send.media_id, self.send.effect_element, self.send.effect_point_internal_id_time
