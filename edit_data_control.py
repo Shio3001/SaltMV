@@ -264,15 +264,21 @@ class Storage:
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
 
-    def get_key_frame(self, obj_id, key_frame_id):
-        return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id]
-
     def edit_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key, mov_val):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
+
+    def get_key_frame(self, obj_id):
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
+    def override_key_frame_val_list(self, obj_id, effect_id, key_frame_data):
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point = copy.deepcopy(key_frame_data)
+
+    def get_key_frame_val_list(self, obj_id, effect_id):
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
 
     def get_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key):
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])

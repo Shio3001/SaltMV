@@ -6,26 +6,28 @@ import datetime
 
 
 class TextReceivePoint:
-    def __init__(self, data, media_id, effect_id, effect_uuid_key, mov_key, stack_add, undo_stack, redo_stack, int_type=None):
+    def __init__(self, data, media_id, effect_id, effect_uuid_key, mov_key, stack_add, int_type=None):
         self.data = data
         self.media_id = media_id
         self.effect_id = effect_id
         self.effect_uuid_key = effect_uuid_key
         self.mov_key = mov_key
         self.int_type = int_type
-        self.stack_add, self.undo_stack, self.redo_stack = stack_add, undo_stack, redo_stack
+        self.stack_add = stack_add
 
     def text_func(self, text):
-        old_text = self.data.all_data.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key)
-        self.stack_add(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, old_text)
+        old_text_data = self.data.all_data.get_key_frame_val_list(self.media_id, self.effect_id)
+
+        if not text:
+            return
 
         try:
             if self.int_type:
                 text = int(text)
-
         except:
             return
 
+        self.stack_add(self.media_id, self.effect_id, old_text_data)
         self.data.all_data.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
 
 
@@ -55,10 +57,18 @@ class InitialValue:
         self.redo_undo_stack = []
         self.redo_undo_stack_now = 0
 
-    def stack_add(self, media_id, effect_id, point_key, mov_key, old_data):
-        stack_data = {"media_id": media_id, "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key, "old_data": old_data}
+    def stack_add(self, media_id, effect_id, old_data):
+        print("stack_add")
+        stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
+        # "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key,
         self.redo_undo_stack.append(stack_data)
         self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
+
+        #self.redo_undo_stack_now = len(self.redo_undo_stack) - 1
+
+    def stack_add_location_designation(self, number, media_id, effect_id, old_data):
+        stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
+        self.redo_undo_stack[number] = stack_data
 
     def main(self):
         self.data.window_title_set("タイムライン設定")
@@ -70,34 +80,41 @@ class InitialValue:
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
         def undo_stack(event):
-            self.redo_undo_stack_now -= 1
-            self.redo_undo_stack.append(self.redo_undo_stack[self.redo_undo_stack_now])
+            self.redo_undo_stack_now += -1
 
-            stack_data = self.redo_undo_stack[self.redo_undo_stack_number]
+            for i in self.redo_undo_stack:
+                print(i, self.redo_undo_stack_now)
+
+            if self.redo_undo_stack_now < 0:
+                self.redo_undo_stack_now = 0
+
+            print(self.redo_undo_stack_now)
+            stack_data = self.redo_undo_stack[self.redo_undo_stack_now]
+            #print("stack_data", self.redo_undo_stack,self.redo_undo_stack_now)
             media_id = stack_data["media_id"]
             effect_id = stack_data["effect_id"]
-            effect_uuid_key = stack_data["point_key"]
-            mov_key = stack_data["mov_key"]
-            text = stack_data["old_data"]
-            self.data.all_data.edit_key_frame_val(media_id, effect_id, effect_uuid_key, mov_key, text)
+            data = stack_data["old_data"]
 
+            self.data.all_data.override_key_frame_val_list(media_id, effect_id, data)
+            self.send.effect_element.effect_point_internal_id_point = data
+
+            self.now = 0
             self.data.ui_management.set_old_elements_len()
-            self.send.effect_point_internal_id_time = self.data.all_data.get_key_frame(media_id, effect_id)
-
-            make()
+            make(stack=False)
             self.data.ui_management.del_ignition(self.now)
 
-        self.data.add_window_event("Control-Key-x", undo_stack)
+        self.data.add_window_event("Command-Key-z", undo_stack)
 
         def redo_stack():
             self.redo_undo_stack_now += 1
             self.redo_undo_stack.append(self.redo_undo_stack[self.redo_undo_stack_now])
 
+            self.now = 0
             self.data.ui_management.set_old_elements_len()
-            make()
+            make(stack=False)
             self.data.ui_management.del_ignition(self.now)
 
-        def make():
+        def make(stack=True):
             media_id, element, effect_point_internal_id_time = self.send.media_id, self.send.effect_element, self.send.effect_point_internal_id_time
             #element, effect_point_internal_id_time, media_id = self.send.effect_element, self.send.effect_point_internal_id_time, self.send.media_id
 
@@ -109,7 +126,9 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
                     #print("pk_b, pv_b", pk_b, pv_b)
-                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, undo_stack, redo_stack, int_type=True)
+
+                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, int_type=True)
+
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=pk_b, text_a=pv_b, text_b=None, text_a_return=left.text_func)
                     self.now += 1
@@ -119,8 +138,8 @@ class InitialValue:
                     if pk_b in self.data.all_data.effect_point_default_keys:
                         continue
 
-                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, undo_stack, redo_stack, int_type=True)
-                    right = TextReceivePoint(self.data, media_id, element.effect_id, right_key, pk_n, self.stack_add, undo_stack, redo_stack, int_type=True)
+                    left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, self.stack_add, int_type=True)
+                    right = TextReceivePoint(self.data, media_id, element.effect_id, right_key, pk_n, self.stack_add, int_type=True)
                     self.data.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     #print("pk_b, pv_b, pk_n, pv_n", pk_b, pv_b, pk_n, pv_n)
                     self.data.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
