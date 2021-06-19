@@ -1,4 +1,5 @@
 # coding:utf-8
+from tkinter.constants import TOP
 from elements import make_id
 import sys
 import os
@@ -15,9 +16,89 @@ class InitialValue:
         self.data = data
         self.operation = self.data.operation
         self.data.all_data.now_time = 0
-        self.redo_undo_stack = []
+        #self.redo_undo_stack = []
+        #self.tthis_type_safe = ["media_length",]
+        self.add_type_safe_obj = ["add", "mov", "del"]
+        self.add_type_safe_frame = ["f_add", "f_mov", "f_del"]
+        self.undo_stack_list_now = 0
+        self.undo_stack_list = []
 
     def main(self):
+
+        def stack_add(add_type, old_data):
+            if not add_type in self.add_type_safe and not add_type in self.add_type_safe_frame:
+                return
+
+            self.undo_stack_list.append({"add_type": add_type, "old_data": old_data})
+            self.undo_stack_list_now = len(self.undo_stack_list) - 1
+
+        def undo_stack():
+            self.undo_stack_list_now -= 1
+            stack_data = self.undo_stack_list[self.undo_stack_list_now]
+
+            add_type = stack_data["add_type"]
+            old_data = stack_data["old_data"]
+
+            if add_type in self.add_type_safe_frame:
+                undo_run_frame()
+
+            if add_type in self.add_type_safe_obj:
+                undo_run_obj()
+
+        def undo_run_frame(self, add_type, old_data):
+
+            old_data_obj = old_data[0]
+            old_data_layer = old_data[1]
+
+            if add_type == "f_add":
+                pass
+            if add_type == "f_mov":
+                pass
+            if add_type == "f_del":
+                for point_key, point_val in zip(old_data.effect_point_internal_id_time.keys(), old_data.effect_point_internal_id_time.values()):
+                    self.data.all_data.add_key_frame(point_val, old_data_obj.obj_id, point_key)
+
+                    if point_key in ["default_sta", "default_end"]:
+                        continue
+
+                    self.data.timeline_object[old_data_obj.obj_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
+
+        def undo_run_obj(self, add_type, old_data):
+
+            old_data_obj = old_data[0]
+            old_data_layer = old_data[1]
+
+            if add_type == "add":  # 削除
+                self.data.timeline_object[old_data_obj.obj_id].media_object_del()
+
+            if add_type == "mov":
+                self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
+                sta_f = old_data_obj.installation[0]  # 開始地点解釈
+                end_f = old_data_obj.installation[1]  # 終了地点解釈
+                get_scene = self.data.all_data.scene()
+                layer_number = get_scene.layer_group.layer_layer_id[old_data_layer]  # 所属レイヤー解釈
+
+                frame_len = self.data.all_data.scene().editor["len"]
+
+                self.data.timeline_object[old_data_obj.obj_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
+                self.data.timeline_object[old_data_obj.obj_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
+                self.data.timeline_object[old_data_obj.obj_id].pxf.set_f_ratio(position=sta_f, size=end_f - sta_f)
+
+            if add_type == "del":  # 再追加
+                self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
+                sta_f = old_data_obj.installation[0]  # 開始地点解釈
+                end_f = old_data_obj.installation[1]  # 終了地点解釈
+                get_scene = self.data.all_data.scene()
+                layer_number = get_scene.layer_group.layer_layer_id[old_data_layer]  # 所属レイヤー解釈
+                make_object(old_data_obj.obj_id, sta=sta_f, end=end_f, layer_number=layer_number)
+
+                for point_key, point_val in zip(old_data.effect_point_internal_id_time.keys(), old_data.effect_point_internal_id_time.values()):
+                    self.data.all_data.add_key_frame(point_val, old_data_obj.obj_id, point_key)
+
+                    if point_key in ["default_sta", "default_end"]:
+                        continue
+
+                    self.data.timeline_object[old_data_obj.obj_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
         self.data.new_canvas("timeline")
         self.data.edit_canvas_size("timeline", x=1000, y=1000)

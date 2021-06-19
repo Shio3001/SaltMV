@@ -153,6 +153,15 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0])
 
+
+    def media_object_had_layer(self, object_order, data=None):
+        if not data is None:
+            self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order] = copy.deepcopy(data)
+            return
+
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order])
+
+
     def effect(self, object_order, effect_order, data=None):
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order] = copy.deepcopy(data)
