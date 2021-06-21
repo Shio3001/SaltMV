@@ -50,7 +50,8 @@ class KeyFrame:
 
             data.edit_diagram_color(self.uu_id, "#ff0000")
 
-            self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
+            #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
+            data.stack_add_timelime_keyframe(add_type="mov", media_id=data.option_data["media_id"])
 
         def click_position(event):
             if not self.click_flag:
@@ -74,7 +75,7 @@ class KeyFrame:
             self.callback_operation.event("sub_end", info=data.pxf.get_event_data())
 
             key_frame_id = self.uu_id
-            data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
+            #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
             data.edit_diagram_color(self.uu_id, "#000000")
 
         data.add_diagram_event(self.uu_id, "Button-1", click_start)
@@ -90,7 +91,8 @@ class KeyFrame:
             if info:
                 self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
                 key_frame_id = self.uu_id
-                data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
+                #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
+                data.stack_add_timelime_keyframe(add_type="del", media_id=data.option_data["media_id"])
 
                 #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"]))
 
@@ -183,7 +185,8 @@ class parts:
         def media_object_del():
 
             old_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
-            data.stack_add("del", old_data)
+           # data.stack_add("del", old_data)
+            data.stack_add_timelime_media(add_type="del", media_id=data.option_data["media_id"])
 
             data.callback_operation.event("end", info=data.pxf.get_event_data())
             data.callback_operation.event("del", data.option_data["media_id"])
@@ -213,13 +216,15 @@ class parts:
         data.make_KeyFrame = make_KeyFrame
 
         def add_key_frame():
-            self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
+            data.stack_add_timelime_keyframe(add_type="add", media_id=data.option_data["media_id"])
+            #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
 
             new_key_frame = make_KeyFrame()
             data.all_data.add_key_frame(data.pxf.sub_point_f[new_key_frame.uu_id], data.option_data["media_id"], new_key_frame.uu_id)
 
             key_frame_id = new_key_frame.uu_id
-            data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
+            #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
+
             #data.stack_add("frame", (self.key_frame_time_old_data,data.option_data["media_id"]))
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
@@ -306,7 +311,8 @@ class parts:
             # thread_1.start()
 
             data.all_data.callback_operation.get_event("media_lord")[0](send_data)
-            data.click_start_old_media_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
+            #data.click_start_old_media_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
+            data.stack_add_timelime_media(add_type="mov", media_id=data.option_data["media_id"])
 
             # #print("非同期")
 
@@ -374,8 +380,7 @@ class parts:
 
         def click_end(event):
 
-            if data.click_flag:
-                data.stack_add("mov", data.click_start_old_media_data)
+            # if data.click_flag:
 
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)

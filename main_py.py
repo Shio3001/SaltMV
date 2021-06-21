@@ -22,6 +22,7 @@ import error
 from chord_tool import file_path
 import edit_data_control
 import UI_control
+import undo
 from chord_tool import class_var_to_dict
 
 now_path = os.getcwd()
@@ -30,6 +31,7 @@ all_data = edit_data_control.Storage(now_path)
 all_UI_data = UI_control
 
 operation = {}
+
 
 operation["rendering_py"] = {}
 operation["rendering_py"]["main"] = rendering_main.Rendering()
@@ -83,6 +85,7 @@ operation["log"].write(operation)
 all_data.set_operation(operation)
 
 operation["rendering_py"]["main"].set_all_data(all_data)
+operation["undo"] = undo.UndoStack(all_data)
 
 #all_data.main_path = now_path
 print(all_data.main_path)

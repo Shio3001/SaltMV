@@ -153,7 +153,7 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0])
 
-    def media_object_had_layer(self, object_order, data=None):
+    def media_object_had_layer(self, object_order, data=None):  # stack対象
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order] = copy.deepcopy(data)
             return
@@ -278,10 +278,18 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
 
-    def get_key_frame(self, obj_id,data=None):
+    def get_key_frame(self, obj_id, data=None):
+
+        typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time = copy.deepcopy(data)
             return
+
+        typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
+        if typeA != typeB:
+            self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 

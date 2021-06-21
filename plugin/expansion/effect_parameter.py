@@ -4,8 +4,6 @@ import os
 import copy
 import datetime
 
-undo_stack_list = []
-
 
 class TextReceivePoint:
     def __init__(self, data, media_id, effect_id, effect_uuid_key, mov_key, stack_add, int_type=None):
@@ -17,7 +15,7 @@ class TextReceivePoint:
         self.int_type = int_type
         self.stack_add = stack_add
 
-        undo_stack_list = []
+        self.data.all_data.undo_stack_list = []
 
     def text_func(self, text):
         old_text_data = self.data.all_data.get_key_frame_val_list(self.media_id, self.effect_id)
@@ -62,16 +60,16 @@ class InitialValue:
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
         self.now = 0
         self.push_f = 0
-        #undo_stack_list = []
+        #self.data.all_data.undo_stack_list = []
         self.undo_stack_now = 0
 
         #self.redo_stack_list = []
         #self.redo_stack_now = 0
-        #self.undo_stack_now = len(undo_stack_list) - 1
+        #self.undo_stack_now = len(self.data.all_data.undo_stack_list) - 1
 
     def stack_add_location_designation(self, number, media_id, effect_id, old_data):
         stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
-        undo_stack_list[number] = stack_data
+        self.data.all_data.undo_stack_list[number] = stack_data
 
     def main(self):
         self.data.window_title_set("タイムライン設定")
@@ -82,68 +80,21 @@ class InitialValue:
 
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
-        def stack_add(media_id, effect_id, old_data):
-            stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
-            # "effect_id": effect_id, "point_key": point_key, "mov_key": mov_key,
-            undo_stack_list.append(stack_data)
-            self.undo_stack_now = len(undo_stack_list) - 1
-
-            #self.redo_stack_now = []
-
-            print("stack_add", stack_data, self.undo_stack_now)
-
-        def __undo_redo_set(stack_data):
-
-            print(stack_data)
-
-            media_id = stack_data["media_id"]
-            effect_id = stack_data["effect_id"]
-            data = stack_data["old_data"]
-
-            self.data.all_data.override_key_frame_val_list(media_id, effect_id, data)
-            self.send.effect_element.effect_point_internal_id_point = data
+        def __undo_redo_set(undo):
+            self.send.effect_element.effect_point_internal_id_point = self.data.all_data.get_key_frame_val_list(undo.media_id, undo.effect_id)
 
             self.now = 0
             self.data.ui_management.set_old_elements_len()
             make(stack=False)
             self.data.ui_management.del_ignition(self.now)
 
-        def undo_stack(event):
-            self.undo_stack_now -= 1
-
-            if self.undo_stack_now < 0:
-                self.undo_stack_now = 0
-
-            if self.undo_stack_now > len(undo_stack_list) - 1:
-                self.undo_stack_now = len(undo_stack_list) - 1
-
-            stack_data = undo_stack_list[self.undo_stack_now]
-            __undo_redo_set(stack_data)
+        def undo_stack(undo):
+            __undo_redo_set(undo)
 
             print("undo")
 
-        self.data.add_window_event("Command-Key-z", undo_stack)
-
-        """
-
-        def redo_stack(event):
-            self.redo_stack_now -= 1
-
-            if self.redo_stack_now < 0:
-                self.redo_stack_now = 0
-
-            if self.redo_stack_now > len(self.redo_stack_list) - 1:
-                self.redo_stack_now = len(self.redo_stack_list) - 1
-
-            stack_data = self.redo_stack_list[self.redo_stack_now]
-            undo_stack_list.append(stack_data)
-
-            __undo_redo_set(stack_data)
-            print("redo")
-
-        self.data.add_window_event("Command-Shift-Key-Z", redo_stack)
-
-        """
+        def stack_add(media_id, effect_id, old_data):
+            self.data.operation["undo"].add_stack(media_id=media_id, effect_id=effect_id, classification="parameter", add_type="mov", func=undo_stack)
 
         def make(stack=True):
             media_id, element, effect_point_internal_id_time = self.send.media_id, self.send.effect_element, self.send.effect_point_internal_id_time
@@ -185,8 +136,8 @@ class InitialValue:
 
         def element_lord(send):
             self.send = send
-            undo_stack_list = []
-            undo_stack_list_number = 0
+            self.data.all_data.undo_stack_list = []
+            self.data.all_data.undo_stack_list_number = 0
             #element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_self.send
             element = self.send.effect_element
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
