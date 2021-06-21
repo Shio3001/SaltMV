@@ -58,6 +58,14 @@ class InitialValue:
             old_data_obj = undo.target_media_data[0]
             old_data_layer = undo.target_media_data[1]
 
+            # if add_type == "effect_add":
+            #    self.data.all_data.callback_operation.event("element_ui_all_del")
+
+            # if add_type == "effect_del":
+            #    self.data.all_data.callback_operation.event("element_ui_all_del")
+
+            self.data.all_data.callback_operation.event("element_ui_all_del")
+
             if add_type == "add":  # 削除
 
                 self.data.timeline_object[old_data_obj.obj_id].media_object_del(stack=False)
@@ -140,7 +148,6 @@ class InitialValue:
                 return stop_once
 
         def stack_add_timelime_keyframe(stop_once=None, add_type=None, media_id=None, split_media_id=None):
-
             stop_once = self.data.operation["undo"].add_stack(stop_once=stop_once, media_id=media_id, split_media_id=split_media_id, classification="timelime_keyframe", add_type=add_type, func=undo_run_frame)
             if stop_once:
                 return stop_once
@@ -351,6 +358,11 @@ class InitialValue:
 
             new_obj.timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
             new_obj.timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
+            new_obj.stack_add_timelime_media = stack_add_timelime_media
+            new_obj.stack_add_timelime_keyframe = stack_add_timelime_keyframe
+
+            new_obj.set_right_click_pop()
+
             new_obj.edit_territory_position(x=timeline_left, y=timeline_up)
             new_obj.edit_diagram_size("bar", y=timeline_size)
             new_obj.callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
@@ -366,8 +378,7 @@ class InitialValue:
             new_obj.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             new_obj.pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
             new_obj.pxf.set_f_ratio(position=sta, size=end - sta)
-            new_obj.stack_add_timelime_media = stack_add_timelime_media
-            new_obj.stack_add_timelime_keyframe = stack_add_timelime_keyframe
+
             new_obj.callback_operation.event("mov", info=new_obj.pxf.get_event_data())
 
             self.data.timeline_object[media_id] = new_obj

@@ -109,6 +109,8 @@ class InitialValue:
             # shape_updown_destination.territory_draw()
 
         def effect_del(A, box_pos, gap, sta_point):
+            self.send.stack_add_timelime_media(add_type="effect_del", media_id=self.now_media_id)
+
             con_len = len(self.data.ui_management.ui_list)
 
             click_effect_point = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
@@ -120,7 +122,8 @@ class InitialValue:
             #old_val_data = old_values[click_effect_point]
 
             self.data.ui_management.set_old_elements_len()
-            del self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
+            #del self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
+            self.data.all_data.del_effect_elements(self.now_media_id, old_key_data)
 
             new_key = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             new_val = list(self.data.all_data.edit_data.scenes[self.data.all_data.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())

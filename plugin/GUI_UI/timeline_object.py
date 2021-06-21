@@ -234,17 +234,20 @@ class parts:
 
         self.popup = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
 
-        effect_dict = data.operation["plugin"]["effect"]
+        def set_right_click_pop():
+            effect_dict = data.operation["plugin"]["effect"]
 
-        effect_user_list = ["エフェクト"]
+            effect_user_list = ["エフェクト"]
 
-        for k in effect_dict.keys():
-            effect_get = EffectGet(data.all_data, data.option_data["media_id"], k)
-            effect_user_list.append(k)
-            effect_user_list.append(effect_get.add_element)
+            for k in effect_dict.keys():
+                effect_get = EffectGet(data.all_data, data.option_data["media_id"], k, data.stack_add_timelime_media)
+                effect_user_list.append(k)
+                effect_user_list.append(effect_get.add_element)
 
-        popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
-        self.popup.set(popup_list)
+            popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
+            self.popup.set(popup_list)
+
+        data.set_right_click_pop = set_right_click_pop
 
         data.popup_click_position = [0, 0]
 
@@ -283,6 +286,19 @@ class parts:
         data.click_flag = False
         data.mov_lock = False
 
+        def send_parameter_control():
+            now_f = data.pxf.px_to_f(data.mouse_sta[0])
+            send_data = ParameterSendData()
+            send_data.effect_group = data.all_data.media_object(data.option_data["media_id"]).effect_group
+            send_data.now_f = now_f
+            send_data.media_id = data.option_data["media_id"]
+            send_data.effect_point_internal_id_time = data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time
+            send_data.stack_add_timelime_media = data.stack_add_timelime_media
+
+            data.all_data.callback_operation.get_event("media_lord")[0](send_data)
+
+        data.send_parameter_control = send_parameter_control
+
         def click_start(event):
             if data.mov_lock:
                 return
@@ -298,16 +314,9 @@ class parts:
 
             #data.temp_pos_size = [None, None]
 
-            now_f = data.pxf.px_to_f(data.mouse_sta[0])
-
             # set_parameter_permit(False)
             # #print("非同期開始")
 
-            send_data = ParameterSendData()
-            send_data.effect_group = data.all_data.media_object(data.option_data["media_id"]).effect_group
-            send_data.now_f = now_f
-            send_data.media_id = data.option_data["media_id"]
-            send_data.effect_point_internal_id_time = data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time
             #send_data.text_a_return = text_a_return
             #send_data.text_b_return = text_b_return
 
@@ -315,7 +324,8 @@ class parts:
             #thread_1 = data.all_data.threading.Thread(target=func, args=(send_data,))
             # thread_1.start()
 
-            data.all_data.callback_operation.get_event("media_lord")[0](send_data)
+            send_parameter_control()
+
             #data.click_start_old_media_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
             data.stop_once = data.stack_add_timelime_media(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
 
@@ -410,12 +420,14 @@ class parts:
 
 
 class EffectGet:
-    def __init__(self, all_data, media_id, effect_key):
+    def __init__(self, all_data, media_id, effect_key, stack_add_timelime_media):
         self.all_data = all_data
         self.effect_key = effect_key
         self.media_id = media_id
+        self.stack_add_timelime_media = stack_add_timelime_media
 
     def add_element(self):
+        self.stack_add_timelime_media(add_type="effect_add", media_id=self.media_id)
         self.all_data.add_effect_elements(self.media_id, self.effect_key)
 
 
