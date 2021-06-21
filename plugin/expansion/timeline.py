@@ -9,6 +9,7 @@ import random
 import math
 import threading
 import datetime
+import inspect
 
 
 class InitialValue:
@@ -32,20 +33,23 @@ class InitialValue:
             #key_frame_id = old_data[2]
 
             key_frame_time_old_data = self.data.all_data.get_key_frame(old_media_id)
-            # key_frame_time_old_data[key_frame_id]
             for k in key_frame_time_old_data.keys():
                 if k in ["default_sta", "default_end"]:
                     continue
                 self.data.timeline_object[old_media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
 
-            self.data.all_data.get_key_frame(old_media_id, old_effect_key_data)
+            #self.data.all_data.get_key_frame(old_media_id, old_effect_key_data.effect_point_internal_id_time)
 
-            for point_key, point_val in zip(old_effect_key_data.keys(), old_effect_key_data.values()):
+            self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
+
+            for point_key, point_val in zip(old_effect_key_data.effect_point_internal_id_time.keys(), old_effect_key_data.effect_point_internal_id_time.values()):
                 if point_key in ["default_sta", "default_end"]:
                     continue
                 self.data.timeline_object[old_media_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
         def undo_run_obj(undo):
+
+            self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
 
             add_type = undo.add_type
 
@@ -55,13 +59,8 @@ class InitialValue:
             old_data_layer = undo.target_media_data[1]
 
             if add_type == "add":  # 削除
-                self.data.timeline_object[old_data_obj.obj_id].media_object_del()
 
-            if add_type == "lord":
-                for i in self.data.timeline_object:
-                    i.media_object_del()
-
-                self.data.timeline_object = {}
+                self.data.timeline_object[old_data_obj.obj_id].media_object_del(stack=False)
 
             if add_type == "mov":
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
@@ -87,7 +86,7 @@ class InitialValue:
                 old_data_split = undo.target_media_data_split[0]
                 old_data_split_layer = undo.target_media_data_split[1]
 
-                self.data.timeline_object[old_data_split.obj_id].media_object_del()
+                self.data.timeline_object[old_data_split.obj_id].media_object_del(stack=False)
 
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
@@ -99,13 +98,14 @@ class InitialValue:
 
                 print(old_data_obj.installation)
 
+                undo_run_frame(undo)
+
                 self.data.timeline_object[old_data_obj.obj_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_f_ratio(position=sta_f, size=end_f - sta_f)
                 self.data.timeline_object[old_data_obj.obj_id].callback_operation.event("mov", info=self.data.timeline_object[old_data_obj.obj_id].pxf.get_event_data())
 
                 #old_key_frame_data = [old_data_obj.effect_point_internal_id_time, old_data_obj.obj_id]
-                undo_run_frame(undo)
 
             if add_type == "del":  # 再追加
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
@@ -123,11 +123,30 @@ class InitialValue:
 
                     self.data.timeline_object[old_data_obj.obj_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
-        def stack_add_timelime_media(add_type=None, media_id=None, split_media_id=None):
-            self.data.operation["undo"].add_stack(media_id=media_id, split_media_id=split_media_id, classification="timelime_media", add_type=add_type, func=undo_run_obj)
+        def undo_lord(undo):
+            #self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
 
-        def stack_add_timelime_keyfrmae(add_type=None, media_id=None, split_media_id=None):
-            self.data.operation["undo"].add_stack(media_id=media_id, split_media_id=split_media_id, classification="timelime_keyframe", add_type=add_type, func=undo_run_frame)
+            if undo.add_type == "lord":
+                for i in self.data.timeline_object.values():
+                    i.media_object_del(stack=False)
+
+                self.data.timeline_object = {}
+
+        def stack_add_timelime_media(stop_once=None, add_type=None, media_id=None, split_media_id=None):
+            print("呼び出し先[stack_add_timelime_media]", inspect.stack()[1].filename, inspect.stack()[1].function)
+
+            stop_once = self.data.operation["undo"].add_stack(stop_once=stop_once, media_id=media_id, split_media_id=split_media_id, classification="timelime_media", add_type=add_type, func=undo_run_obj)
+            if stop_once:
+                return stop_once
+
+        def stack_add_timelime_keyframe(stop_once=None, add_type=None, media_id=None, split_media_id=None):
+
+            stop_once = self.data.operation["undo"].add_stack(stop_once=stop_once, media_id=media_id, split_media_id=split_media_id, classification="timelime_keyframe", add_type=add_type, func=undo_run_frame)
+            if stop_once:
+                return stop_once
+
+        #stack_add_timelime_media(add_type="lord", media_id=None)
+        self.data.operation["undo"].add_stack(classification="timelime_media", add_type="lord", func=undo_lord)
 
         #old_data = [None, 0]
         #stack_add_timelime_media("lord", old_data)
@@ -265,9 +284,10 @@ class InitialValue:
             new_object = self.data.all_data.add_object_elements()
             make_object(new_object.obj_id)
 
-            old_data = self.data.all_data.media_object_had_layer(new_object.obj_id)
+            #old_data = self.data.all_data.media_object_had_layer(new_object.obj_id)
             #stack_add("add", old_data)
             stack_add_timelime_media(add_type="add", media_id=new_object.obj_id)
+            #stack_add_timelime_keyframe(add_type="lord", media_id=new_object.obj_id)
 
         def layer_updown(mouse_pos):  # この関数重たそうだから要調整かな
             sta, end,  obj_id, edit_layer = mouse_pos
@@ -347,7 +367,7 @@ class InitialValue:
             new_obj.pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
             new_obj.pxf.set_f_ratio(position=sta, size=end - sta)
             new_obj.stack_add_timelime_media = stack_add_timelime_media
-            new_obj.stack_add_timelime_keyfrmae = stack_add_timelime_keyfrmae
+            new_obj.stack_add_timelime_keyframe = stack_add_timelime_keyframe
             new_obj.callback_operation.event("mov", info=new_obj.pxf.get_event_data())
 
             self.data.timeline_object[media_id] = new_obj

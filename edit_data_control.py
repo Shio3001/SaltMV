@@ -250,7 +250,11 @@ class Storage:
         self.add_key_frame_inside_data(obj_id, key_frame_id)
 
     def add_key_frame_point_onely(self, time, obj_id, key_frame_id):
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
+        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id])
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = copy.deepcopy(time)
+        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id])
+        # if typeA != typeB:
+        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def add_key_frame_inside_data(self, obj_id, key_frame_id):
         effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group
@@ -259,42 +263,65 @@ class Storage:
             return
 
         for eg in effect_group.values():
+            #typeA = type(eg.effect_point_internal_id_point[key_frame_id])
             new_effect = copy.deepcopy(eg.effect_point)
             eg.effect_point_internal_id_point[key_frame_id] = new_effect
+            #typeB = type(eg.effect_point_internal_id_point[key_frame_id])
+
+            # if typeA != typeB:
+            #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def layer_id_set(self, obj_id, new_layer_id):
+        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1])
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1] = copy.deepcopy(new_layer_id)
+        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1])
+
+        # if typeA != typeB:
+        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def move_key_frame(self, time, obj_id, key_frame_id):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
-
+        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id])
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = time
+        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id])
+        # if typeA != typeB:
+        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def edit_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key, mov_val):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
 
+        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
+        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
+        # if typeA != typeB:
+        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def get_key_frame(self, obj_id, data=None):
 
-        typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
         if not data is None:
+
+            typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time = copy.deepcopy(data)
+
+            typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
+            if typeA != typeB:
+                self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
+
             return
-
-        typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
-        if typeA != typeB:
-            self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def override_key_frame_val_list(self, obj_id, effect_id, key_frame_data):
+        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point = copy.deepcopy(key_frame_data)
+        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+        # if typeA != typeB:
+        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def get_key_frame_val_list(self, obj_id, effect_id):
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
@@ -306,8 +333,15 @@ class Storage:
         if not various_fixed_key in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(various_fixed_key))
 
+        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key])
+
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key] = various_fixed_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed)
+
+        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key])
+
+        # if typeA != typeB:
+        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def get_now_layer_number(self, obj_id):
         ##print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)

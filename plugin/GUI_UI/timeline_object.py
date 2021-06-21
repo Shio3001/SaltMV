@@ -51,7 +51,7 @@ class KeyFrame:
             data.edit_diagram_color(self.uu_id, "#ff0000")
 
             #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
-            data.stack_add_timelime_keyframe(add_type="mov", media_id=data.option_data["media_id"])
+            data.key_stop_once = data.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
 
         def click_position(event):
             if not self.click_flag:
@@ -69,6 +69,10 @@ class KeyFrame:
             self.callback_operation.event("sub_mov", info=data.pxf.get_event_data())
 
         def click_end(event):
+
+            if self.click_flag:
+                data.key_stop_once[1](data.key_stop_once[0])
+
             self.click_flag = False
             self.mouse_sta, _, self.diagram_join_sta = data.get_diagram_contact(self.uu_id, del_mouse=True)
             _, _, self.diagram_join = data.get_diagram_contact(self.uu_id, del_mouse=True)
@@ -182,11 +186,12 @@ class parts:
 
         # data.pxf.set_draw_func(draw)
 
-        def media_object_del():
+        def media_object_del(stack=True):
 
-            old_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
-           # data.stack_add("del", old_data)
-            data.stack_add_timelime_media(add_type="del", media_id=data.option_data["media_id"])
+            if stack:
+                #old_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
+                data.stack_add_timelime_media(add_type="del", media_id=data.option_data["media_id"])
+                #data.stack_add_timelime_media(add_type="del", media_id=data.option_data["media_id"])
 
             data.callback_operation.event("end", info=data.pxf.get_event_data())
             data.callback_operation.event("del", data.option_data["media_id"])
@@ -222,7 +227,7 @@ class parts:
             new_key_frame = make_KeyFrame()
             data.all_data.add_key_frame(data.pxf.sub_point_f[new_key_frame.uu_id], data.option_data["media_id"], new_key_frame.uu_id)
 
-            key_frame_id = new_key_frame.uu_id
+            #ckey_frame_id = new_key_frame.uu_id
             #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
 
             #data.stack_add("frame", (self.key_frame_time_old_data,data.option_data["media_id"]))
@@ -312,7 +317,7 @@ class parts:
 
             data.all_data.callback_operation.get_event("media_lord")[0](send_data)
             #data.click_start_old_media_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
-            data.stack_add_timelime_media(add_type="mov", media_id=data.option_data["media_id"])
+            data.stop_once = data.stack_add_timelime_media(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
 
             # #print("非同期")
 
@@ -380,7 +385,8 @@ class parts:
 
         def click_end(event):
 
-            # if data.click_flag:
+            if data.click_flag:
+                data.stop_once[1](data.stop_once[0])
 
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
