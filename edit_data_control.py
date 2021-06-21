@@ -153,14 +153,12 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0])
 
-
     def media_object_had_layer(self, object_order, data=None):
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order] = copy.deepcopy(data)
             return
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order])
-
 
     def effect(self, object_order, effect_order, data=None):
         if not data is None:
@@ -280,7 +278,11 @@ class Storage:
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
 
-    def get_key_frame(self, obj_id):
+    def get_key_frame(self, obj_id,data=None):
+        if not data is None:
+            self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time = copy.deepcopy(data)
+            return
+
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def override_key_frame_val_list(self, obj_id, effect_id, key_frame_data):
