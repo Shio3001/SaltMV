@@ -7,6 +7,7 @@ import uuid
 
 class KeyFrame:
     def __init__(self, data, size, center_x, center_y, uu_id):
+        #print(" * * * * * * * * * * keyframe設定", data.option_data["media_id"])
         self.uu_id = data.all_data.elements.make_id("keyframe") if uu_id is None else uu_id
 
         data.new_diagram(self.uu_id)
@@ -51,6 +52,8 @@ class KeyFrame:
 
             data.edit_diagram_color(self.uu_id, "#ff0000")
 
+            print(self.uu_id)
+
             #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
 
         def click_position(event):
@@ -61,7 +64,7 @@ class KeyFrame:
             self.now_mov_x = copy.deepcopy(self.now_mouse[0] - self.mouse_sta[0])
 
             self.pos = self.view_pos_sta + self.now_mov_x
-            ##print("sub_pos", self.pos)
+            ###print("sub_pos", self.pos)
 
             # if data.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
             data.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
@@ -91,7 +94,7 @@ class KeyFrame:
 
         def this_del(info=True):
 
-            # #print("thisdel")
+            # ##print("thisdel")
             if info:
                 self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
                 #key_frame_id = self.uu_id
@@ -115,7 +118,7 @@ class KeyFrame:
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
 
-        # #print(self.callback_operation.all_get_event())
+        # ##print(self.callback_operation.all_get_event())
 
         self.popup2 = data.operation["plugin"]["other"]["menu_popup"].MenuPopup(data.window, popup=True)
         popup_list = [("中間点削除", this_del)]
@@ -135,7 +138,7 @@ class KeyFrame:
         data.diagram_stack(self.uu_id, False)
         data.diagram_stack(self.uu_id, True, "bar")
 
-        # #print("追加終了")
+        # ##print("追加終了")
 
 
 class parts:
@@ -167,7 +170,7 @@ class parts:
                 data.diagram_draw(k)
 
         data.edit_layer = edit_layer
-        ##print("layer_pos", layer_pos)
+        ###print("layer_pos", layer_pos)
 
         # data.pos_add_y = pos_add_y
 
@@ -185,6 +188,10 @@ class parts:
 
         def media_object_del(stack=True):
 
+            # data.all_data.callback_operation.event("element_ui_all_del")
+
+            data.all_data.callback_operation.get_event("media_lord")[0](del_all=True)
+
             if stack:
                 #old_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
                 data.stack_add_timelime_media(add_type="del", media_id=data.option_data["media_id"])
@@ -192,6 +199,8 @@ class parts:
 
             data.callback_operation.event("end", info=data.pxf.get_event_data())
             data.callback_operation.event("del", data.option_data["media_id"])
+
+            # send_parameter_control()
 
         data.media_object_del = media_object_del
 
@@ -278,7 +287,7 @@ class parts:
 
         # def set_parameter_permit(flag_bool):
         #    data.media_object_parameter_bool = flag_bool
-        #    ##print("非同期 :", flag_bool)
+        #    ###print("非同期 :", flag_bool)
 
         data.click_flag = False
         data.mov_lock = False
@@ -291,6 +300,7 @@ class parts:
 
             send_data.now_f = data.now_f_click_start_for_parameter_control
             send_data.media_id = data.option_data["media_id"]
+            send_data.stack_add_timelime_effect = data.stack_add_timelime_effect
             data.all_data.callback_operation.get_event("media_lord")[0](send_data)
 
         data.send_parameter_control = send_parameter_control
@@ -323,7 +333,7 @@ class parts:
             #data.temp_pos_size = [None, None]
 
             # set_parameter_permit(False)
-            # #print("非同期開始")
+            # ##print("非同期開始")
 
             #send_data.text_a_return = text_a_return
             #send_data.text_b_return = text_b_return
@@ -336,7 +346,7 @@ class parts:
 
             #data.click_start_old_media_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
 
-            # #print("非同期")
+            # ##print("非同期")
 
         def click_position(event):
 
@@ -350,7 +360,7 @@ class parts:
             if now_mov_x != 0:
                 data.click_move_stack_flag = True
 
-            ##print("now_mouse", now_mouse[0])
+            ###print("now_mouse", now_mouse[0])
 
             if data.mouse_touch_sta[0][0]:  # 左側移動
 
@@ -363,7 +373,7 @@ class parts:
 
                 """
                 if not sub_extremity is None and sub_extremity[0] <= pos:
-                    ##print("検知 A")
+                    ###print("検知 A")
                     old_pos = copy.deepcopy(pos)
                     pos = sub_extremity[0] - 1
                     size += old_pos - pos
@@ -385,7 +395,7 @@ class parts:
 
                 """
                 if not sub_extremity is None and pos + size <= sub_extremity[1]:
-                    ##print("検知 B")
+                    ###print("検知 B")
                     size = sub_extremity[1] - pos + 1
                 """
 
@@ -398,7 +408,7 @@ class parts:
                 pos = data.view_pos_sta + now_mov_x
                 size = data.view_size_sta
 
-                print("now_mov_x", now_mov_x, data.click_move_stack_flag)
+                #print("now_mov_x", now_mov_x, data.click_move_stack_flag)
 
                 data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True, main_mov=False)
                 data.callback_operation.event("updown", info=(data.mouse_sta[1], now_mouse[1],  data.option_data["media_id"], edit_layer))
@@ -411,7 +421,7 @@ class parts:
             if data.click_start_sta_layer != data.click_start_end_layer:
                 data.click_move_stack_flag = True
 
-            #print(data.sta_layer, data.end_layer, data.click_move_stack_flag)
+            ##print(data.sta_layer, data.end_layer, data.click_move_stack_flag)
 
             if data.click_flag and data.click_move_stack_flag:
                 data.obj_stop_once[1](data.obj_stop_once[0])

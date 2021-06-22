@@ -87,12 +87,16 @@ class UndoStackData:
         self.add_type = add_type  # add mov del
 
         if not self.media_id is None:
-            self.target_media_data = self.all_data.media_object_had_layer(self.media_id)
-            self.media_id_key_frame = self.all_data.get_key_frame(self.media_id)
+            self.target_media_data = copy.deepcopy(self.all_data.media_object_had_layer(self.media_id))
+            self.media_id_key_frame = copy.deepcopy(self.target_media_data[0].effect_point_internal_id_time)
+
+            print("undo登録 : ", self.media_id_key_frame)
 
         # if not split_media_id is None:
 
     def set_split_media(self, split_media_id):
         self.split_media_id = split_media_id
-        self.target_media_data_split = self.all_data.media_object_had_layer(self.split_media_id)
-        self.split_media_id_key_frame = self.all_data.get_key_frame(self.split_media_id)
+        self.target_media_data_split = copy.deepcopy(self.all_data.media_object_had_layer(self.split_media_id))
+        self.split_media_id_key_frame = copy.deepcopy(self.target_media_data_split[0].effect_point_internal_id_time)
+
+        print("undo split 登録 : ", self.split_media_id_key_frame)

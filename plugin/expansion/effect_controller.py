@@ -234,10 +234,20 @@ class InitialValue:
             # ここが悪さしてる可能性あり
             #self.now += 1
 
-        def media_lord(send=None):
+        def media_lord(send=None, del_all=None):
 
             if not send is None:
                 self.send = send
+
+            if del_all:
+                self.data.ui_management.set_old_elements_len()
+                self.data.ui_management.del_ignition(0)
+
+                self.send = None
+
+            if self.send is None:
+                return
+
             self.send.effect_group = self.data.all_data.media_object(self.send.media_id).effect_group
             self.send.effect_point_internal_id_time = self.data.all_data.media_object(self.send.media_id).effect_point_internal_id_time
 

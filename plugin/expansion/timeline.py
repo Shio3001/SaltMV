@@ -42,31 +42,37 @@ class InitialValue:
             for point_key, point_val in zip(id_time.keys(), id_time.values()):
                 if point_key in ["default_sta", "default_end"]:
                     continue
-                print(" + undo : 追加 ", point_key)
                 self.data.timeline_object[media_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
+                print(" + undo : 追加 ", point_key, point_val)
 
         def undo_run_obj(undo):
 
-            self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
+            # self.data.all_data.get_key_frame(undo.media_id)
+            # self.data.all_data.get_key_frame(undo.split_media_id)
+
             #self.data.all_data.media_object_had_layer(media_id, undo.target_media_data)
 
             add_type = undo.add_type
 
-            print("操作", add_type)
+            #print("操作", add_type)
 
             old_data_obj = undo.target_media_data[0]
             old_data_layer = undo.target_media_data[1]
 
             # self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
 
-            self.data.all_data.callback_operation.event("media_lord")
+            print("old_data_obj.obj_id", old_data_obj.obj_id, "undo.media_id", undo.media_id)
 
             if add_type == "add":  # 削除
+                self.data.all_data.callback_operation.event("element_ui_all_del")
+
+                self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
                 self.data.timeline_object[old_data_obj.obj_id].media_object_del(stack=False)
 
             if add_type == "mov":
-
-                del_undo_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
+                #undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
 
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
@@ -76,26 +82,34 @@ class InitialValue:
 
                 frame_len = self.data.all_data.scene().editor["len"]
 
-                print(old_data_obj.installation)
+                # print(old_data_obj.installation)
 
                 self.data.timeline_object[old_data_obj.obj_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
+
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_f_ratio(position=sta_f, size=end_f - sta_f)
                 self.data.timeline_object[old_data_obj.obj_id].callback_operation.event("mov", info=self.data.timeline_object[old_data_obj.obj_id].pxf.get_event_data())
 
+                print("undo.media_id_key_frame", undo.media_id_key_frame)
+                del_undo_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                #undo_mov_frame(old_data_obj.obj_id, undo.media_id_key_frame)
                 #old_key_frame_data = [old_data_obj.effect_point_internal_id_time, old_data_obj.obj_id]
 
-                undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
-
             if add_type == "split":
-
-                del_undo_frame(undo.split_media_id, undo.split_media_id_key_frame)
-                del_undo_frame(old_data_obj.obj_id, undo.media_id_key_frame)
-
+                self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
                 old_data_split = undo.target_media_data_split[0]
                 old_data_split_layer = undo.target_media_data_split[1]
 
-                self.data.timeline_object[old_data_split.obj_id].callback_operation.event("del", old_data_split.obj_id)
+                del_undo_frame(undo.split_media_id, undo.split_media_id_key_frame)
+                del_undo_frame(undo.media_id, undo.media_id_key_frame)
+                del_object_ui(undo.split_media_id)
+
+                self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
+
+                # self.data.all_data.del_object_elements(old_data_split.obj_id)
+
+                # self.data.timeline_object[old_data_split.obj_id].media_object_del(stack=False)
 
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
@@ -106,10 +120,13 @@ class InitialValue:
                 frame_len = self.data.all_data.scene().editor["len"]
                 self.data.timeline_object[old_data_obj.obj_id].pxf.init_set_sta_end_f(sta=0, end=frame_len)
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
+
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_f_ratio(position=sta_f, size=end_f - sta_f)
                 self.data.timeline_object[old_data_obj.obj_id].callback_operation.event("mov", info=self.data.timeline_object[old_data_obj.obj_id].pxf.get_event_data())
+
                 undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
+                #undo_mov_frame(old_data_obj.obj_id, undo.media_id_key_frame)
                 #self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
                 #self.data.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k, pos_f=frame)
 
@@ -118,6 +135,7 @@ class InitialValue:
                 #old_key_frame_data = [old_data_obj.effect_point_internal_id_time, old_data_obj.obj_id]
 
             if add_type == "del":  # 再追加
+                self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
                 self.data.all_data.callback_operation.event("element_ui_all_del")
 
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
@@ -135,8 +153,10 @@ class InitialValue:
 
                     self.data.timeline_object[old_data_obj.obj_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
+                self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
+
         def undo_run_effect(undo):
-            print("undo_run_effect", undo.media_id, undo.target_media_data)
+            #print("undo_run_effect", undo.media_id, undo.target_media_data)
             self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
             old_data_obj = undo.target_media_data[0]
             old_data_layer = undo.target_media_data[1]
@@ -186,7 +206,7 @@ class InitialValue:
         self.data.edit_canvas_position("timeline", x=0, y=0)
         self.data.window_title_set("タイムライン")
 
-        # ##print(button.canvas_data.territory["main"].diagram)
+        # print(button.canvas_data.territory["main"].diagram)
 
         shape = []
 
@@ -224,7 +244,7 @@ class InitialValue:
         nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
         nowtime_bar.territory_draw()
 
-        # print(self.data.all_data.now_time)
+        # #print(self.data.all_data.now_time)
 
         def now_time_edit(scroll_data):
             self.data.all_data.now_time_update(scroll_data)
@@ -235,11 +255,11 @@ class InitialValue:
 
         def timeline_nowtime_approval_True(_):
             nowtime_bar.click_flag = True
-            print("許可")
+            # print("許可")
 
         def timeline_nowtime_approval_False(_):
             nowtime_bar.click_flag = False
-            print("停止")
+            # print("停止")
 
         timeline_scroll.callback_operation.set_event("sta", timeline_nowtime_approval_False)
         timeline_scroll.callback_operation.set_event("end", timeline_nowtime_approval_True)
@@ -250,7 +270,7 @@ class InitialValue:
             media_id, click_f_pos = send
             scroll_data = self.data.timeline_object[media_id].pxf.get_event_data()
             if not scroll_data.ratio_f[0] < click_f_pos < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
-                print("返送")
+                # print("返送")
                 return
 
             obj_stop_once = stack_add_timelime_media(add_type="split", media_id=media_id, stop_once=True)
@@ -271,24 +291,30 @@ class InitialValue:
             items = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f).items()
 
             for k, v in items:
-                print(k, v)
-                if click_f_pos > v:  # 左側
-                    print("左側")
-                if click_f_pos < v:  # 右側
-                    print("右側")
+                #print(k, v)
+                if v < click_f_pos:  # 左側
+                    pass
+                    print(" < < < < < < < < < < < < < < < < < < < < 左側", k, v)
+                if v > click_f_pos:  # 右側
+                    pass
+                    print(" > > > > > > > > > > > > > > > > > > > >右側", k, v)
                     # self.data.timeline_object[media_id].pxf.sub_point_f[k]
-
-                    if k == "default_end":
-                        continue
 
                     frame = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
                     #self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f[k] = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
                     self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
+
+                    if k == "default_end" or k == "default_sta":
+                        continue
+
                     self.data.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k, pos_f=frame)
 
                 if v == click_f_pos:  # ちょうど一緒
-                    print("等")
+                    # print("等")
                     self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
+
+            split_items = copy.deepcopy(self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f).items()
+            print(items, split_items)
 
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
             self.data.timeline_object[media_id].mov_lock = False
@@ -309,7 +335,7 @@ class InitialValue:
         def new_layer():
             new_layer = self.data.all_data.add_layer_elements()
             make_layer()
-            # #print(new_layer.layer_id)
+            # print(new_layer.layer_id)
 
         def make_layer():
             pass
@@ -337,7 +363,7 @@ class InitialValue:
             if new_layer < 0:
                 new_layer = 0
 
-            print("new_layer", new_layer)
+            #print("new_layer", new_layer)
 
             new_layer_id = self.data.all_data.layer_number_to_layer_id(new_layer)
             self.data.all_data.layer_id_set(obj_id, new_layer_id)
@@ -345,7 +371,7 @@ class InitialValue:
             edit_layer(new_layer)
 
         def del_object_ui(media_id):
-            print("削除対象物:", media_id)
+            #print("削除対象物:", media_id)
             self.data.timeline_object[media_id].del_territory()
             # del self.data.timeline_object[media_id].callback_operation
             del self.data.timeline_object[media_id]
@@ -356,11 +382,11 @@ class InitialValue:
             for media_id in self.data.timeline_object.keys():
                 self.data.timeline_object[media_id].del_territory()
                 self.data.all_data.del_object_elements(media_id)
-                # print("削除 {0}".format(media_id))
+                # #print("削除 {0}".format(media_id))
 
             self.data.timeline_object = {}
             self.data.all_data.callback_operation.event("element_del")
-            # print(self.data.timeline_object)
+            # #print(self.data.timeline_object)
 
         # def media_objct_click():
 
@@ -379,7 +405,7 @@ class InitialValue:
         def make_object(media_id, sta=0, end=20, layer_number=0):
             option_data = {"media_id": media_id}
 
-            print(len(self.data.timeline_object))
+            # print(len(self.data.timeline_object))
 
             new_obj = self.data.new_parts("timeline", media_id, parts_name="timeline_object", option_data=option_data)
 
@@ -438,7 +464,7 @@ class InitialValue:
             nowtime_bar.frame_set(nowtime)
 
             for obj_k, obj_v in zip(obj_list[0], obj_list[1]):
-                print(obj_k, "実行")
+                #print(obj_k, "実行")
                 sta_f = obj_v[0].installation[0]  # 開始地点解釈
                 end_f = obj_v[0].installation[1]  # 終了地点解釈
                 layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]  # 所属レイヤー解釈
@@ -506,7 +532,7 @@ class InitialValue:
             nowtime_bar.edit_diagram_size("now", y=timeline_hight)
             nowtime_bar.pxf.set_f_ratio()
 
-            # #print("ウィンドウサイズ", size_x, size_y)
+            ##print("ウィンドウサイズ", size_x, size_y)
 
             # length = self.data.all_data.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)
@@ -551,7 +577,7 @@ class InitialValue:
                 scene_name_func = ("　　 : " + k, scene_get.change) if k != self.data.all_data.edit_data.now_scene else ("現在 : " + k, scene_get.change)
                 pop_list.append(scene_name_func)
 
-            print(scene_name_list, pop_list)
+            #print(scene_name_list, pop_list)
 
             self.popup.set(pop_list)
 

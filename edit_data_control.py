@@ -52,10 +52,10 @@ class Storage:
             return self.edit_data.scenes[self.edit_data.now_scene].now_time
 
         self.edit_data.scenes[self.edit_data.now_scene].now_time = copy.deepcopy(scroll_data.ratio_f[0])
-        print("現在時刻変更",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
+        #print("現在時刻変更",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
 
     def change_now_scene(self, scene_name):
-        print("現在シーン切り替え", self.edit_data.now_scene, " → ", scene_name)
+        #print("現在シーン切り替え", self.edit_data.now_scene, " → ", scene_name)
         if scene_name in self.edit_data.scenes.keys():
             self.edit_data.now_scene = copy.deepcopy(scene_name)
 
@@ -68,7 +68,7 @@ class Storage:
         self.edit_data.now_scene = new_scene.scene_id
 
     def input_debug(self, message=None):
-        ##print("{0} 入力してください".format(message))
+        #print("{0} 入力してください".format(message))
 
         in_data = str(input())
 
@@ -94,10 +94,10 @@ class Storage:
             for k, kv in zip(font_path.keys(), font_path.values()):
                 font_file_name = os.listdir(kv)
 
-                ##print("{0}ファイル量 : {1}".format(k, len(font_file_name)))
+                #print("{0}ファイル量 : {1}".format(k, len(font_file_name)))
 
                 for f in font_file_name:
-                    # #print(f)
+                    # print(f)
 
                     path = os.path.relpath(kv, self.main_path)
                     self.font_data[f] = os.path.join(path, f)
@@ -107,7 +107,7 @@ class Storage:
 
     def layer_number_to_layer_id(self, layer_number):
         layer_layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id
-        # #print(layer_data.items())
+        # print(layer_data.items())
 
         for k, v in layer_layer_id.items():
             if v == layer_number:
@@ -173,7 +173,7 @@ class Storage:
             new_scene.scene_id = str(new_scene_name)
         self.edit_data.scenes[new_scene.scene_id] = new_scene
 
-        ##print("key:", new_scene.scene_id)
+        #print("key:", new_scene.scene_id)
 
         return copy.deepcopy(self.edit_data.scenes[new_scene.scene_id])
 
@@ -190,6 +190,8 @@ class Storage:
             new_copy_obj.installation[0] = sta
         if not end is None:
             new_copy_obj.installation[1] = end
+
+        new_copy_obj.effect_point_internal_id_time = {}
 
         new_copy_obj.obj_id = elements.make_id("obj_copy")
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id] = [None, None]
@@ -294,7 +296,7 @@ class Storage:
 
         #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
-        print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
+        # print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)
         #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
         # if typeA != typeB:
         #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
@@ -336,15 +338,15 @@ class Storage:
         if not various_fixed_key in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(various_fixed_key))
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key] = copy.deepcopy(various_fixed_val)
-        print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed)
+        # print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed)
 
     def get_now_layer_id(self, obj_id):
-        ##print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
+        #print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
         layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1]
         return layer_id
 
     def get_now_layer_number(self, obj_id):
-        ##print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
+        #print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
         layer_id = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1]
         layer_number = self.edit_data.scenes[self.edit_data.now_scene].layer_group.layer_layer_id[layer_id]
         return layer_number
@@ -382,7 +384,7 @@ class Storage:
             if not str(type(self.fill_input_callback)) == "<class 'function'>":
                 return
 
-            # #print("input実行")
+            # print("input実行")
 
         except:
             self.operation["log"].write("編集ファイルが存在しませんでした")
@@ -398,7 +400,7 @@ class Storage:
         self.callback_operation.event("file_output_before")
 
         # for layer in self.edit_data.scenes[self.edit_data.now_scene].layer_group.values():
-        #    ##print("layer_obj len:", layer.object_group)
+        #    #print("layer_obj len:", layer.object_group)
 
         user_select = self.extension_detection(user_select)
 
