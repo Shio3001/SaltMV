@@ -278,6 +278,9 @@ class InitialValue:
                     print("右側")
                     # self.data.timeline_object[media_id].pxf.sub_point_f[k]
 
+                    if k == "default_end":
+                        continue
+
                     frame = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
                     #self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f[k] = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
                     self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
