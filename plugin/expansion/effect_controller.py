@@ -233,7 +233,6 @@ class InitialValue:
 
             # ここが悪さしてる可能性あり
             #self.now += 1
-
         def media_lord(send=None, del_all=None):
 
             if not send is None:
