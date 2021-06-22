@@ -30,18 +30,21 @@ class UndoStack:
         self.undo_stack_list = []
         self.undo_stack_list_now = 1
 
-    def stop_once_add(self, undo):
+    def stop_once_add(self, undo, split_media_id=None):
+        if not split_media_id is None:
+            undo.set_split_media(split_media_id)
+
         self.undo_stack_list.append(undo)
         self.undo_stack_list_now = len(self.undo_stack_list)
 
-    def add_stack(self, stop_once=None, media_id=None, effect_id=None, split_media_id=None, classification=None, add_type=None, func=None):
+    def add_stack(self, stop_once=None, media_id=None, effect_id=None, classification=None, add_type=None, func=None):
         if not classification in self.__safe.keys():
             return
         if not add_type in self.__safe[classification]:
             return
 
-        print(self.all_data, media_id, effect_id, split_media_id, classification, add_type, func)
-        undo = UndoStackData(self.all_data, media_id, effect_id, split_media_id, classification, add_type, func)
+        print(self.all_data, media_id, effect_id, classification, add_type, func)
+        undo = UndoStackData(self.all_data, media_id, effect_id, classification, add_type, func)
         if stop_once:
             return undo, self.stop_once_add
 
@@ -65,7 +68,7 @@ class UndoStack:
         undo = self.undo_stack_list[self.undo_stack_list_now]
         # if not undo.media_id is None:
 
-        print("undo_obj", undo.classification, undo.add_type, undo.media_id, undo.func)
+        print("******************************************undo_obj", undo.classification, undo.add_type, undo.media_id, undo.func)
         undo.func(undo)
 
         self.del_stack()
@@ -74,7 +77,7 @@ class UndoStack:
 
 
 class UndoStackData:
-    def __init__(self, all_data, media_id, effect_id, split_media_id, classification, add_type, func):
+    def __init__(self, all_data, media_id, effect_id, classification, add_type, func):
         self.all_data = all_data
         self.media_id = media_id
         self.effect_id = effect_id
@@ -85,7 +88,11 @@ class UndoStackData:
 
         if not self.media_id is None:
             self.target_media_data = self.all_data.media_object_had_layer(self.media_id)
+            self.media_id_key_frame = self.all_data.get_key_frame(self.media_id)
 
-        if not split_media_id is None:
-            self.split_media_id = split_media_id
-            self.target_media_data_split = self.all_data.media_object_had_layer(self.split_media_id)
+        # if not split_media_id is None:
+
+    def set_split_media(self, split_media_id):
+        self.split_media_id = split_media_id
+        self.target_media_data_split = self.all_data.media_object_had_layer(self.split_media_id)
+        self.split_media_id_key_frame = self.all_data.get_key_frame(self.split_media_id)

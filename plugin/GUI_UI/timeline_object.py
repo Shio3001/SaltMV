@@ -10,6 +10,7 @@ class KeyFrame:
         self.uu_id = data.all_data.elements.make_id("keyframe") if uu_id is None else uu_id
 
         data.new_diagram(self.uu_id)
+
         data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
         self.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
 
@@ -36,27 +37,21 @@ class KeyFrame:
         pos, size = data.get_diagram_position_size("bar")
         data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
-        #data.new_diagram("text", diagram_type="text")
-        #data.edit_diagram_position("text", x=0, y=pos_y_normal)
-        #data.edit_diagram_size("text", x=100, y=20)
-        #data.edit_diagram_text("text", font_size=20)
-
-        # data.territory_stack(False)
-
         data.diagram_draw(self.uu_id)
 
         self.click_flag = False
 
         def click_start(event):
             self.click_flag = True
+            self.key_stop_once = data.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
             self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = data.get_diagram_contact(self.uu_id)
+
             self.view_pos_sta = data.edit_diagram_position(self.uu_id)[0]
             self.callback_operation.event("sub_sta", info=data.pxf.get_event_data())
 
             data.edit_diagram_color(self.uu_id, "#ff0000")
 
             #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
-            self.key_stop_once = data.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
 
         def click_position(event):
             if not self.click_flag:
@@ -106,9 +101,6 @@ class KeyFrame:
                 #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"]))
 
             data.del_diagram(self.uu_id)
-            #data.pxf.callback_operation.event("sub_del", self.uu_id)
-            # data.callback_operation.event("tihs_del")
-
             data.pxf.del_sub_point(self.uu_id)
             data.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
             data.pxf.callback_operation.del_event("obj_sub_point", func=draw)
@@ -304,7 +296,13 @@ class parts:
         data.send_parameter_control = send_parameter_control
         data.click_move_stack_flag = False
 
+        data.click_start_sta_layer = ""
+        data.click_start_end_layer = ""
+
         def click_start(event):
+
+            data.click_start_sta_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
+
             if data.mov_lock:
                 return
 
@@ -319,8 +317,6 @@ class parts:
             data.edit_diagram_color("bar", "#ff0000")
 
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
-
-            data.sta_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
 
             data.now_f_click_start_for_parameter_control = data.pxf.px_to_f(data.mouse_sta[0])
 
@@ -410,12 +406,12 @@ class parts:
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
-            data.end_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
+            data.click_start_end_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
 
-            if data.sta_layer != data.end_layer:
+            if data.click_start_sta_layer != data.click_start_end_layer:
                 data.click_move_stack_flag = True
 
-            print(data.sta_layer, data.end_layer, data.click_move_stack_flag)
+            #print(data.sta_layer, data.end_layer, data.click_move_stack_flag)
 
             if data.click_flag and data.click_move_stack_flag:
                 data.obj_stop_once[1](data.obj_stop_once[0])
