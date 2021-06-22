@@ -67,6 +67,8 @@ class InitialValue:
         # self.data.all_data.undo_stack_list = []
         self.undo_stack_now = 0
 
+        self.send = None
+
         # self.redo_stack_list = []
         # self.redo_stack_now = 0
         # self.undo_stack_now = len(self.data.all_data.undo_stack_list) - 1
@@ -138,7 +140,13 @@ class InitialValue:
                 self.now += 1
 
         def element_lord(send):
+            old_send_effect_id = "NoneEffectSend"
+
             self.send = send
+
+            if not self.send is None:
+                old_send_effect_id = copy.deepcopy(self.send.effect_element.effect_id)
+
             self.data.all_data.undo_stack_list = []
             self.data.all_data.undo_stack_list_number = 0
             # element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_self.send
@@ -150,8 +158,12 @@ class InitialValue:
             self.data.ui_management.set_old_elements_len()
             make()
 
-            old_text_data = self.data.all_data.get_key_frame_val_list(self.send.media_id, self.send.effect_element.effect_id)
-            stack_add(self.send.media_id)
+            #old_text_data = self.data.all_data.get_key_frame_val_list(self.send.media_id, self.send.effect_element.effect_id)
+
+            new_send_effect_id = copy.deepcopy(self.send.effect_element.effect_id)
+
+            if new_send_effect_id != old_send_effect_id:
+                stack_add(self.send.media_id)
 
             self.data.ui_management.del_ignition(self.now)
             self.data.window.update()

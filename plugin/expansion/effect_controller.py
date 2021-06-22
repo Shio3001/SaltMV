@@ -109,7 +109,7 @@ class InitialValue:
             # shape_updown_destination.territory_draw()
 
         def effect_del(A, box_pos, gap, sta_point):
-            self.send.stack_add_timelime_media(add_type="effect_del", media_id=self.now_media_id)
+            self.send.stack_add_timelime_effect(add_type="effect_del", media_id=self.now_media_id)
 
             con_len = len(self.data.ui_management.ui_list)
 

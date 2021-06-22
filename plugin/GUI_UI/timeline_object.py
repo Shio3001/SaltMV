@@ -36,10 +36,10 @@ class KeyFrame:
         pos, size = data.get_diagram_position_size("bar")
         data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
-        data.new_diagram("text", diagram_type="text")
+        #data.new_diagram("text", diagram_type="text")
         #data.edit_diagram_position("text", x=0, y=pos_y_normal)
-        data.edit_diagram_size("text", x=100, y=20)
-        data.edit_diagram_text("text", font_size=20)
+        #data.edit_diagram_size("text", x=100, y=20)
+        #data.edit_diagram_text("text", font_size=20)
 
         # data.territory_stack(False)
 
@@ -56,7 +56,7 @@ class KeyFrame:
             data.edit_diagram_color(self.uu_id, "#ff0000")
 
             #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
-            data.key_stop_once = data.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
+            self.key_stop_once = data.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
 
         def click_position(event):
             if not self.click_flag:
@@ -76,7 +76,7 @@ class KeyFrame:
         def click_end(event):
 
             if self.click_flag:
-                data.key_stop_once[1](data.key_stop_once[0])
+                self.key_stop_once[1](self.key_stop_once[0])
 
             self.click_flag = False
             self.mouse_sta, _, self.diagram_join_sta = data.get_diagram_contact(self.uu_id, del_mouse=True)
@@ -99,7 +99,7 @@ class KeyFrame:
             # #print("thisdel")
             if info:
                 self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
-                key_frame_id = self.uu_id
+                #key_frame_id = self.uu_id
                 #data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
                 data.stack_add_timelime_keyframe(add_type="del", media_id=data.option_data["media_id"])
 
@@ -245,7 +245,7 @@ class parts:
             effect_user_list = ["エフェクト"]
 
             for k in effect_dict.keys():
-                effect_get = EffectGet(data.all_data, data.option_data["media_id"], k, data.stack_add_timelime_media)
+                effect_get = EffectGet(data.all_data, data.option_data["media_id"], k, data.stack_add_timelime_effect)
                 effect_user_list.append(k)
                 effect_user_list.append(effect_get.add_element)
 
@@ -291,23 +291,26 @@ class parts:
         data.click_flag = False
         data.mov_lock = False
 
+        data.now_f_click_start_for_parameter_control = 0
+
         def send_parameter_control():
-            now_f = data.pxf.px_to_f(data.mouse_sta[0])
+
             send_data = ParameterSendData()
 
-            send_data.now_f = now_f
+            send_data.now_f = data.now_f_click_start_for_parameter_control
             send_data.media_id = data.option_data["media_id"]
-
-            #send_data.stack_add_timelime_media = data.stack_add_timelime_media
-
             data.all_data.callback_operation.get_event("media_lord")[0](send_data)
 
         data.send_parameter_control = send_parameter_control
+        data.click_move_stack_flag = False
 
         def click_start(event):
             if data.mov_lock:
                 return
 
+            data.obj_stop_once = data.stack_add_timelime_media(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
+
+            data.click_move_stack_flag = False
             data.click_flag = True
             data.mouse_sta, data.mouse_touch_sta, data.diagram_join_sta = data.get_diagram_contact("bar")
             data.view_pos_sta = data.edit_diagram_position("bar")[0]
@@ -316,6 +319,10 @@ class parts:
             data.edit_diagram_color("bar", "#ff0000")
 
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
+
+            data.sta_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
+
+            data.now_f_click_start_for_parameter_control = data.pxf.px_to_f(data.mouse_sta[0])
 
             #data.temp_pos_size = [None, None]
 
@@ -332,7 +339,6 @@ class parts:
             send_parameter_control()
 
             #data.click_start_old_media_data = data.all_data.media_object_had_layer(data.option_data["media_id"])
-            data.stop_once = data.stack_add_timelime_media(stop_once=True, add_type="mov", media_id=data.option_data["media_id"])
 
             # #print("非同期")
 
@@ -344,6 +350,9 @@ class parts:
             now_mouse, _, data.diagram_join = data.get_diagram_contact("bar")
             now_mov_x = copy.deepcopy(now_mouse[0] - data.mouse_sta[0])
             now_mov_y = copy.deepcopy(now_mouse[1] - data.mouse_sta[1])
+
+            if now_mov_x != 0:
+                data.click_move_stack_flag = True
 
             ##print("now_mouse", now_mouse[0])
 
@@ -393,15 +402,23 @@ class parts:
                 pos = data.view_pos_sta + now_mov_x
                 size = data.view_size_sta
 
+                print("now_mov_x", now_mov_x, data.click_move_stack_flag)
+
                 data.pxf.set_px_ratio(position=pos, size=size, sub_mov=True, main_mov=False)
                 data.callback_operation.event("updown", info=(data.mouse_sta[1], now_mouse[1],  data.option_data["media_id"], edit_layer))
 
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
+            data.end_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
 
-            if data.click_flag:
-                data.stop_once[1](data.stop_once[0])
+            if data.sta_layer != data.end_layer:
+                data.click_move_stack_flag = True
+
+            print(data.sta_layer, data.end_layer, data.click_move_stack_flag)
+
+            if data.click_flag and data.click_move_stack_flag:
+                data.obj_stop_once[1](data.obj_stop_once[0])
 
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
@@ -425,14 +442,14 @@ class parts:
 
 
 class EffectGet:
-    def __init__(self, all_data, media_id, effect_key, stack_add_timelime_media):
+    def __init__(self, all_data, media_id, effect_key, stack_add_timelime_effect):
         self.all_data = all_data
         self.effect_key = effect_key
         self.media_id = media_id
-        self.stack_add_timelime_media = stack_add_timelime_media
+        self.stack_add_timelime_effect = stack_add_timelime_effect
 
     def add_element(self):
-        self.stack_add_timelime_media(add_type="effect_add", media_id=self.media_id)
+        self.stack_add_timelime_effect(add_type="effect_add", media_id=self.media_id)
         self.all_data.add_effect_elements(self.media_id, self.effect_key)
 
 

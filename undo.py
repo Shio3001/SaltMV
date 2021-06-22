@@ -9,8 +9,9 @@ class UndoStack:
         self.all_data = all_data
 
         self.__safe = {"parameter": ["mov"],
-                       "timelime_media": ["add", "mov", "del", "split", "lord", "effect_add", "effect_del"],
+                       "timelime_media": ["add", "mov", "del", "split", "lord"],
                        "timelime_keyframe": ["add", "mov", "del", "lord"],
+                       "timelime_effect": ["effect_add", "effect_del"]
                        }
 
     def del_stack(self, num=-1):
@@ -64,7 +65,7 @@ class UndoStack:
         undo = self.undo_stack_list[self.undo_stack_list_now]
         # if not undo.media_id is None:
 
-        #print("undo_obj", undo.add_type)
+        print("undo_obj", undo.classification, undo.add_type, undo.media_id, undo.func)
         undo.func(undo)
 
         self.del_stack()

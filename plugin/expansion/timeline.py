@@ -129,6 +129,21 @@ class InitialValue:
 
                     self.data.timeline_object[old_data_obj.obj_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
+        def undo_run_effect(undo):
+            print("undo_run_effect", undo.media_id, undo.target_media_data)
+            self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
+            old_data_obj = undo.target_media_data[0]
+            old_data_layer = undo.target_media_data[1]
+
+            # self.data.all_data.callback_operation.event("media_lord")
+
+            self.data.timeline_object[undo.media_id].send_parameter_control()
+
+            if undo.add_type == "effect_add":
+                pass
+            if undo.add_type == "effect_del":
+                pass
+
         def undo_lord(undo):
             #self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
 
@@ -138,15 +153,16 @@ class InitialValue:
 
                 self.data.timeline_object = {}
 
+        def stack_add_timelime_effect(add_type=None, media_id=None, split_media_id=None):
+            self.data.operation["undo"].add_stack(media_id=media_id, split_media_id=split_media_id, classification="timelime_effect", add_type=add_type, func=undo_run_effect)
+
         def stack_add_timelime_media(stop_once=None, add_type=None, media_id=None, split_media_id=None):
             stop_once = self.data.operation["undo"].add_stack(stop_once=stop_once, media_id=media_id, split_media_id=split_media_id, classification="timelime_media", add_type=add_type, func=undo_run_obj)
             if stop_once:
                 return stop_once
 
-        def stack_add_timelime_keyframe(stop_once=None, add_type=None, media_id=None, split_media_id=None):
-            stop_once = self.data.operation["undo"].add_stack(stop_once=stop_once, media_id=media_id, split_media_id=split_media_id, classification="timelime_keyframe", add_type=add_type, func=undo_run_frame)
-            if stop_once:
-                return stop_once
+        def stack_add_timelime_keyframe(add_type=None, media_id=None, split_media_id=None):
+            self.data.operation["undo"].add_stack(media_id=media_id, split_media_id=split_media_id, classification="timelime_keyframe", add_type=add_type, func=undo_run_frame)
 
         #stack_add_timelime_media(add_type="lord", media_id=None)
         self.data.operation["undo"].add_stack(classification="timelime_media", add_type="lord", func=undo_lord)
@@ -356,6 +372,7 @@ class InitialValue:
             new_obj.timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
             new_obj.stack_add_timelime_media = stack_add_timelime_media
             new_obj.stack_add_timelime_keyframe = stack_add_timelime_keyframe
+            new_obj.stack_add_timelime_effect = stack_add_timelime_effect
 
             new_obj.set_right_click_pop()
 
