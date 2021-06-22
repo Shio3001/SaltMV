@@ -329,19 +329,14 @@ class Storage:
     def get_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key):
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key])
 
-    def edit_various_fixed(self, obj_id, effect_id, various_fixed_key, various_fixed_val):
+    def edit_various_fixed(self, obj_id, effect_id, various_fixed_key, various_fixed_val=None):
+        if various_fixed_val is None:
+            return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key]
+
         if not various_fixed_key in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(various_fixed_key))
-
-        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key])
-
-        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key] = various_fixed_val
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key] = copy.deepcopy(various_fixed_val)
         print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed)
-
-        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key])
-
-        # if typeA != typeB:
-        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def get_now_layer_number(self, obj_id):
         ##print("シーン番号", self.edit_data.scenes, self.edit_data.now_scene, self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)

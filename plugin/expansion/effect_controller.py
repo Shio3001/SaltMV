@@ -234,8 +234,12 @@ class InitialValue:
             # ここが悪さしてる可能性あり
             #self.now += 1
 
-        def media_lord(send):
-            self.send = send
+        def media_lord(send=None):
+
+            if not send is None:
+                self.send = send
+            self.send.effect_group = self.data.all_data.media_object(self.send.media_id).effect_group
+            self.send.effect_point_internal_id_time = self.data.all_data.media_object(self.send.media_id).effect_point_internal_id_time
 
             self.data.all_data.callback_operation.event("element_ui_all_del")
 

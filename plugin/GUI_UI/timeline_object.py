@@ -36,6 +36,11 @@ class KeyFrame:
         pos, size = data.get_diagram_position_size("bar")
         data.edit_diagram_position(self.uu_id, y=center_y + size[1]/2)
 
+        data.new_diagram("text", diagram_type="text")
+        #data.edit_diagram_position("text", x=0, y=pos_y_normal)
+        data.edit_diagram_size("text", x=100, y=20)
+        data.edit_diagram_text("text", font_size=20)
+
         # data.territory_stack(False)
 
         data.diagram_draw(self.uu_id)
@@ -289,11 +294,11 @@ class parts:
         def send_parameter_control():
             now_f = data.pxf.px_to_f(data.mouse_sta[0])
             send_data = ParameterSendData()
-            send_data.effect_group = data.all_data.media_object(data.option_data["media_id"]).effect_group
+
             send_data.now_f = now_f
             send_data.media_id = data.option_data["media_id"]
-            send_data.effect_point_internal_id_time = data.all_data.media_object(data.option_data["media_id"]).effect_point_internal_id_time
-            send_data.stack_add_timelime_media = data.stack_add_timelime_media
+
+            #send_data.stack_add_timelime_media = data.stack_add_timelime_media
 
             data.all_data.callback_operation.get_event("media_lord")[0](send_data)
 

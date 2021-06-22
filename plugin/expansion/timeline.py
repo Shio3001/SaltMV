@@ -19,7 +19,7 @@ class InitialValue:
         self.data.all_data.now_time = 0
         #self.redo_undo_stack = []
         #self.tthis_type_safe = ["media_length",]
-        self.add_type_safe_obj = ["add", "mov", "del", "split", "lord"]
+        #self.add_type_safe_obj = ["add", "mov", "del", "split", "lord"]
         #self.add_type_safe_frame = ["f_add", "f_mov", "f_del"]
 
     def main(self):
@@ -58,13 +58,9 @@ class InitialValue:
             old_data_obj = undo.target_media_data[0]
             old_data_layer = undo.target_media_data[1]
 
-            # if add_type == "effect_add":
-            #    self.data.all_data.callback_operation.event("element_ui_all_del")
+            # self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
 
-            # if add_type == "effect_del":
-            #    self.data.all_data.callback_operation.event("element_ui_all_del")
-
-            self.data.all_data.callback_operation.event("element_ui_all_del")
+            self.data.all_data.callback_operation.event("media_lord")
 
             if add_type == "add":  # 削除
 
@@ -116,6 +112,8 @@ class InitialValue:
                 #old_key_frame_data = [old_data_obj.effect_point_internal_id_time, old_data_obj.obj_id]
 
             if add_type == "del":  # 再追加
+                self.data.all_data.callback_operation.event("element_ui_all_del")
+
                 #self.data.all_data.media_object_had_layer(old_data_obj.obj_id, old_data)
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
                 end_f = old_data_obj.installation[1]  # 終了地点解釈
@@ -141,8 +139,6 @@ class InitialValue:
                 self.data.timeline_object = {}
 
         def stack_add_timelime_media(stop_once=None, add_type=None, media_id=None, split_media_id=None):
-            print("呼び出し先[stack_add_timelime_media]", inspect.stack()[1].filename, inspect.stack()[1].function)
-
             stop_once = self.data.operation["undo"].add_stack(stop_once=stop_once, media_id=media_id, split_media_id=split_media_id, classification="timelime_media", add_type=add_type, func=undo_run_obj)
             if stop_once:
                 return stop_once
@@ -387,6 +383,7 @@ class InitialValue:
             window_size_edit(None)
 
         def loading_movie_data(new=None):
+            self.data.operation["undo"].all_del_stack()
 
             for media_ui in self.data.timeline_object.values():
                 media_ui.del_territory()
