@@ -432,6 +432,8 @@ class InitialValue:
             # del new_obj
             window_size_edit(None)
 
+        #self.loading_movie_data_try = 0
+
         def loading_movie_data(new=None):
             self.data.operation["undo"].all_del_stack()
 
@@ -582,6 +584,8 @@ class InitialValue:
 
             timeline_nowtime_approval_True(None)
 
+        list_button = 105
+
         scene_list_button = self.data.new_parts("timeline", "scene_list_button", parts_name="button")  # 左側のやつ
         scene_list_button.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
         scene_list_button.edit_territory_position(x=timeline_left, y=5)
@@ -591,6 +595,16 @@ class InitialValue:
         scene_list_button.edit_diagram_text("text", text="シーン選択")
         scene_list_button.territory_draw()
         scene_list_button.callback_operation.set_event("button", scene_change)
+
+        edit_settings_button = self.data.new_parts("timeline", "edit_settings_button", parts_name="button")  # 左側のやつ
+        edit_settings_button.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
+        edit_settings_button.edit_territory_position(x=timeline_left+list_button, y=5)
+        edit_settings_button.edit_diagram_color("background", "#229922")
+        edit_settings_button.edit_diagram_color("text", "#ffffff")
+        edit_settings_button.diagram_stack("text", True)
+        edit_settings_button.edit_diagram_text("text", text="編集設定")
+        edit_settings_button.territory_draw()
+        edit_settings_button.callback_operation.set_event("button", scene_change)
 
         def add_scene():
             self.data.all_data.add_scene_elements()
