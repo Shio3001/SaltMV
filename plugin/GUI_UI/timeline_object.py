@@ -23,6 +23,8 @@ class KeyFrame:
             data.diagram_draw(sub_name)
             data.all_data.move_key_frame(data.pxf.sub_point_f[self.uu_id], data.option_data["media_id"], self.uu_id)
 
+            print("sub_point_f", data.pxf.sub_point_f[self.uu_id], pos_px)
+
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!

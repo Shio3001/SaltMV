@@ -28,7 +28,9 @@ class InitialValue:
         self.data.add_window_event("Command-Key-z", undo_run)
 
         def undo_run_frame(undo):
-            del_undo_frame(undo.media_id, undo.media_id_key_frame)
+            now_key_frame = self.data.all_data.get_key_frame(undo.media_id)
+            del_undo_frame(undo.media_id, now_key_frame)
+            self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
             undo_make_frame(undo.media_id, undo.media_id_key_frame)
 
         def del_undo_frame(media_id, id_time):
@@ -37,6 +39,18 @@ class InitialValue:
                     continue
                 #print(" - undo : 削除 ", k)
                 self.data.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
+
+        def undo_mov_frame(media_id, id_time):
+            for point_key, point_val in zip(id_time.keys(), id_time.values()):
+                if point_key in ["default_sta", "default_end"]:
+                    continue
+
+                print("point_val, media_id, point_key", point_val, media_id, point_key)
+                #self.data.timeline_object[media_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
+
+                self.data.all_data.move_key_frame(point_val, media_id, point_key)
+                self.data.timeline_object[media_id].pxf.set_f_ratio_sub_point(point_key, point_val)
+                #self.data.timeline_object[media_id].callback_operation.event("sub_mov", info=self.data.timeline_object[media_id].pxf.get_event_data())
 
         def undo_make_frame(media_id, id_time):
             for point_key, point_val in zip(id_time.keys(), id_time.values()):
@@ -58,6 +72,10 @@ class InitialValue:
                 self.data.timeline_object[old_data_obj.obj_id].media_object_del(stack=False)
 
             if add_type == "mov":
+
+                del_undo_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+
                 self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
                 self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
 
@@ -66,6 +84,11 @@ class InitialValue:
 
                 get_scene = self.data.all_data.scene()
                 layer_number = get_scene.layer_group.layer_layer_id[old_data_layer]  # 所属レイヤー解釈
+                print("所属レイヤー解釈", old_data_layer, layer_number)
+
+                new_layer_id = self.data.all_data.layer_number_to_layer_id(layer_number)
+                self.data.all_data.layer_id_set(undo.media_id, new_layer_id)
+
                 self.data.timeline_object[old_data_obj.obj_id].edit_layer(layer_number)
                 frame_len = get_scene.editor["len"]
 
@@ -75,8 +98,7 @@ class InitialValue:
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_f_ratio(position=sta_f, size=end_f - sta_f)
                 self.data.timeline_object[old_data_obj.obj_id].callback_operation.event("mov", info=self.data.timeline_object[old_data_obj.obj_id].pxf.get_event_data())
 
-                del_undo_frame(old_data_obj.obj_id, undo.media_id_key_frame)
-                undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                undo_mov_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
             if add_type == "split":
                 self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
@@ -86,6 +108,7 @@ class InitialValue:
                 del_undo_frame(undo.split_media_id, undo.split_media_id_key_frame)
                 del_undo_frame(undo.media_id, undo.media_id_key_frame)
                 del_object_ui(undo.split_media_id)
+                undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
                 self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
 
@@ -103,7 +126,7 @@ class InitialValue:
                 self.data.timeline_object[old_data_obj.obj_id].pxf.set_f_ratio(position=sta_f, size=end_f - sta_f)
                 self.data.timeline_object[old_data_obj.obj_id].callback_operation.event("mov", info=self.data.timeline_object[old_data_obj.obj_id].pxf.get_event_data())
 
-                undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
+                undo_mov_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
             if add_type == "del":  # 再追加
                 self.data.all_data.media_object_had_layer(undo.media_id, undo.target_media_data)
@@ -125,6 +148,7 @@ class InitialValue:
                     self.data.timeline_object[old_data_obj.obj_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
                 self.data.timeline_object[old_data_obj.obj_id].send_parameter_control()
+                undo_mov_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
         def undo_run_effect(undo):
             ##print("undo_run_effect", undo.media_id, undo.target_media_data)
