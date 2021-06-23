@@ -49,7 +49,7 @@ class MenuPopup:
 
         # self.data.window.update()
 
-        print("tkinter update", self.target.update)
+        #print("tkinter update", self.target.update)
 
     def show(self, x, y):
         self.target_menubar.post(x, y)

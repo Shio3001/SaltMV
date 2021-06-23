@@ -37,7 +37,7 @@ class parts:
             data.edit_diagram_position("text", x=text_x, y=pos_y)
             data.edit_diagram_position("textbox1", x=textbox1_x, y=pos_y)
 
-            print("text_a, text_b", text_a, text_b)
+            #print("text_a, text_b", text_a, text_b)
 
             data.edit_diagram_position("textbox2", x=textbox2_x, y=pos_y)
 

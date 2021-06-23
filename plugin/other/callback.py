@@ -62,19 +62,19 @@ class CallBack:
 
     def del_event(self, name, func=None):
         if not name in list(self.__event_data.keys()):
-            print("削除返却")
+            # print("削除返却")
             return
 
-        print("削除通過")
+        # print("削除通過")
 
         if not func is None:
             num = self.__event_data[name].index(func)
 
-            print("同値削除要請 ", func, num)
+            #print("同値削除要請 ", func, num)
 
             if not num is None:
                 del self.__event_data[name][num]
-                print("同値検知 削除", name, " ", num)
+                #print("同値検知 削除", name, " ", num)
 
                 return
 

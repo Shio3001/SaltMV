@@ -102,7 +102,7 @@ class SendWindowData:  # window生成のためのデータ
 
     def edit_canvas_size(self, name, x=None, y=None):
         self.canvas_data[name].size = self.common_control.xy_compilation(self.canvas_data[name].size, x=x, y=y)
-        #print("ペイント", self.canvas_data[name].size)
+        ##print("ペイント", self.canvas_data[name].size)
         self.canvas_data[name].canvas.config(width=self.canvas_data[name].size[0])
         self.canvas_data[name].canvas.config(height=self.canvas_data[name].size[1])
 
@@ -142,7 +142,7 @@ class SendWindowData:  # window生成のためのデータ
     def all_del_canvas_event(self, name):  # canvasの再生成時の復元
         for k, f in zip(self.canvas_data[name].event.keys(), self.canvas_data[name].event.values()):
             self.canvas_data[name].canvas.unbind("<{0}>".format(f[0]), f[2])
-            #print(self.canvas_data[name].event[k], f)
+            ##print(self.canvas_data[name].event[k], f)
 
         self.canvas_data[name].event = {}
 
@@ -153,7 +153,7 @@ class SendWindowData:  # window生成のためのデータ
 
     def new_parts(self, name, territory_name, parts_name=None, option_data=None, base=None):
 
-        print("呼び出し先", inspect.stack()[1].function)
+        #print("呼び出し先", inspect.stack()[1].function)
 
         window_event_data = {"add": self.add_window_event, "del": self.del_window_event, "all_add": self.all_add_window_event, "all_del": self.del_window_event, "get": self.get_window_event, "contact": self.get_window_contact}
         canvas_event_data = {"add": self.add_canvas_event, "del": self.del_canvas_event, "all_add": self.all_add_canvas_event, "all_del": self.del_canvas_event, "get": self.get_canvas_event, "contact": self.get_canvas_contact}
@@ -162,7 +162,7 @@ class SendWindowData:  # window生成のためのデータ
 
         # self.canvas_data[name].territory[territory_name].diagram.values() = self.canvas_data[name].territory[territory_name].diagram.values
 
-        print("territory", self.canvas_data[name].territory)
+        #print("territory", self.canvas_data[name].territory)
 
         new_UIdata = self.UI_auxiliary.SendUIData(self.window,
                                                   self.canvas_data[name],
@@ -183,7 +183,7 @@ class SendWindowData:  # window生成のためのデータ
 
         # new_UIdata.new_territory()
 
-        print("classIDの確認！", new_UIdata, "*******************************")
+        #print("classIDの確認！", new_UIdata, "*******************************")
 
         new_parts_obj = self.UI_parts[parts_name].parts().UI_set(new_UIdata)
 
@@ -226,4 +226,4 @@ class CanvasData:
 
         self.event = {}
 
-        # print(self.canvas)
+        # #print(self.canvas)
