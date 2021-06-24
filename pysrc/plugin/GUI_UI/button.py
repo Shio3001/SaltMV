@@ -21,7 +21,7 @@ class parts:
         data.territory_draw()
 
         def click(event):
-            print(data.option_data)
+            # print(data.option_data)
             data.callback_operation.event("button", info=data.option_data)
 
         data.add_territory_event("ButtonPress-1", click)

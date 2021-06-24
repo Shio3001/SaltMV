@@ -19,11 +19,11 @@ class UndoStack:
         if num < 0:
             num = self.undo_stack_list_now if self.undo_stack_list_now >= 0 else 0
 
-        print(self.undo_stack_list_now, "から削除")
+        #print(self.undo_stack_list_now, "から削除")
 
-        print("削除前", self.undo_stack_list)
+        #print("削除前", self.undo_stack_list)
         del self.undo_stack_list[num:]
-        print("削除後", self.undo_stack_list)
+        #print("削除後", self.undo_stack_list)
         self.undo_stack_list_now = len(self.undo_stack_list)
 
     def all_del_stack(self):
@@ -34,6 +34,7 @@ class UndoStack:
         if not split_media_id is None:
             undo.set_split_media(split_media_id)
 
+        print("[ add] ", undo.media_id, undo.classification, undo.add_type)
         self.undo_stack_list.append(undo)
         self.undo_stack_list_now = len(self.undo_stack_list)
 
@@ -43,18 +44,18 @@ class UndoStack:
         if not add_type in self.__safe[classification]:
             return
 
-        print(self.all_data, media_id, effect_id, classification, add_type, func)
+        #print(self.all_data, media_id, effect_id, classification, add_type, func)
         undo = UndoStackData(self.all_data, media_id, effect_id, classification, add_type, func)
         if stop_once:
             return undo, self.stop_once_add
 
         self.stop_once_add(undo)
 
-        print("undo_add", self.undo_stack_list_now, self.undo_stack_list)
+        #print("undo_add", self.undo_stack_list_now, self.undo_stack_list)
 
     def confirmed_insert(self):
         self.undo_stack_list_now -= 1
-        print(self.undo_stack_list_now, self.undo_stack_list)
+        #print(self.undo_stack_list_now, self.undo_stack_list)
 
         if len(self.undo_stack_list) == 0:
             return
@@ -68,7 +69,8 @@ class UndoStack:
         undo = self.undo_stack_list[self.undo_stack_list_now]
         # if not undo.media_id is None:
 
-        print("******************************************undo_obj", undo.classification, undo.add_type, undo.media_id, undo.func)
+        #print("******************************************undo_obj", undo.classification, undo.add_type, undo.media_id, undo.func)
+        print("[ confirmed_insert ]", undo.media_id, undo.classification, undo.add_type)
         undo.func(undo)
 
         self.del_stack()
@@ -90,7 +92,7 @@ class UndoStackData:
             self.target_media_data = copy.deepcopy(self.all_data.media_object_had_layer(self.media_id))
             self.media_id_key_frame = copy.deepcopy(self.target_media_data[0].effect_point_internal_id_time)
 
-            print("undo登録 : ", self.media_id_key_frame)
+            #print("undo登録 : ", self.media_id_key_frame)
 
         # if not split_media_id is None:
 
@@ -99,4 +101,4 @@ class UndoStackData:
         self.target_media_data_split = copy.deepcopy(self.all_data.media_object_had_layer(self.split_media_id))
         self.split_media_id_key_frame = copy.deepcopy(self.target_media_data_split[0].effect_point_internal_id_time)
 
-        print("undo split 登録 : ", self.split_media_id_key_frame)
+        #print("undo split 登録 : ", self.split_media_id_key_frame)

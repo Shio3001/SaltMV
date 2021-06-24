@@ -242,7 +242,7 @@ class TimelineCalculation:
 
         if not flag == 0:
             self.set_f_ratio(sub_mov=sub_mov)
-            print(flag)
+            # print(flag)
             return
 
         new_ratio_f_pos = copy.deepcopy(self.ratio_f)
