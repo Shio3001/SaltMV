@@ -22,7 +22,7 @@ class Storage:
         self.elements = elements
         self.os_type = ""
         self.main_path = main_path
-        self.now_time = 0
+        #self.now_time = 0
         #self.threading = threading
         #self.threading_lock = threading.Lock()
         #self.ThreadPoolExecutor = ThreadPoolExecutor
@@ -46,6 +46,8 @@ class Storage:
         self.effect_point_default_keys = ["motion"]
 
         self.callback_operation = None
+
+        #self.now_time = 0
 
     def now_time_update(self, scroll_data=None):
         if scroll_data is None:

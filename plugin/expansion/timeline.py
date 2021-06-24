@@ -16,7 +16,7 @@ class InitialValue:
     def __init__(self, data):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
         self.data = data
         self.operation = self.data.operation
-        self.data.all_data.now_time = 0
+        #self.data.all_data.now_time = 0
         #self.redo_undo_stack = []
         #self.tthis_type_safe = ["media_length",]
         #self.add_type_safe_obj = ["add", "mov", "del", "split", "lord"]
@@ -334,7 +334,8 @@ class InitialValue:
 
         def new_obj():
             new_object = self.data.all_data.add_object_elements()
-            make_object(new_object.obj_id)
+            nowtime = self.data.all_data.now_time_update()
+            make_object(new_object.obj_id, sta=nowtime, end=nowtime+20)
 
             #old_data = self.data.all_data.media_object_had_layer(new_object.obj_id)
             #stack_add("add", old_data)
