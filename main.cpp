@@ -1,7 +1,7 @@
 
 #include <bits/stdc++.h>
 
-#include <boost/python.hpp>
+#include <librarys/Mac/boost_1_76_0/boost/python.hpp>
 namespace py = boost::python;
 using namespace std;
 
