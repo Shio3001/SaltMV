@@ -1,7 +1,7 @@
 
 #include <bits/stdc++.h>
 
-#include <librarys/Mac/boost_1_76_0/boost/python.hpp>
+#include </Users/maruyama/Programs/MVproject/NankokuMovieMaker/librarys/Mac/1_76_0/boost_1_76_0/boost/python.hpp>
 namespace py = boost::python;
 using namespace std;
 
@@ -10,11 +10,15 @@ int main() {
   try {
     // Pythonで「print('Hello World!')」を実行
     py::object global = py::import("__main__").attr("__dict__");
-    py::exec_file("main_py.py", global);
+    py::exec_file("pysrc/main_py.py", global);
   } catch (const py::error_already_set &) {
     // Pythonコードの実行中にエラーが発生した場合はエラー内容を表示
     PyErr_Print();
   }
-
   return 0;
 }
+
+// /Users/"私の名前"/boost_build
+// find librarys/Mac -name pyconfig.h
+//"compilerPath": "/usr/local/Cellar/gcc/10.2.0/bin/gcc-10", にしたら# include
+//<pyconfig.h>なおった
