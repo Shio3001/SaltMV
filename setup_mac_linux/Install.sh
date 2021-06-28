@@ -17,7 +17,8 @@ echo "this" $this
 mkdir temp
 
 #sh $this/pysetup.sh $now $address $temp_path
-sh $this/boost.sh $now $address $temp_path
+#sh $this/boost.sh $now $address $temp_path
+sh $this/py_library.sh $now $address $temp_path
 
 cd $now
 rm -rv $temp_path
