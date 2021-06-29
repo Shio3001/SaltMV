@@ -1,14 +1,14 @@
 # default PTRHON_VERSION is 3.6 on Mac, 3.5 in other os
 # if you installed other python version, Please specific your Python Version below
-PYTHON_VERSION = 3.8
-TARGET = main
+PYTHON_VERSION = 3.9
+TARGET = basic_interface
 
 CFLAGS = -lm -pthread -O3 -std=c++11 -march=native -Wall -funroll-loops -Wno-unused-result
 osname := $(shell uname)
 
 # Only need to change if you install boost-python from source
-BOOST_INC = /usr/local/include/boost
-BOOST_LIB = /usr/local/lib
+BOOST_INC = /Users/maruyama/opt/anaconda3/envs/py39/include/boost/
+BOOST_LIB = /Users/maruyama/opt/anaconda3/envs/py39/lib/ #3.9なのでbrewで入れたやつ
 
 # $(info $$osname is [${osname}])
 
@@ -33,9 +33,13 @@ FIRST := $(subst $(REMAINDER),,$(PYTHON_VERSION))
 # LIBPYTHON_PATH should be the path contain libpython3.6 or libpython3.5 or libpython2.7 or whichever your python version
 ifeq ($(osname), Darwin)
 	ifeq ($(FIRST), 3)
-		#ここ2つ
-		PYTHON_INCLUDE = /Users/maruyama/opt/anaconda3/include/python3.8
-		LIBPYTHON_PATH = /Users/maruyama/opt/anaconda3/lib/python3.8/config-3.8-darwin
+		PYTHON_INCLUDE = /Users/maruyama/opt/anaconda3/envs/py39/include/python3.9/
+		LIBPYTHON_PATH = /Users/maruyama/opt/anaconda3/envs/py39/lib/
+
+#PYTHON_INCLUDE = /usr/local/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/include/python3.9
+#$python3.9-config --include
+#LIBPYTHON_PATH = /usr/local/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/lib/python3.9/config-3.9-darwin
+#$python3.9-config --ldflags
 	else
 		PYTHON_INCLUDE = /usr/local/Cellar/python/2.7.14/Frameworks/Python.framework/Versions/2.7/include/python2.7/
 		LIBPYTHON_PATH = /usr/local/Cellar/python/2.7.14/Frameworks/Python.framework/Versions/2.7/lib/
@@ -62,9 +66,18 @@ endif
 
  
 $(TARGET).so: $(TARGET).o
-	g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -L$(LIBPYTHON_PATH) -lpython$(PYTHON_VERSION_FINAL) -o $(TARGET).so
+	g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -L$(LIBPYTHON_PATH) -lpython3.9 -o $(TARGET).so
+#pytyhon3.9だけ手打ちで変更
  
 $(TARGET).o: $(TARGET).cpp
 	g++ $(CFLAGS) -I$(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -c $(TARGET).cpp
 
+
 #https://github.com/zpoint/Boost-Python-Examples/tree/master/Examples/basic_interface ← 参考にしました
+
+#make しなさい〜〜〜〜〜〜！
+
+#PYTHON_INCLUDE = /Users/maruyama/opt/anaconda3/envs/py39/include/python3.9
+#LIBPYTHON_PATH = /Users/maruyama/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin
+
+#boostは別にビルドしろばか

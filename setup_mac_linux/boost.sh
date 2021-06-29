@@ -1,6 +1,7 @@
 now=$1
 address=$2
 temp_path=$3
+name=$4
 
 mkdir $address/1_76_0/
 cd $address/1_76_0/
@@ -13,7 +14,7 @@ echo "[ 開始 ] ./bootstrap.sh"
 ./bootstrap.sh
 echo "[ 終了 ] ./bootstrap.sh"
 echo "[ 開始 ] ./b2"
-./b2 --prefix=$address/1_76_0/ --cmd-or-prefix=$address/Python-3.9.5/bin/python3.9 --includes=$address/Python-3.9.5/include/python3.9/
+./b2 --prefix=$address/1_76_0/ --cmd-or-prefix=$address/Users/$name/opt/anaconda3/envs/py39/lib/ --includes=$address/Users/$name/opt/anaconda3/envs/py39/include/python3.9
 echo "[ 終了 ] ./b2"
 #./b2 install -j2 --prefix=$address/1_76_0/ --with-python=$address/Python-3.9.5/bin/python3.9 
 #./bootstrap.sh --with-libraries=python --with-python=python3 --with-python-version=3.9
