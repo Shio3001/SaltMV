@@ -4,7 +4,7 @@ now=$(cd $this;cd ../ ;pwd)
 address="$now/librarys/Mac"
 temp_path="$now/setup_mac_linux/temp"
 
-name="maruyama"
+name=$(whoami)
 
 #rm -rv $address
 #mkdir $address

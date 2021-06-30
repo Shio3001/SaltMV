@@ -31,5 +31,3 @@ class SoundManagement {
     return 0;
   }
 };
-
-// https://hatakenoko.hateblo.jp/entry/2018/05/24/220046
