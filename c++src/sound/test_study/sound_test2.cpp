@@ -18,50 +18,73 @@ int main() {
   }
 
   char riff[4];
+  uint chunk_size;
+  char format[4];
+  char sub_chunk_id[4];
+  uint sub_chunk_size;
+  uint audio_format;
+  uint numchannel;
+  uint sample_rate;
+  uint byte_rate;
+  uint block_align;
+  uint bits_per_sample;
+  char sub_chunk_size_id_second[4];
+  uint sub_chunk_size_suze_second;
+
+  wavfile.seekg(0);
   wavfile.read((char*)&riff, 4);
   cout << riff << endl;
-  // 0
 
-  uint chunk_size;
+  wavfile.seekg(4);
   wavfile.read((char*)&chunk_size, 4);
   cout << chunk_size << endl;
 
-  char format[4];
+  wavfile.seekg(8);
   wavfile.read((char*)&format, 4);
   cout << format << endl;
 
-  char sub_chunk_id[4];
+  wavfile.seekg(12);
   wavfile.read((char*)&sub_chunk_id, 4);
   cout << sub_chunk_id << endl;
 
-  uint sub_chunk_size;
+  wavfile.seekg(16);
   wavfile.read((char*)&sub_chunk_size, 4);
   cout << sub_chunk_size << endl;
 
-  uint audio_format;
+  wavfile.seekg(20);
   wavfile.read((char*)&audio_format, 2);
   cout << audio_format << endl;
 
-  uint numchannel;
+  wavfile.seekg(22);
   wavfile.read((char*)&numchannel, 2);
   cout << numchannel << endl;
 
-  uint sample_rate;
+  wavfile.seekg(24);
   wavfile.read((char*)&sample_rate, 4);
   cout << sample_rate << endl;
 
-  uint byte_rate;
+  wavfile.seekg(28);
   wavfile.read((char*)&byte_rate, 4);
   cout << byte_rate << endl;
 
-  uint block_align;
+  wavfile.seekg(32);
   wavfile.read((char*)&block_align, 2);
   cout << block_align << endl;
 
-  char bits_per_sample;
+  wavfile.seekg(34);
   wavfile.read((char*)&bits_per_sample, 2);
   cout << bits_per_sample << endl;
+
+  wavfile.seekg(36);
+  wavfile.read((char*)&sub_chunk_size_id_second, 4);
+  cout << sub_chunk_size_id_second << endl;
+
+  wavfile.seekg(40);
+  wavfile.read((char*)&sub_chunk_size_suze_second, 4);
+  cout << sub_chunk_size_suze_second << endl;
+
   // http://www.ys-labo.com/pc/2009/091223%20File.html
   // http://soundfile.sapp.org/doc/WaveFormat/
   // https://taku-o.hatenablog.jp/entry/20181120/1542726865
+  // https://www.youfit.co.jp/archives/1418 ←対応表 有能くん
 }
