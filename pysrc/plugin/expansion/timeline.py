@@ -1,6 +1,6 @@
 # coding:utf-8
 from tkinter.constants import TOP
-from elements import make_id
+from pysrc.elements import make_id
 import sys
 import os
 import copy

@@ -1,7 +1,7 @@
 # coding:utf-8
-from Internal_operation.rendering_py import rendering_point
-from Internal_operation.rendering_py import rendering_frame
-from Internal_operation.rendering_py import rendering_main
+from pysrc.Internal_operation.rendering_py import rendering_point
+from pysrc.Internal_operation.rendering_py import rendering_frame
+from pysrc.Internal_operation.rendering_py import rendering_main
 import sys
 import numpy as np
 import os
@@ -15,15 +15,16 @@ import PIL.ImageFont as ImageFont
 import importlib
 import datetime
 
-import main_user_CUI  # GUI処分 CUI中継操作
-import main_user_GUI
-import log
-import error
-from chord_tool import file_path
-import edit_data_control
-import UI_control
-import undo
-from chord_tool import class_var_to_dict
+from pysrc import main_user_CUI  # GUI処分 CUI中継操作
+from pysrc import main_user_GUI
+from pysrc import log
+from pysrc import error
+from pysrc.chord_tool import file_path
+from pysrc import edit_data_control
+from pysrc import UI_control
+from pysrc import undo
+from pysrc.chord_tool import class_var_to_dict
+from cppsrc.video import video_main
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
@@ -32,6 +33,9 @@ all_UI_data = UI_control
 
 operation = {}
 
+
+operation["cppsrc"] = {}
+operation["cppsrc"]["video_main"] = video_main
 
 operation["rendering_py"] = {}
 operation["rendering_py"]["main"] = rendering_main.Rendering()
@@ -47,7 +51,7 @@ operation["error"] = error.ErrorAction(operation["log"])
 
 this_name = str(os.path.basename(__file__))
 py_path = (os.path.abspath(__file__)).replace(this_name, '')
-plugin_path = os.path.join(py_path.replace(this_name, ''), "plugin")
+plugin_path = os.path.join(py_path.replace(this_name, ''), "pysrc","plugin")
 
 
 operation["log"].write(now_path)
@@ -84,7 +88,7 @@ operation["log"].write(operation)
 
 all_data.set_operation(operation)
 
-operation["rendering_py"]["main"].set_all_data(all_data)
+#operation["rendering_py"]["main"].set_all_data(all_data)
 operation["undo"] = undo.UndoStack(all_data)
 
 #all_data.main_path = now_path

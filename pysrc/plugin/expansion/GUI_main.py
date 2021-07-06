@@ -3,8 +3,8 @@ import sys
 import os
 import copy
 
-import cv2
-from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
+#import cv2
+#from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 
 
 class InitialValue:
@@ -48,9 +48,11 @@ class InitialValue:
             preview_screen.size_update("self.all_elements", [1, 2])
 
         def rendering():
-            scene_elements = self.data.all_data.scene()
+            scene = self.data.all_data.scene()
+            self.operation["rendering_py"]["main"].setapp_init(self.operation,scene)
+            
             #scene_elements.user_select_range = [0, 100]
-            self.operation["rendering"]["main"].video_output(self.operation,  scene_elements, "../log/test.mp4")
+            self.operation["rendering_py"]["main"].video_output(scene, "../log/test.mp4")
 
         def edit_data_del():
             self.data.all_data.callback_operation.event("reset")

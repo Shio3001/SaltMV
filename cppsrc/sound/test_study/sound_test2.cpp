@@ -83,6 +83,12 @@ int main() {
   wavfile.read((char*)&sub_chunk_size_suze_second, 4);
   cout << sub_chunk_size_suze_second << endl;
 
+  wavfile.seekg(44);
+  //波形データを格納。リニアPCMの場合は時間順に格納される。ステレオは左→右→左→右…のように格納される。8ビットの場合は符号無し整数
+  //(0 – 255)、16ビットの場合は符号付き整数 (-32768 – 32767) で表わす。
+  int chunk_len = sub_chunk_size / sub_chunk_size;
+  cout << chunk_len << endl;
+
   // http://www.ys-labo.com/pc/2009/091223%20File.html
   // http://soundfile.sapp.org/doc/WaveFormat/
   // https://taku-o.hatenablog.jp/entry/20181120/1542726865

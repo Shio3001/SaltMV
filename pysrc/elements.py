@@ -28,6 +28,8 @@ class SceneElements:  # えらい
         self.scene_id = make_id("scene")
         self.now_time = self.editor["len"] / 10
 
+        
+
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
 
