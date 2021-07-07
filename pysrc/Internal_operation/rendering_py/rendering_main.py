@@ -1,6 +1,7 @@
 import time
 import cv2
 import numpy as np
+import datetime
 
 class Rendering:
     def __init__(self):
@@ -23,4 +24,9 @@ class Rendering:
         #self.cpp_encode.init(x,y,fps,frame)
 
     def video_output(self, scene, path):
+        start_time = datetime.datetime.now()
+
         self.cpp_encode.execution(scene)
+
+        read_time = datetime.datetime.now() - start_time
+        print(read_time)
