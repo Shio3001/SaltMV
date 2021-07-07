@@ -6,7 +6,7 @@
 #include <boost/python.hpp>
 #include <iomanip>
 using namespace std;
-using namespace boost::python;
+namespace py = boost::python;
 
 class VideoExecutionCenter {
  private:
@@ -27,17 +27,31 @@ class VideoExecutionCenter {
     cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"]
          << endl;
   }
-  void execution(object scene) {
-    cout << extract<double>(scene.attr("now_time")) << endl;
-    object layer_group = scene.attr("layer_group");
-    dict object_group(layer_group.attr("object_group"));
-    dict layer_layer_id(layer_group.attr("layer_layer_id"));
+  void execution(py::object scene) {
+    cout << "ここから execution" << endl;
+    cout << py::extract<double>(scene.attr("now_time")) << endl;
+
+    string scene_id = py::extract<string>(scene.attr("scene_id"));
+    cout << scene_id << endl;
+
+    py::object layer_group(scene.attr("layer_group"));
+    py::dict object_group(layer_group.attr("object_group"));
+    py::dict layer_layer_id(layer_group.attr("layer_layer_id"));
+
+    py::list object_group_keys(object_group.keys());
+    py::list layer_layer_id_keys(layer_layer_id.keys());
+
+    int len_test = py::len(object_group);
+    cout << "len_test" << len_test << endl;
+
+    // py::list object_group_keys(object_group.attr("keys"));
+    // py::list layer_layer_id_keys(layer_layer_id.attr("keys"));
   }
   void layer_interpretation() {}
 };
 
 BOOST_PYTHON_MODULE(video_main) {
-  class_<VideoExecutionCenter>("VideoExecutionCenter")
+  py::class_<VideoExecutionCenter>("VideoExecutionCenter")
       .def("sta", &VideoExecutionCenter::sta)
       .def("execution", &VideoExecutionCenter::execution)
       .def("layer_interpretation", &VideoExecutionCenter::layer_interpretation);

@@ -26,7 +26,10 @@ class Rendering:
     def video_output(self, scene, path):
         start_time = datetime.datetime.now()
 
+        print(scene.scene_id)
+
         self.cpp_encode.execution(scene)
+
 
         read_time = datetime.datetime.now() - start_time
         print(read_time)

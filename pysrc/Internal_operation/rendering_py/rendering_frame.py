@@ -32,6 +32,8 @@ class Rendering:
 
         return draw_base
 
+        
+
     def obj(self, this_object, draw_base):
 
         ed_size = [int(self.editor["x"]), int(self.editor["y"])]

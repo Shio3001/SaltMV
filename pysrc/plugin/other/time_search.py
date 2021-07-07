@@ -16,7 +16,7 @@ class TimeSearch:
         left = 0
         right = len(ef_val) - 1
 
-        """ #将来のためのコード未実装
+        """ #将来のためのコード未実装 #CPPに移転となりました
         if #ここにイージングが停止なら・・・の処理を書く
             #print("返送")
             return ef_val[0],  0  # 前地点と次地点あわせ
