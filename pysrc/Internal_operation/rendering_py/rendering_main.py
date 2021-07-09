@@ -8,6 +8,7 @@ class Rendering:
         self.operation = None
         self.cpp_encode = None
     def setapp_init(self,operation,scene):
+
         self.operation = operation
         x = scene.editor["x"]
         y = scene.editor["y"]
@@ -20,16 +21,13 @@ class Rendering:
         print(self.cpp_encode.execution)
         print(self.cpp_encode.sta)
         #self.cpp_encode.layer_interpretation("testtest")
-        self.cpp_encode.sta(x,y,fps,frame)
+        self.cpp_encode.sta(self.operation,x,y,fps,frame)
         #self.cpp_encode.init(x,y,fps,frame)
 
     def video_output(self, scene, path):
         start_time = datetime.datetime.now()
-
         print(scene.scene_id)
-
+        #self.operation["plugin"]["other"]["py_effect_plugin"].EffectPluginElements()
         self.cpp_encode.execution(scene)
-
-
         read_time = datetime.datetime.now() - start_time
         print(read_time)

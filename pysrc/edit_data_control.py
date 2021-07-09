@@ -223,10 +223,17 @@ class Storage:
     def edit_object_installation(self, media_id, sta, end):
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[media_id][0].installation = copy.deepcopy([sta, end])
 
-    def add_effect_elements(self, object_order, effect_name):
+    def add_effect_elements(self, object_order, effect_name,py_cpp="py"):
         new_effect = elements.EffectElements()
         new_effect.effect_name = effect_name
-        self.operation["plugin"]["effect"][effect_name].InitialValue(new_effect)
+
+        if py_cpp == "py":
+            self.operation["plugin"]["effect"][effect_name].InitialValue(new_effect)
+        elif py_cpp == "cpp":
+            if effect_name in list(self.operation["cpp_plugin"]["effect"].keys()):
+                pass
+            #あとでかく
+
         new_effect.effect_id = self.elements.make_id("effect")
 
         if new_effect.effect_id is None:

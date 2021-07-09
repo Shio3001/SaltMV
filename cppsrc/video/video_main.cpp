@@ -4,16 +4,19 @@
 #include <stdio.h>
 
 #include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
 #include <iomanip>
 using namespace std;
 namespace py = boost::python;
+namespace np = boost::numpy;
 
 class VideoExecutionCenter {
  private:
   map<string, int> editor;
+  py::dict python_operation;
 
  public:
-  void sta(int x, int y, int fps, int frame) {
+  void sta(py::dict operation, int x, int y, int fps, int frame) {
     // editor["x"] = extract<int>(x);
     // editor["y"] = extract<int>(y);
     // editor["fps"] = extract<int>(fps);
@@ -23,6 +26,8 @@ class VideoExecutionCenter {
     editor["y"] = y;
     editor["fps"] = fps;
     editor["frame"] = frame;
+
+    python_operation = operation;
 
     cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"]
          << endl;
@@ -41,20 +46,48 @@ class VideoExecutionCenter {
     py::list object_group_keys(object_group.keys());
     py::list layer_layer_id_keys(layer_layer_id.keys());
 
-    int len_test = py::len(object_group);
-    cout << "len_test" << len_test << endl;
+    py::list object_group_values(object_group.values());
+    py::list layer_layer_id_values(layer_layer_id.values());
+
+    int object_group_len = py::len(object_group);
+    cout << "object_group_len" << object_group_len << endl;
+
+    py::object sy(python_operation["synthetic"].attr("call"));
+    sy("test");
+
+    // for (i = 0; i < object_group_len; i++) {
+    //  object_group_values[i]
+    //}
 
     // py::list object_group_keys(object_group.attr("keys"));
     // py::list layer_layer_id_keys(layer_layer_id.attr("keys"));
   }
+
+ private:
   void layer_interpretation() {}
+  void group_object(py::list object_group, int object_group_len) {
+    for (int i = 0; i < object_group_len; i++) {
+      py::object media_object(object_group[i]);
+      object_individual(media_object);
+    }
+  }
+
+  void object_individual(py::object media_object) {}
+
+  void group_effect() {}
+
+  void effect_individual() {}
+
+  int[] now_currently_midpoint() {
+    int now_
+    return
+  }
 };
 
 BOOST_PYTHON_MODULE(video_main) {
   py::class_<VideoExecutionCenter>("VideoExecutionCenter")
       .def("sta", &VideoExecutionCenter::sta)
-      .def("execution", &VideoExecutionCenter::execution)
-      .def("layer_interpretation", &VideoExecutionCenter::layer_interpretation);
+      .def("execution", &VideoExecutionCenter::execution);
   //.def("sta", &VideoExecutionCenter::sta)
   //.def("execution", &VideoExecutionCenter::execution)
   //.def("layer_interpretation", &VideoExecutionCenter::layer_interpretation);

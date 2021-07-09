@@ -25,6 +25,7 @@ from pysrc import UI_control
 from pysrc import undo
 from pysrc.chord_tool import class_var_to_dict
 from cppsrc.video import video_main
+from pysrc import synthetic
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
@@ -32,7 +33,6 @@ all_data = edit_data_control.Storage(now_path)
 all_UI_data = UI_control
 
 operation = {}
-
 
 operation["cppsrc"] = {}
 operation["cppsrc"]["video_main"] = video_main
@@ -51,40 +51,62 @@ operation["error"] = error.ErrorAction(operation["log"])
 
 this_name = str(os.path.basename(__file__))
 py_path = (os.path.abspath(__file__)).replace(this_name, '')
-plugin_path = os.path.join(py_path.replace(this_name, ''), "pysrc","plugin")
 
+for i in range(2):
+    file_type = ""
+    file_py_cpp = ""
+    plugin_dict_name = ""
+    if i == 0: #python
+        file_py_cpp = "pysrc"
+        file_type = ".py"
+        plugin_dict_name = "plugin"
+    if i == 1: #cpp
+        file_py_cpp = "cppsrc"
+        file_type = ".so" 
+        plugin_dict_name = "cpp_plugin"
 
-operation["log"].write(now_path)
-operation["log"].write(py_path)
-operation["log"].write(plugin_path)
+    plugin_path = os.path.join(py_path.replace(this_name, ''), file_py_cpp,"plugin")
+    operation["log"].write(now_path)
+    operation["log"].write(py_path)
+    operation["log"].write(plugin_path)
 
-plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全取得
-plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
+    plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全取得
+    plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
 
-operation["plugin"] = {}
-for plugin_folder_name in plugin_folder:  # Folder分だけまわす
+    operation[plugin_dict_name] = {}
+    for plugin_folder_name in plugin_folder:  # Folder分だけまわす
 
-    pl_section_inside = os.listdir(os.path.join(plugin_path, plugin_folder_name))  # pluginfolder内のアイテムを全取得
-    pl_section_inside_list = [f for f in pl_section_inside if os.path.isfile(os.path.join(plugin_path, plugin_folder_name, f))]
+        pl_section_inside = os.listdir(os.path.join(plugin_path, plugin_folder_name))  # pluginfolder内のアイテムを全取得
+        pl_section_inside_list = [f for f in pl_section_inside if os.path.isfile(os.path.join(plugin_path, plugin_folder_name, f))]
 
-    operation["plugin"][str(plugin_folder_name)] = {}
+        operation[plugin_dict_name][str(plugin_folder_name)] = {}
 
-    for file_name in pl_section_inside_list:  # ファイルごとの処理
-        if file_name[-3:] == ".py":
+        for file_name in pl_section_inside_list:  # ファイルごとの処理
             file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
             path = os.path.relpath(file_path, py_path)
-            path_dot = path.replace('.py', '').replace(all_data.slash, '.')
+            path_dot = path.replace(file_type, '').replace(all_data.slash, '.')
+            
+            file_bool = file_name[-1*int(len(file_type)):] == file_type
+
+            if not file_bool:
+                continue
+            print("plugin lord : {0}".format(file_name))
             import_data = importlib.import_module(path_dot, py_path)
 
             if str(plugin_folder_name) == "synthetic":
                 import_data = import_data.Synthetic()
 
-            operation["plugin"][str(plugin_folder_name)][str(file_name.replace('.py', ''))] = import_data
+            final_name = str(file_name.replace(file_type, ''))
+            operation[plugin_dict_name][str(plugin_folder_name)][final_name] = import_data
+
 
 # plugin読み込み終了
 print(operation["plugin"])
 operation["log"].write(operation)
 #app_name = "NankokuMovieMaker"
+
+synthetic_control = synthetic.SyntheticControl(operation)
+operation["synthetic"] = synthetic_control
 
 all_data.set_operation(operation)
 
