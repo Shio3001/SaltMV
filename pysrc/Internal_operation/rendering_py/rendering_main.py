@@ -17,11 +17,11 @@ class Rendering:
         #self.cpp_encode  = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(x,y,fps,frame)
         print(self.operation["cppsrc"]["video_main"])
         print(self.operation["cppsrc"]["video_main"].VideoExecutionCenter)
-        self.cpp_encode  = self.operation["cppsrc"]["video_main"].VideoExecutionCenter()
+        self.cpp_encode  = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(self.operation,x,y,fps,frame)
         print(self.cpp_encode.execution)
-        print(self.cpp_encode.sta)
+        #print(self.cpp_encode.sta)
         #self.cpp_encode.layer_interpretation("testtest")
-        self.cpp_encode.sta(self.operation,x,y,fps,frame)
+        #self.cpp_encode.sta()
         #self.cpp_encode.init(x,y,fps,frame)
 
     def video_output(self, scene, path):
