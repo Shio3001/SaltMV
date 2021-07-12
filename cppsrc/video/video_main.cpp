@@ -15,6 +15,7 @@ class VideoExecutionCenter
 private:
   map<string, int> editor;
   py::dict python_operation;
+  py::object video_image_control;
   int now_frame = 0;
 
 public:
@@ -31,9 +32,9 @@ public:
     editor["frame"] = frame;
 
     python_operation = operation;
+    video_image_control = python_operation["video_image"].attr("Control_Video_Image")();
 
-    cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"]
-         << endl;
+    cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
   }
   void execution(py::object scene)
   {
@@ -100,6 +101,9 @@ private:
       object_group_procedure[now_layer] = object_group[i][0];
       object_group_procedure_key.push_back(now_layer);
     }
+
+    sort(object_group_procedure_key.begin(), object_group_procedure_key.end()); // vector
+    //numbers.erase(unique(numbers.begin(), numbers.end()), numbers.end());
 
     for (int j = 0; j < object_group_procedure_key.size(); j++)
     {

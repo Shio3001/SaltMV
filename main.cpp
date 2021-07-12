@@ -2,16 +2,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 namespace py = boost::python;
-int main() {
+int main()
+{
   /*std::system(
       "librarys/Mac/Python-3.9.5/bin/NankokuMovieMaker pysrc/main_py.py");*/
-  py::Py_Initialize();  // 最初に呼んでおく必要あり
+  py::Py_Initialize(); // 最初に呼んでおく必要あり
 
-  try {
+  try
+  {
     // Pythonで「print('Hello World!')」を実行
     py::object global = py::import("main_py");
     py::exec("main_py()", global);
-  } catch (const py::error_already_set &) {
+  }
+  catch (const py::error_already_set &)
+  {
     // Pythonコードの実行中にエラーが発生した場合はエラー内容を表示
     py::PyErr_Print();
   }

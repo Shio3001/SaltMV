@@ -8,8 +8,9 @@ class Rendering:
         self.operation = None
         self.cpp_encode = None
     def setapp_init(self,operation,scene):
-
         self.operation = operation
+        #video_image_control = self.operation["video_image"]
+
         x = scene.editor["x"]
         y = scene.editor["y"]
         fps = scene.editor["fps"]

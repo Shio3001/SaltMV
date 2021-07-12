@@ -27,12 +27,16 @@ from pysrc.chord_tool import class_var_to_dict
 from cppsrc.video import video_main
 from pysrc import synthetic
 
+from media_input.video_image import control
+
+
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
 all_data = edit_data_control.Storage(now_path)
 all_UI_data = UI_control
 
 operation = {}
+operation["video_image"] = control.Control_Video_Image()
 
 operation["cppsrc"] = {}
 operation["cppsrc"]["video_main"] = video_main
