@@ -16,9 +16,7 @@ private:
   map<string, int> editor;
   py::dict python_operation;
   py::object video_image_control;
-
   np::ndarray draw_base; //全体のキューも兼ねている
-
   py::dict object_group;
   py::dict layer_layer_id;
   py::list object_group_keys;
@@ -46,11 +44,14 @@ public:
 
     cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
   }
-  void execution_preview(py::object scene, int frame = -1)
+  void execution_preview(py::object scene)
   {
+    int now_frame = (int)py::extract<double>(scene.attr("now_time"));
     //mp4なりのファイルに書き出しをしない
     //フレーム指定が-1以外の場合、
     //非同期処理必要そう
+
+    init_objcet_list(now_frame);
   }
 
   void execution(py::object scene)
@@ -58,7 +59,9 @@ public:
     cout << "ここから execution" << endl;
     cout << py::extract<double>(scene.attr("now_time")) << endl;
 
-    int now_frame = (int)py::extract<double>(scene.attr("now_time"));
+    //int now_frame = (int)py::extract<double>(scene.attr("now_time"));
+
+    init_objcet_list();
   }
 
   void init_objcet_list(int frame = -1)
@@ -77,19 +80,19 @@ public:
     object_group_values(object_group.values());
     layer_layer_id_values(layer_layer_id.values());
 
-    if (frame = -1)
+    if (frame == -1)
     {
       int out_sta = 0;
       int out_end = editor["frame"];
 
-      for (i = out_sta; i < out_end; i++)
+      for (int i = out_sta; i < out_end; i++)
       {
         draw_base[i] = frame_pass(i);
       }
     }
     else
     {
-      draw_base[i] = frame_pass(frame);
+      draw_base[frame] = frame_pass(frame);
     }
   }
 
@@ -105,11 +108,6 @@ public:
 
     // py::list object_group_keys(object_group.attr("keys"));
     // py::list layer_layer_id_keys(layer_layer_id.attr("keys"));
-  }
-
-  np::ndarray frame_draw_get()
-  {
-    return
   }
 
 private:
@@ -154,15 +152,19 @@ private:
       py::object now_obj = object_group_procedure[now_nun];
       py::object media_object(now_obj);
 
-      py::string synthetic_type = now_obj.attr("synthetic");
+      string synthetic_type = now_obj.attr("synthetic");
       np::ndarray obj_substance = object_individual(media_object);
 
       py::object synthetic_func(python_operation["synthetic"].attr("call"));
-      synthetic_func(synthetic_type, , obj_substance);
+
+      np::ndarray now_draw = draw_base[now_frame];
+      np::ndarray synthesized = synthetic_func(synthetic_type, now_draw, obj_substance);
+
+      draw_base[now_frame] = synthesized;
     }
   }
 
-  object_individual(py::object media_object)
+  void object_individual(py::object media_object)
   {
     np::ndarray now_base = np::zeros((editor["y"], editor["x"], 4));
 
