@@ -20,6 +20,10 @@ class Video_Image_Stack:
                                     "count": self.new_video.get(cv2.CAP_PROP_FRAME_COUNT)}
 
     def  video_image_get(self,frame):
+
+        if self.video_property["count"] - 1 < frame:
+            frame = self.video_property["count"] - 1
+
         self.new_video.set(cv2.CAP_PROP_POS_FRAMES, frame)
         ret, draw = self.new_video.read()
 

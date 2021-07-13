@@ -16,7 +16,15 @@ private:
   map<string, int> editor;
   py::dict python_operation;
   py::object video_image_control;
-  int now_frame = 0;
+
+  np::ndarray draw_base; //全体のキューも兼ねている
+
+  py::dict object_group;
+  py::dict layer_layer_id;
+  py::list object_group_keys;
+  py::list layer_layer_id_keys;
+  py::list object_group_values;
+  py::list layer_layer_id_values;
 
 public:
   VideoExecutionCenter(py::dict operation, int x, int y, int fps, int frame)
@@ -34,33 +42,62 @@ public:
     python_operation = operation;
     video_image_control = python_operation["video_image"].attr("Control_Video_Image")();
 
+    draw_base = np::zeros((editor["frame"], editor["y"], editor["x"], 4));
+
     cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
   }
+  void execution_preview(py::object scene, int frame = -1)
+  {
+    //mp4なりのファイルに書き出しをしない
+    //フレーム指定が-1以外の場合、
+    //非同期処理必要そう
+  }
+
   void execution(py::object scene)
   {
     cout << "ここから execution" << endl;
     cout << py::extract<double>(scene.attr("now_time")) << endl;
 
-    now_frame = (int)py::extract<double>(scene.attr("now_time"));
+    int now_frame = (int)py::extract<double>(scene.attr("now_time"));
+  }
+
+  void init_objcet_list(int frame = -1)
+  {
 
     string scene_id = py::extract<string>(scene.attr("scene_id"));
     cout << scene_id << endl;
 
     py::object layer_group(scene.attr("layer_group"));
-    py::dict object_group(layer_group.attr("object_group"));
-    py::dict layer_layer_id(layer_group.attr("layer_layer_id"));
+    object_group(layer_group.attr("object_group"));
+    layer_layer_id(layer_group.attr("layer_layer_id"));
 
-    py::list object_group_keys(object_group.keys());
-    py::list layer_layer_id_keys(layer_layer_id.keys());
+    object_group_keys(object_group.keys());
+    layer_layer_id_keys(layer_layer_id.keys());
 
-    py::list object_group_values(object_group.values());
-    py::list layer_layer_id_values(layer_layer_id.values());
+    object_group_values(object_group.values());
+    layer_layer_id_values(layer_layer_id.values());
+
+    if (frame = -1)
+    {
+      int out_sta = 0;
+      int out_end = editor["frame"];
+
+      for (i = out_sta; i < out_end; i++)
+      {
+        draw_base[i] = frame_pass(i);
+      }
+    }
+    else
+    {
+      draw_base[i] = frame_pass(frame);
+    }
+  }
+
+  np::ndarray frame_pass(int frame)
+  {
 
     int layer_len = py::len(layer_layer_id_keys);
-    group_object(object_group_values, layer_layer_id, layer_len);
-
-    py::object sy(python_operation["synthetic"].attr("call"));
-    sy("test");
+    group_object(object_group_values, layer_layer_id, layer_len, frame);
 
     // for (i = 0; i < object_group_len; i++) {
     //  object_group_values[i]
@@ -70,12 +107,16 @@ public:
     // py::list layer_layer_id_keys(layer_layer_id.attr("keys"));
   }
 
-private:
-  void layer_interpretation() {}
-  void group_object(py::list object_group, py::dict layer_layer_id,
-                    int layer_len)
+  np::ndarray frame_draw_get()
   {
+    return
+  }
 
+private:
+  np::ndarray layer_interpretation() {}
+  np::ndarray group_object(py::list object_group, py::dict layer_layer_id,
+                           int layer_len, int now_frame)
+  {
     int object_group_len = py::len(object_group);
     cout << "object_group_len" << object_group_len << endl;
     //object[layer_len] object_group_procedure;
@@ -105,31 +146,45 @@ private:
     sort(object_group_procedure_key.begin(), object_group_procedure_key.end()); // vector
     //numbers.erase(unique(numbers.begin(), numbers.end()), numbers.end());
 
+    //ここから本ループ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     for (int j = 0; j < object_group_procedure_key.size(); j++)
     {
       int now_nun = object_group_procedure_key[j];
       py::object now_obj = object_group_procedure[now_nun];
       py::object media_object(now_obj);
-      object_individual(media_object);
+
+      py::string synthetic_type = now_obj.attr("synthetic");
+      np::ndarray obj_substance = object_individual(media_object);
+
+      py::object synthetic_func(python_operation["synthetic"].attr("call"));
+      synthetic_func(synthetic_type, , obj_substance);
     }
   }
 
-  void object_individual(py::object media_object)
+  object_individual(py::object media_object)
   {
-    cout << "にゃん" << endl;
+    np::ndarray now_base = np::zeros((editor["y"], editor["x"], 4));
+
+    py::object installation = media_object.attr("installation");
+    int sta = py::extract<int>(installation[0]);
+    int end = py::extract<int>(installation[1]);
+
+    py::object effect_group = media_object.attr("effect_group");
+    group_effect(effect_group, sta, end)
   }
 
-  void group_effect(py::list media_obj_group)
+  np::ndarray group_effect(py::list media_obj_group, int sta, int end)
   {
     int media_obj_group_len = py::len(media_obj_group);
     for (int i = 0; i < media_obj_group_len; i++)
     {
       py::object media_obj_object(media_obj_group[i]);
-      object_individual(media_obj_object);
+      effect_individual(media_obj_object);
     }
   }
 
-  void effect_individual(py::object layer_object) {}
+  np::ndarray effect_individual(py::object layer_object) {}
 
   void now_currently_midpoint() {}
 };
