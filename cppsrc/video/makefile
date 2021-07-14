@@ -35,7 +35,8 @@ FIRST := $(subst $(REMAINDER),,$(PYTHON_VERSION))
 ifeq ($(osname), Darwin)
 	ifeq ($(FIRST), 3)
 		PYTHON_INCLUDE = /Users/$(user_name)/opt/anaconda3/envs/py39/include/python3.9/
-		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin
+#opt/anaconda3/envs/py39/include/python3.9
+		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin/
 
 #PYTHON_INCLUDE = /usr/local/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/include/python3.9
 #$python3.9-config --include
@@ -43,7 +44,7 @@ ifeq ($(osname), Darwin)
 #$python3.9-config --ldflags
 	else
 		PYTHON_INCLUDE = /Users/$(user_name)/opt/anaconda3/envs/py39/include/python3.9/
-		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin
+		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin/
 	endif
 else
 	PYTHON_INCLUDE = /usr/include/python$(PYTHON_VERSION)
