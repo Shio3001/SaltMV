@@ -14,6 +14,7 @@ class VideoExecutionCenter
 {
 private:
   map<string, int> editor;
+
   py::dict python_operation;
   py::object video_image_control;
   //np::ndarray draw_base; //全体のキューも兼ねている
@@ -207,11 +208,11 @@ private:
 
 BOOST_PYTHON_MODULE(video_main)
 {
-  py::class_<VideoExecutionCenter>("VideoExecutionCenter",
-                                   py::init<py::dict, int, int, int, int>())
+  py::class_<video_main_name::VideoExecutionCenter>("VideoExecutionCenter",
+                                                    py::init<py::dict, int, int, int, int>())
       //.def("sta", &VideoExecutionCenter::sta)
-      .def("execution", &VideoExecutionCenter::execution)
-      .def("execution_preview", &VideoExecutionCenter::execution_preview);
+      .def("execution", &video_main_name::VideoExecutionCenter::execution)
+      .def("execution_preview", &video_main_name::VideoExecutionCenter::execution_preview);
   //.def("sta", &VideoExecutionCenter::sta)
   //.def("execution", &VideoExecutionCenter::execution)
   //.def("layer_interpretation", &VideoExecutionCenter::layer_interpretation);
