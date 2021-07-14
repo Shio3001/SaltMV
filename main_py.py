@@ -36,15 +36,16 @@ all_data = edit_data_control.Storage(now_path)
 all_UI_data = UI_control
 
 operation = {}
-operation["video_image"] = control.Control_Video_Image()
-
-operation["cppsrc"] = {}
-operation["cppsrc"]["video_main"] = video_main
 
 operation["rendering_py"] = {}
 operation["rendering_py"]["main"] = rendering_main.Rendering()
 operation["rendering_py"]["frame"] = rendering_frame.Rendering()
 operation["rendering_py"]["point"] = rendering_point.PointAnalysis()
+
+operation["video_image"] = control.Control_Video_Image()
+
+operation["cppsrc"] = {}
+operation["cppsrc"]["video_main"] = video_main
 
 operation["class_dict"] = class_var_to_dict.ClassVarToDict().get
 operation["file_path"] = file_path.DirectoryPath()
@@ -103,18 +104,18 @@ for i in range(2):
             final_name = str(file_name.replace(file_type, ''))
             operation[plugin_dict_name][str(plugin_folder_name)][final_name] = import_data
 
+operation["synthetic"] = synthetic.SyntheticControl()
+
 
 # plugin読み込み終了
-print(operation["plugin"])
-operation["log"].write(operation)
-#app_name = "NankokuMovieMaker"
 
-synthetic_control = synthetic.SyntheticControl(operation)
-operation["synthetic"] = synthetic_control
+def set_operation():
+    operation["log"].write(operation)
+    operation["synthetic"].set_operation(operation)
+    all_data.set_operation(operation)
+    operation["rendering_py"]["main"].set(operation,all_data.scene)
 
-all_data.set_operation(operation)
-
-#operation["rendering_py"]["main"].set_all_data(all_data)
+set_operation()
 operation["undo"] = undo.UndoStack(all_data)
 
 #all_data.main_path = now_path

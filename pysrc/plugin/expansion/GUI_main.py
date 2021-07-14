@@ -48,11 +48,11 @@ class InitialValue:
             preview_screen.size_update("self.all_elements", [1, 2])
 
         def rendering():
-            scene = self.data.all_data.scene()
-            self.operation["rendering_py"]["main"].setapp_init(self.operation,scene)
+            scene_id = self.data.all_data.scene_id()
+            #self.operation["rendering_py"]["main"].setapp_init(self.operation,scene)
             
             #scene_elements.user_select_range = [0, 100]
-            self.operation["rendering_py"]["main"].video_output(scene, "../log/test.mp4")
+            make_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
 
         def edit_data_del():
             self.data.all_data.callback_operation.event("reset")

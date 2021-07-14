@@ -134,10 +134,16 @@ class Storage:
         self.edit_data = copy.deepcopy(send)
         return
 
-    def scene(self, data=None):
+    def scene_id(self):
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].scene_id)
+
+    def scene(self, data=None,scene_id=None):
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene] = copy.deepcopy(data)
             return
+        if not scene_id is None:
+            copy.deepcopy(self.edit_data.scenes[scene_id])
+
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene])
 
     def layer(self, data=None):

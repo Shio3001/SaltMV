@@ -7,6 +7,8 @@ CFLAGS = -lm -pthread -O3 -std=c++11 -march=native -Wall -funroll-loops -Wno-unu
 osname := $(shell uname)
 user_name = $(shell whoami)
 
+
+
 # Only need to change if you install boost-python from source
 BOOST_INC = /Users/$(user_name)/opt/anaconda3/envs/py39/include/boost/
 BOOST_LIB = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/ #3.9なのでbrewで入れたやつ
