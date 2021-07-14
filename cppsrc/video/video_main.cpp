@@ -113,7 +113,6 @@ private:
     // py::list layer_layer_id_keys(layer_layer_id.attr("keys"));
   }
 
-private:
   np::ndarray group_object(py::list object_group, py::dict layer_layer_id,
                            int layer_len, int now_frame, np::ndarray this_draw_base)
   {
