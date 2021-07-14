@@ -40,6 +40,10 @@ namespace VideoMain
     void execution_preview()
     {
     }
+
+    void run()
+    {
+    }
   };
 }
 
