@@ -47,8 +47,8 @@ class SceneOutput:
         self.func["frame"] = self.output_frame
         self.func["tk"] = self.output_tk
         self.func["out"] = self.output_OpenCV
+        self.func["layer_number"] = self.layer_id_number
 
-        
         self.data_image_tk = np.zeros((self.frame))
         self.data_iamge = np.zeros((self.frame))
 
@@ -61,9 +61,27 @@ class SceneOutput:
         self.size = (self.x, self.y)
         self.writer = cv2.VideoWriter(self.path , self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
 
+    def layer_id_number(self,layer_id):
+        return self.scene.layer_group.layer_layer_id[layer_id]
 
-    def output_main(self):
-        image_list = self.cpp_encode.execution_main()
+    def output_main(self,sta=None,end=None):
+
+        start_time = datetime.datetime.now()
+
+        if sta is None:
+            sta = 0;
+        if end is None:
+            end = self.frame
+
+        #self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
+        self.cpp_encode.execution_main(-1,-1)
+
+        end_time = datetime.datetime.now()
+
+        repair = end_time - start_time
+
+        print("本処理 [ python C++ ] [ boost ] {0}".format(repair))
+        #s
 
     def output_frame(self,frame=None):
         image = self.cpp_encode.execution_preview(frame)

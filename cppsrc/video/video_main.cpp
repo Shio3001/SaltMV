@@ -14,10 +14,20 @@ namespace EffectProgress
 {
   class EffectProduction
   {
-    void effect_group()
+  public:
+    py::dict py_out_func;
+    py::dict python_operation;
+    py::object video_image_control;
+    EffectProduction(py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control)
+    {
+      py_out_func = send_py_out_func;
+      python_operation = send_python_operation;
+      video_image_control = send_video_image_control;
+    }
+    void production_effect_group()
     {
     }
-    void effect_individual()
+    void production_effect_individual()
     {
     }
   };
@@ -28,12 +38,63 @@ namespace ObjectProgress
   namespace EP = EffectProgress;
   class ObjectProduction
   {
-    void object_group()
+  public:
+    int frame;
+
+    py::dict py_out_func;
+    py::dict python_operation;
+    py::object video_image_control;
+    py::dict object_group;
+    py::dict layer_layer_id;
+    map<int, py::object> order_decision_object_group;
+    vector<int> order_decision_object_group_number;
+
+    int object_len;
+
+    ObjectProduction(int send_frame, py::dict &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control)
+    {
+      frame = send_frame;
+      object_group = send_object_group;
+      layer_layer_id = send_layer_layer_id;
+      py_out_func = send_py_out_func;
+      python_operation = send_python_operation;
+      video_image_control = send_video_image_control;
+      object_len = py::len(object_group);
+    }
+
+    void production_order_decision()
+    {
+      for (int i = 0; i < object_len; i++)
+      {
+
+        py::object this_object = py::list(object_group.values())[i];
+        py::list installation = py::extract<py::list>(this_object[0].attr("installation"));
+
+        if (py::extract<int>(installation[0]) < frame < py::extract<int>(installation[1]))
+        {
+
+          string layer_id = py::extract<string>(this_object[1]);
+
+          py::object layer_number_func = py_out_func["layer_number"];
+
+          int now_layer_number = py::extract<int>(layer_number_func(layer_id));
+
+          order_decision_object_group[now_layer_number] = this_object[0];
+
+          order_decision_object_group_number.push_back(now_layer_number);
+
+          cout << "frame" << frame << " / now_layer_number " << now_layer_number << " / installation " << py::extract<int>(installation[0]) << " " << py::extract<int>(installation[1]) << " " << endl;
+        }
+      }
+    }
+
+    void production_object_group()
     {
     }
-    void object_individual()
+
+    void production_object_individual()
     {
-      EP::EffectProduction *effect_production = new EP::EffectProduction();
+      EP::EffectProduction *effect_production = new EP::EffectProduction(py_out_func, python_operation, video_image_control);
       delete effect_production;
     }
   };
@@ -44,12 +105,16 @@ namespace VideoMain
   {
     py::object scene;
     py::dict editor;
-    py::dict out_func;
+    py::dict py_out_func;
     py::dict python_operation;
     py::object video_image_control;
 
+    py::object layer_group;
+    py::dict object_group;
+    py::dict layer_layer_id;
+
   public:
-    VideoExecutionCenter(py::dict send_operation, py::object send_scene, py::dict send_out_func)
+    VideoExecutionCenter(py::dict send_operation, py::object send_scene, py::dict send_py_out_func)
     {
       // editor["x"] = extract<int>(x);
       // editor["y"] = extract<int>(y);
@@ -57,9 +122,12 @@ namespace VideoMain
       // editor["frame"] = extract<int>(frame);
 
       scene = send_scene;
-      editor(send_scene.attr("editor"));
-      out_func = send_out_func;
+      layer_group = py::extract<py::object>(scene.attr("layer_group"));
+      object_group = py::extract<py::dict>(layer_group.attr("object_group"));
+      layer_layer_id = py::extract<py::dict>(layer_group.attr("layer_layer_id"));
 
+      editor = py::extract<py::dict>(send_scene.attr("editor"));
+      py_out_func = send_py_out_func;
       python_operation = send_operation;
       video_image_control = python_operation["video_image"];
 
@@ -68,20 +136,42 @@ namespace VideoMain
       //cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
     }
 
-    void execution_main()
+    void execution_main(int sta = -1, int end = -1)
     {
+      if (sta == -1)
+      {
+        sta = 0;
+      }
+      if (end == -1)
+      {
+        end = py::extract<int>(editor["len"]);
+      }
+
+      for (int i = sta; i < end; i++)
+      {
+        run(i);
+      }
     }
 
-    void execution_preview()
+    void execution_preview(int frame)
     {
+      if (frame > py::extract<int>(editor["len"]))
+      {
+        frame = py::extract<int>(editor["len"]);
+      }
+
+      run(frame);
     }
 
   private:
     //np::ndarray
-    void run()
+    void run(int frame)
     {
       namespace OP = ObjectProgress;
-      OP::ObjectProduction *object_production = new OP::ObjectProduction();
+      OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control);
+
+      object_production->production_order_decision();
+
       delete object_production;
     }
   };
@@ -114,3 +204,5 @@ BOOST_PYTHON_MODULE(video_main) {
 // について
 
 // https://marycore.jp/programmer/c-lang-is-lorry/
+
+//https://qiita.com/ur_kinsk/items/949dabe975bdc1affb82
