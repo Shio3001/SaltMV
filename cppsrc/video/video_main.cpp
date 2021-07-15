@@ -10,11 +10,44 @@ using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
 
+namespace EffectProgress
+{
+  class EffectProduction
+  {
+    void effect_group()
+    {
+    }
+    void effect_individual()
+    {
+    }
+  };
+}
+
+namespace ObjectProgress
+{
+  namespace EP = EffectProgress;
+  class ObjectProduction
+  {
+    void object_group()
+    {
+    }
+    void object_individual()
+    {
+      EP::EffectProduction *effect_production = new EP::EffectProduction();
+      delete effect_production;
+    }
+  };
+}
 namespace VideoMain
 {
   class VideoExecutionCenter
   {
-  private:
+    py::object scene;
+    py::dict editor;
+    py::dict out_func;
+    py::dict python_operation;
+    py::object video_image_control;
+
   public:
     VideoExecutionCenter(py::dict send_operation, py::object send_scene, py::dict send_out_func)
     {
@@ -23,12 +56,14 @@ namespace VideoMain
       // editor["fps"] = extract<int>(fps);
       // editor["frame"] = extract<int>(frame);
 
-      py::object scene = send_scene;
-      py::dict editor(send_scene.attr("editor"));
-      py::dict out_func = send_out_func;
+      scene = send_scene;
+      editor(send_scene.attr("editor"));
+      out_func = send_out_func;
 
-      py::dict python_operation = send_operation;
-      py::object video_image_control = python_operation["video_image"];
+      python_operation = send_operation;
+      video_image_control = python_operation["video_image"];
+
+      //EffectProduction effect_production;
 
       //cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
     }
@@ -41,23 +76,14 @@ namespace VideoMain
     {
     }
 
+  private:
+    //np::ndarray
     void run()
     {
+      namespace OP = ObjectProgress;
+      OP::ObjectProduction *object_production = new OP::ObjectProduction();
+      delete object_production;
     }
-  };
-}
-
-namespace ProgressObject
-{
-  class object_production
-  {
-  };
-}
-
-namespace EffectObject
-{
-  class effect_production
-  {
   };
 }
 

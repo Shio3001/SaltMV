@@ -69,6 +69,12 @@ class SceneOutput:
         image = self.cpp_encode.execution_preview(frame)
         return image
 
+    def get_image(self,frame):
+        return self.data_image[frame]
+
+    def image_init(self,sta,end):
+        self.data_image[sta:end] = np.zeros((end-sta))
+        
     def output_tk(self,frame,tk_cash=True):
         if self.data_image_tk[frame] != 0 and tk_cash:
             return
@@ -85,9 +91,24 @@ class SceneOutput:
 
     def image_tk_init(self,sta,end):
         self.data_image_tk[sta:end] = np.zeros((end-sta))
-        
 
+    def image_stack(self):
+        self.data_image_tk = {}
+        self.data_image = {}
+        
     def output_OpenCV(self,sta=None,end=None):
+        def print_percent():
+
+            now_percent = f - sta + 1
+            end_percent = end - sta + 1
+
+            percent_rate = round(now_percent / end_percent * 100) + 1
+            return percent_rate
+
+        def print_time():
+            now_time = datetime.datetime.now()
+            return now_time - start_time
+
 
         if sta is None:
             sta = 0
@@ -101,26 +122,24 @@ class SceneOutput:
 
         end += 1
 
+        start_time = datetime.datetime.now()
 
         for f in range(sta,end):
             export_draw = self.data_iamge[f]
 
+            np_zero = ""
+
             if export_draw == 0:
                 export_draw = np.zeros((self.y, self.x, 4))
+                np_zero = "[ 未生成のため生成 ]"
 
-            def percent():
-
-                now_percent = f - sta + 1
-                end_percent = end - sta + 1
-
-                percent_rate = round(now_percent / end_percent * 100) + 1
-                return percent_rate
-
-            print("\r書き出しを行っています [python - opencv - numpy] 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} %".format(f + 1, end, percent(),sta,end,f+1), end='')
+            print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(),sta,end,f+1,np_zero,print_time()), end='')
 
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             self.writer.write(output_data)
 
+        print("")
+        print("終了 所要時間 : {0}".format(print_time()))
         self.writer.release()
 
 
