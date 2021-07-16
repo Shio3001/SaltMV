@@ -38,7 +38,8 @@ namespace EffectProgress
 
       for (int i = 0; i < effect_len; i++)
       {
-        effect_draw_base = production_effect_individual(effect_draw_base, effect_group[i]);
+        np::ndarray new_effect_draw_base = production_effect_individual(effect_draw_base, effect_group[i]);
+        effect_draw_base = new_effect_draw_base;
       }
 
       return effect_draw_base;
@@ -51,7 +52,8 @@ namespace EffectProgress
       py::dict various_fixed = py::extract<py::dict>(effect.attr("various_fixed"));
       py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
       py::object procedure = py::extract<py::object>(effect.attr("procedure"));
-      return effect_draw_base;
+      np::ndarray new_effect_draw_base = effect_draw_base;
+      return new_effect_draw_base;
     }
   };
 }
@@ -129,7 +131,8 @@ namespace ObjectProgress
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
-        object_draw_base = production_object_individual(now_objcet, object_draw_base);
+        np::ndarray new_object_draw_base = production_object_individual(now_objcet, object_draw_base);
+        object_draw_base = new_object_draw_base;
       }
 
       return object_draw_base;
