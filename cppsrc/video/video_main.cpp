@@ -19,24 +19,39 @@ namespace EffectProgress
     py::dict py_out_func;
     py::dict python_operation;
     py::object video_image_control;
-    EffectProduction(py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control)
+    py::dict editor;
+    vector<string> around_point_key;
+    EffectProduction(py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key)
     {
       effect_group = send_effect_group;
       py_out_func = send_py_out_func;
       python_operation = send_python_operation;
       video_image_control = send_video_image_control;
+      around_point_key = send_around_point_key;
+      editor = send_editor;
     }
-    void production_effect_group()
+    np::ndarray production_effect_group()
     {
       int effect_len = py::len(effect_group);
+      py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
+      np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<double>());
 
-      for (i = 0; i < effect_len; i++)
+      for (int i = 0; i < effect_len; i++)
       {
-        production_effect_individual(effect_group[i])
+        effect_draw_base = production_effect_individual(effect_draw_base, effect_group[i]);
       }
+
+      return effect_draw_base;
     }
-    void production_effect_individual(py::object effect)
+    np::ndarray production_effect_individual(np::ndarray effect_draw_base, py::object effect)
     {
+      py::dict effect_point_internal_id_point = py::extract<py::dict>(effect.attr("effect_point_internal_id_point"));
+      string effect_name = py::extract<string>(effect.attr("effect_name"));
+      string effect_id = py::extract<string>(effect.attr("effect_id"));
+      py::dict various_fixed = py::extract<py::dict>(effect.attr("various_fixed"));
+      py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
+      py::object procedure = py::extract<py::object>(effect.attr("procedure"));
+      return effect_draw_base;
     }
   };
 }
@@ -56,10 +71,11 @@ namespace ObjectProgress
     py::dict layer_layer_id;
     map<int, py::object> order_decision_object_group;
     vector<int> order_decision_object_group_number;
+    py::dict editor;
 
     int object_len;
 
-    ObjectProduction(int send_frame, py::dict &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control)
+    ObjectProduction(int send_frame, py::dict &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor)
     {
       frame = send_frame;
       object_group = send_object_group;
@@ -68,6 +84,7 @@ namespace ObjectProgress
       python_operation = send_python_operation;
       video_image_control = send_video_image_control;
       object_len = py::len(object_group);
+      editor = send_editor;
     }
 
     void production_order_decision()
@@ -98,26 +115,72 @@ namespace ObjectProgress
           cout << "frame" << frame << " / now_layer_number " << now_layer_number << " / installation " << py::extract<int>(installation[0]) << " " << py::extract<int>(installation[1]) << " " << endl;
         }
       }
+      sort(order_decision_object_group_number.begin(), order_decision_object_group_number.end()); // vector
     }
-    sort(order_decision_object_group_number.begin(), order_decision_object_group_number.end()); // vector
 
-    void production_object_group()
+    np::ndarray production_object_group()
     {
+
+      py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
+      np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<double>());
+
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
       {
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
-        production_object_individual(now_objcet)
+        object_draw_base = production_object_individual(now_objcet, object_draw_base);
       }
+
+      return object_draw_base;
     }
 
-    void production_object_individual(py::object &now_objcet)
+    np::ndarray production_object_individual(py::object &now_objcet, np::ndarray object_individual_draw_base)
     {
-      py::dict effect_group = now_objcet.attr("effect_point");
+      py::dict effect_point_internal_id_time = py::extract<py::dict>(now_objcet.attr("effect_point_internal_id_time"));
+      py::list id_time_key = py::extract<py::list>(effect_point_internal_id_time.keys());
+      py::list id_time_value = py::extract<py::list>(effect_point_internal_id_time.values());
+      vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value);
+      py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_point"));
+      string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
+      EP::EffectProduction *effect_production = new EP::EffectProduction(effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key);
+      np::ndarray effect_draw = effect_production->production_effect_group();
 
-      EP::EffectProduction *effect_production = new EP::EffectProduction(effect_group, py_out_func, python_operation, video_image_control);
+      py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
+      np::ndarray new_object_individual_draw_base = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, effect_draw));
       delete effect_production;
+      return new_object_individual_draw_base;
+    }
+
+    vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value)
+    {
+      vector<string> around_point{"", ""};
+
+      int id_time_len = py::len(id_time_key);
+      bool frag_low = false;
+      int low_frame = 0;
+      for (int i = 0; i < id_time_len; i++) //低い値
+      {
+        int target = py::extract<int>(id_time_value[i]);
+        if (low_frame < target && target < frame)
+        {
+          around_point[0] = py::extract<string>(id_time_key[i]);
+          low_frame = py::extract<int>(id_time_value[i]);
+        }
+      }
+
+      bool frag_high = false;
+      int high_frame = 0;
+      for (int i = 0; i < id_time_len; i++) //大きいあたい
+      {
+        int target = py::extract<int>(id_time_value[i]);
+        if (high_frame > target && target > frame)
+        {
+          around_point[1] = py::extract<string>(id_time_key[i]);
+          high_frame = py::extract<int>(id_time_value[i]);
+        }
+      }
+      return around_point;
     }
   };
 }
@@ -158,8 +221,10 @@ namespace VideoMain
       //cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
     }
 
-    void execution_main(int sta = -1, int end = -1)
+    vector<np::ndarray> execution_main(int sta = -1, int end = -1)
     {
+      vector<np::ndarray> draw_vector;
+
       if (sta == -1)
       {
         sta = 0;
@@ -171,30 +236,37 @@ namespace VideoMain
 
       for (int i = sta; i < end; i++)
       {
-        run(i);
+        np::ndarray draw = run(i);
+        draw_vector.push_back(draw);
       }
+
+      return draw_vector;
     }
 
-    void execution_preview(int frame)
+    np::ndarray execution_preview(int frame)
     {
       if (frame > py::extract<int>(editor["len"]))
       {
         frame = py::extract<int>(editor["len"]);
       }
 
-      run(frame);
+      np::ndarray draw = run(frame);
+      return draw;
     }
 
   private:
     //np::ndarray
-    void run(int frame)
+    np::ndarray run(int frame)
     {
       namespace OP = ObjectProgress;
-      OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control);
+      OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor);
 
       object_production->production_order_decision();
+      np::ndarray object_draw_base = object_production->production_object_group();
 
       delete object_production;
+
+      return object_draw_base;
     }
   };
 }

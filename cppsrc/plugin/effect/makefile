@@ -1,7 +1,7 @@
 # default PTRHON_VERSION is 3.6 on Mac, 3.5 in other os
 # if you installed other python version, Please specific your Python Version below
 PYTHON_VERSION = 3.9
-TARGET = video_main
+TARGET = cpp_plugin_rapper
 
 CFLAGS = -lm -pthread -O3 -std=c++11 -march=native -Wall -funroll-loops -Wno-unused-result
 osname := $(shell uname)

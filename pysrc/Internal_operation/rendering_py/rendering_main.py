@@ -74,7 +74,8 @@ class SceneOutput:
             end = self.frame
 
         #self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
-        self.cpp_encode.execution_main(-1,-1)
+        draw_list = self.cpp_encode.execution_main(-1,-1)
+        print(len(draw_list))
 
         end_time = datetime.datetime.now()
 
