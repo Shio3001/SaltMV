@@ -15,19 +15,27 @@ namespace EffectProgress
   class EffectProduction
   {
   public:
+    py::dict effect_group;
     py::dict py_out_func;
     py::dict python_operation;
     py::object video_image_control;
-    EffectProduction(py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control)
+    EffectProduction(py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control)
     {
+      effect_group = send_effect_group;
       py_out_func = send_py_out_func;
       python_operation = send_python_operation;
       video_image_control = send_video_image_control;
     }
     void production_effect_group()
     {
+      int effect_len = py::len(effect_group);
+
+      for (i = 0; i < effect_len; i++)
+      {
+        production_effect_individual(effect_group[i])
+      }
     }
-    void production_effect_individual()
+    void production_effect_individual(py::object effect)
     {
     }
   };
@@ -70,9 +78,13 @@ namespace ObjectProgress
         py::object this_object = py::list(object_group.values())[i];
         py::list installation = py::extract<py::list>(this_object[0].attr("installation"));
 
-        if (py::extract<int>(installation[0]) < frame < py::extract<int>(installation[1]))
-        {
+        bool low = py::extract<int>(installation[0]) < frame;
+        bool high = frame < py::extract<int>(installation[1]);
 
+        bool low_high_scope = low * high;
+
+        if (low_high_scope)
+        {
           string layer_id = py::extract<string>(this_object[1]);
 
           py::object layer_number_func = py_out_func["layer_number"];
@@ -87,14 +99,24 @@ namespace ObjectProgress
         }
       }
     }
+    sort(order_decision_object_group_number.begin(), order_decision_object_group_number.end()); // vector
 
     void production_object_group()
     {
+      for (int i = 0; i < order_decision_object_group_number.size(); i++)
+      {
+        int now_object_nun = order_decision_object_group_number[i];
+        py::object now_objcet = order_decision_object_group[now_object_nun];
+
+        production_object_individual(now_objcet)
+      }
     }
 
-    void production_object_individual()
+    void production_object_individual(py::object &now_objcet)
     {
-      EP::EffectProduction *effect_production = new EP::EffectProduction(py_out_func, python_operation, video_image_control);
+      py::dict effect_group = now_objcet.attr("effect_point");
+
+      EP::EffectProduction *effect_production = new EP::EffectProduction(effect_group, py_out_func, python_operation, video_image_control);
       delete effect_production;
     }
   };
