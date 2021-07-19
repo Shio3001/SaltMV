@@ -21,7 +21,8 @@ namespace EffectProgress
     py::object video_image_control;
     py::dict editor;
     vector<string> around_point_key;
-    EffectProduction(py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key)
+    int now_frame;
+    EffectProduction(int send_now_frame, py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key)
     {
       effect_group = send_effect_group;
       py_out_func = send_py_out_func;
@@ -29,12 +30,13 @@ namespace EffectProgress
       video_image_control = send_video_image_control;
       around_point_key = send_around_point_key;
       editor = send_editor;
+      now_frame = send_now_frame;
     }
     np::ndarray production_effect_group()
     {
       int effect_len = py::len(effect_group);
       py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
-      np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<double>());
+      np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       for (int i = 0; i < effect_len; i++)
       {
@@ -52,7 +54,40 @@ namespace EffectProgress
       py::dict various_fixed = py::extract<py::dict>(effect.attr("various_fixed"));
       py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
       py::object procedure = py::extract<py::object>(effect.attr("procedure"));
-      np::ndarray new_effect_draw_base = effect_draw_base;
+
+      py::dict before_value = py::extract<py::dict>(effect_point[around_point_key[0]]);
+      py::dict next_value = py::extract<py::dict>(effect_point[around_point_key[1]]);
+
+      py::list before_value_key = py::extract<py::list>(before_value.keys());
+      py::list next_value_key = py::extract<py::list>(next_value.keys());
+
+      py::list before_value_values = py::extract<py::list>(before_value.values());
+      py::list next_value_values = py::extract<py::list>(next_value.values());
+
+      if (before_value["time"] == next_value["time"])
+      {
+        next_value["time"] += 1;
+      }
+
+      py::dict effect_value = {};
+
+      int effect_point_len = py::len(effect_point);
+      //int various_fixed_len = py::len(various_fixed);
+
+      int b_n_time = py::extract<int>(next_value["time"]) - py::extract<int>(before_value["time"]);
+      int b_now_time = now_frame - py::extract<int>(before_value["time"]);
+
+      for (int i = 0; i < effect_point_len; i++)
+      {
+        effect_value[before_value_key[i]] = (py::extract<int>(next_value_values[i]) - py::extract<int>(before_value_values[i])) / b_n_time * b_now_time;
+      }
+
+      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, now_frame, editor, python_operation));
+
+      py::list procedure_return = py::extract<py::list>(procedure(effect_plugin_elements));
+      np::ndarray new_effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
+      py::list starting_point = py::extract<np::ndarray>(procedure_return[1]);
+
       return new_effect_draw_base;
     }
   };
@@ -122,7 +157,7 @@ namespace ObjectProgress
     {
 
       py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
-      np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<double>());
+      np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
       {
@@ -142,9 +177,9 @@ namespace ObjectProgress
       py::list id_time_key = py::extract<py::list>(effect_point_internal_id_time.keys());
       py::list id_time_value = py::extract<py::list>(effect_point_internal_id_time.values());
       vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value);
-      py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_point")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
+      py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_group")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
       string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
-      EP::EffectProduction *effect_production = new EP::EffectProduction(effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key);
+      EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key);
       np::ndarray effect_draw = effect_production->production_effect_group();
 
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
@@ -235,7 +270,7 @@ namespace VideoMain
         end = py::extract<int>(editor["len"]);
       }
       py::tuple shape_size = py::make_tuple(end - sta, editor["y"], editor["x"], 4);
-      np::ndarray draw_all = np::zeros(shape_size, np::dtype::get_builtin<double>());
+      np::ndarray draw_all = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       for (int i = sta; i < end; i++)
       {
@@ -266,7 +301,7 @@ namespace VideoMain
       namespace OP = ObjectProgress;
       OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor);
 
-      object_production->production_order_decision();
+      //object_production->production_order_decision();
       np::ndarray object_draw_base = object_production->production_object_group();
 
       delete object_production;

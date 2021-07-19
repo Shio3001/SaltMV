@@ -54,7 +54,7 @@ class InitialValue:
             #scene_elements.user_select_range = [0, 100]
             make_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
             make_data.output_main()
-            make_data.output_OpenCV()
+            #make_data.output_OpenCV()
 
         def edit_data_del():
             self.data.all_data.callback_operation.event("reset")

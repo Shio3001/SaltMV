@@ -8,6 +8,20 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 
+
+class EffectPluginElements:
+    def __init__(self, draw, effect_value, before_value, next_value, now_frame, editor, operation):
+        self.draw = draw
+        self.effect_value = effect_value
+        self.before_value = before_value
+        self.next_value = next_value
+        self.now_frame = now_frame
+        self.editor = editor
+        self.operation = operation
+        self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
+        #self.py_Rendering_func = py_Rendering_func
+
+
 class Rendering:
     def __init__(self):
         #self.rendering_scene_queue = {}
@@ -48,6 +62,7 @@ class SceneOutput:
         self.func["tk"] = self.output_tk
         self.func["out"] = self.output_OpenCV
         self.func["layer_number"] = self.layer_id_number
+        self.func["EffectPluginElements"] = EffectPluginElements
 
         self.data_image_tk = np.zeros((self.frame))
         self.data_iamge = np.zeros((self.frame))
@@ -82,6 +97,8 @@ class SceneOutput:
         repair = end_time - start_time
 
         print("本処理 [ python C++ ] [ boost ] {0}".format(repair))
+
+        self.output_OpenCV(sta,end,draw_list)
         #s
 
     def output_frame(self,frame=None):
@@ -115,7 +132,7 @@ class SceneOutput:
         self.data_image_tk = {}
         self.data_image = {}
         
-    def output_OpenCV(self,sta=None,end=None):
+    def output_OpenCV(self,sta=None,end=None,draw_list=None):
         def print_percent():
 
             now_percent = f - sta + 1
@@ -144,13 +161,17 @@ class SceneOutput:
         start_time = datetime.datetime.now()
 
         for f in range(sta,end):
-            export_draw = self.data_iamge[f]
+
+            if not draw_list is None:
+                export_draw = draw_list[f]
+            else:
+                export_draw = self.data_iamge[f]
+                
+                if export_draw == 0:
+                    export_draw = np.zeros((self.y, self.x, 4))
+                    np_zero = "[ 未生成のため生成 ]"
 
             np_zero = ""
-
-            if export_draw == 0:
-                export_draw = np.zeros((self.y, self.x, 4))
-                np_zero = "[ 未生成のため生成 ]"
 
             print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(),sta,end,f+1,np_zero,print_time()), end='')
 
