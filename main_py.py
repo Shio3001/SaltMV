@@ -24,7 +24,11 @@ from pysrc import edit_data_control
 from pysrc import UI_control
 from pysrc import undo
 from pysrc.chord_tool import class_var_to_dict
+
+from cppsrc.video.test import test3
+
 from cppsrc.video import video_main
+
 from pysrc import synthetic
 
 from media_input.video_image import control

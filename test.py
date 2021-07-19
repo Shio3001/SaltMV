@@ -1,9 +1,5 @@
-class Test:
-    def __init__(self):
-        pass
+from cppsrc.video.test import test3
 
-print(Test)
+test3.test()
 
-test = Test()
-
-print(test)
+print("ﾐﾝ")

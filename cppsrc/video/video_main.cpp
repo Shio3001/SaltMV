@@ -100,9 +100,7 @@ namespace ObjectProgress
         bool low = py::extract<int>(installation[0]) < frame;
         bool high = frame < py::extract<int>(installation[1]);
 
-        bool low_high_scope = low * high;
-
-        if (low_high_scope)
+        if (low && high)
         {
           string layer_id = py::extract<string>(this_object[1]);
 

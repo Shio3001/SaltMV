@@ -1,17 +1,25 @@
 # default PTRHON_VERSION is 3.6 on Mac, 3.5 in other os
 # if you installed other python version, Please specific your Python Version below
 PYTHON_VERSION = 3.9
-TARGET = test
+TARGET = test3
 
 CFLAGS = -lm -pthread -O3 -std=c++11 -march=native -Wall -funroll-loops -Wno-unused-result
 osname := $(shell uname)
 user_name = $(shell whoami)
 
+
+
 # Only need to change if you install boost-python from source
 BOOST_INC = /Users/$(user_name)/opt/anaconda3/envs/py39/include/boost/
 BOOST_LIB = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/ #3.9なのでbrewで入れたやつ
 
+#/Users/$(user_name)/opt/anaconda3/envs/py39/lib
+#ここに libboost_python39.a とかいろいろいます
+
 # $(info $$osname is [${osname}])
+
+#/Users/"name"/opt/anaconda3/envs/py39
+#/Users/"name"/opt/anaconda3/envs/py39/include/python3.9
 
 # if PYTHON_VERSION not set, set default PYTHON_VERSION
 ifeq ($(osname), Darwin)
@@ -35,7 +43,8 @@ FIRST := $(subst $(REMAINDER),,$(PYTHON_VERSION))
 ifeq ($(osname), Darwin)
 	ifeq ($(FIRST), 3)
 		PYTHON_INCLUDE = /Users/$(user_name)/opt/anaconda3/envs/py39/include/python3.9/
-		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin
+#opt/anaconda3/envs/py39/include/python3.9
+		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin/
 
 #PYTHON_INCLUDE = /usr/local/opt/python@3.9/Frameworks/Python.framework/Versions/3.9/include/python3.9
 #$python3.9-config --include
@@ -43,7 +52,7 @@ ifeq ($(osname), Darwin)
 #$python3.9-config --ldflags
 	else
 		PYTHON_INCLUDE = /Users/$(user_name)/opt/anaconda3/envs/py39/include/python3.9/
-		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin
+		LIBPYTHON_PATH = /Users/$(user_name)/opt/anaconda3/envs/py39/lib/python3.9/config-3.9-darwin/
 	endif
 else
 	PYTHON_INCLUDE = /usr/include/python$(PYTHON_VERSION)
@@ -55,6 +64,7 @@ endif
 # on mac, name ===> python3.6
 ifeq ($(FIRST), 3)
 	BOOST = lboost_python39
+	numpy = lboost_numpy39
 	ifeq ($(osname), Darwin)
 		PYTHON_VERSION_FINAL = $(PYTHON_VERSION)
 	else
@@ -62,12 +72,13 @@ ifeq ($(FIRST), 3)
 	endif
 else
 	BOOST = lboost_python
+	numpy = lboost_numpy
 	PYTHON_VERSION_FINAL = $(PYTHON_VERSION)
 endif
 
  
 $(TARGET).so: $(TARGET).o
-	g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -L$(LIBPYTHON_PATH) -undefined dynamic_lookup -o $(TARGET).so
+	g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -$(numpy) -L$(LIBPYTHON_PATH) -undefined dynamic_lookup -o $(TARGET).so 
 #g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -L$(LIBPYTHON_PATH) -lpython3.9 -o $(TARGET).so
 #pytyhon3.9だけ手打ちで変更
  
