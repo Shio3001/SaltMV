@@ -142,7 +142,7 @@ namespace ObjectProgress
       py::list id_time_key = py::extract<py::list>(effect_point_internal_id_time.keys());
       py::list id_time_value = py::extract<py::list>(effect_point_internal_id_time.values());
       vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value);
-      py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_point"));
+      py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_point")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
       string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
       EP::EffectProduction *effect_production = new EP::EffectProduction(effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key);
       np::ndarray effect_draw = effect_production->production_effect_group();
@@ -222,9 +222,9 @@ namespace VideoMain
       //cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
     }
 
-    vector<np::ndarray> execution_main(int sta = -1, int end = -1)
+    np::ndarray execution_main(int sta = -1, int end = -1)
     {
-      vector<np::ndarray> draw_vector;
+      //vector<np::ndarray> draw_vector;
 
       if (sta == -1)
       {
@@ -234,14 +234,18 @@ namespace VideoMain
       {
         end = py::extract<int>(editor["len"]);
       }
+      py::tuple shape_size = py::make_tuple(end - sta, editor["y"], editor["x"], 4);
+      np::ndarray draw_all = np::zeros(shape_size, np::dtype::get_builtin<double>());
 
       for (int i = sta; i < end; i++)
       {
         np::ndarray draw = run(i);
-        draw_vector.push_back(draw);
+        //cout << py::extract<int>(draw.attr("shape")[0]) << " " << i << endl;
+        //draw_all.push_back(draw);
+        draw_all[i - sta] = draw;
       }
 
-      return draw_vector;
+      return draw_all;
     }
 
     np::ndarray execution_preview(int frame)
@@ -274,8 +278,11 @@ namespace VideoMain
 
 BOOST_PYTHON_MODULE(video_main)
 {
+  Py_Initialize();
+  np::initialize();
   py::class_<VideoMain::VideoExecutionCenter>("VideoExecutionCenter",
                                               py::init<py::dict, py::object, py::dict>())
+
       //.def("sta", &VideoExecutionCenter::sta)
       .def("execution_main", &VideoMain::VideoExecutionCenter::execution_main)
       .def("execution_preview", &VideoMain::VideoExecutionCenter::execution_preview);
