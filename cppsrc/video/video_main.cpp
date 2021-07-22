@@ -136,9 +136,48 @@ namespace EffectProgress
       np::ndarray new_effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
 
       cout << "starting_point" << endl;
-      py::list starting_point = py::extract<py::list>(procedure_return[1]);
+      py::list starting_point_center = py::extract<py::list>(procedure_return[1]);
 
-      cout << py::extract<int>(starting_point[0]) << " " << py::extract<int>(starting_point[1]) << endl;
+      cout << py::extract<int>(starting_point_center[0]) << " " << py::extract<int>(starting_point_center[1]) << endl;
+
+      int new_effect_draw_base_size[2];
+      new_effect_draw_base_size[0] = py::extract<int>(new_effect_draw_base.shape[1]);
+      new_effect_draw_base_size[1] = py::extract<int>(new_effect_draw_base.shape[0]);
+
+      string xy[] = { "x",
+                      "y" }
+
+      int add_draw_range_lu[2];
+      int add_draw_range_rd[2];
+
+      add_draw_range_lu[0] = 0;
+      add_draw_range_lu[1] = 0;
+
+      add_draw_range_rd[0] = editor["x"];
+      add_draw_range_rd[0] = editor["y"];
+
+      for (int i = 0, i < 2, i++)
+      {
+        int base_size = py::extract<int>(editor[xy[i]]);
+        int draw_size = py::extract<int>(new_effect_draw_base_size[i]);
+        int sp_lu = py::extract<int>(starting_point_center[i]) - draw_size) / 2 + base_size / 2;
+
+        if (sp_lu < 0)
+        {
+          add_draw_range_lu[i] = abs(sp_lu);
+        }
+
+        int sp_rd = sp_lr + draw_size;
+
+        if (sp_rd > base_size)
+        {
+          add_draw_range_rd[i] = base_size;
+        }
+      }
+
+      //int starting_point_left_up[2];
+
+      //starting_point_left_up[1] = py::extract<int>(starting_point_center[1]) - py::extract<int>(new_effect_draw_base_size[1]) / 2 + py::extract<int>(xy[1]) / 2;
 
       //ここまで座標中心が上地点
 
