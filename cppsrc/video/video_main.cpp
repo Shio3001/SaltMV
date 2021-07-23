@@ -355,15 +355,17 @@ namespace ObjectProgress
 
           //cout << "A" << endl;
 
-          py::object base_p = object_individual_draw_base[yb][xb];
+          //cout << -1 * xa << -1 * ya << -1 * xb << -1 * yb << endl;
+
+          np::ndarray base_p = py::extract<np::ndarray>(object_individual_draw_base[yb][xb]);
 
           //cout << "B" << endl;
 
-          py::object add_p = new_effect_draw[ya][xa];
+          np::ndarray add_p = py::extract<np::ndarray>(new_effect_draw[ya][xa]);
 
           //cout << "C" << endl;
 
-          py::object sy_draw = synthetic_func(synthetic_type, base_p, add_p);
+          np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, base_p, add_p));
 
           //cout << "D" << endl;
 

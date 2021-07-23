@@ -27,8 +27,12 @@ class CentralRole:
         x = int(round(data.draw_size["x"] / 2))
         y = int(round(data.draw_size["y"] / 2))
 
-        px = [255, 255, 255, 100]
+        #px = np.array([255, 255, 255, 100])
 
-        data.draw[y:y+20, x:x+20, :] = np.full((20, 20, 4), 100)
+        #p = np.full(20, px)
+        p2 = np.full((20, 20, 4), 100)
+        print(p2.shape)
+
+        data.draw[y:y+20, x:x+20, :] = p2
 
         return data.draw, self.starting_point
