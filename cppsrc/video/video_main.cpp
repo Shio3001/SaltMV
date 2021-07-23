@@ -9,6 +9,13 @@
 using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
+namespace SyntheticProgress
+{
+  class SyntheticProduction
+  {
+  public:
+  }
+}
 
 namespace EffectProgress
 {
@@ -65,8 +72,8 @@ namespace EffectProgress
 
       for (int i = 0; i < effect_len; i++)
       {
-        np::ndarray new_effect_draw_base = production_effect_individual(effect_draw_base, effect_group_val[i]);
-        effect_draw_base = new_effect_draw_base;
+        np::ndarray new_effect_draw_base_effect_group = production_effect_individual(effect_draw_base, effect_group_val[i]);
+        effect_draw_base = new_effect_draw_base_effect_group;
       }
 
       return effect_draw_base;
@@ -132,6 +139,7 @@ namespace EffectProgress
       cout << "procedure_return" << endl;
       py::tuple procedure_return = py::extract<py::tuple>(procedure.attr("main")(effect_plugin_elements));
 
+      // ここから
       cout << "new_effect_draw_base" << endl;
       np::ndarray new_effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
 
@@ -140,39 +148,53 @@ namespace EffectProgress
 
       cout << py::extract<int>(starting_point_center[0]) << " " << py::extract<int>(starting_point_center[1]) << endl;
 
-      int new_effect_draw_base_size[2];
-      new_effect_draw_base_size[0] = py::extract<int>(new_effect_draw_base.shape[1]);
-      new_effect_draw_base_size[1] = py::extract<int>(new_effect_draw_base.shape[0]);
+      py::tuple new_draw = py::extract<py::tuple>(new_effect_draw_base.attr("shape"));
 
-      string xy[] = { "x",
-                      "y" }
+      int new_effect_draw_base_size[2];
+      new_effect_draw_base_size[0] = py::extract<int>(new_draw[1]);
+      new_effect_draw_base_size[1] = py::extract<int>(new_draw[0]);
+
+      string xy[] = {"x",
+                     "y"};
+
+      int base_draw_range_lu[2];
+      int base_draw_range_rd[2];
 
       int add_draw_range_lu[2];
       int add_draw_range_rd[2];
 
-      add_draw_range_lu[0] = 0;
-      add_draw_range_lu[1] = 0;
-
-      add_draw_range_rd[0] = editor["x"];
-      add_draw_range_rd[0] = editor["y"];
-
-      for (int i = 0, i < 2, i++)
+      for (int i = 0; i < 2; i++)
       {
-        int base_size = py::extract<int>(editor[xy[i]]);
-        int draw_size = py::extract<int>(new_effect_draw_base_size[i]);
-        int sp_lu = py::extract<int>(starting_point_center[i]) - draw_size) / 2 + base_size / 2;
+        int draw_size = py::extract<int>(editor[xy[i]]);
+        int new_draw_size = new_effect_draw_base_size[i];
+        int center = py::extract<int>(starting_point_center[i]);
 
-        if (sp_lu < 0)
+        int position_lu = center - new_draw_size / 2 + draw_size / 2; //重ね合わせたい左側座標
+        int position_rd = position_lu + new_draw_size;                //重ね合わせたい右側座標
+
+        if (position_lu < 0)
         {
-          add_draw_range_lu[i] = abs(sp_lu);
+          add_draw_range_lu[i] = abs(position_lu);
+          base_draw_range_rd[i] = 0;
+        }
+        else
+        {
+          add_draw_range_lu[i] = 0;
+          base_draw_range_lu[i] = position_lu;
         }
 
-        int sp_rd = sp_lr + draw_size;
-
-        if (sp_rd > base_size)
+        if (position_rd > draw_size)
         {
-          add_draw_range_rd[i] = base_size;
+          add_draw_range_rd[i] = draw_size - position_lu;
+          base_draw_range_rd[i] = draw_size;
         }
+        else
+        {
+          add_draw_range_rd[i] = new_draw_size;
+          base_draw_range_rd[i] = position_rd;
+        }
+
+        cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
       //int starting_point_left_up[2];
