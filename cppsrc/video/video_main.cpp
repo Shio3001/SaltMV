@@ -9,13 +9,6 @@
 using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
-namespace SyntheticProgress
-{
-  class SyntheticProduction
-  {
-  public:
-  }
-}
 
 namespace EffectProgress
 {
@@ -58,7 +51,7 @@ namespace EffectProgress
 
       cout << before_time << " " << next_time << endl;
     }
-    np::ndarray production_effect_group()
+    py::list production_effect_group()
     {
       cout << "production_effect_group" << endl;
       int effect_len = py::len(effect_group);
@@ -70,15 +63,51 @@ namespace EffectProgress
 
       py::list effect_group_val = py::extract<py::list>(effect_group.values());
 
-      for (int i = 0; i < effect_len; i++)
+      py::list starting_point_center;
+
+      for (int a = 0; a < 2; a++)
       {
-        np::ndarray new_effect_draw_base_effect_group = production_effect_individual(effect_draw_base, effect_group_val[i]);
-        effect_draw_base = new_effect_draw_base_effect_group;
+        starting_point_center.append(0);
       }
 
-      return effect_draw_base;
+      for (int i = 0; i < effect_len; i++)
+      {
+        py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, effect_group_val[i]));
+
+        // ここから
+        cout << "effect_draw_base" << endl;
+        effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
+
+        cout << "starting_point" << endl;
+        py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[1]);
+
+        for (int a = 0; a < 2; a++)
+        {
+          cout << a << " procedure_return_starting_point_center " << endl;
+          int spc = py::extract<int>(procedure_return_starting_point_center[a]);
+          starting_point_center[a] += spc;
+        }
+
+        //starting_point_center[a] = starting_point_center[a] + py::extract<int>(procedure_return_starting_point_center[1]);
+        //effect_draw_base = new_effect_draw_base;
+      }
+      cout << " effect_group_return A" << endl;
+
+      py::list effect_group_return;
+
+      cout << " effect_group_return a1" << endl;
+
+      effect_group_return.append(effect_draw_base);
+
+      cout << " effect_group_return a2" << endl;
+
+      effect_group_return.append(starting_point_center);
+
+      cout << " effect_group_return B" << endl;
+
+      return effect_group_return;
     }
-    np::ndarray production_effect_individual(np::ndarray effect_draw_base, py::object effect)
+    py::tuple production_effect_individual(np::ndarray effect_draw_base, py::object effect)
     {
       cout << "production_effect_individual" << endl;
 
@@ -139,74 +168,16 @@ namespace EffectProgress
       cout << "procedure_return" << endl;
       py::tuple procedure_return = py::extract<py::tuple>(procedure.attr("main")(effect_plugin_elements));
 
-      // ここから
-      cout << "new_effect_draw_base" << endl;
-      np::ndarray new_effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
-
-      cout << "starting_point" << endl;
-      py::list starting_point_center = py::extract<py::list>(procedure_return[1]);
-
-      cout << py::extract<int>(starting_point_center[0]) << " " << py::extract<int>(starting_point_center[1]) << endl;
-
-      py::tuple new_draw = py::extract<py::tuple>(new_effect_draw_base.attr("shape"));
-
-      int new_effect_draw_base_size[2];
-      new_effect_draw_base_size[0] = py::extract<int>(new_draw[1]);
-      new_effect_draw_base_size[1] = py::extract<int>(new_draw[0]);
-
-      string xy[] = {"x",
-                     "y"};
-
-      int base_draw_range_lu[2];
-      int base_draw_range_rd[2];
-
-      int add_draw_range_lu[2];
-      int add_draw_range_rd[2];
-
-      for (int i = 0; i < 2; i++)
-      {
-        int draw_size = py::extract<int>(editor[xy[i]]);
-        int new_draw_size = new_effect_draw_base_size[i];
-        int center = py::extract<int>(starting_point_center[i]);
-
-        int position_lu = center - new_draw_size / 2 + draw_size / 2; //重ね合わせたい左側座標
-        int position_rd = position_lu + new_draw_size;                //重ね合わせたい右側座標
-
-        if (position_lu < 0)
-        {
-          add_draw_range_lu[i] = abs(position_lu);
-          base_draw_range_rd[i] = 0;
-        }
-        else
-        {
-          add_draw_range_lu[i] = 0;
-          base_draw_range_lu[i] = position_lu;
-        }
-
-        if (position_rd > draw_size)
-        {
-          add_draw_range_rd[i] = draw_size - position_lu;
-          base_draw_range_rd[i] = draw_size;
-        }
-        else
-        {
-          add_draw_range_rd[i] = new_draw_size;
-          base_draw_range_rd[i] = position_rd;
-        }
-
-        cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
-      }
-
       //int starting_point_left_up[2];
 
-      //starting_point_left_up[1] = py::extract<int>(starting_point_center[1]) - py::extract<int>(new_effect_draw_base_size[1]) / 2 + py::extract<int>(xy[1]) / 2;
+      //starting_point_left_up[1] = py::extract<int>(starting_point_center[1]) - py::extract<int>(new_effect_draw_size[1]) / 2 + py::extract<int>(xy[1]) / 2;
 
       //ここまで座標中心が上地点
 
       cout << " "
            << "new_effect_draw_base end" << endl;
 
-      return new_effect_draw_base;
+      return procedure_return;
     }
   };
 }
@@ -303,12 +274,118 @@ namespace ObjectProgress
       py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_group")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
       string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
       EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time);
-      np::ndarray effect_draw = effect_production->production_effect_group();
+      py::list effect_group_return = effect_production->production_effect_group();
+
+      // ここから
+      cout << "effect_group_return" << endl;
+      np::ndarray new_effect_draw = py::extract<np::ndarray>(effect_group_return[0]);
+
+      cout << "starting_point" << endl;
+      py::list starting_point_center = py::extract<py::list>(effect_group_return[1]);
+
+      //cout << starting_point_center[0] << " " << starting_point_center[1] << endl;
+
+      py::tuple new_draw_size_shape = py::extract<py::tuple>(new_effect_draw.attr("shape"));
+
+      int new_effect_draw_size[2];
+      new_effect_draw_size[0] = py::extract<int>(new_draw_size_shape[1]);
+      new_effect_draw_size[1] = py::extract<int>(new_draw_size_shape[0]);
+
+      string xy[] = {"x",
+                     "y"};
+
+      int base_draw_range_lu[2];
+      int base_draw_range_rd[2];
+
+      int add_draw_range_lu[2];
+      int add_draw_range_rd[2];
+
+      for (int i = 0; i < 2; i++)
+      {
+        int draw_size = py::extract<int>(editor[xy[i]]);
+        int new_draw_size = new_effect_draw_size[i];
+        int center = py::extract<int>(starting_point_center[i]);
+
+        int position_lu = center - new_draw_size / 2 + draw_size / 2; //重ね合わせたい左側座標
+        int position_rd = position_lu + new_draw_size;                //重ね合わせたい右側座標
+
+        if (position_lu < 0)
+        {
+          add_draw_range_lu[i] = abs(position_lu);
+          base_draw_range_rd[i] = 0;
+        }
+        else
+        {
+          add_draw_range_lu[i] = 0;
+          base_draw_range_lu[i] = position_lu;
+        }
+
+        if (position_rd > draw_size)
+        {
+          add_draw_range_rd[i] = draw_size - position_lu;
+          base_draw_range_rd[i] = draw_size;
+        }
+        else
+        {
+          add_draw_range_rd[i] = new_draw_size;
+          base_draw_range_rd[i] = position_rd;
+        }
+
+        cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
+      }
 
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
-      np::ndarray new_object_individual_draw_base = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, effect_draw));
-      delete effect_production;
-      return new_object_individual_draw_base;
+
+      //np::ndarray new_object_individual_draw_base = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, effect_draw));
+
+      int xa = add_draw_range_lu[0];
+      int xb = base_draw_range_lu[0];
+
+      for (int x = 0; x < add_draw_range_rd[0] - add_draw_range_lu[0]; x++)
+      {
+        int ya = add_draw_range_lu[1];
+        int yb = base_draw_range_lu[1];
+
+        for (int y = 0; y < add_draw_range_rd[1] - add_draw_range_lu[1]; y++)
+        {
+          //py::tuple xbyb = py::make_tuple(xb, yb);
+          //py::tuple xaya = py::make_tuple(xa, ya);
+          //cout << "synthetic_func" << endl;
+          //cout << " " << xb << " " << yb << " " << xa << " " << xb << endl;
+
+          //cout << "A" << endl;
+
+          np::ndarray base_p = py::extract<np::ndarray>(object_individual_draw_base[yb][xb]);
+
+          //cout << "B" << endl;
+
+          np::ndarray add_p = py::extract<np::ndarray>(new_effect_draw[ya][xa]);
+
+          //cout << "C" << endl;
+
+          np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, base_p, add_p));
+
+          //cout << "D" << endl;
+
+          object_individual_draw_base[yb][xb] = sy_draw;
+
+          //cout << "E" << endl;
+
+          ya++;
+          yb++;
+        }
+
+        xa++;
+        xb++;
+      }
+
+      cout << "end" << endl;
+
+      //np::ndarray base_range_draw = py::extract<np::ndarray>(object_individual_draw_base [base_draw_range_lu[0]:base_draw_range_rd[0], base_draw_range_lu[1]:base_draw_range_rd[1]]);
+      //np::ndarray add_range_draw = py::extract<np::ndarray>(new_effect_draw [add_draw_range_lu[0]:add_draw_range_rd[0], add_draw_range_lu[1]:add_draw_range_rd[1]]);
+
+      //delete synthetic_production;
+      return object_individual_draw_base;
     }
 
     vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value)
@@ -423,10 +500,8 @@ namespace VideoMain
     {
       namespace OP = ObjectProgress;
       OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor);
-
       object_production->production_order_decision();
       np::ndarray object_draw_base = object_production->production_object_group();
-
       delete object_production;
 
       return object_draw_base;
