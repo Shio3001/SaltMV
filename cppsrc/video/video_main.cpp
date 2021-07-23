@@ -46,7 +46,10 @@ namespace EffectProgress
            << " "
            << around_point_key[1] << endl;
 
+      cout << "lord before_time" << endl;
       before_time = py::extract<int>(effect_point_internal_id_time[around_point_key[0]]);
+
+      cout << "lord next_time" << endl;
       next_time = py::extract<int>(effect_point_internal_id_time[around_point_key[1]]);
 
       cout << before_time << " " << next_time << endl;
@@ -221,7 +224,7 @@ namespace ObjectProgress
         py::object this_object = py::list(object_group.values())[i];
         py::list installation = py::extract<py::list>(this_object[0].attr("installation"));
 
-        bool low = py::extract<int>(installation[0]) < frame;
+        bool low = py::extract<int>(installation[0]) <= frame;
         bool high = frame < py::extract<int>(installation[1]);
 
         if (low && high)
@@ -237,6 +240,10 @@ namespace ObjectProgress
           order_decision_object_group_number.push_back(now_layer_number);
 
           cout << "frame" << frame << " / now_layer_number " << now_layer_number << " / installation " << py::extract<int>(installation[0]) << " " << py::extract<int>(installation[1]) << " " << endl;
+        }
+        else
+        {
+          cout << "(´･ω･`)" << endl;
         }
       }
       sort(order_decision_object_group_number.begin(), order_decision_object_group_number.end()); // vector
@@ -401,10 +408,12 @@ namespace ObjectProgress
       for (int i = 0; i < id_time_len; i++) //低い値
       {
         int target = py::extract<int>(id_time_value[i]);
-        if (low_frame < target && target < frame)
+        if (target >= low_frame && target <= frame) //ここの条件式を直さないといけない
         {
           around_point[0] = py::extract<string>(id_time_key[i]);
           low_frame = py::extract<int>(id_time_value[i]);
+
+          cout << "around_point[0] " << around_point[0] << endl;
         }
       }
 
@@ -417,6 +426,7 @@ namespace ObjectProgress
         {
           around_point[1] = py::extract<string>(id_time_key[i]);
           high_frame = py::extract<int>(id_time_value[i]);
+          cout << "around_point[1] " << around_point[1] << endl;
         }
       }
       return around_point;
