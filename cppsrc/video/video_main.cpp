@@ -36,33 +36,36 @@ namespace EffectProgress
       now_frame = send_now_frame;
       effect_point_internal_id_time = send_effect_point_internal_id_time;
 
-      cout << "EffectProduction"
-           << " "
-           << "before_time"
-           << " "
-           << "next_time"
-           << " "
-           << around_point_key[0]
-           << " "
-           << around_point_key[1] << endl;
+      //cout << "EffectProduction"
+      /*
+      << " "
+      << "before_time"
+      << " "
+      << "next_time"
+      << " "
+      << around_point_key[0]
+      << " "
+      << around_point_key[1] << endl;*/
 
-      cout << "lord before_time" << endl;
+      //cout << "lord before_time" << endl;
       before_time = py::extract<int>(effect_point_internal_id_time[around_point_key[0]]);
 
-      cout << "lord next_time" << endl;
+      //cout << "lord next_time" << endl;
       next_time = py::extract<int>(effect_point_internal_id_time[around_point_key[1]]);
 
       cout << before_time << " " << next_time << endl;
+
+      //cout << before_time << " " << next_time << endl;
     }
     py::list production_effect_group()
     {
-      cout << "production_effect_group" << endl;
+      //cout << "production_effect_group" << endl;
       int effect_len = py::len(effect_group);
       py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
       np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
-      cout << "effect_len"
-           << " " << effect_len << endl;
+      //cout << "effect_len"
+      //<< " " << effect_len << endl;
 
       py::list effect_group_val = py::extract<py::list>(effect_group.values());
 
@@ -78,15 +81,15 @@ namespace EffectProgress
         py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, effect_group_val[i]));
 
         // ここから
-        cout << "effect_draw_base" << endl;
+        //cout << "effect_draw_base" << endl;
         effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
 
-        cout << "starting_point" << endl;
+        //cout << "starting_point" << endl;
         py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[1]);
 
         for (int a = 0; a < 2; a++)
         {
-          cout << a << " procedure_return_starting_point_center " << endl;
+          //cout << a << " procedure_return_starting_point_center " << endl;
           int spc = py::extract<int>(procedure_return_starting_point_center[a]);
           starting_point_center[a] += spc;
         }
@@ -94,25 +97,25 @@ namespace EffectProgress
         //starting_point_center[a] = starting_point_center[a] + py::extract<int>(procedure_return_starting_point_center[1]);
         //effect_draw_base = new_effect_draw_base;
       }
-      cout << " effect_group_return A" << endl;
+      //cout << " effect_group_return A" << endl;
 
       py::list effect_group_return;
 
-      cout << " effect_group_return a1" << endl;
+      //cout << " effect_group_return a1" << endl;
 
       effect_group_return.append(effect_draw_base);
 
-      cout << " effect_group_return a2" << endl;
+      //cout << " effect_group_return a2" << endl;
 
       effect_group_return.append(starting_point_center);
 
-      cout << " effect_group_return B" << endl;
+      //cout << " effect_group_return B" << endl;
 
       return effect_group_return;
     }
     py::tuple production_effect_individual(np::ndarray effect_draw_base, py::object effect)
     {
-      cout << "production_effect_individual" << endl;
+      //cout << "production_effect_individual" << endl;
 
       py::dict effect_point_internal_id_point = py::extract<py::dict>(effect.attr("effect_point_internal_id_point"));
       string effect_name = py::extract<string>(effect.attr("effect_name"));
@@ -121,9 +124,9 @@ namespace EffectProgress
       //py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
       py::object procedure = py::extract<py::object>(effect.attr("procedure"));
 
-      cout << "before_value"
-           << " "
-           << "next_value" << endl;
+      //cout << "before_value"
+      //<< " "
+      //<< "next_value" << endl;
 
       py::dict before_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[0]]);
       py::dict next_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[1]]);
@@ -134,11 +137,7 @@ namespace EffectProgress
       py::list before_value_values = py::extract<py::list>(before_value.values());
       py::list next_value_values = py::extract<py::list>(next_value.values());
 
-      cout << "before_value"
-           << " "
-           << "next_value"
-           << " "
-           << "end" << endl;
+      //cout << "before_value"<< " "<< "next_value"<< " "<< "end" << endl;
 
       if (before_time == next_time)
       {
@@ -154,21 +153,26 @@ namespace EffectProgress
       int b_n_time = next_time - before_time;
       int b_now_time = now_frame - before_time;
 
-      cout << "before_value_key_len" << before_value_key_len << endl;
+      //cout << "before_value_key_len" << before_value_key_len << endl;
 
       for (int i = 0; i < before_value_key_len; i++)
       {
-        cout << i << " "
-             << "before_value_key_len" << endl;
-        int pos = (py::extract<int>(next_value_values[i]) - py::extract<int>(before_value_values[i])) / b_n_time * b_now_time;
+        //cout << i << " " << "before_value_key_len" << endl;
+        int next = py::extract<int>(next_value_values[i]);
+        int before = py::extract<int>(before_value_values[i]);
+        int pos = (next - before) / b_n_time * b_now_time + before;
         effect_value[before_value_key[i]] = pos;
-        cout << "pos : " << pos << endl;
+
+        string test_text = py::extract<string>(before_value_key[i]);
+
+        cout << test_text << " " << pos << " " << next << " " << before << " " << b_n_time << " " << b_now_time << endl;
+        //cout << "pos : " << pos << endl;
       }
 
-      cout << "effect_plugin_elements" << endl;
+      //cout << "effect_plugin_elements" << endl;
       py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, now_frame, editor, python_operation));
 
-      cout << "procedure_return" << endl;
+      //cout << "procedure_return" << endl;
       py::tuple procedure_return = py::extract<py::tuple>(procedure.attr("main")(effect_plugin_elements));
 
       //int starting_point_left_up[2];
@@ -177,8 +181,8 @@ namespace EffectProgress
 
       //ここまで座標中心が上地点
 
-      cout << " "
-           << "new_effect_draw_base end" << endl;
+      //cout << " "
+      //<< "new_effect_draw_base end" << endl;
 
       return procedure_return;
     }
@@ -239,11 +243,11 @@ namespace ObjectProgress
 
           order_decision_object_group_number.push_back(now_layer_number);
 
-          cout << "frame" << frame << " / now_layer_number " << now_layer_number << " / installation " << py::extract<int>(installation[0]) << " " << py::extract<int>(installation[1]) << " " << endl;
+          //cout << "frame" << frame << " / now_layer_number " << now_layer_number << " / installation " << py::extract<int>(installation[0]) << " " << py::extract<int>(installation[1]) << " " << endl;
         }
         else
         {
-          cout << "(´･ω･`)" << endl;
+          //cout << "(´･ω･`)" << endl;
         }
       }
       sort(order_decision_object_group_number.begin(), order_decision_object_group_number.end()); // vector
@@ -258,8 +262,8 @@ namespace ObjectProgress
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
       {
 
-        cout << i << " "
-             << "production_object_group" << endl;
+        //cout << i << " "
+        //<< "production_object_group" << endl;
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
@@ -272,7 +276,7 @@ namespace ObjectProgress
 
     np::ndarray production_object_individual(py::object &now_objcet, np::ndarray object_individual_draw_base)
     {
-      cout << "production_object_individual" << endl;
+      //cout << "production_object_individual" << endl;
 
       py::dict effect_point_internal_id_time = py::extract<py::dict>(now_objcet.attr("effect_point_internal_id_time"));
       py::list id_time_key = py::extract<py::list>(effect_point_internal_id_time.keys());
@@ -284,13 +288,13 @@ namespace ObjectProgress
       py::list effect_group_return = effect_production->production_effect_group();
 
       // ここから
-      cout << "effect_group_return" << endl;
+      //cout << "effect_group_return" << endl;
       np::ndarray new_effect_draw = py::extract<np::ndarray>(effect_group_return[0]);
 
-      cout << "starting_point" << endl;
+      //cout << "starting_point" << endl;
       py::list starting_point_center = py::extract<py::list>(effect_group_return[1]);
 
-      //cout << starting_point_center[0] << " " << starting_point_center[1] << endl;
+      ////cout << starting_point_center[0] << " " << starting_point_center[1] << endl;
 
       py::tuple new_draw_size_shape = py::extract<py::tuple>(new_effect_draw.attr("shape"));
 
@@ -342,57 +346,12 @@ namespace ObjectProgress
           base_draw_range_rd[i] = position_rd;
         }
 
-        //cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
+        ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
       np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, base_draw_range_lu, base_draw_range_rd, add_draw_range_lu, add_draw_range_rd));
 
-      //np::ndarray new_object_individual_draw_base = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, effect_draw));
-      /*
-      int xa = add_draw_range_lu[0];
-      int xb = base_draw_range_lu[0];
-
-      for (int x = 0; x < add_draw_range_rd[0] - add_draw_range_lu[0]; x++)
-      {
-        int ya = add_draw_range_lu[1];
-        int yb = base_draw_range_lu[1];
-
-        for (int y = 0; y < add_draw_range_rd[1] - add_draw_range_lu[1]; y++)
-        {
-          //py::tuple xbyb = py::make_tuple(xb, yb);
-          //py::tuple xaya = py::make_tuple(xa, ya);
-          //cout << "synthetic_func" << endl;
-          //cout << " " << xb << " " << yb << " " << xa << " " << xb << endl;
-
-          //cout << "A" << endl;
-
-          //cout << -1 * xa << -1 * ya << -1 * xb << -1 * yb << endl;
-
-          np::ndarray base_p = py::extract<np::ndarray>(object_individual_draw_base[yb][xb]);
-          np::ndarray add_p = py::extract<np::ndarray>(new_effect_draw[ya][xa]);
-          np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, base_p, add_p));
-          //object_individual_draw_base[yb][xb] = sy_draw;
-          //object_individual_draw_base[yb][xb]
-
-          //cout << "E" << endl;
-
-          ya++;
-          yb++;
-        }
-
-        xa++;
-        xb++;
-      }
-
-      */
-
-      cout << "end" << endl;
-
-      //np::ndarray base_range_draw = py::extract<np::ndarray>(object_individual_draw_base [base_draw_range_lu[0]:base_draw_range_rd[0], base_draw_range_lu[1]:base_draw_range_rd[1]]);
-      //np::ndarray add_range_draw = py::extract<np::ndarray>(new_effect_draw [add_draw_range_lu[0]:add_draw_range_rd[0], add_draw_range_lu[1]:add_draw_range_rd[1]]);
-
-      //delete synthetic_production;
       return object_individual_draw_base;
     }
 
@@ -416,11 +375,11 @@ namespace ObjectProgress
       }
 
       bool frag_high = false;
-      int high_frame = 0;
+      int high_frame = py::extract<int>(editor["len"]);
       for (int i = 0; i < id_time_len; i++) //大きいあたい
       {
         int target = py::extract<int>(id_time_value[i]);
-        if (target > high_frame && target > frame)
+        if (target < high_frame && target > frame)
         {
           around_point[1] = py::extract<string>(id_time_key[i]);
           high_frame = py::extract<int>(id_time_value[i]);
@@ -465,7 +424,7 @@ namespace VideoMain
 
       //EffectProduction effect_production;
 
-      //cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
+      ////cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
     }
 
     np::ndarray execution_main(int sta = -1, int end = -1)
@@ -486,7 +445,7 @@ namespace VideoMain
       for (int i = sta; i < end; i++)
       {
         np::ndarray draw = run(i);
-        //cout << py::extract<int>(draw.attr("shape")[0]) << " " << i << endl;
+        ////cout << py::extract<int>(draw.attr("shape")[0]) << " " << i << endl;
         //draw_all.push_back(draw);
         draw_all[i - sta] = draw;
       }
