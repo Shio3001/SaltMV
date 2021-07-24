@@ -2,7 +2,7 @@
 import sys
 import os
 import copy
-
+import cv2
 # 削除厳禁！
 
 
@@ -33,9 +33,9 @@ class CentralRole:
     def rotate_z(self, data, draw, draw_size, center, angle):
 
         # getRotationMatrix2D関数を使用
-        trans = data.cv2.getRotationMatrix2D(center, angle, 1.0)
+        trans = cv2.getRotationMatrix2D(center, angle, 1.0)
         # アフィン変換
-        draw = data.cv2.warpAffine(draw, trans, draw_size)
+        draw = cv2.warpAffine(draw, trans, draw_size)
 
         return draw
 

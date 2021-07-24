@@ -301,14 +301,18 @@ namespace ObjectProgress
       string xy[] = {"x",
                      "y"};
 
-      int base_draw_range_lu[2];
-      int base_draw_range_rd[2];
+      py::list base_draw_range_lu;
+      py::list base_draw_range_rd;
 
-      int add_draw_range_lu[2];
-      int add_draw_range_rd[2];
+      py::list add_draw_range_lu;
+      py::list add_draw_range_rd;
 
       for (int i = 0; i < 2; i++)
       {
+        base_draw_range_lu.append(0);
+        base_draw_range_rd.append(0);
+        add_draw_range_lu.append(0);
+        add_draw_range_rd.append(0);
         int draw_size = py::extract<int>(editor[xy[i]]);
         int new_draw_size = new_effect_draw_size[i];
         int center = py::extract<int>(starting_point_center[i]);
@@ -338,13 +342,14 @@ namespace ObjectProgress
           base_draw_range_rd[i] = position_rd;
         }
 
-        cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
+        //cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
+      np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, base_draw_range_lu, base_draw_range_rd, add_draw_range_lu, add_draw_range_rd));
 
       //np::ndarray new_object_individual_draw_base = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, effect_draw));
-
+      /*
       int xa = add_draw_range_lu[0];
       int xb = base_draw_range_lu[0];
 
@@ -365,19 +370,10 @@ namespace ObjectProgress
           //cout << -1 * xa << -1 * ya << -1 * xb << -1 * yb << endl;
 
           np::ndarray base_p = py::extract<np::ndarray>(object_individual_draw_base[yb][xb]);
-
-          //cout << "B" << endl;
-
           np::ndarray add_p = py::extract<np::ndarray>(new_effect_draw[ya][xa]);
-
-          //cout << "C" << endl;
-
           np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, base_p, add_p));
-
-          //cout << "D" << endl;
-
           //object_individual_draw_base[yb][xb] = sy_draw;
-          object_individual_draw_base[yb][xb] = sy_draw;
+          //object_individual_draw_base[yb][xb]
 
           //cout << "E" << endl;
 
@@ -388,6 +384,8 @@ namespace ObjectProgress
         xa++;
         xb++;
       }
+
+      */
 
       cout << "end" << endl;
 
