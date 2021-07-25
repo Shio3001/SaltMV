@@ -150,7 +150,7 @@ namespace EffectProgress
       int before_value_key_len = py::len(before_value_key);
       //int various_fixed_len = py::len(various_fixed);
 
-      int b_n_time = next_time - before_time;
+      int b_n_section_time = next_time - before_time;
       int b_now_time = now_frame - before_time;
 
       //cout << "before_value_key_len" << before_value_key_len << endl;
@@ -160,12 +160,14 @@ namespace EffectProgress
         //cout << i << " " << "before_value_key_len" << endl;
         int next = py::extract<int>(next_value_values[i]);
         int before = py::extract<int>(before_value_values[i]);
-        int pos = (next - before) / b_n_time * b_now_time + before;
+
+        int one_section = (next - before) / b_n_section_time;
+        int pos = one_section * b_now_time + before;
         effect_value[before_value_key[i]] = pos;
 
         string test_text = py::extract<string>(before_value_key[i]);
 
-        cout << test_text << " " << pos << " " << next << " " << before << " " << b_n_time << " " << b_now_time << endl;
+        cout << test_text << " " << pos << " " << one_section << " " << before << " " << next << " " << b_n_section_time << " " << b_now_time << endl;
         //cout << "pos : " << pos << endl;
       }
 
@@ -281,7 +283,13 @@ namespace ObjectProgress
       py::dict effect_point_internal_id_time = py::extract<py::dict>(now_objcet.attr("effect_point_internal_id_time"));
       py::list id_time_key = py::extract<py::list>(effect_point_internal_id_time.keys());
       py::list id_time_value = py::extract<py::list>(effect_point_internal_id_time.values());
-      vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value);
+
+      py::list installation = py::extract<py::list>(now_objcet.attr("installation"));
+
+      int installation_sta = py::extract<int>(installation[0]);
+      int installation_end = py::extract<int>(installation[1]);
+
+      vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value, installation_sta, installation_end);
       py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_group")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
       string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
       EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time);
@@ -355,7 +363,7 @@ namespace ObjectProgress
       return object_individual_draw_base;
     }
 
-    vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value)
+    vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
     {
       vector<string> around_point{"", ""};
 
@@ -379,13 +387,20 @@ namespace ObjectProgress
       for (int i = 0; i < id_time_len; i++) //大きいあたい
       {
         int target = py::extract<int>(id_time_value[i]);
-        if (target < high_frame && target > frame)
+        if (target <= high_frame && target > frame)
         {
           around_point[1] = py::extract<string>(id_time_key[i]);
           high_frame = py::extract<int>(id_time_value[i]);
           cout << "around_point[1] " << around_point[1] << endl;
         }
+        else if (frame == installation_end)
+        {
+          around_point[1] = "default_end";
+          high_frame = py::extract<int>(id_time_value[i]);
+          cout << "around_point[1] " << around_point[1] << endl;
+        }
       }
+
       return around_point;
     }
   };

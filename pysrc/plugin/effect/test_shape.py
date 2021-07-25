@@ -30,9 +30,9 @@ class CentralRole:
         #px = np.array([255, 255, 255, 100])
 
         #p = np.full(20, px)
-        p2 = np.full((20, 20, 4), 100)
+        p2 = np.full((50, 50, 4), 255)
         print(p2.shape)
 
-        data.draw[y:y+20, x:x+20, :] = p2
+        data.draw[y:y+50, x:x+50, :] = p2
 
         return data.draw, self.starting_point
