@@ -160,9 +160,13 @@ namespace EffectProgress
         //cout << i << " " << "before_value_key_len" << endl;
         int next = py::extract<int>(next_value_values[i]);
         int before = py::extract<int>(before_value_values[i]);
+        double all_section = next - before;
+        double one_section = all_section / b_n_section_time;
+        double now_section = one_section * b_now_time;
 
-        int one_section = (next - before) / b_n_section_time;
-        int pos = one_section * b_now_time + before;
+        //ここら辺doubleじゃないと精密さが失われて中間点を経由する時に誤差が出る
+        //なお被演算数値がどちらもint型だと出力もintになってしまうので注意
+        int pos = now_section + before;
         effect_value[before_value_key[i]] = pos;
 
         string test_text = py::extract<string>(before_value_key[i]);
@@ -313,54 +317,82 @@ namespace ObjectProgress
       string xy[] = {"x",
                      "y"};
 
-      py::list base_draw_range_lu;
-      py::list base_draw_range_rd;
+      py::list list_base_draw_range_lu;
+      py::list list_base_draw_range_rd;
+      py::list list_add_draw_range_lu;
+      py::list list_add_draw_range_rd;
 
-      py::list add_draw_range_lu;
-      py::list add_draw_range_rd;
+      vector<int> base_draw_range_lu = {0, 0};
+      vector<int> base_draw_range_rd = {0, 0};
+      vector<int> add_draw_range_lu = {0, 0};
+      vector<int> add_draw_range_rd = {0, 0};
 
       for (int i = 0; i < 2; i++)
       {
-        base_draw_range_lu.append(0);
-        base_draw_range_rd.append(0);
-        add_draw_range_lu.append(0);
-        add_draw_range_rd.append(0);
+
         int draw_size = py::extract<int>(editor[xy[i]]);
         int new_draw_size = new_effect_draw_size[i];
         int center = py::extract<int>(starting_point_center[i]);
 
-        int position_lu = center - new_draw_size / 2 + draw_size / 2; //重ね合わせたい左側座標
-        int position_rd = position_lu + new_draw_size;                //重ね合わせたい右側座標
+        //ここから基準点が左下に変わります
 
-        if (position_lu < 0)
-        {
-          add_draw_range_lu[i] = abs(position_lu);
-          base_draw_range_rd[i] = 0;
-        }
-        else
+        int position_lu = center - (new_draw_size / 2) + (draw_size / 2); //重ね合わせたい左側座標
+        int position_rd = position_lu + new_draw_size;                    //重ね合わせたい右側座標
+
+        add_draw_range_lu[i] = 0;
+        base_draw_range_lu[i] = position_lu;
+
+        add_draw_range_rd[i] = new_draw_size;
+        base_draw_range_rd[i] = position_rd;
+
+        //左右ともにダメな時
+
+        if (position_rd < 0 || position_lu > draw_size)
         {
           add_draw_range_lu[i] = 0;
-          base_draw_range_lu[i] = position_lu;
+          base_draw_range_lu[i] = 0;
+          add_draw_range_rd[i] = 0;
+          base_draw_range_rd[i] = 0;
         }
 
-        if (position_rd > draw_size)
+        else if (position_lu < 0 && position_rd > draw_size)
         {
-          add_draw_range_rd[i] = draw_size - position_lu;
+          add_draw_range_lu[i] += abs(position_lu);
+          add_draw_range_rd[i] -= (position_rd - draw_size);
+        }
+
+        //左側だけダメ
+
+        else if (position_lu < 0)
+        {
+          add_draw_range_lu[i] += abs(position_lu);
+          base_draw_range_lu[i] = 0;
+        }
+
+        //右側だけダメ
+
+        else if (position_rd > draw_size)
+        {
+          add_draw_range_rd[i] -= (position_rd - draw_size);
           base_draw_range_rd[i] = draw_size;
         }
-        else
-        {
-          add_draw_range_rd[i] = new_draw_size;
-          base_draw_range_rd[i] = position_rd;
-        }
+
+        cout << i << " position_lu " << position_lu << " position_rd " << position_rd << endl;
+        cout << "add_draw_range_lu " << add_draw_range_lu[i] << " base_draw_range_lu " << base_draw_range_lu[i] << endl;
+        cout << "add_draw_range_rd " << add_draw_range_rd[i] << " base_draw_range_rd " << base_draw_range_rd[i] << endl;
+
+        list_base_draw_range_lu.append(base_draw_range_lu[i]);
+        list_base_draw_range_rd.append(base_draw_range_rd[i]);
+        list_add_draw_range_lu.append(add_draw_range_lu[i]);
+        list_add_draw_range_rd.append(add_draw_range_rd[i]);
 
         ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
-      np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, base_draw_range_lu, base_draw_range_rd, add_draw_range_lu, add_draw_range_rd));
+      np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));
 
-      return object_individual_draw_base;
+      return sy_draw;
     }
 
     vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
@@ -483,11 +515,16 @@ namespace VideoMain
     //np::ndarray
     np::ndarray run(int frame)
     {
+      cout << "フレーム[処理開始] " << frame << endl;
+
       namespace OP = ObjectProgress;
       OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor);
       object_production->production_order_decision();
       np::ndarray object_draw_base = object_production->production_object_group();
       delete object_production;
+
+      cout << "フレーム[処理終了] " << frame << endl;
+      cout << " " << endl;
 
       return object_draw_base;
     }

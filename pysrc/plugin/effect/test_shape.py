@@ -33,6 +33,6 @@ class CentralRole:
         p2 = np.full((50, 50, 4), 255)
         print(p2.shape)
 
-        data.draw[y:y+50, x:x+50, :] = p2
+        data.draw = p2
 
         return data.draw, self.starting_point

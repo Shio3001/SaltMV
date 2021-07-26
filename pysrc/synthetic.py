@@ -19,6 +19,15 @@ class SyntheticControl:
         add_right = add_draw_range_rd[0]
         add_down = add_draw_range_rd[1]
 
+        size_x = add_down - add_up
+        size_y = add_right - add_left
+
+        if size_x < 0:
+            return base
+
+        if size_y < 0:
+            return base
+
         base_section = base[base_up:base_down, base_left:base_right]
         add_section = add[add_up:add_down, add_left:add_right]
 
