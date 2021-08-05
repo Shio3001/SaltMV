@@ -57,6 +57,8 @@ class Storage:
         # print()
         print("現在時刻変更",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
 
+        self.callback_operation.event("preview", info=self.edit_data.scenes[self.edit_data.now_scene].now_time)
+
     def change_now_scene(self, scene_name):
         ##print("現在シーン切り替え", self.edit_data.now_scene, " → ", scene_name)
         if scene_name in self.edit_data.scenes.keys():
@@ -137,7 +139,7 @@ class Storage:
     def scene_id(self):
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].scene_id)
 
-    def scene(self, data=None,scene_id=None):
+    def scene(self, data=None, scene_id=None):
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene] = copy.deepcopy(data)
             return
@@ -229,7 +231,7 @@ class Storage:
     def edit_object_installation(self, media_id, sta, end):
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[media_id][0].installation = copy.deepcopy([sta, end])
 
-    def add_effect_elements(self, object_order, effect_name,py_cpp="py"):
+    def add_effect_elements(self, object_order, effect_name, py_cpp="py"):
         new_effect = elements.EffectElements()
         new_effect.effect_name = effect_name
 
@@ -238,7 +240,7 @@ class Storage:
         elif py_cpp == "cpp":
             if effect_name in list(self.operation["cpp_plugin"]["effect"].keys()):
                 pass
-            #あとでかく
+            # あとでかく
 
         new_effect.effect_id = self.elements.make_id("effect")
 

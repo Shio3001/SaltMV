@@ -19,7 +19,11 @@ class CentralRole:
         # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に現在のフレーム, 第五引数にエディタ情報, 操作一覧
 
     def main(self, data):
-        resize_value = (round(data.effect_value["size_x"] * 0.01 * data.draw_size["x"]), round(data.effect_value["size_y"] * 0.01 * data.draw_size["y"]))
+
+        resize_value = [round(data.effect_value["size_x"] * 0.01 * data.draw_size["x"]), round(data.effect_value["size_y"] * 0.01 * data.draw_size["y"])]
+
+        if data.various_fixed["size_lnk"] == True:
+            resize_value[1] = resize_value[0]
         data.draw = data.cv2.resize(data.draw, (resize_value))
 
         return data.draw, self.starting_point

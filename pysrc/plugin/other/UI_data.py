@@ -149,6 +149,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if diagram_type is None:
             self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramData()
 
+        if diagram_type == "TkImage":
+            self.canvas_data.territory[self.te_name].diagram[di_name] = TkImageData()
+            self.del_diagram("base")
+
         if diagram_type == "text":
             self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramTextData(self.canvas_data.canvas)
             self.del_diagram("base")
@@ -386,7 +390,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
     # def diagram_draw_temp_del(slef, di_name):
     #    self.canvas_data.canvas(state=state)
 
-    def diagram_draw(self,  di_name, di_del=False):
+    def diagram_draw(self,  di_name, di_del=False, image_tk=None):
 
         territory_data = self.canvas_data.territory[self.te_name]
         diagram_data = self.canvas_data.territory[self.te_name].diagram[di_name]
@@ -400,6 +404,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if self.get_diagram_type(di_name, "TextBoxData"):
             self.__diagram_textbox_draw(territory_data, diagram_data,  di_name, di_del, diagram_data.forget)
 
+        if self.get_diagram_type(di_name, "TkImageData"):
+            self.__diagram_tkimage_draw(territory_data, diagram_data,  di_name, di_del, image_tk)
+
         self.callback_operation.event("diagram_draw", info=(territory_data, diagram_data, di_name))
 
         diagram_data.draw_tag = True
@@ -407,6 +414,25 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def diagram_shape_view_status(self, di_name, view):
         self.canvas_data.territory[self.te_name].diagram[di_name].view_state = copy.deepcopy(view)
+
+    def __diagram_tkimage_draw(self, territory_data, diagram_data,  di_name, di_del, image_tk):
+
+        if di_del:
+            self.canvas_data.canvas.delete(self, self.canvas_data.territory[self.te_name].diagram[di_name].tag)
+            diagram_data.draw_tag = False
+            return
+
+        if image_tk is None:
+            return
+
+        if not diagram_data.draw_tag:
+            self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
+            self.canvas_data.canvas.create_image(
+                1280 / 2,       # 画像表示位置(Canvasの中心)
+                720 / 2,
+                image=image_tk,
+                tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag  # 表示画像データ
+            )
 
     def __diagram_shape_draw(self, territory_data, diagram_data,  di_name, di_del):
 
@@ -631,6 +657,21 @@ class DiagramBase:  # 指定不可
     event = {}
 
 #diagram_base = DiagramBase()
+
+
+class TkImageData():
+    def __init__(self):
+        self.size = [0, 0]
+        self.position = [0, 0]
+        self.color = None
+        self.fill = [False, False]
+        self.draw_tag = False
+        self.event = {}
+        self.shape_point = None
+
+        self.view_state = 0  # 0,1,2 #通常 #選択不可 #非表示
+
+        self.tag = None
 
 
 class DiagramData():

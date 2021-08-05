@@ -3,15 +3,16 @@
 class parts:
     def UI_set(self, data):
 
-        def size_update(self, width_size, height_size):
+        data.edit_territory_position(x=0, y=0)
+        data.edit_territory_size(x=1280, y=720)
+        data.new_diagram("TkImage_ground", diagram_type="TkImage")
+        data.territory_draw()
+
+        def size_update(width_size, height_size):
             pass
 
-        def view(self, all_elements, frame_user_select):
-
-            for time in range(frame_user_select):
-                tk_image = data.operation["out"]["output_video_image"]["CentralRole"].type_preview(all_elements, data.operation, time, data.canvas_size)
-                data.tk_picture(tk_image)
-
+        def view(preview_image_tk):
+            data.diagram_draw("TkImage_ground", image_tk=preview_image_tk)
             return
             """
             image_pil = Image.fromarray(view_picture)  # RGBからPILフォーマットへ変換
@@ -22,5 +23,6 @@ class parts:
             """
 
         data.size_update = size_update
+        data.view = view
 
         return data
