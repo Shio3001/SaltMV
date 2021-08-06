@@ -128,16 +128,22 @@ class SceneOutput:
         self.data_image[sta:end] = np.zeros((end-sta))
 
     def output_tk(self, frame, tk_cash=True):
-        if self.data_image_tk[frame] != None and tk_cash:
-            return
+        # if self.data_image_tk[frame] != None and tk_cash:
+        #    return
 
         image = self.cpp_encode.execution_preview(frame)
+        image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)
 
-        image_pil = Image.fromarray((image * 255).astype(np.uint8))
+        cv2.imwrite('wiwi.jpg', image.astype('uint8'))
+
+        image_pil = Image.fromarray(image_cvt)
         resize_size = (640, 360)
         img_resize = image_pil.resize(resize_size)
-        image_tk = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
-        self.data_image_tk[frame] = image_tk
+        # self.image_tk_PhotoImage =
+        # img_resize.show()
+
+        self.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
+        print("tk処理", frame, image.shape)
 
     def get_image_tk(self, frame):
         image_tk = self.data_image_tk[frame]

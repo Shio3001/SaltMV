@@ -4,9 +4,9 @@ class parts:
     def UI_set(self, data):
 
         data.edit_territory_position(x=0, y=0)
-        data.edit_territory_size(x=1280, y=720)
+        data.edit_territory_size(x=640, y=360)
         data.new_diagram("TkImage_ground", diagram_type="TkImage")
-        data.territory_draw()
+        # data.territory_draw()
 
         def size_update(width_size, height_size):
             pass

@@ -16,12 +16,14 @@ class InitialValue:
         self.tk = self.data.tk
 
         self.UI_parts = self.data.UI_parts  # パーツひとつひとつのデータ
+
+        self.preview_image_tk = None
         # self.UI_operation = self.data.UI_operation  # パーツを整形するためのデータ
 
     def main(self):
 
         self.data.new_canvas("gui_main")
-        self.data.edit_canvas_size("gui_main", x=1000, y=1000)
+        self.data.edit_canvas_size("gui_main", x=640, y=360)
         self.data.edit_canvas_position("gui_main", x=0, y=0)
 
         self.operation["log"].write("メイン画面起動")
@@ -47,18 +49,14 @@ class InitialValue:
 
         def project_overwrite_save():
             pass
-
         preview_screen = self.data.new_parts("gui_main", "tk_image", parts_name="pillow_view")
         preview_screen.size_update(640, 360)
+        scene_id = self.data.all_data.scene_id()
 
         def preview(frame):
-            scene_id = self.data.all_data.scene_id()
             make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
             make_preview_data.output_tk(frame)
             self.preview_image_tk = make_preview_data.get_image_tk(frame)
-
-            #preview_screen = self.data.new_parts(parts_name="pillow_view")
-
             preview_screen.view(self.preview_image_tk)
 
         self.data.all_data.callback_operation.set_event("preview", preview)
