@@ -92,6 +92,10 @@ class SceneOutput:
         self.size = (self.x, self.y)
         self.writer = cv2.VideoWriter(self.path, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
 
+    def re_scene(self):
+        self.scene = self.scene_get(scene_id=self.scene_id)
+        self.cpp_encode = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(self.operation, self.scene, self.func)
+
     def layer_id_number(self, layer_id):
         return self.scene.layer_group.layer_layer_id[layer_id]
 
@@ -128,8 +132,8 @@ class SceneOutput:
         self.data_image[sta:end] = np.zeros((end-sta))
 
     def output_tk(self, frame, tk_cash=True):
-        # if self.data_image_tk[frame] != None and tk_cash:
-        #    return
+        if self.data_image_tk[frame] != None and tk_cash:
+            return
 
         image = self.cpp_encode.execution_preview(frame)
         image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)

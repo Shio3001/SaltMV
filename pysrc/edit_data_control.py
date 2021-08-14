@@ -54,10 +54,14 @@ class Storage:
             return self.edit_data.scenes[self.edit_data.now_scene].now_time
 
         self.edit_data.scenes[self.edit_data.now_scene].now_time = copy.deepcopy(scroll_data.ratio_f[0])
+
         # print()
         print("現在時刻変更",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
 
-        self.callback_operation.event("preview", info=self.edit_data.scenes[self.edit_data.now_scene].now_time)
+        self.callback_operation.event("preview", info=self.get_now_time())
+
+    def get_now_time(self):
+        return self.edit_data.scenes[self.edit_data.now_scene].now_time
 
     def change_now_scene(self, scene_name):
         ##print("現在シーン切り替え", self.edit_data.now_scene, " → ", scene_name)
@@ -138,6 +142,9 @@ class Storage:
 
     def scene_id(self):
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].scene_id)
+
+    def scene_editor(self):
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].editor)
 
     def scene(self, data=None, scene_id=None):
         if not data is None:

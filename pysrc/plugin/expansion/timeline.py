@@ -10,12 +10,15 @@ import math
 import threading
 import datetime
 import inspect
+import time
 
 
 class InitialValue:
     def __init__(self, data):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
         self.data = data
         self.operation = self.data.operation
+
+        self.time_lime_space_flag = 0
         #self.data.all_data.now_time = 0
         #self.redo_undo_stack = []
         #self.tthis_type_safe = ["media_length",]
@@ -244,6 +247,11 @@ class InitialValue:
         def now_time_edit(scroll_data):
             self.data.all_data.now_time_update(scroll_data)
 
+        def time_lime_space(event):
+            self.preview_move()
+
+        self.data.add_window_event("space", time_lime_space)
+
         nowtime_bar.callback_operation.set_event("mov", now_time_edit)
 
         # now_layer = 0
@@ -420,7 +428,7 @@ class InitialValue:
             new_obj.callback_operation.set_event("end", timeline_nowtime_approval_True)
             new_obj.edit_layer(layer_number)
 
-            frame_len = self.data.all_data.scene().editor["len"]
+            frame_len = self.data.all_data.scene_editor()["len"]
 
             new_obj.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             new_obj.pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
@@ -619,6 +627,39 @@ class InitialValue:
         self.data.window_size_set(x=1200, y=700)
 
         return self.data
+
+    def preview_move(self):
+        self.time_lime_space_flag = 1 - self.time_lime_space_flag
+
+        if self.time_lime_space_flag == 0:  # off
+            pass
+
+        if self.time_lime_space_flag == 1:  # on
+
+            process_time = self.data.all_data.get_now_time()
+
+            while True:
+                if process_time >= self.data.all_data.scene_editor()["len"] or self.time_lime_space_flag == 0:
+                    break
+
+                sta_section_time = time.time()
+                self.data.all_data.callback_operation.event("preview", info=process_time)
+                end_section_time = time.time()
+                section = end_section_time - sta_section_time
+
+                fps = self.data.all_data.scene_editor()["fps"]
+                one_fps = 1 / fps
+
+                time.sleep(0.5)
+
+                sleep_time = one_fps - section
+                print("sleep_time ", sleep_time, one_fps, section)
+
+                if sleep_time > 0:
+                    print(sleep_time)
+                    time.sleep(sleep_time)
+
+                process_time += 1
 
 
 class CentralRole:
