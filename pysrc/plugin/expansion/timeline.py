@@ -645,12 +645,11 @@ class InitialValue:
                 sta_section_time = time.time()
                 self.data.all_data.callback_operation.event("preview", info=process_time)
                 end_section_time = time.time()
+                self.data.window.update()
                 section = end_section_time - sta_section_time
 
                 fps = self.data.all_data.scene_editor()["fps"]
                 one_fps = 1 / fps
-
-                time.sleep(0.5)
 
                 sleep_time = one_fps - section
                 print("sleep_time ", sleep_time, one_fps, section)
