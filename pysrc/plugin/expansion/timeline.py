@@ -19,6 +19,7 @@ class InitialValue:
         self.operation = self.data.operation
 
         self.time_lime_space_flag = 0
+        self.nowtime_bar = None
         #self.data.all_data.now_time = 0
         #self.redo_undo_stack = []
         #self.tthis_type_safe = ["media_length",]
@@ -236,15 +237,16 @@ class InitialValue:
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
-        nowtime_bar = self.data.new_parts("timeline", "nowtime_bar", parts_name="timeline_nowtime")
-        nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=100)
-        nowtime_bar.edit_territory_size(y=10)
-        nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
-        nowtime_bar.territory_draw()
+        self.nowtime_bar = self.data.new_parts("timeline", "nowtime_bar", parts_name="timeline_nowtime")
+        self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=100)
+        self.nowtime_bar.edit_territory_size(y=10)
+        self.nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
+        self.nowtime_bar.territory_draw()
 
         # ##print(self.data.all_data.now_time)
 
         def now_time_edit(scroll_data):
+            self.time_lime_space_flag == 0
             self.data.all_data.now_time_update(scroll_data)
 
         def time_lime_space(event):
@@ -252,16 +254,16 @@ class InitialValue:
 
         self.data.add_window_event("space", time_lime_space)
 
-        nowtime_bar.callback_operation.set_event("mov", now_time_edit)
+        self.nowtime_bar.callback_operation.set_event("mov", now_time_edit)
 
         # now_layer = 0
 
         def timeline_nowtime_approval_True(_):
-            nowtime_bar.click_flag = True
+            self.nowtime_bar.click_flag = True
             # #print("許可")
 
         def timeline_nowtime_approval_False(_):
-            nowtime_bar.click_flag = False
+            self.nowtime_bar.click_flag = False
             # #print("停止")
 
         timeline_scroll.callback_operation.set_event("sta", timeline_nowtime_approval_False)
@@ -463,8 +465,8 @@ class InitialValue:
 
             nowtime = self.data.all_data.now_time_update()
 
-            nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
-            nowtime_bar.frame_set(nowtime)
+            self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
+            self.nowtime_bar.frame_set(nowtime)
 
             for obj_k, obj_v in zip(obj_list[0], obj_list[1]):
                 ##print(obj_k, "実行")
@@ -509,9 +511,9 @@ class InitialValue:
 
             self.scrollbar_sta_end = [view_sta_f, view_end_f]
 
-            nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
-            nowtime_bar.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
-            nowtime_bar.pxf.set_f_ratio()
+            self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
+            self.nowtime_bar.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
+            self.nowtime_bar.pxf.set_f_ratio()
             [obj_long_edit(media_obj, view_frame_len, view_sta_f, view_end_f) for media_obj in self.data.timeline_object.values()]
 
             # with self.data.all_data.ThreadPoolExecutor() as executor:
@@ -530,10 +532,10 @@ class InitialValue:
             shape[0].edit_territory_size(y=size_y)
             shape[1].edit_territory_size(x=timeline_width)
 
-            nowtime_bar.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
-            nowtime_bar.edit_territory_size(x=timeline_width, y=timeline_hight)
-            nowtime_bar.edit_diagram_size("now", y=timeline_hight)
-            nowtime_bar.pxf.set_f_ratio()
+            self.nowtime_bar.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
+            self.nowtime_bar.edit_territory_size(x=timeline_width, y=timeline_hight)
+            self.nowtime_bar.edit_diagram_size("now", y=timeline_hight)
+            self.nowtime_bar.pxf.set_f_ratio()
 
             ###print("ウィンドウサイズ", size_x, size_y)
 
@@ -563,7 +565,7 @@ class InitialValue:
         """
 
         def now_time_flag_edit():
-            nowtime_bar.scene_change_flag = False
+            self.nowtime_bar.scene_change_flag = False
 
         def scene_change(option_data):
             timeline_nowtime_approval_False(None)
@@ -642,8 +644,11 @@ class InitialValue:
                 if process_time >= self.data.all_data.scene_editor()["len"] or self.time_lime_space_flag == 0:
                     break
 
+                print("再生", process_time)
+
                 sta_section_time = time.time()
                 self.data.all_data.callback_operation.event("preview", info=process_time)
+                self.nowtime_bar.preview_frame_set(process_time)
                 end_section_time = time.time()
                 self.data.window.update()
                 section = end_section_time - sta_section_time

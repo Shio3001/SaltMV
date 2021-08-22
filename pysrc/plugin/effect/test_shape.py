@@ -9,7 +9,7 @@ import numpy as np
 
 class InitialValue:
     def __init__(self, setting_effect):
-        setting_effect.effect_name = "シーン"
+        setting_effect.effect_name = "テスト図形"
         setting_effect.effect_point = {}
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()

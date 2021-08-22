@@ -10,6 +10,20 @@ using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
 
+/*
+namespace EffectProgressPlugin
+{
+  class EffectPluginElements
+  {
+    np::ndarray draw;
+    EffectPluginElements(np::ndarray send_draw, py::dict send_effect_value, py::dict send_before_value, py::dict send_next_value, py::dict send_various_fixed, int send_now_frame, py::dict send_editor)
+    {
+      draw = send_draw;
+      send_effect_value;
+    }
+  }
+}*/
+
 namespace EffectProgress
 {
   class EffectProduction
@@ -25,7 +39,9 @@ namespace EffectProgress
     int now_frame;
     int before_time;
     int next_time;
-    EffectProduction(int send_now_frame, py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key, py::dict &send_effect_point_internal_id_time)
+    int installation_sta;
+    int installation_end;
+    EffectProduction(int send_now_frame, py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key, py::dict &send_effect_point_internal_id_time, int send_installation_sta, int send_installation_end)
     {
       effect_group = send_effect_group;
       py_out_func = send_py_out_func;
@@ -35,6 +51,9 @@ namespace EffectProgress
       editor = send_editor;
       now_frame = send_now_frame;
       effect_point_internal_id_time = send_effect_point_internal_id_time;
+
+      installation_sta = send_installation_sta;
+      installation_end = send_installation_end;
 
       //cout << "EffectProduction"
       /*
@@ -124,6 +143,8 @@ namespace EffectProgress
       //py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
       py::object procedure = py::extract<py::object>(effect.attr("procedure"));
 
+      string cpp_file = py::extract<string>(effect.attr("cpp_file"));
+
       //cout << "before_value"
       //<< " "
       //<< "next_value" << endl;
@@ -176,10 +197,12 @@ namespace EffectProgress
       }
 
       //cout << "effect_plugin_elements" << endl;
-      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, various_fixed, now_frame, editor, python_operation));
+      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, various_fixed, now_frame, editor, python_operation, installation_sta, installation_end));
 
       //cout << "procedure_return" << endl;
       py::tuple procedure_return = py::extract<py::tuple>(procedure.attr("main")(effect_plugin_elements));
+
+      cout << "effect終了" << endl;
 
       //int starting_point_left_up[2];
 
@@ -296,7 +319,7 @@ namespace ObjectProgress
       vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value, installation_sta, installation_end);
       py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_group")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
       string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
-      EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time);
+      EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time, installation_sta, installation_end);
       py::list effect_group_return = effect_production->production_effect_group();
 
       // ここから
@@ -452,19 +475,13 @@ namespace VideoMain
     py::dict layer_layer_id;
 
   public:
-    VideoExecutionCenter(py::dict send_operation, py::object send_scene, py::dict send_py_out_func)
+    VideoExecutionCenter(py::dict send_operation, py::dict send_py_out_func)
     {
       // editor["x"] = extract<int>(x);
       // editor["y"] = extract<int>(y);
       // editor["fps"] = extract<int>(fps);
       // editor["frame"] = extract<int>(frame);
 
-      scene = send_scene;
-      layer_group = py::extract<py::object>(scene.attr("layer_group"));
-      object_group = py::extract<py::dict>(layer_group.attr("object_group"));
-      layer_layer_id = py::extract<py::dict>(layer_group.attr("layer_layer_id"));
-
-      editor = py::extract<py::dict>(send_scene.attr("editor"));
       py_out_func = send_py_out_func;
       python_operation = send_operation;
       video_image_control = python_operation["video_image"];
@@ -472,6 +489,15 @@ namespace VideoMain
       //EffectProduction effect_production;
 
       ////cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
+    }
+
+    void scene_setup(py::object send_scene)
+    {
+      scene = send_scene;
+      editor = py::extract<py::dict>(send_scene.attr("editor"));
+      layer_group = py::extract<py::object>(scene.attr("layer_group"));
+      object_group = py::extract<py::dict>(layer_group.attr("object_group"));
+      layer_layer_id = py::extract<py::dict>(layer_group.attr("layer_layer_id"));
     }
 
     np::ndarray execution_main(int sta = -1, int end = -1)
@@ -536,9 +562,10 @@ BOOST_PYTHON_MODULE(video_main)
   Py_Initialize();
   np::initialize();
   py::class_<VideoMain::VideoExecutionCenter>("VideoExecutionCenter",
-                                              py::init<py::dict, py::object, py::dict>())
+                                              py::init<py::dict, py::dict>())
 
       //.def("sta", &VideoExecutionCenter::sta)
+      .def("scene_setup", &VideoMain::VideoExecutionCenter::scene_setup)
       .def("execution_main", &VideoMain::VideoExecutionCenter::execution_main)
       .def("execution_preview", &VideoMain::VideoExecutionCenter::execution_preview);
   //.def("sta", &VideoExecutionCenter::sta)

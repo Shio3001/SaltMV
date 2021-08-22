@@ -28,8 +28,6 @@ class SceneElements:  # えらい
         self.scene_id = make_id("scene")
         self.now_time = self.editor["len"] / 10
 
-        
-
         print("各シーンのレイヤー管理 を追加しました : SceneElements [ Elements ] ")
 
 
@@ -60,6 +58,7 @@ class EffectElements:  # えらくない
         self.various_fixed = {}  # 固定設定
         self.effect_id = None
         self.effect_point_internal_id_point = {}
+        self.cpp_file = ""
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

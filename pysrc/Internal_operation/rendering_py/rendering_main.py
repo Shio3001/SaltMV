@@ -11,7 +11,7 @@ import cv2
 
 
 class EffectPluginElements:
-    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, editor, operation):
+    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, editor, operation, installation_sta, installation_end):
         #self.draw = draw
         self.draw = draw.astype('uint8')
         self.effect_value = effect_value
@@ -24,6 +24,10 @@ class EffectPluginElements:
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
         self.cv2 = cv2
         self.np = np
+
+        self.installation = [installation_sta, installation_end]
+
+        #self.cpp_file = ""
 
     def area_expansion(self, old_draw, x=0, y=0):
         old_size_x = old_draw.shape[1]
@@ -86,7 +90,9 @@ class SceneOutput:
 
         self.scene_id = copy.deepcopy(self.scene.scene_id)
 
-        self.cpp_encode = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(self.operation, self.scene, self.func)
+
+        self.cpp_encode = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(self.operation, self.func)
+        self.cpp_encode.scene_setup(self.scene)
 
         self.fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
         self.size = (self.x, self.y)
@@ -94,7 +100,7 @@ class SceneOutput:
 
     def re_scene(self):
         self.scene = self.scene_get(scene_id=self.scene_id)
-        self.cpp_encode = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(self.operation, self.scene, self.func)
+        self.cpp_encode.scene_setup(self.scene)
 
     def layer_id_number(self, layer_id):
         return self.scene.layer_group.layer_layer_id[layer_id]
@@ -133,6 +139,7 @@ class SceneOutput:
 
     def output_tk(self, frame, tk_cash=True):
         if self.data_image_tk[frame] != None and tk_cash:
+            print("キャッシュ生成済み")
             return
 
         image = self.cpp_encode.execution_preview(frame)

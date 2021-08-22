@@ -110,7 +110,7 @@ class parts:
 
         data.button_parameter_control.add_diagram_event("text", "Button-1", click_start)
         data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
-        data.button_parameter_control.window_event_data["add"]("Motion", click_position)
+        data.button_parameter_control.window_event_data["add"]("B1-Motion", click_position)
         data.button_parameter_control.add_diagram_event("text", "ButtonRelease-1", click_end)
         data.button_parameter_control.add_diagram_event("background", "ButtonRelease-1", click_end)
 

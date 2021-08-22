@@ -38,12 +38,16 @@ class parts:
             data.callback_operation.event("sta", info=data.pxf.get_event_data())
         """
 
+        def preview_frame_set(frame):
+            data.pxf.set_f_ratio(position=frame)
+
         def frame_set(frame):
             #print("A", inspect.stack()[1].filename, inspect.stack()[1].function)
             data.pxf.set_f_ratio(position=frame)
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         data.frame_set = frame_set
+        data.preview_frame_set = preview_frame_set
 
         data.scene_change_flag = True
 

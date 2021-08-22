@@ -49,15 +49,21 @@ class InitialValue:
 
         def project_overwrite_save():
             pass
+
         preview_screen = self.data.new_parts("gui_main", "tk_image", parts_name="pillow_view")
         preview_screen.size_update(640, 360)
         scene_id = self.data.all_data.scene_id()
 
+        make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+
         def preview(frame):
-            make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+            make_preview_data.re_scene()
             make_preview_data.output_tk(frame)
             self.preview_image_tk = make_preview_data.get_image_tk(frame)
             preview_screen.view(self.preview_image_tk)
+
+        def cash_clear():
+            make_preview_data.image_stack()
 
         self.data.all_data.callback_operation.set_event("preview", preview)
 
@@ -74,7 +80,7 @@ class InitialValue:
             self.data.all_data.callback_operation.event("reset")
 
         self.menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit, "新規作成", edit_data_del, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit, "新規作成", edit_data_del, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering, "キャッシュクリア", cash_clear)]
         self.menubar.set(main_menubar_list)
 
         display_size = self.data.display_size_get()
