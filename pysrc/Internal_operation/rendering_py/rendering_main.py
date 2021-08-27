@@ -86,10 +86,9 @@ class SceneOutput:
         self.func["EffectPluginElements"] = EffectPluginElements
 
         self.data_image_tk = [None] * self.frame
-        self.data_iamge = [None] * self.frame
+        #self.data_iamge = [None] * self.frame
 
         self.scene_id = copy.deepcopy(self.scene.scene_id)
-
 
         self.cpp_encode = self.operation["cppsrc"]["video_main"].VideoExecutionCenter(self.operation, self.func)
         self.cpp_encode.scene_setup(self.scene)
@@ -115,8 +114,6 @@ class SceneOutput:
             end = self.frame
 
         #self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
-        draw_list = self.cpp_encode.execution_main(-1, -1)
-        print(draw_list.shape)
 
         end_time = datetime.datetime.now()
 
@@ -124,7 +121,7 @@ class SceneOutput:
 
         print("本処理 [ python C++ ] [ boost ] {0}".format(repair))
 
-        self.output_OpenCV(sta, end, draw_list)
+        self.output_OpenCV(sta, end)
         # s
 
     def output_frame(self, frame=None):
@@ -145,7 +142,7 @@ class SceneOutput:
         image = self.cpp_encode.execution_preview(frame)
         image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)
 
-        cv2.imwrite('wiwi.jpg', image.astype('uint8'))
+        #cv2.imwrite('wiwi.jpg', image.astype('uint8'))
 
         image_pil = Image.fromarray(image_cvt)
         resize_size = (640, 360)
@@ -165,9 +162,9 @@ class SceneOutput:
 
     def image_stack(self):
         self.data_image_tk = [None] * self.frame
-        self.data_iamge = [None] * self.frame
+        #self.data_iamge = [None] * self.frame
 
-    def output_OpenCV(self, sta=None, end=None, draw_list=None):
+    def output_OpenCV(self, sta=None, end=None):
         def print_percent():
 
             now_percent = f - sta + 1
@@ -196,14 +193,7 @@ class SceneOutput:
 
         for f in range(sta, end):
 
-            if not draw_list is None:
-                export_draw = draw_list[f]
-            else:
-                export_draw = self.data_iamge[f]
-
-                if export_draw == 0:
-                    export_draw = np.zeros((self.y, self.x, 4))
-                    np_zero = "[ 未生成のため生成 ]"
+            export_draw = self.cpp_encode.execution_main(f)
 
             np_zero = ""
 

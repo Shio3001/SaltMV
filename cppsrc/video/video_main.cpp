@@ -500,20 +500,28 @@ namespace VideoMain
       layer_layer_id = py::extract<py::dict>(layer_group.attr("layer_layer_id"));
     }
 
-    np::ndarray execution_main(int sta = -1, int end = -1)
+    np::ndarray execution_main(int frame)
     {
       //vector<np::ndarray> draw_vector;
 
-      if (sta == -1)
+      int maxlen = py::extract<int>(editor["len"]
+
+      if (frame < 0)
       {
-        sta = 0;
+        frame = 0;
       }
-      if (end == -1)
+      if (frame > maxlen)
       {
-        end = py::extract<int>(editor["len"]);
+        frame = maxlen);
       }
       py::tuple shape_size = py::make_tuple(end - sta, editor["y"], editor["x"], 4);
-      np::ndarray draw_all = np::zeros(shape_size, np::dtype::get_builtin<uint>());
+      np::ndarray draw = run(frame);
+
+      return draw;
+
+      //np::ndarray draw_all = np::zeros(shape_size, np::dtype::get_builtin<uint>());
+
+      /*
 
       for (int i = sta; i < end; i++)
       {
@@ -521,7 +529,7 @@ namespace VideoMain
         ////cout << py::extract<int>(draw.attr("shape")[0]) << " " << i << endl;
         //draw_all.push_back(draw);
         draw_all[i - sta] = draw;
-      }
+      }*/
 
       return draw_all;
     }

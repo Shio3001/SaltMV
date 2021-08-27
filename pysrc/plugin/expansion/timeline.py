@@ -639,9 +639,12 @@ class InitialValue:
         if self.time_lime_space_flag == 1:  # on
 
             process_time = self.data.all_data.get_now_time()
+            fps = self.data.all_data.scene_editor()["fps"]
+            mov_len = self.data.all_data.scene_editor()["len"]
+            one_fps = 1 / fps
 
             while True:
-                if process_time >= self.data.all_data.scene_editor()["len"] or self.time_lime_space_flag == 0:
+                if process_time >= mov_len or self.time_lime_space_flag == 0:
                     break
 
                 print("再生", process_time)
@@ -649,12 +652,9 @@ class InitialValue:
                 sta_section_time = time.time()
                 self.data.all_data.callback_operation.event("preview", info=process_time)
                 self.nowtime_bar.preview_frame_set(process_time)
-                end_section_time = time.time()
                 self.data.window.update()
+                end_section_time = time.time()
                 section = end_section_time - sta_section_time
-
-                fps = self.data.all_data.scene_editor()["fps"]
-                one_fps = 1 / fps
 
                 sleep_time = one_fps - section
                 print("sleep_time ", sleep_time, one_fps, section)
@@ -662,6 +662,9 @@ class InitialValue:
                 if sleep_time > 0:
                     print(sleep_time)
                     time.sleep(sleep_time)
+
+                fps_end_section_time = time.time()
+                print("fps_time ", fps_end_section_time - sta_section_time)
 
                 process_time += 1
 
