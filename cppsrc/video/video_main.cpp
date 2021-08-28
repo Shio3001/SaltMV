@@ -504,7 +504,9 @@ namespace VideoMain
     {
       //vector<np::ndarray> draw_vector;
 
-      int maxlen = py::extract<int>(editor["len"]
+      cout << "execution_main 出力処理" << endl;
+
+      int maxlen = py::extract<int>(editor["len"]);
 
       if (frame < 0)
       {
@@ -512,9 +514,9 @@ namespace VideoMain
       }
       if (frame > maxlen)
       {
-        frame = maxlen);
+        frame = maxlen;
       }
-      py::tuple shape_size = py::make_tuple(end - sta, editor["y"], editor["x"], 4);
+      //py::tuple shape_size = py::make_tuple(end - sta, editor["y"], editor["x"], 4);
       np::ndarray draw = run(frame);
 
       return draw;
@@ -530,8 +532,6 @@ namespace VideoMain
         //draw_all.push_back(draw);
         draw_all[i - sta] = draw;
       }*/
-
-      return draw_all;
     }
 
     np::ndarray execution_preview(int frame)

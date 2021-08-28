@@ -506,8 +506,8 @@ class InitialValue:
 
             #sta_end_long = scroll_data.sta_end_f[1] - scroll_data.sta_end_f[0]
 
-            view_sta_f = view_frame_len * (scroll_data.ratio_f[0] / 100)
-            view_end_f = view_frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100)
+            view_sta_f = round(view_frame_len * (scroll_data.ratio_f[0] / 100))
+            view_end_f = round(view_frame_len * ((scroll_data.ratio_f[0] + scroll_data.ratio_f[1]) / 100))
 
             self.scrollbar_sta_end = [view_sta_f, view_end_f]
 
@@ -521,6 +521,11 @@ class InitialValue:
 
         timeline_scroll.callback_operation.set_event("mov", timeline_view_range)  # コールバック関数登録
         timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())
+
+        def get_timelime_scroll_status():
+            return self.scrollbar_sta_end
+
+        self.data.all_data.callback_operation.set_event("get_timelime_scroll_status", get_timelime_scroll_status)
 
         def window_size_edit(event):
             size_x, size_y = self.data.get_window_size()

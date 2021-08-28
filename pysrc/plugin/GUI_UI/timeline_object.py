@@ -252,7 +252,16 @@ class parts:
                 effect_user_list.append(k)
                 effect_user_list.append(effect_get.add_element)
 
-            popup_list = [effect_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
+            synthetic_dict = data.operation["plugin"]["synthetic"]
+
+            synthetic_user_list = ["合成方式"]
+
+            for k in synthetic_dict.keys():
+                synthetic_get = SyntheticGet(data.all_data,data.option_data["media_id"], k)
+                synthetic_user_list.append(k)
+                synthetic_user_list.append(synthetic_get.edit_synthetic)
+
+            popup_list = [effect_user_list, synthetic_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
             self.popup.set(popup_list)
 
         data.set_right_click_pop = set_right_click_pop
@@ -447,6 +456,16 @@ class parts:
         # data.edit_timeline_range = edit_timeline_range
 
         return data
+
+
+class SyntheticGet:
+    def __init__(self, all_data, media_id, synthetic_key):
+        self.all_data = all_data
+        self.media_id = media_id
+        self.synthetic_key = synthetic_key
+
+    def edit_synthetic(self):
+        self.all_data.edit_effect_synthetic(self.media_id,self.synthetic_key)
 
 
 class EffectGet:

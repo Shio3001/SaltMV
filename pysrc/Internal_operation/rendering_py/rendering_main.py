@@ -191,13 +191,12 @@ class SceneOutput:
 
         start_time = datetime.datetime.now()
 
+        #np_zero = ""
+
         for f in range(sta, end):
 
             export_draw = self.cpp_encode.execution_main(f)
-
-            np_zero = ""
-
-            print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
+            #print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
 
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             self.writer.write(output_data)

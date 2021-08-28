@@ -13,9 +13,11 @@ class CallBackOne:
     def event(self, info=None):
 
         if not info is None:
-            self.__event_data(info)
+            return_val = self.__event_data(info)
         else:
-            self.__event_data()
+            return_val = self.__event_data()
+
+        return return_val
 
 
 class CallBack:
@@ -39,6 +41,8 @@ class CallBack:
 
     def event(self, name, info=None):
 
+        return_val_dict = {}
+
         if name == "effect_updown":
             print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
@@ -51,10 +55,17 @@ class CallBack:
         for d in self.__event_data[name]:
             if str(type(d)) == "<class 'function'>":
 
+                return_val = None
+
                 if not info is None:
-                    d(info)
+                    return_val = d(info)
                 else:
-                    d()
+                    return_val = d()
+
+                func_name = d.__name__
+                return_val_dict[func_name] = return_val
+
+        return return_val_dict
                 # print("実行")
 
     def get_event(self, name):

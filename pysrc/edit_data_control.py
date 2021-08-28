@@ -238,6 +238,9 @@ class Storage:
     def edit_object_installation(self, media_id, sta, end):
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[media_id][0].installation = copy.deepcopy([sta, end])
 
+    def edit_effect_synthetic(self, object_order, synthetic):
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].synthetic = synthetic
+
     def add_effect_elements(self, object_order, effect_name):
         new_effect = elements.EffectElements()
         new_effect.effect_name = effect_name

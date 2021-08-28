@@ -76,11 +76,29 @@ class InitialValue:
             make_data.output_main()
             # make_data.output_OpenCV()
 
+        def section_rendering():
+            scene_id = self.data.all_data.scene_id()
+            # self.operation["rendering_py"]["main"].setapp_init(self.operation,scene)
+
+            #scene_elements.user_select_range = [0, 100]
+            make_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+
+            return_val_dict = self.data.all_data.callback_operation.event("get_timelime_scroll_status")
+            scrollbar_sta_end = return_val_dict["get_timelime_scroll_status"]
+
+            sta = scrollbar_sta_end[0]
+            end = scrollbar_sta_end[1]
+
+            #print("scroll_data.ratio_f", scroll_data.ratio_f)
+
+            make_data.output_main(sta, end)
+            # make_data.output_OpenCV()
+
         def edit_data_del():
             self.data.all_data.callback_operation.event("reset")
 
         self.menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit, "新規作成", edit_data_del, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering, "キャッシュクリア", cash_clear)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit, "新規作成", edit_data_del, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering, "表示区間の書き出し", section_rendering, "キャッシュクリア", cash_clear)]
         self.menubar.set(main_menubar_list)
 
         display_size = self.data.display_size_get()

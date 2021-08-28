@@ -96,9 +96,10 @@ class parts:
 
             data.background_now_mouse, _, _, _ = data.get_window_contact()
 
-            data.click_stop = False
             # #print(data.button_parameter_control.callback_operation.all_get_event())
             data.effect_updown(data.background_mouse[1], data.background_now_mouse[1],   pos_y_normal, gap, sta_point)
+
+            data.click_stop = False
 
             #data.background_mouse = [0, 0]
             #data.background_now_mouse = [0, 0]
