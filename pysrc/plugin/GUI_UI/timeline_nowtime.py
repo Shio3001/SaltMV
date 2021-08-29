@@ -62,7 +62,9 @@ class parts:
 
             data.mov_flag = True
 
-        def click_position(event):
+            click_position()
+
+        def click_position(event=None):
 
             if not data.mov_flag or not data.click_flag:
                 data.mov_flag = False

@@ -24,12 +24,15 @@ class CallBack:
     def __init__(self):
         self.__event_data = {}
 
-    def set_event(self, name, func, run=False):
+    def set_event(self, name, func, run=False, duplicate=True):
 
         if not name in self.__event_data.keys():
             self.__event_data[name] = []
 
-        self.__event_data[name].append(func)  # 一度に複数の関数を実行できるようにするため
+        if duplicate:
+            self.__event_data[name].append(func)  # 一度に複数の関数を実行できるようにするため
+        else:
+            self.__event_data[name] = [func]
 
         if run:
             func(None)
@@ -66,7 +69,7 @@ class CallBack:
                 return_val_dict[func_name] = return_val
 
         return return_val_dict
-                # print("実行")
+        # print("実行")
 
     def get_event(self, name):
         return copy.deepcopy(self.__event_data[name])

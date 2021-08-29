@@ -414,18 +414,19 @@ class Storage:
             self.edit_data = pickle.load(lordfile)
             save_path = copy.deepcopy(user_select)
 
-            self.operation["log"].write("編集ファイルを開きました ファイルパス{0}".format(save_path))
-
-            if not str(type(self.fill_input_callback)) == "<class 'function'>":
-                return
+            print("編集ファイルを開きました ファイルパス{0}".format(save_path))
 
             # #print("input実行")
 
         except:
-            self.operation["log"].write("編集ファイルが存在しませんでした")
+            print("編集ファイルが存在しませんでした")
             save_path = ""
 
+        print("読み取り終了")
+
+        self.callback_operation.event("preview_setup")
         self.callback_operation.event("file_input_after")
+
         return save_path
 
         # return all_elements, save_location
@@ -450,6 +451,10 @@ class Storage:
         # self.fill_output_callback()
 
         self.callback_operation.event("file_output_after")
+
+        # self.data.all_data.callback_operation.event("preview_setup")
+
+        print("書き出しました")
 
         return save_location
 

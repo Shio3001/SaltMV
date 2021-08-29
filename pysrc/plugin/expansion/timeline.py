@@ -483,6 +483,8 @@ class InitialValue:
 
                     self.data.timeline_object[obj_k].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
+            # self.data.all_data.callback_operation.event("preview_setup")
+
         def edit_data_reset():
             all_del_object_ui()
             self.data.all_data.new_edit_data()
@@ -579,8 +581,6 @@ class InitialValue:
 
             loading_movie_data(new=self.data.all_data.scene_id())
 
-        self.data.all_data.callback_operation.set_event("text_input_end", editor_func)
-
         def editor_setting_change(option_data):
             timeline_nowtime_approval_False(None)
 
@@ -589,7 +589,7 @@ class InitialValue:
             pop_list = []
 
             edior = self.data.all_data.get_set_scene_edior()
-
+            self.data.all_data.callback_operation.set_event("text_input_end", editor_func,duplicate=False)
             for k in edior.keys():
                 edior_get = EditorGet(self.data.all_data, k, edior[k])
                 scene_name_func = ("{0} 現在:{1}".format(k, edior[k]), edior_get.run)

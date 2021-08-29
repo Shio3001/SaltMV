@@ -40,30 +40,51 @@ class InitialValue:
         def project_new():
             pass
 
+        def send_open(editor_func_send):
+            editor_func_name, editor_func_val = editor_func_send
+            print("send_open", editor_func_send)
+            self.data.all_data.file_input(editor_func_val)
+
+        def send_save(editor_func_send):
+            editor_func_name, editor_func_val = editor_func_send
+            print("send_save", editor_func_send)
+            self.data.all_data.file_output(editor_func_val)
+
         def project_open():
-            self.data.all_data.file_input(self.data.all_data.input_debug("open"))
+            self.data.all_data.callback_operation.set_event("text_input_end", send_open, duplicate=False)
+            self.data.all_data.callback_operation.event("set_init_val", info="")
+            self.data.all_data.callback_operation.event("text_input_request", info="ファイルを入力")
+
             # self.data.all_data.add_layer_elements()
 
         def project_save():
-            self.data.all_data.file_output(self.data.all_data.input_debug("close"))
+            self.data.all_data.callback_operation.set_event("text_input_end", send_save, duplicate=False)
+            self.data.all_data.callback_operation.event("set_init_val", info="")
+            self.data.all_data.callback_operation.event("text_input_request", info="保存先を入力")
 
         def project_overwrite_save():
             pass
 
         preview_screen = self.data.new_parts("gui_main", "tk_image", parts_name="pillow_view")
         preview_screen.size_update(640, 360)
-        scene_id = self.data.all_data.scene_id()
 
-        make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+        def preview_setup():
+            scene_id = self.data.all_data.scene_id()
+            print("preview_setup", scene_id)
+            self.make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+
+        self.data.all_data.callback_operation.set_event("preview_setup", preview_setup)
+
+        preview_setup()
 
         def preview(frame):
-            make_preview_data.re_scene()
-            make_preview_data.output_tk(frame)
-            self.preview_image_tk = make_preview_data.get_image_tk(frame)
+            self.make_preview_data.re_scene()
+            self.make_preview_data.output_tk(frame)
+            self.preview_image_tk = self.make_preview_data.get_image_tk(frame)
             preview_screen.view(self.preview_image_tk)
 
         def cash_clear():
-            make_preview_data.image_stack()
+            self.make_preview_data.image_stack()
 
         self.data.all_data.callback_operation.set_event("preview", preview)
 

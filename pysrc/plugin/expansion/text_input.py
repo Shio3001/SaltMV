@@ -63,14 +63,14 @@ class InitialValue:
             self.data.window_open_close(False)
 
         self.data.all_data.callback_operation.set_event("set_init_val", set_init_val)
-        self.data.all_data.callback_operation.set_event("text_input_request", text_input_request)
+        self.data.all_data.callback_operation.set_event("text_input_request", text_input_request, duplicate=False)
 
         close_save.edit_territory_size(x=100, y=20)
         close_save.edit_territory_position(x=0, y=30)
         close_save.edit_diagram_color("background", green)
         close_save.edit_diagram_color("text", "#ffffff")
         close_save.diagram_stack("text", True)
-        close_save.edit_diagram_text("text", text="保存")
+        close_save.edit_diagram_text("text", text="決定")
         close_save.territory_draw()
         close_save.callback_operation.set_event("button", text_input_save_end)
 
@@ -79,7 +79,7 @@ class InitialValue:
         close_non_save.edit_diagram_color("background", red)
         close_non_save.edit_diagram_color("text", "#ffffff")
         close_non_save.diagram_stack("text", True)
-        close_non_save.edit_diagram_text("text", text="破棄")
+        close_non_save.edit_diagram_text("text", text="戻る")
         close_non_save.territory_draw()
         close_non_save.callback_operation.set_event("button", text_input_non_save_end)
 
