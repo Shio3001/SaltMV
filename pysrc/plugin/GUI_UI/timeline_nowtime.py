@@ -49,14 +49,23 @@ class parts:
         data.frame_set = frame_set
         data.preview_frame_set = preview_frame_set
 
-        data.scene_change_flag = True
+        #data.scene_change_flag = True
 
-        def click_position(event):
+        data.mov_flag = False
+
+        # mov_flagは内部用
+        # click_flagは外部干渉用
+
+        def click_start(event):
             if not data.click_flag:
                 return
 
-            if not data.scene_change_flag:
-                data.scene_change_flag = True
+            data.mov_flag = True
+
+        def click_position(event):
+
+            if not data.mov_flag or not data.click_flag:
+                data.mov_flag = False
                 return
 
             now_mouse, _, data.diagram_join = data.get_diagram_contact("now")
@@ -71,6 +80,9 @@ class parts:
             data.pxf.set_px_ratio(position=now_mouse[0])
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
+        def click_end(event):
+            data.mov_flag = False
+
         """
         def click_end(event):
             data.click_flag = False
@@ -82,7 +94,8 @@ class parts:
 
         #data.canvas_event_data.add_canvas_event("timeline", "Button-1", click_position)
         #data.canvas_event_data.add_canvas_event("timeline", "B1-Motion", click_position)
-        data.canvas_event_data["add"]("timeline", "Button-1", click_position)
+        data.canvas_event_data["add"]("timeline", "Button-1", click_start)
         data.canvas_event_data["add"]("timeline", "B1-Motion", click_position)
+        data.canvas_event_data["add"]("timeline", "ButtonRelease-1", click_end)
 
         return data

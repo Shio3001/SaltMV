@@ -84,25 +84,10 @@ class parts:
             data.effect_updown_destination(data.background_mouse[1], data.background_now_mouse[1], pos_y_normal, gap, sta_point)
 
         def click_end(event):
-            # data.button_parameter_control.edit_diagram_color("background", "#44ff44")
-            # data.button_parameter_control.diagram_draw("background")
-
             data.shape_updown_destination_view_False()
-
-            if not data.click_stop:
-                return
-
-            # print("終端処理")
-
-            data.background_now_mouse, _, _, _ = data.get_window_contact()
-
-            # #print(data.button_parameter_control.callback_operation.all_get_event())
-            data.effect_updown(data.background_mouse[1], data.background_now_mouse[1],   pos_y_normal, gap, sta_point)
-
             data.click_stop = False
-
-            #data.background_mouse = [0, 0]
-            #data.background_now_mouse = [0, 0]
+            data.background_now_mouse, _, _, _ = data.get_window_contact()
+            data.effect_updown(data.background_mouse[1], data.background_now_mouse[1],   pos_y_normal, gap, sta_point)
 
         data.click_end = click_end
 
@@ -111,7 +96,7 @@ class parts:
 
         data.button_parameter_control.add_diagram_event("text", "Button-1", click_start)
         data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
-        data.button_parameter_control.window_event_data["add"]("B1-Motion", click_position)
+        data.button_parameter_control.window_event_data["add"]("Motion", click_position)
         data.button_parameter_control.add_diagram_event("text", "ButtonRelease-1", click_end)
         data.button_parameter_control.add_diagram_event("background", "ButtonRelease-1", click_end)
 

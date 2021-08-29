@@ -203,7 +203,7 @@ class InitialValue:
                 self.data.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
                 self.data.ui_management.ui_list[now_exchange].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
                 self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
-                self.data.ui_management.ui_list[now_exchange].click_end(None)
+                self.data.ui_management.ui_list[now_exchange].click_stop = False
 
                 #print(now_exchange, e.effect_name)
 

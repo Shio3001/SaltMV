@@ -258,13 +258,13 @@ class InitialValue:
 
         # now_layer = 0
 
-        def timeline_nowtime_approval_True(_):
+        def timeline_nowtime_approval_True(t=None):
             self.nowtime_bar.click_flag = True
-            # #print("許可")
+            print("許可")
 
-        def timeline_nowtime_approval_False(_):
+        def timeline_nowtime_approval_False(t=None):
             self.nowtime_bar.click_flag = False
-            # #print("停止")
+            print("停止")
 
         timeline_scroll.callback_operation.set_event("sta", timeline_nowtime_approval_False)
         timeline_scroll.callback_operation.set_event("end", timeline_nowtime_approval_True)
@@ -569,8 +569,42 @@ class InitialValue:
         scene_now_view.territory_draw()
         """
 
-        def now_time_flag_edit():
-            self.nowtime_bar.scene_change_flag = False
+        # def now_time_flag_edit():
+        #    self.nowtime_bar.scene_change_flag = False
+
+        def editor_func(editor_func_send):
+            editor_func_name, editor_func_val = editor_func_send
+            print("editor_func_send", editor_func_send)
+            self.data.all_data.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
+
+            loading_movie_data(new=self.data.all_data.scene_id())
+
+        self.data.all_data.callback_operation.set_event("text_input_end", editor_func)
+
+        def editor_setting_change(option_data):
+            timeline_nowtime_approval_False(None)
+
+            self.popup = self.data.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window, popup=True)
+
+            pop_list = []
+
+            edior = self.data.all_data.get_set_scene_edior()
+
+            for k in edior.keys():
+                edior_get = EditorGet(self.data.all_data, k, edior[k])
+                scene_name_func = ("{0} 現在:{1}".format(k, edior[k]), edior_get.run)
+                pop_list.append(scene_name_func)
+
+            self.popup.set(pop_list)
+
+            background_mouse, _, _, xy = self.data.get_window_contact()
+            mouse = [0, 0]
+            for i in range(2):
+                mouse[i] = background_mouse[i] + xy[i]
+
+            self.popup.show(mouse[0], mouse[1])
+
+            timeline_nowtime_approval_True(None)
 
         def scene_change(option_data):
             timeline_nowtime_approval_False(None)
@@ -582,7 +616,7 @@ class InitialValue:
             pop_list = []
 
             for k in scene_name_list:
-                scene_get = SceneGet(k, loading_movie_data, now_time_flag_edit)
+                scene_get = SceneGet(k, loading_movie_data, timeline_nowtime_approval_False, scene_list_button)
 
                 scene_name_func = ("　　 : " + k, scene_get.change) if k != self.data.all_data.edit_data.now_scene else ("現在 : " + k, scene_get.change)
                 pop_list.append(scene_name_func)
@@ -620,7 +654,7 @@ class InitialValue:
         edit_settings_button.diagram_stack("text", True)
         edit_settings_button.edit_diagram_text("text", text="編集設定")
         edit_settings_button.territory_draw()
-        edit_settings_button.callback_operation.set_event("button", scene_change)
+        edit_settings_button.callback_operation.set_event("button", editor_setting_change)
 
         def add_scene():
             self.data.all_data.add_scene_elements()
@@ -678,16 +712,34 @@ class CentralRole:
     pass
 
 
+class EditorGet:
+    def __init__(self, all_data, name, init_val):
+        self.name = name
+        self.all_data = all_data
+        self.init_val = init_val
+
+    def run(self):
+        self.all_data.callback_operation.event("set_init_val", info=self.init_val)
+        self.all_data.callback_operation.event("text_input_request", info=self.name)
+
+
 class SceneGet:
-    def __init__(self, scene_id, loading_movie_data, now_time_flag_edit):
+    def __init__(self, scene_id, loading_movie_data, now_time_flag_edit, scene_list_button):
         self.scene_id = copy.deepcopy(scene_id)
         self.loading_movie_data = loading_movie_data
         now_time_flag_edit()
+        self.scene_list_button = scene_list_button
         #self.change_now_scene = change_now_scene_func
         #self.scene_now_view = scene_now_view
 
     def change(self):
+
+        self.scene_list_button.edit_diagram_color("background", "#111111")
+        self.scene_list_button.territory_draw()
+
         self.loading_movie_data(new=self.scene_id)
 
+        self.scene_list_button.edit_diagram_color("background", "#229922")
+        self.scene_list_button.territory_draw()
         #self.scene_now_view.edit_diagram_text("textbox1", text=self.scene_id)
         # self.scene_now_view.territory_draw()

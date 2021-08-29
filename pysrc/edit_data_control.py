@@ -185,6 +185,16 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order])
 
+    def get_set_scene_edior(self, editor=None, name=None, data=None):
+        if not name is None and not data is None:
+            self.edit_data.scenes[self.edit_data.now_scene].editor[name] = int(data)
+            return
+
+        if not editor is None and type(self.edit_data.scenes[self.edit_data.now_scene].editor) == type(editor):
+            self.edit_data.scenes[self.edit_data.now_scene].editor = editor
+
+        return self.edit_data.scenes[self.edit_data.now_scene].editor
+
     def add_scene_elements(self, new_scene_name=None):
         new_scene = elements.SceneElements()
         if not new_scene_name is None:

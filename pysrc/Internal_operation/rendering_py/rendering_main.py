@@ -125,16 +125,18 @@ class SceneOutput:
         # s
 
     def output_frame(self, frame=None):
+        frame = round(frame)
         image = self.cpp_encode.execution_preview(frame)
         return image
 
-    def get_image(self, frame):
-        return self.data_image[frame]
+    # def get_image(self, frame):
+    #    return self.data_image[frame]
 
-    def image_init(self, sta, end):
-        self.data_image[sta:end] = np.zeros((end-sta))
+    # def image_init(self, sta, end):
+    #    self.data_image[sta:end] = np.zeros((end-sta))
 
     def output_tk(self, frame, tk_cash=True):
+        frame = round(frame)
         if self.data_image_tk[frame] != None and tk_cash:
             print("キャッシュ生成済み")
             return
@@ -154,6 +156,7 @@ class SceneOutput:
         print("tk処理", frame, image.shape)
 
     def get_image_tk(self, frame):
+        frame = round(frame)
         image_tk = self.data_image_tk[frame]
         return image_tk
 

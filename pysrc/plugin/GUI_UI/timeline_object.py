@@ -3,6 +3,7 @@ import copy
 import datetime
 import threading
 import uuid
+import time
 
 
 class KeyFrame:
@@ -257,7 +258,7 @@ class parts:
             synthetic_user_list = ["合成方式"]
 
             for k in synthetic_dict.keys():
-                synthetic_get = SyntheticGet(data.all_data,data.option_data["media_id"], k)
+                synthetic_get = SyntheticGet(data.all_data, data.option_data["media_id"], k)
                 synthetic_user_list.append(k)
                 synthetic_user_list.append(synthetic_get.edit_synthetic)
 
@@ -440,7 +441,6 @@ class parts:
             data.click_flag = False
             data.mouse_sta, _, data.diagram_join_sta = data.get_diagram_contact("bar", del_mouse=True)
             _, _, data.diagram_join = data.get_diagram_contact("bar", del_mouse=True)
-
             data.callback_operation.event("end", info=data.pxf.get_event_data())
 
             data.edit_diagram_color("bar", "#00ff00")
@@ -465,7 +465,7 @@ class SyntheticGet:
         self.synthetic_key = synthetic_key
 
     def edit_synthetic(self):
-        self.all_data.edit_effect_synthetic(self.media_id,self.synthetic_key)
+        self.all_data.edit_effect_synthetic(self.media_id, self.synthetic_key)
 
 
 class EffectGet:
