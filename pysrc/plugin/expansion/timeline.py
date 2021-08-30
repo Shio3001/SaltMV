@@ -237,7 +237,14 @@ class InitialValue:
         timeline_scroll.edit_territory_position(x=timeline_left, y=timeline_up - scroll_size)
         timeline_scroll.territory_draw()
 
+        self.end_to_sta_time = 0
+
+        def get_permission_elapsed_time():
+            bool_time = 0.2 <= time.time() - self.end_to_sta_time
+            return bool_time
+
         self.nowtime_bar = self.data.new_parts("timeline", "nowtime_bar", parts_name="timeline_nowtime")
+        self.nowtime_bar.get_permission_elapsed_time = get_permission_elapsed_time
         self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=100)
         self.nowtime_bar.edit_territory_size(y=10)
         self.nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
@@ -261,6 +268,7 @@ class InitialValue:
         def timeline_nowtime_approval_True(t=None):
             # self.data.window.update()
             self.nowtime_bar.click_flag = True
+            self.end_to_sta_time = time.time()
             print("許可")
 
         def timeline_nowtime_approval_False(t=None):

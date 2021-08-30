@@ -63,6 +63,10 @@ class parts:
             if not data.click_flag:
                 return
 
+            if not data.get_permission_elapsed_time():
+                print("get_permission_elapsed_time否定")
+                return
+
             data.mov_flag = True
 
             print("nowtime click_start")
