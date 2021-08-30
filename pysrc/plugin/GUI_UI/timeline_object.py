@@ -430,23 +430,6 @@ class parts:
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
-            loop = asyncio.get_event_loop()
-            gather = asyncio.gather(
-                click_end_flag_open(),
-                click_end_process()
-            )
-            loop.run_until_complete(gather)
-
-        async def click_end_flag_open():
-            loop = asyncio.get_event_loop()
-            sec = 1
-            print(f'start:  {sec}秒待つよ')
-            await loop.run_in_executor(None, time.sleep, sec)
-            print(f'finish: {sec}秒待つよ')
-
-            data.callback_operation.event("end", info=data.pxf.get_event_data())
-
-        async def click_end_process():
             data.click_start_end_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
 
             if data.click_start_sta_layer != data.click_start_end_layer:
@@ -462,7 +445,7 @@ class parts:
             _, _, data.diagram_join = data.get_diagram_contact("bar", del_mouse=True)
 
             data.edit_diagram_color("bar", "#00ff00")
-            print("みょん")
+            data.callback_operation.event("end", info=data.pxf.get_event_data())
 
             # data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
