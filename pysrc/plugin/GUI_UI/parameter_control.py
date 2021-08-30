@@ -1,5 +1,6 @@
 import copy
 import asyncio
+import time
 
 
 class parts:
@@ -72,18 +73,30 @@ class parts:
             data.shape_updown_destination_view_False()
             data.click_stop = False
 
-        data.Motion_flag = False
+        #data.Motion_flag = False
 
-        # def click_start(event):
-        #    data.click_stop = True
-        #    data.background_mouse, _, _, _ = data.get_window_contact()
+        data.click_stop = False
+
+        data.end_to_sta_time = 0
+
+        def click_start(event):
+            bool_time = 0.1 <= time.time() - data.end_to_sta_time
+            if not bool_time:
+                data.click_stop = False
+                print("parameter_control拒否")
+                return
+
+            data.click_stop = True
+            data.background_mouse, _, _, _ = data.get_window_contact()
 
         def click_position(event):
-
-            if not data.Motion_flag:
-                #data.click_stop = True
-                data.background_mouse, _, _, _ = data.get_window_contact()
-                data.Motion_flag = True
+            if not data.click_stop:
+                return
+            # print("押す[parameter_control]")
+            # if not data.Motion_flag:
+            #data.click_stop = True
+            #data.background_mouse, _, _, _ = data.get_window_contact()
+            #data.Motion_flag = True
 
             # if not data.click_stop:
             #    return
@@ -95,19 +108,22 @@ class parts:
             data.effect_updown_destination(data.background_mouse[1], data.background_now_mouse[1], pos_y_normal, gap, sta_point)
 
         def click_end(event):
+            print("離す[parameter_control]")
             data.shape_updown_destination_view_False()
-            #data.click_stop = False
-            data.Motion_flag = False
+            data.click_stop = False
+            #data.Motion_flag = False
             data.background_now_mouse, _, _, _ = data.get_window_contact()
             data.effect_updown(data.background_mouse[1], data.background_now_mouse[1],   pos_y_normal, gap, sta_point)
+
+            data.end_to_sta_time = time.time()
 
         data.click_end = click_end
 
         data.button_parameter_control.add_diagram_event("text", "Button-2", click_right)
         data.button_parameter_control.add_diagram_event("background", "Button-2", click_right)
 
-        #data.button_parameter_control.add_diagram_event("text", "Button-1", click_start)
-        #data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
+        data.button_parameter_control.add_diagram_event("text", "Button-1", click_start)
+        data.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
         data.button_parameter_control.window_event_data["add"]("B1-Motion", click_position)
         data.button_parameter_control.add_diagram_event("text", "ButtonRelease-1", click_end)
         data.button_parameter_control.add_diagram_event("background", "ButtonRelease-1", click_end)

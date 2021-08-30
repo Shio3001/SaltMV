@@ -4,6 +4,7 @@ import os
 import copy
 import datetime
 import inspect
+import time
 
 
 class InitialValue:
@@ -84,6 +85,7 @@ class InitialValue:
             shape_updown_destination.territory_draw()
 
             self.data.window.update()
+
             # self.data.window.update()
 
         def effect_updown_measurement(pos, box_pos, sta_point, con_len):
