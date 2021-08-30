@@ -57,18 +57,27 @@ class parts:
         # click_flagは外部干渉用
 
         def click_start(event):
+            #print("呼び出し先[nowtime申請]", inspect.stack()[1].filename, inspect.stack()[1].function)
+            print("nowtime[申請] click_start")
+
             if not data.click_flag:
                 return
 
             data.mov_flag = True
 
+            print("nowtime click_start")
+
             click_position()
 
         def click_position(event=None):
 
+            print("nowtime[申請] click_position")
+
             if not data.mov_flag or not data.click_flag:
                 data.mov_flag = False
                 return
+
+            print("nowtime click_position")
 
             now_mouse, _, data.diagram_join = data.get_diagram_contact("now")
 
@@ -83,6 +92,8 @@ class parts:
             data.callback_operation.event("mov", info=data.pxf.get_event_data())
 
         def click_end(event):
+            print("nowtime click_end")
+
             data.mov_flag = False
 
         """

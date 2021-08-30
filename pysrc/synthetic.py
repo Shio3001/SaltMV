@@ -28,8 +28,10 @@ class SyntheticControl:
         if size_y < 0:
             return base
 
-        base_section = base[base_up:base_down, base_left:base_right]
-        add_section = add[add_up:add_down, add_left:add_right]
+        base_section = base[base_up:base_down, base_left:base_right] / 255
+        add_section = add[add_up:add_down, add_left:add_right] / 255
 
         base[base_up:base_down, base_left:base_right] = self.operation["plugin"]["synthetic"][synthetic_name].main(base_section, add_section)  # source, additions
-        return base
+        base255 = base * 255
+
+        return base255

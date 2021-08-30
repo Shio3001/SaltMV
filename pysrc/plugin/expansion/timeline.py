@@ -259,6 +259,7 @@ class InitialValue:
         # now_layer = 0
 
         def timeline_nowtime_approval_True(t=None):
+            # self.data.window.update()
             self.nowtime_bar.click_flag = True
             print("許可")
 
@@ -589,7 +590,7 @@ class InitialValue:
             pop_list = []
 
             edior = self.data.all_data.get_set_scene_edior()
-            self.data.all_data.callback_operation.set_event("text_input_end", editor_func,duplicate=False)
+            self.data.all_data.callback_operation.set_event("text_input_end", editor_func, duplicate=False)
             for k in edior.keys():
                 edior_get = EditorGet(self.data.all_data, k, edior[k])
                 scene_name_func = ("{0} 現在:{1}".format(k, edior[k]), edior_get.run)

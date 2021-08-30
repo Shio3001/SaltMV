@@ -23,8 +23,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
                  tkFont_list,
                  base,
                  option_data,
-                 get_window_contact
-                 ):
+                 get_window_contact,
+                 get_window_view_flag):
 
         self.get_window_contact = get_window_contact
 
@@ -65,6 +65,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.callback_operation = self.operation["plugin"]["other"]["callback"].CallBack()
 
         self.image_tk = None
+        self.get_window_view_flag = get_window_view_flag
 
         # print(self.uidata_id, "生成しました＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊")
 
@@ -144,6 +145,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
     # 以下diagram
 
     def new_diagram(self,  di_name, diagram_type=None):
+
+        window_view_flag = self.get_window_view_flag()
+        if not window_view_flag:
+            return
 
         if di_name in self.canvas_data.territory[self.te_name].diagram.keys():
             self.operation["error"].action(message="ダイアグラムネーム(UI構成タグ): {0} は すでに使用されています".format(di_name))

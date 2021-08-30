@@ -45,8 +45,12 @@ class SendWindowData:  # window生成のためのデータ
     def window_open_close(self, select):
         if select == True:
             self.window.deiconify()
+
         if select == False:
             self.window.withdraw()
+
+    def get_window_view_flag(self):
+        return self.window.winfo_exists()
 
     def add_window_event(self, key, func):  # event
         bind_id = self.window.bind("<{0}>".format(key), func, "+")
@@ -179,7 +183,8 @@ class SendWindowData:  # window生成のためのデータ
                                                   self.tkFont_list,
                                                   base,
                                                   option_data,
-                                                  self.get_window_contact)
+                                                  self.get_window_contact,
+                                                  self.get_window_view_flag)
 
         # new_UIdata.new_territory()
 

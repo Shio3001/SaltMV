@@ -75,11 +75,15 @@ class InitialValue:
         def shape_updown_destination_view_True():
             shape_updown_destination.diagram_shape_view_status("0", 1)
             shape_updown_destination.territory_draw()
+
+            self.data.window.update()
             # self.data.window.update()
 
         def shape_updown_destination_view_False():
             shape_updown_destination.diagram_shape_view_status("0", 2)
             shape_updown_destination.territory_draw()
+
+            self.data.window.update()
             # self.data.window.update()
 
         def effect_updown_measurement(pos, box_pos, sta_point, con_len):
@@ -98,6 +102,8 @@ class InitialValue:
             click_effect_point_destination = [0, 0]
             click_effect_point_destination[0] = effect_updown_measurement(A, box_pos, sta_point, con_len)
             click_effect_point_destination[1] = effect_updown_measurement(B, box_pos, sta_point, con_len)
+
+            print("layer_number 判定 A / B", click_effect_point_destination)
 
             shape_updown_destination.edit_territory_position(y=click_effect_point_destination[1] * box_pos - gap + sta_point)
 
