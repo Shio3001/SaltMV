@@ -28,16 +28,16 @@ class SyntheticControl:
         if size_y < 0:
             return base
 
-        base_section = base[base_up:base_down, base_left:base_right] / 255
-        add_section = add[add_up:add_down, add_left:add_right] / 255
+        base_float64 = base.astype('float64')
+        add_float64 = add.astype('float64')
+
+        base_section = base_float64[base_up:base_down, base_left:base_right] / 255
+        add_section = add_float64[add_up:add_down, add_left:add_right] / 255
 
         process = self.operation["plugin"]["synthetic"][synthetic_name].main(base_section, add_section)  # source, additions
-
+        process[:, :, 0:3] *= 255
         process_uint8 = process.astype('uint8')
 
-        base_255 = process_uint8
-        base_255[:, :, 0:3] *= 255
-
-        base[base_up:base_down, base_left:base_right] = base_255
+        base[base_up:base_down, base_left:base_right] = process_uint8
 
         return base

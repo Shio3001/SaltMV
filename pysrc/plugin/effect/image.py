@@ -2,7 +2,7 @@
 import sys
 import os
 import copy
-
+import cv2
 # 削除厳禁！
 
 
@@ -16,7 +16,16 @@ class InitialValue:
 
 class CentralRole:
     def __init__(self):
-        self.starting_point = 0
+        self.starting_point = [0, 0]
 
     def main(self, data):
-        return data.draw, self.starting_point
+
+        path = data.various_fixed["path"]
+
+        try:
+            im = cv2.imread(path)
+            im = cv2.cvtColor(im, cv2.COLOR_BGR2RGBA)
+        except:
+            return data.draw, self.starting_point
+
+        return im, self.starting_point
