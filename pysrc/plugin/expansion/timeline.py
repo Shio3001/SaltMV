@@ -671,7 +671,7 @@ class InitialValue:
         new_layer()
 
         self.timeline_menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", add_scene, "レイヤー", new_layer), ("追加", "動画", new_obj)]
+        main_menubar_list = [("ファイル", "終了", self.data.window_exit), ("新規", "シーン", add_scene, "レイヤー", new_layer), ("追加", "オブジェクト", new_obj)]
         self.timeline_menubar.set(main_menubar_list)
         self.data.window_title_set("タイムライン")
         self.data.window_size_set(x=1200, y=700)
