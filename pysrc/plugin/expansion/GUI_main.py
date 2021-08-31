@@ -88,21 +88,23 @@ class InitialValue:
 
         self.data.all_data.callback_operation.set_event("preview", preview)
 
-        def rendering():
+        def send_rendering(editor_func_send):
+            editor_func_name, editor_func_val = editor_func_send
             scene_id = self.data.all_data.scene_id()
-            # self.operation["rendering_py"]["main"].setapp_init(self.operation,scene)
-
-            #scene_elements.user_select_range = [0, 100]
-            make_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+            make_data = self.operation["rendering_py"]["main"].make(scene_id, editor_func_val)
             make_data.output_main()
+
+        def rendering():
+            self.data.all_data.callback_operation.set_event("text_input_end", send_rendering, duplicate=False)
+            self.data.all_data.callback_operation.event("set_init_val", info="")
+            self.data.all_data.callback_operation.event("text_input_request", info="保存先を入力")
+
             # make_data.output_OpenCV()
 
-        def section_rendering():
+        def send_section_rendering(editor_func_send):
+            editor_func_name, editor_func_val = editor_func_send
             scene_id = self.data.all_data.scene_id()
-            # self.operation["rendering_py"]["main"].setapp_init(self.operation,scene)
-
-            #scene_elements.user_select_range = [0, 100]
-            make_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
+            make_data = self.operation["rendering_py"]["main"].make(scene_id, editor_func_val)
 
             return_val_dict = self.data.all_data.callback_operation.event("get_timelime_scroll_status")
             scrollbar_sta_end = return_val_dict["get_timelime_scroll_status"]
@@ -114,6 +116,11 @@ class InitialValue:
 
             make_data.output_main(sta, end)
             # make_data.output_OpenCV()
+
+        def section_rendering():
+            self.data.all_data.callback_operation.set_event("text_input_end", send_section_rendering, duplicate=False)
+            self.data.all_data.callback_operation.event("set_init_val", info="")
+            self.data.all_data.callback_operation.event("text_input_request", info="保存先を入力")
 
         def edit_data_del():
             self.data.all_data.callback_operation.event("reset")

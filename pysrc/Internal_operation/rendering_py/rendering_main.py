@@ -74,6 +74,13 @@ class SceneOutput:
         self.fps = self.scene.editor["fps"]
         self.frame = self.scene.editor["len"]
         self.operation = operation
+
+        path_extension = ".mp4"
+
+        extension_len = int(len(path_extension)) * -1
+        if path[extension_len:] != path_extension:
+            path += path_extension
+
         self.path = path
 
         self.func = {}
