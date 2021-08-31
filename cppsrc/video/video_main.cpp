@@ -368,7 +368,7 @@ namespace ObjectProgress
         add_draw_range_rd[i] = new_draw_size;
         base_draw_range_rd[i] = position_rd;
 
-        //左右ともにダメな時
+        //そもそも範囲外
 
         if (position_rd < 0 || position_lu > draw_size)
         {
@@ -378,10 +378,16 @@ namespace ObjectProgress
           base_draw_range_rd[i] = 0;
         }
 
+        //左右ともにダメな時
+
         else if (position_lu < 0 && position_rd > draw_size)
         {
-          add_draw_range_lu[i] += abs(position_lu);
-          add_draw_range_rd[i] -= (position_rd - draw_size);
+          cout << "左右ともにダメな時" << position_lu << " " << position_rd << " " << draw_size << endl;
+          add_draw_range_lu[i] = abs(position_lu);
+          add_draw_range_rd[i] = draw_size + abs(position_lu);
+
+          base_draw_range_lu[i] = 0;
+          base_draw_range_rd[i] = draw_size;
         }
 
         //左側だけダメ

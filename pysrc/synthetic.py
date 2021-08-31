@@ -36,8 +36,8 @@ class SyntheticControl:
         process_uint8 = process.astype('uint8')
 
         base_255 = process_uint8
-        base_255[:,:,0:3] *= 255
-        
+        base_255[:, :, 0:3] *= 255
+
         base[base_up:base_down, base_left:base_right] = base_255
 
         return base
