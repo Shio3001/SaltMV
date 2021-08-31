@@ -32,10 +32,10 @@ class InitialValue:
             con_len = len(self.data.ui_management.ui_list)
 
             if not push_effect is None and push_effect < 0:
-                push_effect = 0
+                return
 
             if not push_effect is None and push_effect > con_len - 1:
-                push_effect = con_len - 1
+                return
 
             for now_exchange, now_UI in enumerate(self.data.ui_management.ui_list):
                 if now_exchange == push_effect and not push_effect is None:
@@ -224,6 +224,8 @@ class InitialValue:
             now_send = copy.deepcopy(self.send)
             now_send.element_key = copy.deepcopy(k)
             now_send.push_effect = copy.deepcopy(i)
+
+            print("effect_controller make i k e", k, e.effect_name)
             self.data.ui_management.ui_list[i].parameter_ui_set(column=i, text=e.effect_name)
             self.data.ui_management.ui_list[i].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
             self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.all_del_event()

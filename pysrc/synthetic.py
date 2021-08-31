@@ -31,7 +31,13 @@ class SyntheticControl:
         base_section = base[base_up:base_down, base_left:base_right] / 255
         add_section = add[add_up:add_down, add_left:add_right] / 255
 
-        base[base_up:base_down, base_left:base_right] = self.operation["plugin"]["synthetic"][synthetic_name].main(base_section, add_section)  # source, additions
-        base255 = base * 255
+        process = self.operation["plugin"]["synthetic"][synthetic_name].main(base_section, add_section)  # source, additions
 
-        return base255
+        process_uint8 = process.astype('uint8')
+
+        base_255 = process_uint8
+        base_255[:,:,0:3] *= 255
+        
+        base[base_up:base_down, base_left:base_right] = base_255
+
+        return base
