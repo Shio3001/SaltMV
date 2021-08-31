@@ -97,6 +97,7 @@ class Storage:
         return font_path
 
     def read_font(self):
+        return
         font_path = self.get_font_path()
 
         if self.os_type == "ml":
