@@ -107,6 +107,8 @@ class KeyFrame:
 
                 # data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"]))
 
+            data.all_data.del_key_frame_point(data.option_data["media_id"], self.uu_id)
+
             data.del_diagram(self.uu_id)
             data.pxf.del_sub_point(self.uu_id)
             data.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
