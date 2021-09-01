@@ -20,8 +20,9 @@ class parts:
 
         data.territory_draw()
 
-        def click(event):
+        def click(event=None):
             # print(data.option_data)
+            print("button_click通過")
             data.callback_operation.event("button", info=data.option_data)
 
         data.add_territory_event("ButtonPress-1", click)

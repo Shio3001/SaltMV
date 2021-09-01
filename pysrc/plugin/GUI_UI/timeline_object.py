@@ -313,7 +313,6 @@ class parts:
         def send_parameter_control():
 
             send_data = ParameterSendData()
-
             send_data.now_f = data.now_f_click_start_for_parameter_control
             send_data.media_id = data.option_data["media_id"]
             send_data.stack_add_timelime_effect = data.stack_add_timelime_effect
@@ -324,6 +323,30 @@ class parts:
 
         data.click_start_sta_layer = ""
         data.click_start_end_layer = ""
+
+        def click_effect_shortcut(event):
+            key = event.keysym
+            print("click_effect_shortcut", key)
+
+            if not data.click_flag:
+                return
+
+            shortcut_key = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+            if not key in shortcut_key:
+                return
+
+            key_number = shortcut_key.index(key)
+            print(key, key_number)
+
+            send_data = ParameterSendData()
+            send_data.now_f = data.now_f_click_start_for_parameter_control
+            send_data.media_id = data.option_data["media_id"]
+            send_data.stack_add_timelime_effect = data.stack_add_timelime_effect
+            data.all_data.callback_operation.get_event("media_lord")[0](send_data)
+            data.all_data.callback_operation.event("automatic_opening", info=key_number)
+
+        data.window_event_data["add"]("Key", click_effect_shortcut)
 
         def click_start(event):
 

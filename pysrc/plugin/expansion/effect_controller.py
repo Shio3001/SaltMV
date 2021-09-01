@@ -49,6 +49,7 @@ class InitialValue:
                 now_UI.button_parameter_control.diagram_draw("background")
 
         def element_lord_ignition(send):
+            print("element_lord_ignition")
             # #print(elements_effect, option_data) #now_send.push_effect
             key = send.element_key
 
@@ -63,6 +64,7 @@ class InitialValue:
         def new_button_for_parameter_control():
             ui_id = self.data.all_data.elements.make_id("parameter_UI")
             button = self.data.new_parts("parameter_control", ui_id, parts_name="button")
+
             #print(button, "ボタンをインスタンス 化しました")
             return button
 
@@ -144,7 +146,7 @@ class InitialValue:
                 now_send.element_key = copy.deepcopy(k)
                 now_send.push_effect = copy.deepcopy(now_exchange)
                 self.data.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
-                self.data.ui_management.ui_list[now_exchange].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
+                self.data.ui_management.ui_list[now_exchange].button_parameter_control.get_set_option_data(copy.deepcopy(now_send), overwrite=True)
                 self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
                 self.data.ui_management.ui_list[now_exchange].click_end(None)
 
@@ -209,7 +211,7 @@ class InitialValue:
                 now_send.element_key = copy.deepcopy(k)
                 now_send.push_effect = copy.deepcopy(now_exchange)
                 self.data.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
-                self.data.ui_management.ui_list[now_exchange].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
+                self.data.ui_management.ui_list[now_exchange].button_parameter_control.get_set_option_data(copy.deepcopy(now_send), overwrite=True)
                 self.data.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
                 self.data.ui_management.ui_list[now_exchange].click_stop = False
 
@@ -227,7 +229,7 @@ class InitialValue:
 
             print("effect_controller make i k e", k, e.effect_name)
             self.data.ui_management.ui_list[i].parameter_ui_set(column=i, text=e.effect_name)
-            self.data.ui_management.ui_list[i].button_parameter_control.set_option_data(copy.deepcopy(now_send), overwrite=True)
+            self.data.ui_management.ui_list[i].button_parameter_control.get_set_option_data(copy.deepcopy(now_send), overwrite=True)
             self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.all_del_event()
             self.data.ui_management.ui_list[i].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
             self.data.ui_management.ui_list[i].effect_updown = effect_updown
@@ -279,7 +281,21 @@ class InitialValue:
             self.data.window.update()
             # self.data.all_data.threading_lock.release()
 
+        def automatic_opening(number):
+
+            if number > len(self.send.effect_group):
+                print("automatic_opening返却")
+                return
+
+            print("automatic_opening通過")
+
+            op = self.data.ui_management.ui_list[number].button_parameter_control.get_set_option_data()
+            element_lord_ignition(op)
+
+            # self.data.ui_management.ui_list[number].button_parameter_control.callback_operation.event("button_click")
+
         self.data.all_data.callback_operation.set_event("media_lord", media_lord)
+        self.data.all_data.callback_operation.set_event("automatic_opening", automatic_opening)
         self.data.all_data.callback_operation.set_event("new_button_for_parameter_control", new_button_for_parameter_control)
 
         self.data.window_size_set(x=220, y=360, lock_x=False)

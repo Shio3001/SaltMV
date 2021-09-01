@@ -75,17 +75,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         # self.operation["log"].write("UI生成")
 
-    def get_set_option_data(self, option_data=None):
-        if not option_data is None:
-            self.option_data = option_data
-            return
-
-        return self.option_data
-
     def event_not_func(self, event):
         pass
 
-    def set_option_data(self, option_data, overwrite=None):
+    # def get_set_option_data(self, option_data=None):
+    #     if not option_data is None:
+    #         self.option_data = option_data
+    #         return
+
+    #     return self.option_data
+
+    def get_set_option_data(self, option_data=None, overwrite=None):
+        if option_data is None:
+            return self.option_data
 
         if not option_data is None and overwrite:
             self.option_data = option_data
