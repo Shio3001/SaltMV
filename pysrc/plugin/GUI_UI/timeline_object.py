@@ -96,11 +96,11 @@ class KeyFrame:
         def make_internal_key_frame():
             pass
 
-        def this_del(info=True):
+        def this_del(info=True):  # このinfoはundostackに追加するかどうか
 
             # ###print("thisdel")
             if info:
-                self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
+                #self.key_frame_time_old_data = data.all_data.get_key_frame(data.option_data["media_id"])
                 # key_frame_id = self.uu_id
                 # data.stack_add("frame", (self.key_frame_time_old_data, data.option_data["media_id"], key_frame_id))
                 data.stack_add_timelime_keyframe(add_type="del", media_id=data.option_data["media_id"])

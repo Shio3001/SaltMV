@@ -144,7 +144,7 @@ class InitialValue:
                 make_object(old_data_obj.obj_id, sta=sta_f, end=end_f, layer_number=layer_number)
 
                 for point_key, point_val in zip(old_data_obj.effect_point_internal_id_time.keys(), old_data_obj.effect_point_internal_id_time.values()):
-                    self.data.all_data.add_key_frame(point_val, old_data_obj.obj_id, point_key)
+                    self.data.all_data.add_key_frame_point_onely(point_val, old_data_obj.obj_id, point_key)
 
                     if point_key in ["default_sta", "default_end"]:
                         continue
@@ -481,11 +481,15 @@ class InitialValue:
                 ##print(obj_k, "実行")
                 sta_f = obj_v[0].installation[0]  # 開始地点解釈
                 end_f = obj_v[0].installation[1]  # 終了地点解釈
+
+                for e in obj_v[0].effect_group.values():
+                    print("effect_point_internal_id_point", e.effect_point_internal_id_point)
+
                 layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]  # 所属レイヤー解釈
                 make_object(media_id=obj_k, sta=sta_f, end=end_f, layer_number=layer_number)
 
                 for point_key, point_val in zip(obj_v[0].effect_point_internal_id_time.keys(), obj_v[0].effect_point_internal_id_time.values()):
-                    self.data.all_data.add_key_frame(point_val, obj_k, point_key)
+                    self.data.all_data.add_key_frame_point_onely(point_val, obj_k, point_key)
 
                     if point_key in ["default_sta", "default_end"]:
                         continue
