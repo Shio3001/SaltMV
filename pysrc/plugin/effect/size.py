@@ -20,6 +20,9 @@ class CentralRole:
 
     def main(self, data):
 
+        if data.draw_size["x"] == 0 or data.draw_size["y"] == 1:
+            return data.draw, self.starting_point
+
         resize_value = [round(data.effect_value["size_x"] * 0.01 * data.draw_size["x"]), round(data.effect_value["size_y"] * 0.01 * data.draw_size["y"])]
 
         if data.various_fixed["size_lnk"] == True:
