@@ -58,6 +58,8 @@ class CentralRole:
         except:
             self.open_status = False
 
+        print("読み込み状況 :", self.open_status)
+
     def main(self, rendering_main_data):
         self.rendering_main_data = rendering_main_data
         path = self.rendering_main_data.various_fixed["path"]
@@ -70,15 +72,27 @@ class CentralRole:
         return self.rendering_main_data.draw, self.starting_point
 
     def sound(self, now_frame, sta_bool=False):
+
         if sta_bool:
             now_frame -= self.rendering_main_data.installation[0]
 
-        #now_second = now_frame / self.rendering_main_data.editor["len"]
+        now_second = now_frame / self.rendering_main_data.editor["fps"]
 
-        conversion_rate = self.sound_sampling_rate / self.rendering_main_data.editor["len"] * self.sound_channles
+        print("sound", now_frame, now_second)
 
-        now_sound_rate = round(now_frame * conversion_rate)
-        now_sound_rate_1 = round((now_frame + 1) * conversion_rate)
+        zero_safe = now_second != 0 and now_second >= 1
+
+        if zero_safe:
+            if now_second % round(now_second) != 0:
+                print("now_second // round(now_second)返却", now_second % round(now_second))
+                return
+
+        conversion_rate = self.sound_channles * self.sound_sampling_rate
+
+        now_sound_rate = round(now_second * conversion_rate)
+        now_sound_rate_1 = round((now_second + 1) * conversion_rate)
+
+        print(now_sound_rate, now_sound_rate_1)
 
         sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], self.sound_sampling_rate)
 
