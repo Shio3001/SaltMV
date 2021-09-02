@@ -11,7 +11,7 @@ import cv2
 
 
 class EffectPluginElements:
-    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, editor, operation, installation_sta, installation_end):
+    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
         #self.draw = draw
         self.draw = draw.astype('uint8')
         self.effect_value = effect_value
@@ -19,6 +19,7 @@ class EffectPluginElements:
         self.various_fixed = various_fixed
         self.next_value = next_value
         self.now_frame = now_frame
+        self.b_now_time = b_now_time
         self.editor = editor
         self.operation = operation
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}

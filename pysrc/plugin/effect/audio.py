@@ -5,14 +5,14 @@ import copy
 import cv2
 # 削除厳禁！
 
-import sounddevice as sd
+import sounddevice
 import wave
 import numpy as np
 
 
 class InitialValue:
     def __init__(self, setting_effect):
-        setting_effect.effect_name = "画像"
+        setting_effect.effect_name = "音声"
         setting_effect.effect_point = {}
         setting_effect.various_fixed = {"path": ""}
         setting_effect.procedure = CentralRole()
@@ -31,20 +31,24 @@ class CentralRole:
 
         self.sound_file = None
         self.import_data = None
-        self.sampling_rate = None
+        self.sound_sampling_rate = None
         self.sound_frame = 0
+        self.sound_channles = 0
 
     def setup(self, file_name):
         try:
             #data, samplerate = sf.read('existing_file.wav')
             self.sound_file = wave.open(file_name)
-            self.sampling_rate = self.sound_file.getframerate()
+            self.sound_sampling_rate = self.sound_file.getframerate()
             self.sound_frame = self.sound_file.getnframes()  # フレーム数を取得
+            self.sound_channles = self.sound_file.getnchannels()
 
             sound_data = self.sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
             self.import_data = np.frombuffer(sound_data, dtype='int16')
 
-            print("サウンド", len(self.import_data), self.sampling_rate, self.sound_frame)
+            print("サウンド", len(self.import_data), self.sound_sampling_rate, self.sound_frame)
+
+            # print(self.import_data[0:40])
 
             # チャンネル数が2(ステレオ)の場合、len(self.import_data)はself.sound_frameの二倍になる
 
@@ -61,8 +65,22 @@ class CentralRole:
         if path != self.now_file or not self.open_status:
             self.setup(path)
 
+        self.sound(self.rendering_main_data.b_now_time)
+
         return self.rendering_main_data.draw, self.starting_point
 
-    def sound(self, now_all_frame):
-        now_frame = now_all_frame - self.rendering_main_data.installation[0]
-        pass
+    def sound(self, now_frame, sta_bool=False):
+        if sta_bool:
+            now_frame -= self.rendering_main_data.installation[0]
+
+        #now_second = now_frame / self.rendering_main_data.editor["len"]
+
+        conversion_rate = self.sound_sampling_rate / self.rendering_main_data.editor["len"] * self.sound_channles
+
+        now_sound_rate = round(now_frame * conversion_rate)
+        now_sound_rate_1 = round((now_frame + 1) * conversion_rate)
+
+        sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], self.sound_sampling_rate)
+
+
+# numpy wav:ステレオ時の構造は、左チャンネルと右チャンネルで交互になっている
