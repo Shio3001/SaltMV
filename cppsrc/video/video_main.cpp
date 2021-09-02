@@ -522,22 +522,10 @@ namespace VideoMain
       {
         frame = maxlen;
       }
-      //py::tuple shape_size = py::make_tuple(end - sta, editor["y"], editor["x"], 4);
+
       np::ndarray draw = run(frame);
 
       return draw;
-
-      //np::ndarray draw_all = np::zeros(shape_size, np::dtype::get_builtin<uint>());
-
-      /*
-
-      for (int i = sta; i < end; i++)
-      {
-        np::ndarray draw = run(i);
-        ////cout << py::extract<int>(draw.attr("shape")[0]) << " " << i << endl;
-        //draw_all.push_back(draw);
-        draw_all[i - sta] = draw;
-      }*/
     }
 
     np::ndarray execution_preview(int frame)

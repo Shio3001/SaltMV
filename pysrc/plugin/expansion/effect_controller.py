@@ -283,7 +283,7 @@ class InitialValue:
 
         def automatic_opening(number):
 
-            if number > len(self.send.effect_group):
+            if number > len(self.send.effect_group) - 1:
                 print("automatic_opening返却")
                 return
 

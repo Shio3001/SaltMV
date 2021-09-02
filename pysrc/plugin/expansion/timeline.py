@@ -11,6 +11,8 @@ import threading
 import datetime
 import inspect
 import time
+import sounddevice
+import wave
 
 
 class InitialValue:

@@ -27,6 +27,8 @@ class EffectPluginElements:
 
         self.installation = [installation_sta, installation_end]
 
+        self.audio = False
+
         #self.cpp_file = ""
 
     def area_expansion(self, old_draw, x=0, y=0):
