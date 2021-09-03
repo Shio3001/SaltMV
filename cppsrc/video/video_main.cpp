@@ -97,7 +97,8 @@ namespace EffectProgress
 
       for (int i = 0; i < effect_len; i++)
       {
-        py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, effect_group_val[i]));
+        py::object send_effect = effect_group_val[i];
+        py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect));
 
         // ここから
         //cout << "effect_draw_base" << endl;
@@ -132,9 +133,11 @@ namespace EffectProgress
 
       return effect_group_return;
     }
-    py::tuple production_effect_individual(np::ndarray effect_draw_base, py::object effect)
+    py::tuple production_effect_individual(np::ndarray effect_draw_base, py::object &send_effect)
     {
       //cout << "production_effect_individual" << endl;
+
+      py::object effect = send_effect;
 
       py::dict effect_point_internal_id_point = py::extract<py::dict>(effect.attr("effect_point_internal_id_point"));
       string effect_name = py::extract<string>(effect.attr("effect_name"));
@@ -142,6 +145,9 @@ namespace EffectProgress
       py::dict various_fixed = py::extract<py::dict>(effect.attr("various_fixed"));
       //py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
       py::object procedure = py::extract<py::object>(effect.attr("procedure"));
+
+      string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
+      cout << "procedure " << test_txt1 << endl;
 
       string cpp_file = py::extract<string>(effect.attr("cpp_file"));
 
@@ -208,6 +214,9 @@ namespace EffectProgress
 
       //py::object self_data = py::extract<py::object>(main_function.attr("__self__"));
       py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
+
+      string test_txt2 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
+      cout << "procedure2 " << test_txt2 << endl;
 
       cout << "effect終了" << endl;
 
@@ -543,7 +552,14 @@ namespace VideoMain
       }
 
       np::ndarray draw = run(frame);
+      //np::ndarray draw2 = run(frame);
       return draw;
+    }
+
+    py::object object_group_recovery()
+    {
+      
+      return object_group;
     }
 
   private:
@@ -576,7 +592,8 @@ BOOST_PYTHON_MODULE(video_main)
       //.def("sta", &VideoExecutionCenter::sta)
       .def("scene_setup", &VideoMain::VideoExecutionCenter::scene_setup)
       .def("execution_main", &VideoMain::VideoExecutionCenter::execution_main)
-      .def("execution_preview", &VideoMain::VideoExecutionCenter::execution_preview);
+      .def("execution_preview", &VideoMain::VideoExecutionCenter::execution_preview)
+      .def("object_group_recovery", &VideoMain::VideoExecutionCenter::object_group_recovery);
   //.def("sta", &VideoExecutionCenter::sta)
   //.def("execution", &VideoExecutionCenter::execution)
   //.def("layer_interpretation", &VideoExecutionCenter::layer_interpretation);

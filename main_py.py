@@ -117,7 +117,7 @@ def set_operation():
     operation["log"].write(operation)
     operation["synthetic"].set_operation(operation)
     all_data.set_operation(operation)
-    operation["rendering_py"]["main"].set(operation,all_data.scene)
+    operation["rendering_py"]["main"].set(operation,all_data.scene,all_data.media_object_group)
 
 set_operation()
 operation["undo"] = undo.UndoStack(all_data)

@@ -69,14 +69,16 @@ class Rendering:
         #self.rendering_scene_queue = {}
         self.operation = None
         self.scene_get = None
+        self.media_object_group = None
 
-    def set(self, operation, scene_get):
+    def set(self, operation, scene_get, media_object_group):
         self.operation = operation
         self.scene_get = scene_get
+        self.media_object_group = media_object_group
 
     def make(self, scene_id, path):
         # print(self.operation["video_image"].image_add)
-        make_data = SceneOutput(self.operation, self.scene_get, self.make, scene_id, path)
+        make_data = SceneOutput(self.operation, self.scene_get, self.media_object_group, self.make, scene_id, path)
         return make_data
 
 
@@ -84,8 +86,9 @@ class Rendering:
 
 
 class SceneOutput:
-    def __init__(self, operation, scene_get, make, scene_id, path):
+    def __init__(self, operation, scene_get, get_set_media_object_group, make, scene_id, path):
         self.scene_get = scene_get
+        self.get_set_media_object_group = get_set_media_object_group
         self.scene = self.scene_get(scene_id=scene_id)
 
         # print(scene_get,make,scene_id,path,self.scene)
@@ -173,6 +176,8 @@ class SceneOutput:
             return
 
         image = self.cpp_encode.execution_preview(frame)
+        object_group = self.cpp_encode.object_group_recovery()
+        self.get_set_media_object_group(data=object_group)
         image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)
 
         #cv2.imwrite('wiwi.jpg', image.astype('uint8'))

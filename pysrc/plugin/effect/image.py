@@ -21,7 +21,7 @@ class CentralRole:
         self.starting_point = [0, 0]
 
         self.image_data = None
-        self.now_file = None
+        self.now_file = "test_none"
         self.open_status = False
 
         print("初期化CentralRole")

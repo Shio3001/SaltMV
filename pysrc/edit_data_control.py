@@ -165,6 +165,13 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group)
 
+    def media_object_group(self, data=None):
+        if not data is None:
+            self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group = copy.deepcopy(data)
+            return
+
+        return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
+
     def media_object(self, object_order, data=None):
         if not data is None:
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0] = copy.deepcopy(data)
