@@ -146,8 +146,8 @@ namespace EffectProgress
       //py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
       py::object procedure = py::extract<py::object>(effect.attr("procedure"));
 
-      string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
-      cout << "procedure " << test_txt1 << endl;
+      //string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
+      //cout << "procedure " << test_txt1 << endl;
 
       string cpp_file = py::extract<string>(effect.attr("cpp_file"));
 
@@ -215,8 +215,8 @@ namespace EffectProgress
       //py::object self_data = py::extract<py::object>(main_function.attr("__self__"));
       py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
 
-      string test_txt2 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
-      cout << "procedure2 " << test_txt2 << endl;
+      //string test_txt2 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
+      //cout << "procedure2 " << test_txt2 << endl;
 
       cout << "effect終了" << endl;
 
@@ -544,7 +544,7 @@ namespace VideoMain
       return draw;
     }
 
-    np::ndarray execution_preview(int frame)
+    void execution_preview(int frame)
     {
       if (frame > py::extract<int>(editor["len"]))
       {
@@ -556,9 +556,20 @@ namespace VideoMain
       return draw;
     }
 
+    void execution_preview_queue_all_del(){
+
+    }
+
+    np::ndarray execution_preview_queue_numpy(int frame){
+
+    }
+
+    np::ndarray execution_preview_queue_tkinter(int frame){
+
+    }
+
     py::object object_group_recovery()
     {
-      
       return object_group;
     }
 
