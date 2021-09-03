@@ -196,11 +196,18 @@ namespace EffectProgress
         //cout << "pos : " << pos << endl;
       }
 
+      py::object FileSystem = py::extract<py::object>(py_out_func["FileSystem"]);
+
       //cout << "effect_plugin_elements" << endl;
-      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
+      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end, FileSystem));
 
       //cout << "procedure_return" << endl;
-      py::tuple procedure_return = py::extract<py::tuple>(procedure.attr("main")(effect_plugin_elements));
+      py::object main_function = py::extract<py::object>(procedure.attr("main"));
+      //py::object main_function_self = py::extract<py::object>(main_function.attr("__func__"));
+      //py::object run_main_function = py::extract<py::object>(py_out_func["plugin_run"]);
+
+      //py::object self_data = py::extract<py::object>(main_function.attr("__self__"));
+      py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
 
       cout << "effect終了" << endl;
 

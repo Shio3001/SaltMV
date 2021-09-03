@@ -350,6 +350,8 @@ class parts:
 
         def click_start(event):
 
+            print("click_start")
+
             data.click_start_sta_layer = data.all_data.get_now_layer_id(data.option_data["media_id"])
 
             if data.mov_lock:

@@ -269,11 +269,13 @@ class InitialValue:
 
         def timeline_nowtime_approval_True(t=None):
             # self.data.window.update()
+            self.nowtime_bar.edit_diagram_color("now", "#ff0000")
             self.nowtime_bar.click_flag = True
             self.end_to_sta_time = time.time()
             print("許可")
 
         def timeline_nowtime_approval_False(t=None):
+            self.nowtime_bar.edit_diagram_color("now", "#0000ff")
             self.nowtime_bar.click_flag = False
             print("停止")
 
@@ -283,6 +285,8 @@ class InitialValue:
         # self.data.all_data.callback_operation.set_event("del_layer_elements", del_layer_elements)
 
         def media_object_separate(send):
+            timeline_nowtime_approval_False()
+
             media_id, click_f_pos = send
             scroll_data = self.data.timeline_object[media_id].pxf.get_event_data()
             if not scroll_data.ratio_f[0] < click_f_pos < scroll_data.ratio_f[0] + scroll_data.ratio_f[1]:
@@ -314,7 +318,7 @@ class InitialValue:
                 if v > click_f_pos:  # 右側
                     pass
                     #print(" > > > > > > > > > > > > > > > > > > > >右側", k, v)
-                    # self.data.timeline_object[media_id].pxf.sub_point_f[k]
+                    # self.data.timeline_object[media_id].pxf.sub_point_f[k] 矛盾
 
                     frame = copy.deepcopy(self.data.timeline_object[media_id].pxf.sub_point_f[k])
                     self.data.all_data.del_key_frame_point(media_id, k)
@@ -333,11 +337,19 @@ class InitialValue:
             split_items = copy.deepcopy(self.data.timeline_object[copy_obj.obj_id].pxf.sub_point_f).items()
 
             self.data.timeline_object[media_id].pxf.set_f_ratio(size=a_size)
-            self.data.timeline_object[media_id].callback_operation.event("mov", info=self.data.timeline_object[media_id].pxf.get_event_data())
+
             # この関数が原因だわ
 
             self.data.timeline_object[media_id].mov_lock = False
             self.data.timeline_object[copy_obj.obj_id].mov_lock = False
+
+            self.data.timeline_object[media_id].callback_operation.event("mov", info=self.data.timeline_object[media_id].pxf.get_event_data())
+            self.data.timeline_object[media_id].callback_operation.event("end", info=self.data.timeline_object[media_id].pxf.get_event_data())
+
+            timeline_nowtime_approval_True()
+            print("分割処理終了")
+
+            # self.data.window.update()
 
         def reflect_timeline_to_movie(scroll_data):
             media_id = scroll_data.option_data["media_id"]
