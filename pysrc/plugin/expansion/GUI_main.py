@@ -65,7 +65,7 @@ class InitialValue:
         def project_overwrite_save():
             pass
 
-        preview_screen = self.data.new_parts("gui_main", "matplotlib", parts_name="matplotlib_view")
+        preview_screen = self.data.new_parts("gui_main", "view", parts_name="pillow_view")
         preview_screen.size_update(640, 360)
 
         def preview_setup():

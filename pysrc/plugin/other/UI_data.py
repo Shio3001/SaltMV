@@ -423,8 +423,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if self.get_diagram_type(di_name, "TkImageData"):
             self.__diagram_tkimage_draw(territory_data, diagram_data,  di_name, di_del, image_tk)
 
-        if self.get_diagram_type(di_name, "MatplotlibImageData"):
-            self.__diagram_matplotlibimage_draw(territory_data, diagram_data,  di_name, di_del, image_tk)
+        # if self.get_diagram_type(di_name, "MatplotlibImageData"):
+        #    self.__diagram_matplotlibimage_draw(territory_data, diagram_data,  di_name, di_del, image_tk)
 
         self.callback_operation.event("diagram_draw", info=(territory_data, diagram_data, di_name))
 
@@ -433,38 +433,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     def diagram_shape_view_status(self, di_name, view):
         self.canvas_data.territory[self.te_name].diagram[di_name].view_state = copy.deepcopy(view)
-
-    def __diagram_matplotlibimage_draw(self, territory_data, diagram_data,  di_name, di_del, image_tk):
-
-        self.image_tk = image_tk
-
-        if di_del:
-            self.canvas_data.canvas.delete(self, self.canvas_data.territory[self.te_name].diagram[di_name].tag)
-            diagram_data.draw_tag = False
-            return
-
-        if self.image_tk is None:
-            return
-
-        print("image_matplotlib ******", type(self.image_tk), diagram_data.draw_tag)
-
-        # if not diagram_data.draw_tag:
-        # plt.imshow(self.image_tk)
-        #
-
-        fig = plt.Figure()
-        fig.figimage(self.image_tk)
-
-        plt.show()  # グラフの可視化
-
-        self.canvas_data.canvas = FigureCanvasTkAgg(fig, self.window)
-
-        self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
-
-        self.canvas_data.canvas.draw()
-        self.canvas_data.canvas.get_tk_widget().pack()
-
-        print("表示", type(self.image_tk), diagram_data.draw_tag)
 
     def __diagram_tkimage_draw(self, territory_data, diagram_data,  di_name, di_del, image_tk):
 
@@ -718,19 +686,6 @@ class DiagramBase:  # 指定不可
 
 
 class TkImageData():
-    def __init__(self):
-        self.size = [0, 0]
-        self.position = [0, 0]
-        self.color = None
-        self.fill = [False, False]
-        self.draw_tag = False
-        self.event = {}
-        self.shape_point = None
-        self.view_state = 0  # 0,1,2 #通常 #選択不可 #非表示
-        self.tag = None
-
-
-class MatplotlibImageData():
     def __init__(self):
         self.size = [0, 0]
         self.position = [0, 0]

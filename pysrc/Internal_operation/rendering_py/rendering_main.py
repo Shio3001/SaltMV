@@ -188,8 +188,8 @@ class SceneOutput:
         # self.image_tk_PhotoImage =
         # img_resize.show()
 
-        # self.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
-        self.data_image_tk[frame] = img_resize
+        self.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
+        #self.data_image_tk[frame] = img_resize
         print("tk処理", frame, image.shape)
 
     def get_image_tk(self, frame):
