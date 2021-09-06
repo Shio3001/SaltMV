@@ -544,7 +544,7 @@ namespace VideoMain
       return draw;
     }
 
-    void execution_preview(int frame)
+    np::ndarray execution_preview(int frame)
     {
       if (frame > py::extract<int>(editor["len"]))
       {
@@ -556,16 +556,16 @@ namespace VideoMain
       return draw;
     }
 
-    void execution_preview_queue_all_del(){
-
+    void execution_preview_queue_all_del()
+    {
     }
 
-    np::ndarray execution_preview_queue_numpy(int frame){
-
+    np::ndarray execution_preview_queue_numpy(int frame)
+    {
     }
 
-    np::ndarray execution_preview_queue_tkinter(int frame){
-
+    np::ndarray execution_preview_queue_tkinter(int frame)
+    {
     }
 
     py::object object_group_recovery()
