@@ -193,6 +193,13 @@ class SceneOutput:
     # def image_init(self, sta, end):
     #    self.data_image[sta:end] = np.zeros((end-sta))
 
+    def sound_init(self):
+        for a in self.audio_preview_function_list:
+            a[1]()
+
+        object_group = self.cpp_encode.object_group_recovery()
+        self.get_set_media_object_group(data=object_group)
+
     def output_tk(self, frame, tk_cash=True, run=False):
         #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
 
@@ -214,14 +221,14 @@ class SceneOutput:
 
             self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
 
-            object_group = self.cpp_encode.object_group_recovery()
-            self.get_set_media_object_group(data=object_group)
-
         print(self.audio_preview_function_list, run)
+
+        object_group = self.cpp_encode.object_group_recovery()
+        self.get_set_media_object_group(data=object_group)
 
         if run:
             for a in self.audio_preview_function_list:
-                a(frame, sta_bool=True)
+                a[0](frame, sta_bool=True)
 
         if self.preview == "opencv":
             #resize_size_opencv = (640, 360)

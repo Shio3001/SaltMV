@@ -79,6 +79,9 @@ class InitialValue:
 
         preview_setup()
 
+        def sound_init():
+            self.make_preview_data.sound_init()
+
         def preview(preview_frmae_run):
             #frame, run=False
 
@@ -112,6 +115,7 @@ class InitialValue:
             self.make_preview_data.image_stack()
 
         self.data.all_data.callback_operation.set_event("preview", preview)
+        self.data.all_data.callback_operation.set_event("sound_init", sound_init)
         #self.data.all_data.callback_operation.set_event("make_preview_data", get_make_preview_data)
 
         def send_rendering(editor_func_send):

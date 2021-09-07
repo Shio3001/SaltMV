@@ -730,6 +730,8 @@ class InitialValue:
             mov_len = self.data.all_data.scene_editor()["len"]
             one_fps = 1 / fps
 
+            self.data.all_data.callback_operation.event("sound_init")
+
             while True:
                 if process_time >= mov_len or self.time_lime_space_flag == 0:
                     break

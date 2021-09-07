@@ -229,7 +229,11 @@ namespace EffectProgress
 
       if (audio == true)
       {
-        audio_object.append(procedure.attr("sound"));
+        py::list temp_audio_object_add;
+
+        temp_audio_object_add.append(procedure.attr("sound"));
+        temp_audio_object_add.append(procedure.attr("sound_init"));
+        audio_object.append(temp_audio_object_add);
       }
 
       //string test_txt2 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));

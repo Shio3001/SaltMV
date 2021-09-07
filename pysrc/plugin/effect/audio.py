@@ -8,6 +8,7 @@ import cv2
 import sounddevice
 import wave
 import numpy as np
+import time
 
 
 class InitialValue:
@@ -37,6 +38,8 @@ class CentralRole:
 
         self.installation_sta = 0
         self.fps = 0
+
+        self.latest_process_time = None
 
     def setup(self, rendering_main_data, file_name):
         try:
@@ -84,7 +87,13 @@ class CentralRole:
 
         return rendering_main_data.draw, self.starting_point
 
-    def sound(self, now_frame, fps_1time=None, sta_bool=False):
+    def sound_init(self):
+
+        self.latest_process_time = time.time()
+
+        print("sound_init", self.latest_process_time)
+
+    def sound(self, now_frame, sta_bool=False):
 
         if sta_bool:
             now_frame -= self.installation_sta
@@ -105,9 +114,17 @@ class CentralRole:
         now_sound_rate = round(now_second * conversion_rate)
         now_sound_rate_1 = round((now_second + 1) * conversion_rate)
 
-        print(now_sound_rate, now_sound_rate_1, self.import_data)
+        print(now_sound_rate, now_sound_rate_1, self.latest_process_time, self.import_data)
 
-        sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], conversion_rate)
+        delay = time.time() - self.latest_process_time
+
+        self.latest_process_time = time.time()
+
+        delay_conversion_rate = round(conversion_rate/delay)
+
+        print(delay_conversion_rate, conversion_rate/delay, conversion_rate, delay)
+
+        sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], delay_conversion_rate)
 
 
 # numpy wav:ステレオ時の構造は、左チャンネルと右チャンネルで交互になっている
