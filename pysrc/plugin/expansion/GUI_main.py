@@ -79,7 +79,17 @@ class InitialValue:
 
         preview_setup()
 
-        def preview(frame, run=False):
+        def preview(preview_frmae_run):
+            #frame, run=False
+
+            frame, run = None, None
+
+            if type(preview_frmae_run) is tuple:
+                frame, rund = preview_frmae_run
+
+            elif type(preview_frmae_run) is int:
+                frame = preview_frmae_run
+
             self.make_preview_data.re_scene()
             self.make_preview_data.output_tk(frame, run)
             self.preview_image_tk = self.make_preview_data.get_image_tk(frame)

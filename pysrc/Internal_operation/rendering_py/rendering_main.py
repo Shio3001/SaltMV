@@ -196,28 +196,38 @@ class SceneOutput:
     def output_tk(self, frame, tk_cash=True, run=False):
         #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
 
+        # <class 'NoneType'>
+
+        #type(self.data_image_tk[frame]) is NoneType
+
+        cash_process_flag = False
+
+        frame = round(frame)
+        if type(self.data_image_tk[frame]) is None and tk_cash:
+            print("キャッシュ生成済み")
+            cash_process_flag = True
+
+        image = None
+
+        if not cash_process_flag:
+            image = self.cpp_encode.execution_preview(frame)
+
+            self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
+
+            object_group = self.cpp_encode.object_group_recovery()
+            self.get_set_media_object_group(data=object_group)
+
         if run:
             for a in self.audio_preview_function_list:
                 a(frame, sta_bool=True)
-
-        # <class 'NoneType'>
-
-        frame = round(frame)
-        if str(type(self.data_image_tk[frame])) != "<class 'NoneType'>" and tk_cash:
-            print("キャッシュ生成済み")
-            return
-
-        image = self.cpp_encode.execution_preview(frame)
-
-        self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
-
-        object_group = self.cpp_encode.object_group_recovery()
-        self.get_set_media_object_group(data=object_group)
 
         if self.preview == "opencv":
             #resize_size_opencv = (640, 360)
             #img_resize_opencv = image.resize(resize_size_opencv)
             self.data_image_tk[frame] = image.astype('uint8')
+            return
+
+        if cash_process_flag:
             return
 
         image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)

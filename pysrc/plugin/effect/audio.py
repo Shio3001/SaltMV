@@ -80,11 +80,11 @@ class CentralRole:
         if path != self.now_file or not self.open_status:
             self.setup(rendering_main_data, path)
 
-        self.sound(rendering_main_data.b_now_time)
+        # self.sound(rendering_main_data.b_now_time)
 
         return rendering_main_data.draw, self.starting_point
 
-    def sound(self, now_frame, sta_bool=False):
+    def sound(self, now_frame, fps_1time=None, sta_bool=False):
 
         if sta_bool:
             now_frame -= self.installation_sta
