@@ -24,7 +24,7 @@ class AllElements:  # すごくえらい
 class SceneElements:  # えらい
     def __init__(self):
         self.layer_group = LayerElements()
-        self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 72000, "preview": "matplotlib"}  # 動画の画面サイズとかその辺
+        self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 72000, "preview": "tk"}  # 動画の画面サイズとかその辺
         self.scene_id = make_id("scene")
         self.now_time = self.editor["len"] / 10
 
@@ -59,6 +59,8 @@ class EffectElements:  # えらくない
         self.effect_id = None
         self.effect_point_internal_id_point = {}
         self.cpp_file = ""
+
+        self.audio = False
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

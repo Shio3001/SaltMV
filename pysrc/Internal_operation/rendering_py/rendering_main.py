@@ -9,6 +9,8 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 import cv2
 
+file_all_control = {}
+
 
 class FileSystem:
     def __init__(self):
@@ -46,8 +48,6 @@ class EffectPluginElements:
 
         self.installation = [installation_sta, installation_end]
 
-        self.audio = False
-
         #self.cpp_file = ""
 
     def area_expansion(self, old_draw, x=0, y=0):
@@ -60,6 +60,26 @@ class EffectPluginElements:
 
         new_draw = np.zeros((y, x, 4))
         return new_draw
+
+    def get_file_all_control(self, path):
+
+        if not path in list(file_all_control.keys()):
+            print("file_all_control *** get_file_all_control", path, "None")
+            return None
+
+        print("file_all_control *** get_file_all_control", path, file_all_control[path])
+        return file_all_control[path]
+
+    def add_file_all_control(self, path, file):
+
+        print("file_all_control *** add_file_all_control", path, file)
+
+        if not self.check_file_all_control(path):
+            file_all_control[path] = file
+
+    def check_file_all_control(self, path):
+        print("file_all_control *** check_file_all_control", path in list(file_all_control.keys()))
+        return path in list(file_all_control.keys())
 
     #self.py_Rendering_func = py_Rendering_func
 
@@ -93,10 +113,13 @@ class SceneOutput:
 
         # print(scene_get,make,scene_id,path,self.scene)
 
-        self.x = self.scene.editor["x"]
-        self.y = self.scene.editor["y"]
-        self.fps = self.scene.editor["fps"]
-        self.frame = self.scene.editor["len"]
+        self.x = int(self.scene.editor["x"])
+        self.y = int(self.scene.editor["y"])
+        self.fps = int(self.scene.editor["fps"])
+        self.frame = int(self.scene.editor["len"])
+        self.preview = self.scene.editor["preview"]
+        print("self.scene.editor", self.scene.editor)
+
         self.operation = operation
 
         path_extension = ".mp4"
@@ -130,6 +153,7 @@ class SceneOutput:
         self.fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
         self.size = (self.x, self.y)
         self.writer = cv2.VideoWriter(self.path, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
+        self.audio_preview_function_list = []
 
     def re_scene(self):
         self.scene = self.scene_get(scene_id=self.scene_id)
@@ -169,15 +193,33 @@ class SceneOutput:
     # def image_init(self, sta, end):
     #    self.data_image[sta:end] = np.zeros((end-sta))
 
-    def output_tk(self, frame, tk_cash=True):
+    def output_tk(self, frame, tk_cash=True, run=False):
+        #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
+
+        if run:
+            for a in self.audio_preview_function_list:
+                a(frame, sta_bool=True)
+
+        # <class 'NoneType'>
+
         frame = round(frame)
-        if self.data_image_tk[frame] != None and tk_cash:
+        if str(type(self.data_image_tk[frame])) != "<class 'NoneType'>" and tk_cash:
             print("キャッシュ生成済み")
             return
 
         image = self.cpp_encode.execution_preview(frame)
+
+        self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
+
         object_group = self.cpp_encode.object_group_recovery()
         self.get_set_media_object_group(data=object_group)
+
+        if self.preview == "opencv":
+            #resize_size_opencv = (640, 360)
+            #img_resize_opencv = image.resize(resize_size_opencv)
+            self.data_image_tk[frame] = image.astype('uint8')
+            return
+
         image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)
 
         #cv2.imwrite('wiwi.jpg', image.astype('uint8'))

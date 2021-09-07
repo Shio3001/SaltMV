@@ -27,23 +27,34 @@ class CentralRole:
         self.now_file = None
         self.open_status = False
 
-        self.rendering_main_data = None
+        #rendering_main_data = None
 
-        self.sound_file = None
+        #sound_file = None
         self.import_data = None
         self.sound_sampling_rate = None
         self.sound_frame = 0
         self.sound_channles = 0
 
-    def setup(self, file_name):
-        try:
-            #data, samplerate = sf.read('existing_file.wav')
-            self.sound_file = wave.open(file_name)
-            self.sound_sampling_rate = self.sound_file.getframerate()
-            self.sound_frame = self.sound_file.getnframes()  # フレーム数を取得
-            self.sound_channles = self.sound_file.getnchannels()
+        self.installation_sta = 0
+        self.fps = 0
 
-            sound_data = self.sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
+    def setup(self, rendering_main_data, file_name):
+        try:
+
+            sound_file = None
+
+            if rendering_main_data.check_file_all_control(file_name):
+                sound_file = rendering_main_data.get_file_all_control(file_name)
+            else:
+                sound_file = wave.open(file_name)
+                rendering_main_data.add_file_all_control(file_name, sound_file)
+            #data, samplerate = sf.read('existing_file.wav')
+
+            self.sound_sampling_rate = sound_file.getframerate()
+            self.sound_frame = sound_file.getnframes()  # フレーム数を取得
+            self.sound_channles = sound_file.getnchannels()
+
+            sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
             self.import_data = np.frombuffer(sound_data, dtype='int16')
 
             print("サウンド", len(self.import_data), self.sound_sampling_rate, self.sound_frame)
@@ -61,22 +72,24 @@ class CentralRole:
         print("読み込み状況 :", self.open_status)
 
     def main(self, rendering_main_data):
-        self.rendering_main_data = rendering_main_data
-        path = self.rendering_main_data.various_fixed["path"]
+        self.installation_sta = rendering_main_data.installation[0]
+        self.fps = rendering_main_data.editor["fps"]
+        #rendering_main_data = rendering_main_data
+        path = rendering_main_data.various_fixed["path"]
 
         if path != self.now_file or not self.open_status:
-            self.setup(path)
+            self.setup(rendering_main_data, path)
 
-        self.sound(self.rendering_main_data.b_now_time)
+        self.sound(rendering_main_data.b_now_time)
 
-        return self.rendering_main_data.draw, self.starting_point
+        return rendering_main_data.draw, self.starting_point
 
     def sound(self, now_frame, sta_bool=False):
 
         if sta_bool:
-            now_frame -= self.rendering_main_data.installation[0]
+            now_frame -= self.installation_sta
 
-        now_second = now_frame / self.rendering_main_data.editor["fps"]
+        now_second = now_frame / self.fps
 
         print("sound", now_frame, now_second)
 

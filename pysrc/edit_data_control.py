@@ -58,7 +58,7 @@ class Storage:
         # print()
         print("現在時刻変更",  self.edit_data.scenes[self.edit_data.now_scene].now_time)
 
-        self.callback_operation.event("preview", info=self.get_now_time())
+        self.callback_operation.event("preview", info=(self.get_now_time(), False))
 
     def get_now_time(self):
         return self.edit_data.scenes[self.edit_data.now_scene].now_time
@@ -193,9 +193,11 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order])
 
-    def get_set_scene_edior(self, editor=None, name=None, data=None):
+    def get_set_scene_edior(self, editor=None, name=None, data=None, int_type=True):
         if not name is None and not data is None:
-            self.edit_data.scenes[self.edit_data.now_scene].editor[name] = int(data)
+            if int_type:
+                data = int(data)
+            self.edit_data.scenes[self.edit_data.now_scene].editor[name] = data
             return
 
         if not editor is None and type(self.edit_data.scenes[self.edit_data.now_scene].editor) == type(editor):

@@ -3,7 +3,7 @@ import sys
 import os
 import copy
 
-#import cv2
+import cv2
 #from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 
 
@@ -69,6 +69,8 @@ class InitialValue:
         preview_screen.size_update(640, 360)
 
         def preview_setup():
+            self.operation["rendering_py"]["main"].set(self.operation, self.data.all_data.scene, self.data.all_data.media_object_group)
+
             scene_id = self.data.all_data.scene_id()
             print("preview_setup", scene_id)
             self.make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
@@ -77,16 +79,28 @@ class InitialValue:
 
         preview_setup()
 
-        def preview(frame):
+        def preview(frame, run=False):
             self.make_preview_data.re_scene()
-            self.make_preview_data.output_tk(frame)
+            self.make_preview_data.output_tk(frame, run)
             self.preview_image_tk = self.make_preview_data.get_image_tk(frame)
+
+            print("preview", frame, self.make_preview_data.preview)
+
+            if self.make_preview_data.preview == "opencv":
+                return self.preview_image_tk
+
+            #     print("opencv描画モード")
+            #     cv2.imshow('opencv preview', self.preview_image_tk)  # この時点ではウィンドウは表示されない
+            #     cv2.waitKey(0)
+            #     return
+
             preview_screen.view(self.preview_image_tk)
 
         def cash_clear():
             self.make_preview_data.image_stack()
 
         self.data.all_data.callback_operation.set_event("preview", preview)
+        #self.data.all_data.callback_operation.set_event("make_preview_data", get_make_preview_data)
 
         def send_rendering(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send

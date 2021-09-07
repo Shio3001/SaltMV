@@ -165,9 +165,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name] = TkImageData()
             self.del_diagram("base")
 
-        if diagram_type == "MatplotlibImage":
-            self.canvas_data.territory[self.te_name].diagram[di_name] = MatplotlibImageData()
-            self.del_diagram("base")
+        # if diagram_type == "MatplotlibImage":
+        #    self.canvas_data.territory[self.te_name].diagram[di_name] = MatplotlibImageData()
+        #    self.del_diagram("base")
 
         if diagram_type == "text":
             self.canvas_data.territory[self.te_name].diagram[di_name] = DiagramTextData(self.canvas_data.canvas)

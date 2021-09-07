@@ -13,6 +13,7 @@ import inspect
 import time
 import sounddevice
 import wave
+import cv2
 
 
 class InitialValue:
@@ -604,9 +605,13 @@ class InitialValue:
         def editor_func(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send
             print("editor_func_send", editor_func_send)
-            self.data.all_data.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
+            if editor_func_name == "preview":
+                self.data.all_data.get_set_scene_edior(name=editor_func_name, data=editor_func_val, int_type=False)
+            else:
+                self.data.all_data.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
 
             loading_movie_data(new=self.data.all_data.scene_id())
+            self.data.all_data.callback_operation.event("preview_setup")
 
         def editor_setting_change(option_data):
             timeline_nowtime_approval_False(None)
@@ -715,15 +720,31 @@ class InitialValue:
 
                 print("再生", process_time)
 
+                if self.data.all_data.scene_editor()["preview"] == "opencv":
+                    return_preview = self.data.all_data.callback_operation.event("preview", info=(process_time,True))
+                    self.nowtime_bar.preview_frame_set(process_time)
+                    self.data.window.update()
+                    preview_image_tk = return_preview["preview"]
+                    cv2.imshow('opencv preview', preview_image_tk)  # この時点ではウィンドウは表示されない
+                    cv2.waitKey(round(one_fps))
+                    process_time += 1
+                    continue
+
                 sta_section_time = time.time()
-                self.data.all_data.callback_operation.event("preview", info=process_time)
+
+                self.data.all_data.callback_operation.event("preview", info=(process_time,True))
                 self.nowtime_bar.preview_frame_set(process_time)
+
+                update_section_time = time.time()
+
+                # if not self.data.all_data.scene_editor()["preview"] == "opencv":
                 self.data.window.update()
+
                 end_section_time = time.time()
                 section = end_section_time - sta_section_time
 
                 sleep_time = one_fps - section
-                print("sleep_time ", sleep_time, one_fps, section)
+                print("sleep_time ", sleep_time, one_fps, section, "うちupdate時間 :", end_section_time - update_section_time, "update直接以外の時間 :", update_section_time - sta_section_time)
 
                 if sleep_time > 0:
                     print(sleep_time)
