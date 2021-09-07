@@ -217,6 +217,8 @@ class SceneOutput:
             object_group = self.cpp_encode.object_group_recovery()
             self.get_set_media_object_group(data=object_group)
 
+        print(self.audio_preview_function_list, run)
+
         if run:
             for a in self.audio_preview_function_list:
                 a(frame, sta_bool=True)

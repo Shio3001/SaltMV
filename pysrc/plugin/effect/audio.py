@@ -105,9 +105,9 @@ class CentralRole:
         now_sound_rate = round(now_second * conversion_rate)
         now_sound_rate_1 = round((now_second + 1) * conversion_rate)
 
-        print(now_sound_rate, now_sound_rate_1)
+        print(now_sound_rate, now_sound_rate_1, self.import_data)
 
-        sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], self.sound_sampling_rate)
+        sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], conversion_rate)
 
 
 # numpy wav:ステレオ時の構造は、左チャンネルと右チャンネルで交互になっている

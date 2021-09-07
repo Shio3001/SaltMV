@@ -688,6 +688,19 @@ class InitialValue:
         edit_settings_button.territory_draw()
         edit_settings_button.callback_operation.set_event("button", editor_setting_change)
 
+        def run_button_func(r=None):
+            self.preview_move()
+
+        self.run_button = self.data.new_parts("timeline", "run_button", parts_name="button")  # 左側のやつ
+        self.run_button.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
+        self.run_button.edit_territory_position(x=timeline_left+2*list_button, y=5)
+        self.run_button.edit_diagram_color("background", "#229922")
+        self.run_button.edit_diagram_color("text", "#ffffff")
+        self.run_button.diagram_stack("text", True)
+        self.run_button.edit_diagram_text("text", text="再生")
+        self.run_button.territory_draw()
+        self.run_button.callback_operation.set_event("button", run_button_func)
+
         def add_scene():
             self.data.all_data.add_scene_elements()
 
@@ -705,9 +718,12 @@ class InitialValue:
         self.time_lime_space_flag = 1 - self.time_lime_space_flag
 
         if self.time_lime_space_flag == 0:  # off
-            pass
+            self.run_button.edit_diagram_text("text", text="再生")
+            self.run_button.edit_diagram_color("background", "#229922")
 
         if self.time_lime_space_flag == 1:  # on
+            self.run_button.edit_diagram_text("text", text="停止")
+            self.run_button.edit_diagram_color("background", "#992222")
 
             process_time = self.data.all_data.get_now_time()
             fps = self.data.all_data.scene_editor()["fps"]
@@ -721,7 +737,7 @@ class InitialValue:
                 print("再生", process_time)
 
                 if self.data.all_data.scene_editor()["preview"] == "opencv":
-                    return_preview = self.data.all_data.callback_operation.event("preview", info=(process_time,True))
+                    return_preview = self.data.all_data.callback_operation.event("preview", info=(process_time, True))
                     self.nowtime_bar.preview_frame_set(process_time)
                     self.data.window.update()
                     preview_image_tk = return_preview["preview"]
@@ -732,7 +748,7 @@ class InitialValue:
 
                 sta_section_time = time.time()
 
-                self.data.all_data.callback_operation.event("preview", info=(process_time,True))
+                self.data.all_data.callback_operation.event("preview", info=(process_time, True))
                 self.nowtime_bar.preview_frame_set(process_time)
 
                 update_section_time = time.time()

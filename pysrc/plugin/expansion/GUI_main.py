@@ -84,14 +84,16 @@ class InitialValue:
 
             frame, run = None, None
 
+            print(type(preview_frmae_run), preview_frmae_run)
+
             if type(preview_frmae_run) is tuple:
-                frame, rund = preview_frmae_run
+                frame, run = preview_frmae_run
 
             elif type(preview_frmae_run) is int:
                 frame = preview_frmae_run
 
             self.make_preview_data.re_scene()
-            self.make_preview_data.output_tk(frame, run)
+            self.make_preview_data.output_tk(frame, run=run)
             self.preview_image_tk = self.make_preview_data.get_image_tk(frame)
 
             print("preview", frame, self.make_preview_data.preview)
