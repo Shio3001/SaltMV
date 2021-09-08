@@ -1,3 +1,4 @@
+import uuid
 import time
 import cv2
 import numpy as np
@@ -8,7 +9,7 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 import cv2
-
+import ffmpeg
 file_all_control = {}
 
 
@@ -308,6 +309,10 @@ class SceneOutput:
 
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             self.writer.write(output_data)
+
+        for a in self.audio_preview_function_list:
+            file_name = a[3]()
+            uuid_name = self.scene.editor("sound_temp_")
 
         print("")
         print("終了 所要時間 : {0}".format(print_time()))

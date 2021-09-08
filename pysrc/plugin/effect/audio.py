@@ -95,7 +95,7 @@ class CentralRole:
         return rendering_main_data.draw, self.starting_point
 
     def get_now_file(self):
-        return self.now_file
+        return self.now_file, self.installation_sta, self.installation_end
 
     def sound_init(self):
         self.run_flag = False
