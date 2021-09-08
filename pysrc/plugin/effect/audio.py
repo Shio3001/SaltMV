@@ -37,9 +37,14 @@ class CentralRole:
         self.sound_channles = 0
 
         self.installation_sta = 0
+        self.installation_end = 0
         self.fps = 0
 
         self.latest_process_time = None
+
+        self.run_flag = False
+
+        #self.mode = None
 
     def setup(self, rendering_main_data, file_name):
         try:
@@ -76,6 +81,8 @@ class CentralRole:
 
     def main(self, rendering_main_data):
         self.installation_sta = rendering_main_data.installation[0]
+        self.installation_end = rendering_main_data.installation[1]
+
         self.fps = rendering_main_data.editor["fps"]
         #rendering_main_data = rendering_main_data
         path = rendering_main_data.various_fixed["path"]
@@ -88,43 +95,28 @@ class CentralRole:
         return rendering_main_data.draw, self.starting_point
 
     def sound_init(self):
-
+        self.run_flag = False
         self.latest_process_time = time.time()
-
         print("sound_init", self.latest_process_time)
 
     def sound(self, now_frame, sta_bool=False):
 
-        if sta_bool:
-            now_frame -= self.installation_sta
+        if not self.installation_sta <= now_frame < self.installation_end:
+            return
+
+        self.run_flag = True
 
         now_second = now_frame / self.fps
-
-        print("sound", now_frame, now_second)
-
-        zero_safe = now_second != 0 and now_second >= 1
-
-        if zero_safe:
-            if now_second % round(now_second) != 0:
-                print("now_second // round(now_second)返却", now_second % round(now_second))
-                return
+        end_second = self.installation_end / self.fps
 
         conversion_rate = self.sound_channles * self.sound_sampling_rate
 
-        now_sound_rate = round(now_second * conversion_rate)
-        now_sound_rate_1 = round((now_second + 1) * conversion_rate)
+        now_sound_rate_now = round(now_second * conversion_rate)
+        now_sound_rate_end = round(end_second * conversion_rate)
 
-        print(now_sound_rate, now_sound_rate_1, self.latest_process_time, self.import_data)
-
-        delay = time.time() - self.latest_process_time
-
-        self.latest_process_time = time.time()
-
-        delay_conversion_rate = round(conversion_rate/delay)
-
-        print(delay_conversion_rate, conversion_rate/delay, conversion_rate, delay)
-
-        sounddevice.play(self.import_data[now_sound_rate:now_sound_rate_1], delay_conversion_rate)
+        return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
+        sounddevice.play(return_import_data, conversion_rate)
+        # sounddevice.play()
 
 
 # numpy wav:ステレオ時の構造は、左チャンネルと右チャンネルで交互になっている
