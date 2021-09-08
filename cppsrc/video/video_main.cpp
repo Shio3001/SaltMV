@@ -233,6 +233,8 @@ namespace EffectProgress
 
         temp_audio_object_add.append(procedure.attr("sound"));
         temp_audio_object_add.append(procedure.attr("sound_init"));
+        temp_audio_object_add.append(procedure.attr("sound_stop"));
+        temp_audio_object_add.append(procedure.attr("get_now_file"));
         audio_object.append(temp_audio_object_add);
       }
 

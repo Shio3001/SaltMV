@@ -200,6 +200,13 @@ class SceneOutput:
         object_group = self.cpp_encode.object_group_recovery()
         self.get_set_media_object_group(data=object_group)
 
+    def sound_stop(self):
+        for a in self.audio_preview_function_list:
+            a[2]()
+
+        object_group = self.cpp_encode.object_group_recovery()
+        self.get_set_media_object_group(data=object_group)
+
     def output_tk(self, frame, tk_cash=True, run=False):
         #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
 
@@ -223,12 +230,12 @@ class SceneOutput:
 
         print(self.audio_preview_function_list, run)
 
-        object_group = self.cpp_encode.object_group_recovery()
-        self.get_set_media_object_group(data=object_group)
-
         if run:
             for a in self.audio_preview_function_list:
                 a[0](frame, sta_bool=True)
+
+        object_group = self.cpp_encode.object_group_recovery()
+        self.get_set_media_object_group(data=object_group)
 
         if self.preview == "opencv":
             #resize_size_opencv = (640, 360)

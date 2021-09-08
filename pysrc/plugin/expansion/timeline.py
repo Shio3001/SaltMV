@@ -718,6 +718,8 @@ class InitialValue:
         self.time_lime_space_flag = 1 - self.time_lime_space_flag
 
         if self.time_lime_space_flag == 0:  # off
+            self.data.all_data.callback_operation.event("sound_stop")
+
             self.run_button.edit_diagram_text("text", text="再生")
             self.run_button.edit_diagram_color("background", "#229922")
 

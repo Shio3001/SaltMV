@@ -94,14 +94,23 @@ class CentralRole:
 
         return rendering_main_data.draw, self.starting_point
 
+    def get_now_file(self):
+        return self.now_file
+
     def sound_init(self):
         self.run_flag = False
         self.latest_process_time = time.time()
         print("sound_init", self.latest_process_time)
 
+    def sound_stop(self):
+        sounddevice.stop()
+
     def sound(self, now_frame, sta_bool=False):
 
         if not self.installation_sta <= now_frame < self.installation_end:
+            return
+
+        if self.run_flag:
             return
 
         self.run_flag = True
@@ -115,6 +124,8 @@ class CentralRole:
         now_sound_rate_end = round(end_second * conversion_rate)
 
         return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
+
+        print("now_sound_rate_now,now_sound_rate_end", len(return_import_data), now_sound_rate_now, now_sound_rate_end)
         sounddevice.play(return_import_data, conversion_rate)
         # sounddevice.play()
 
