@@ -25,14 +25,13 @@ from pysrc import UI_control
 from pysrc import undo
 from pysrc.chord_tool import class_var_to_dict
 
-from cppsrc.video.test import test3
-
 from cppsrc.video import video_main
 
 from pysrc import synthetic
 
 from media_input.video_image import control
 
+from pysrc import audio_control
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
@@ -40,7 +39,7 @@ all_data = edit_data_control.Storage(now_path)
 all_UI_data = UI_control
 
 operation = {}
-
+operation["audio_control"] = audio_control.AudioControl()
 operation["rendering_py"] = {}
 operation["rendering_py"]["main"] = rendering_main.Rendering()
 #operation["rendering_py"]["frame"] = rendering_frame.Rendering()

@@ -42,7 +42,7 @@ namespace EffectProgress
     int installation_sta;
     int installation_end;
 
-    py::list audio_object;
+    //py::list audio_object;
 
     EffectProduction(int send_now_frame, py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key, py::dict &send_effect_point_internal_id_time, int send_installation_sta, int send_installation_end)
     {
@@ -137,13 +137,13 @@ namespace EffectProgress
 
       effect_group_return.append(starting_point_center);
 
-      effect_group_return.append(audio_object);
+      //effect_group_return.append(audio_object);
 
       //cout << " effect_group_return B" << endl;
 
       return effect_group_return;
     }
-    py::tuple production_effect_individual(np::ndarray effect_draw_base, py::object &send_effect)
+    py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)
     {
       //cout << "production_effect_individual" << endl;
 
@@ -227,6 +227,8 @@ namespace EffectProgress
       //py::object self_data = py::extract<py::object>(main_function.attr("__self__"));
       py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
 
+      /*
+
       if (audio == true)
       {
         py::list temp_audio_object_add;
@@ -236,7 +238,7 @@ namespace EffectProgress
         temp_audio_object_add.append(procedure.attr("sound_stop"));
         temp_audio_object_add.append(procedure.attr("get_now_file"));
         audio_object.append(temp_audio_object_add);
-      }
+      }*/
 
       //string test_txt2 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
       //cout << "procedure2 " << test_txt2 << endl;
@@ -276,8 +278,6 @@ namespace ObjectProgress
 
     int object_len;
 
-    py::list audio_function_list;
-
     ObjectProduction(int send_frame, py::dict &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor)
     {
       frame = send_frame;
@@ -288,11 +288,6 @@ namespace ObjectProgress
       video_image_control = send_video_image_control;
       object_len = py::len(object_group);
       editor = send_editor;
-    }
-
-    py::list get_audio_function_list()
-    {
-      return audio_function_list;
     }
 
     void production_order_decision()
@@ -349,7 +344,7 @@ namespace ObjectProgress
       return object_draw_base;
     }
 
-    np::ndarray production_object_individual(py::object &now_objcet, np::ndarray object_individual_draw_base)
+    np::ndarray production_object_individual(py::object &now_objcet, np::ndarray &object_individual_draw_base)
     {
       //cout << "production_object_individual" << endl;
 
@@ -375,9 +370,9 @@ namespace ObjectProgress
       //cout << "starting_point" << endl;
       py::list starting_point_center = py::extract<py::list>(effect_group_return[1]);
 
-      py::list new_audio_function_list = py::extract<py::list>(effect_group_return[2]);
+      //py::list new_audio_function_list = py::extract<py::list>(effect_group_return[2]);
 
-      audio_function_list.extend(new_audio_function_list);
+      //audio_function_list.extend(new_audio_function_list);
 
       ////cout << starting_point_center[0] << " " << starting_point_center[1] << endl;
 
@@ -530,8 +525,6 @@ namespace VideoMain
     py::dict object_group;
     py::dict layer_layer_id;
 
-    py::list audio_function_list;
-
   public:
     VideoExecutionCenter(py::dict send_operation, py::dict send_py_out_func)
     {
@@ -549,7 +542,7 @@ namespace VideoMain
       ////cout << editor["x"] << editor["y"] << editor["fps"] << editor["frame"] << endl;
     }
 
-    void scene_setup(py::object send_scene)
+    void scene_setup(py::object &send_scene)
     {
       scene = send_scene;
       editor = py::extract<py::dict>(send_scene.attr("editor"));
@@ -609,11 +602,6 @@ namespace VideoMain
       return object_group;
     }
 
-    py::list get_audio_function_list()
-    {
-      return audio_function_list;
-    }
-
   private:
     //np::ndarray
     np::ndarray run(int frame)
@@ -624,7 +612,7 @@ namespace VideoMain
       OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor);
       object_production->production_order_decision();
       np::ndarray object_draw_base = object_production->production_object_group();
-      audio_function_list = object_production->get_audio_function_list();
+      //audio_function_list = object_production->get_audio_function_list();
       delete object_production;
 
       cout << "フレーム[処理終了] " << frame << endl;
@@ -646,7 +634,6 @@ BOOST_PYTHON_MODULE(video_main)
       .def("scene_setup", &VideoMain::VideoExecutionCenter::scene_setup)
       .def("execution_main", &VideoMain::VideoExecutionCenter::execution_main)
       .def("execution_preview", &VideoMain::VideoExecutionCenter::execution_preview)
-      .def("get_audio_function_list", &VideoMain::VideoExecutionCenter::get_audio_function_list)
       .def("object_group_recovery", &VideoMain::VideoExecutionCenter::object_group_recovery);
   //.def("sta", &VideoExecutionCenter::sta)
   //.def("execution", &VideoExecutionCenter::execution)
@@ -670,3 +657,5 @@ BOOST_PYTHON_MODULE(video_main) {
 // https://marycore.jp/programmer/c-lang-is-lorry/
 
 //https://qiita.com/ur_kinsk/items/949dabe975bdc1affb82
+
+// エフェクトを入れない方が重たくなる→値私だからでは

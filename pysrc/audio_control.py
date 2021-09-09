@@ -2,10 +2,9 @@ import wave
 import sounddevice
 import scipy
 import numpy as np
-import_data = {}
 
 
-class CentralRole:
+class AudioControl:
     def __init__(self):
         self.fps = 0
         self.criterion_conversion_rate = 0
@@ -22,15 +21,20 @@ class CentralRole:
 
         if add_conversion_rate < self.criterion_conversion_rate:
             result_data = self.upsampling(add_import_data, add_conversion_rate)
+            print("<")
 
         if add_conversion_rate > self.criterion_conversion_rate:
             result_data = self.downsampling(add_import_data, add_conversion_rate)
+            print(">")
 
         if add_conversion_rate == self.criterion_conversion_rate:
             result_data = add_import_data
+            print("=")
+
+        print(result_data)
 
     def upsampling(self, add_import_data, add_conversion_rate):
-        convert_rate = self.criterion_conversion_rate / add_conversion_rate  # 1以上の値にならないといけない
+        convert_rate = round(self.criterion_conversion_rate / add_conversion_rate)  # 1以上の値にならないといけない
         interpolation_sample_num = convert_rate - 1  # -1をしているのは
 
         nyqF = (add_conversion_rate*convert_rate)/2.0     # 変換後のナイキスト周波数
@@ -38,14 +42,23 @@ class CentralRole:
         taps = 511                          # フィルタ係数（奇数じゃないとだめ）
         b = scipy.signal.firwin(taps, cF)   # LPFを用意
 
-        after_convert_len = convert_rate*add_conversion_rate
-        base = np.full((after_convert_len), 255)
+        after_convert_len = round(convert_rate*add_conversion_rate)
+
+        print("/   ")
+        print("interpolation_sample_num", interpolation_sample_num)
+        print("add_import_data[len]", len(add_import_data))
+        print("criterion_conversion_rate", self.criterion_conversion_rate)
+        print("add_conversion_rate", add_conversion_rate)
+        print("after_convert_len", after_convert_len)
+        print("   /")
+
+        base = np.full(after_convert_len, 0)
         base[::interpolation_sample_num] = add_import_data
 
         result_data = scipy.signal.lfilter(b, 1, base)
         return result_data
 
-    def downsampling(self, add_conversion_rate):
+    def downsampling(self, add_import_data, add_conversion_rate):
         pass
 
     def sound_stop(self):

@@ -81,6 +81,21 @@ class CentralRole:
 
         print("読み込み状況 :", self.open_status)
 
+        if not self.open_status:
+            return
+
+        now_second = self.installation_sta / self.fps
+        end_second = self.installation_end / self.fps
+
+        conversion_rate = self.sound_channles * self.sound_sampling_rate
+
+        now_sound_rate_now = round(now_second * conversion_rate)
+        now_sound_rate_end = round(end_second * conversion_rate)
+
+        return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
+
+        rendering_main_data.audio_control.add(return_import_data, 40000, 0, 0)
+
     def main(self, rendering_main_data):
         self.installation_sta = rendering_main_data.installation[0]
         self.installation_end = rendering_main_data.installation[1]
@@ -117,18 +132,8 @@ class CentralRole:
 
         self.run_flag = True
 
-        now_second = now_frame / self.fps
-        end_second = self.installation_end / self.fps
-
-        conversion_rate = self.sound_channles * self.sound_sampling_rate
-
-        now_sound_rate_now = round(now_second * conversion_rate)
-        now_sound_rate_end = round(end_second * conversion_rate)
-
-        return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
-
-        print("now_sound_rate_now,now_sound_rate_end", len(return_import_data), now_sound_rate_now, now_sound_rate_end)
-        sounddevice.play(return_import_data, conversion_rate)
+        #print("now_sound_rate_now,now_sound_rate_end", len(return_import_data), now_sound_rate_now, now_sound_rate_end)
+       # sounddevice.play(return_import_data, conversion_rate)
         # sounddevice.play()
 
 

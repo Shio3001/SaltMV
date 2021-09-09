@@ -45,6 +45,12 @@ class EffectPluginElements:
         self.b_now_time = b_now_time
         self.editor = editor
         self.operation = operation
+        self.audio_control = operation["audio_control"]
+
+        self.audio_control.main(self.editor["fps"], self.editor["sound_sampling_rate"], 1)
+
+        print("audio_control", self.audio_control)
+
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
         self.cv2 = cv2
         self.np = np
@@ -162,7 +168,11 @@ class SceneOutput:
         self.temp_path = "pysrc/Internal_operation/rendering_py/temp"
         self.output_temp_file_path = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
         self.writer = cv2.VideoWriter(self.output_temp_file_path, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
-        self.audio_preview_function_list = []
+        #self.audio_preview_function_list = []
+
+        self.audio_control = operation["audio_control"]
+
+        print("audio_control", self.audio_control)
 
     def re_scene(self):
         self.scene = self.scene_get(scene_id=self.scene_id)
@@ -203,18 +213,10 @@ class SceneOutput:
     #    self.data_image[sta:end] = np.zeros((end-sta))
 
     def sound_init(self):
-        for a in self.audio_preview_function_list:
-            a[1]()
-
-        object_group = self.cpp_encode.object_group_recovery()
-        self.get_set_media_object_group(data=object_group)
+        pass
 
     def sound_stop(self):
-        for a in self.audio_preview_function_list:
-            a[2]()
-
-        object_group = self.cpp_encode.object_group_recovery()
-        self.get_set_media_object_group(data=object_group)
+        pass
 
     def output_tk(self, frame, tk_cash=True, run=False):
         #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
@@ -235,13 +237,12 @@ class SceneOutput:
         if not cash_process_flag:
             image = self.cpp_encode.execution_preview(frame)
 
-            self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
+            #self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
 
-        print(self.audio_preview_function_list, run)
+        #print(self.audio_preview_function_list, run)
 
         if run:
-            for a in self.audio_preview_function_list:
-                a[0](frame, sta_bool=True)
+            pass
 
         object_group = self.cpp_encode.object_group_recovery()
         self.get_set_media_object_group(data=object_group)
@@ -314,7 +315,10 @@ class SceneOutput:
 
         for f in range(sta, end):
 
+            f_time_sta = datetime.datetime.now()
             export_draw = self.cpp_encode.execution_main(f)
+            f_time_end = datetime.datetime.now()
+            print("f_time",f_time_end - f_time_sta)
             #print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
 
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
@@ -329,20 +333,20 @@ class SceneOutput:
         #output_temp_file = ffmpeg.input(self.output_temp_file_path)
         #silence_audio = output_temp_file.audio
 
-        for a in self.audio_preview_function_list:
-            file_name = a[3]()
-            #uuid_name = self.scene.editor("sound_temp_{0}_sound".format(self.path))
+        # for a in self.audio_preview_function_list:
+        #    file_name = a[3]()
+        #uuid_name = self.scene.editor("sound_temp_{0}_sound".format(self.path))
 
-            #sound_long = file_name[2] - file_name[1]
+        #sound_long = file_name[2] - file_name[1]
 
-            # if sound_long >= (end - sta):
-            #    sound_long = end + sta
+        # if sound_long >= (end - sta):
+        #    sound_long = end + sta
 
-            #now_time = datetime.datetime.now()
-            #temp_sound_file_name = "{0}/{1}_{2}.wav".format(self.temp_path, str(uuid.uuid1()), str(now_time.strftime('%y%m%H%M%S%f')))
-            #os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path, temp_sound_file_name,sta,end))
+        #now_time = datetime.datetime.now()
+        #temp_sound_file_name = "{0}/{1}_{2}.wav".format(self.temp_path, str(uuid.uuid1()), str(now_time.strftime('%y%m%H%M%S%f')))
+        #os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path, temp_sound_file_name,sta,end))
 
-            #file_data = ffmpeg.input(file_name)
+        #file_data = ffmpeg.input(file_name)
 
         print("音源処理終了 [ffmpeg - python] *********")
 
