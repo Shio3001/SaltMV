@@ -24,7 +24,7 @@ class AllElements:  # すごくえらい
 class SceneElements:  # えらい
     def __init__(self):
         self.layer_group = LayerElements()
-        self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 72000, "preview": "tk"}  # 動画の画面サイズとかその辺
+        self.editor = {"x": 1280, "y": 720, "fps": 30, "len": 100, "sound_sampling_rate": 44100, "preview": "tk"}  # 動画の画面サイズとかその辺
         self.scene_id = make_id("scene")
         self.now_time = self.editor["len"] / 10
 

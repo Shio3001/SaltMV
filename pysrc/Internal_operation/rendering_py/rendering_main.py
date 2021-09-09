@@ -10,6 +10,10 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont
 import cv2
 import ffmpeg
+import os
+#import subprocess
+
+
 file_all_control = {}
 
 
@@ -114,6 +118,8 @@ class SceneOutput:
 
         # print(scene_get,make,scene_id,path,self.scene)
 
+        self.editor = self.scene.editor
+
         self.x = int(self.scene.editor["x"])
         self.y = int(self.scene.editor["y"])
         self.fps = int(self.scene.editor["fps"])
@@ -153,7 +159,9 @@ class SceneOutput:
 
         self.fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
         self.size = (self.x, self.y)
-        self.writer = cv2.VideoWriter(self.path, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
+        self.temp_path = "pysrc/Internal_operation/rendering_py/temp"
+        self.output_temp_file_path = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
+        self.writer = cv2.VideoWriter(self.output_temp_file_path, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
         self.audio_preview_function_list = []
 
     def re_scene(self):
@@ -178,7 +186,7 @@ class SceneOutput:
 
         repair = end_time - start_time
 
-        print("本処理 [ python C++ ] [ boost ] {0}".format(repair))
+        print("本処理 [ python / C++ ] [ boost ] {0}".format(repair))
 
         self.output_OpenCV(sta, end)
         # s
@@ -274,6 +282,8 @@ class SceneOutput:
         #self.data_iamge = [None] * self.frame
 
     def output_OpenCV(self, sta=None, end=None):
+        os.system("mkdir {0}".format(self.temp_path))
+
         def print_percent():
 
             now_percent = f - sta + 1
@@ -310,13 +320,39 @@ class SceneOutput:
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             self.writer.write(output_data)
 
+        self.writer.release()
+        #file_all_control = {}
+        print(file_all_control)
+
+        print("音源処理開始 [ffmpeg - python] *********")
+
+        #output_temp_file = ffmpeg.input(self.output_temp_file_path)
+        #silence_audio = output_temp_file.audio
+
         for a in self.audio_preview_function_list:
             file_name = a[3]()
-            uuid_name = self.scene.editor("sound_temp_")
+            #uuid_name = self.scene.editor("sound_temp_{0}_sound".format(self.path))
+
+            #sound_long = file_name[2] - file_name[1]
+
+            # if sound_long >= (end - sta):
+            #    sound_long = end + sta
+
+            #now_time = datetime.datetime.now()
+            #temp_sound_file_name = "{0}/{1}_{2}.wav".format(self.temp_path, str(uuid.uuid1()), str(now_time.strftime('%y%m%H%M%S%f')))
+            #os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path, temp_sound_file_name,sta,end))
+
+            #file_data = ffmpeg.input(file_name)
+
+        print("音源処理終了 [ffmpeg - python] *********")
+
+        os.system("rm -rf {0}".format(self.temp_path))
 
         print("")
         print("終了 所要時間 : {0}".format(print_time()))
-        self.writer.release()
+
+        #os.system("rmdir temp")
 
 
 # 再帰的なシーン発火をしないといけない、どうしよう？
+# https://maku77.github.io/python/env/call-external-program.html

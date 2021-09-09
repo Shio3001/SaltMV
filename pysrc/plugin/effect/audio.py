@@ -7,6 +7,8 @@ import cv2
 
 import sounddevice
 import wave
+import librosa
+
 import numpy as np
 import time
 
@@ -131,3 +133,4 @@ class CentralRole:
 
 
 # numpy wav:ステレオ時の構造は、左チャンネルと右チャンネルで交互になっている
+# 音声実装難しすぎて死にそう 画像は1/30秒とか1/60秒単位で、音声は主に1/44100秒単位で扱わないといけないからダメ
