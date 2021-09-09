@@ -16,20 +16,20 @@ class CentralRole:
         self.criterion_conversion_rate = criterion_conversion_rate
         self.criterion_sound_channles = criterion_sound_channles
 
-    def add(self, add_import_data, add_conversion_rate, sound_channles):
+    def add(self, add_import_data: np.numarray, add_conversion_rate, sound_channles, start_frame):
 
         result_data = None
 
         if add_conversion_rate < self.criterion_conversion_rate:
-            result_data = self.upsampling(add_conversion_rate)
+            result_data = self.upsampling(add_import_data, add_conversion_rate)
 
         if add_conversion_rate > self.criterion_conversion_rate:
-            result_data = self.downsampling(add_conversion_rate)
+            result_data = self.downsampling(add_import_data, add_conversion_rate)
 
         if add_conversion_rate == self.criterion_conversion_rate:
-            result_data = add_conversion_rate
+            result_data = add_import_data
 
-    def upsampling(self, add_conversion_rate):
+    def upsampling(self, add_import_data, add_conversion_rate):
         convert_rate = self.criterion_conversion_rate / add_conversion_rate  # 1以上の値にならないといけない
         interpolation_sample_num = convert_rate - 1  # -1をしているのは
 
@@ -40,7 +40,7 @@ class CentralRole:
 
         after_convert_len = convert_rate*add_conversion_rate
         base = np.full((after_convert_len), 255)
-        base[::interpolation_sample_num] = after_convert_len
+        base[::interpolation_sample_num] = add_import_data
 
         result_data = scipy.signal.lfilter(b, 1, base)
         return result_data
