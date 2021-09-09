@@ -7,7 +7,7 @@ import cv2
 
 import sounddevice
 import wave
-import librosa
+#import librosa
 
 import numpy as np
 import time
@@ -67,7 +67,9 @@ class CentralRole:
             sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
             self.import_data = np.frombuffer(sound_data, dtype='int16')
 
-            print("サウンド", len(self.import_data), self.sound_sampling_rate, self.sound_frame)
+            print("サウンド", self.import_data, len(self.import_data), self.sound_sampling_rate, self.sound_frame)
+
+            # file_list
 
             # print(self.import_data[0:40])
 

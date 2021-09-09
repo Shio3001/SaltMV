@@ -17,24 +17,27 @@ import os
 file_all_control = {}
 
 
-class FileSystem:
-    def __init__(self):
-        self.file_storage = {}
+# class FileSystem:
+#     def __init__(self):
+#         self.file_storage = {}
 
-    def confirmation(self, path):
-        keys = list(self.file_storage.keys())
-        bool_confirmation = path in keys
-        return bool_confirmation
+#     def confirmation(self, path):
+#         keys = list(self.file_storage.keys())
+#         bool_confirmation = path in keys
+#         return bool_confirmation
 
-    def file_storage_add(self, path, file_data):
-        self.file_storage[path] = file_data
+#     def file_storage_add(self, path, file_data):
+#         self.file_storage[path] = file_data
 
-    def file_storage_del(self, path):
-        del self.file_storage[path]
+#     def file_storage_del(self, path):
+#         del self.file_storage[path]
+
+# def file_list(self):
+#    print(self.file_storage.keys())
 
 
 class EffectPluginElements:
-    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end, FileSystem):
+    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
         #self.draw = draw
         self.draw = draw.astype('uint8')
         self.effect_value = effect_value
@@ -55,7 +58,7 @@ class EffectPluginElements:
         self.cv2 = cv2
         self.np = np
 
-        self.file_system = FileSystem
+        #self.file_system = FileSystem
 
         self.installation = [installation_sta, installation_end]
 
@@ -74,22 +77,37 @@ class EffectPluginElements:
 
     def get_file_all_control(self, path):
 
+        print(file_all_control, "sta")
+
         if not path in list(file_all_control.keys()):
             print("file_all_control *** get_file_all_control", path, "None")
             return None
 
         print("file_all_control *** get_file_all_control", path, file_all_control[path])
+
+        print(file_all_control, "end")
+
         return file_all_control[path]
 
     def add_file_all_control(self, path, file):
+
+        print(file_all_control, "sta")
 
         print("file_all_control *** add_file_all_control", path, file)
 
         if not self.check_file_all_control(path):
             file_all_control[path] = file
 
+        print(file_all_control, "end")
+
     def check_file_all_control(self, path):
+
+        print(file_all_control, "sta")
+
         print("file_all_control *** check_file_all_control", path in list(file_all_control.keys()))
+
+        print(file_all_control, "end")
+
         return path in list(file_all_control.keys())
 
     #self.py_Rendering_func = py_Rendering_func
@@ -151,7 +169,7 @@ class SceneOutput:
         self.func["out"] = self.output_OpenCV
         self.func["layer_number"] = self.layer_id_number
         self.func["EffectPluginElements"] = EffectPluginElements
-        self.func["FileSystem"] = FileSystem()
+        #self.func["FileSystem"] = FileSystem()
 
         #self.func["plugin_run"] = plugin_run
 
@@ -318,7 +336,7 @@ class SceneOutput:
             f_time_sta = datetime.datetime.now()
             export_draw = self.cpp_encode.execution_main(f)
             f_time_end = datetime.datetime.now()
-            print("f_time",f_time_end - f_time_sta)
+            print("f_time", f_time_end - f_time_sta)
             #print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
 
             output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)

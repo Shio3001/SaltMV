@@ -213,10 +213,10 @@ namespace EffectProgress
         //cout << "pos : " << pos << endl;
       }
 
-      py::object FileSystem = py::extract<py::object>(py_out_func["FileSystem"]);
+      //py::object FileSystem = py::extract<py::object>(py_out_func["FileSystem"]);
 
       //cout << "effect_plugin_elements" << endl;
-      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end, FileSystem));
+      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
 
       //cout << "procedure_return" << endl;
       py::object main_function = py::extract<py::object>(procedure.attr("main"));
