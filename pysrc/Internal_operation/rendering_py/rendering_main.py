@@ -18,7 +18,7 @@ file_all_control = {}
 
 
 class EffectPluginElements:
-    def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
+    def __init__(self, draw, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
         #self.draw = draw
         self.draw = draw.astype('uint8')
         self.effect_value = effect_value
@@ -30,8 +30,9 @@ class EffectPluginElements:
         self.editor = editor
         self.operation = operation
         self.audio_control = operation["audio_control"]
+        self.effect_id = effect_id
 
-        self.audio_control.main(self.editor["fps"], self.editor["sound_sampling_rate"], 1)
+        self.audio_control.main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], 1)
 
         print("audio_control", self.audio_control)
 
