@@ -7,14 +7,16 @@ import scipy
 import scipy.signal as signal
 import math
 import copy
+import cv2
 
 
 class AudioIndividual:
-    def __init__(self, audio_data: np.numarray, sound_channles, sta_frame, end_frame):
+    def __init__(self, audio_data: np.numarray, sound_channles, sta_frame, end_frame, effect_id):
         self.audio_data = audio_data
         self.sound_channles = sound_channles
         self.sta_frame = sta_frame
         self.end_frame = end_frame
+        self.effect_id = effect_id
 
 
 class AudioControl:
@@ -45,7 +47,7 @@ class AudioControl:
         self.combined_size = frame_len * self.criterion_conversion_rate * self.criterion_sound_channles
         self.combined = np.full(self.combined_size, 0, dtype=np.int16)
 
-    def add(self, effect_id, add_import_data: np.numarray, add_conversion_rate, sound_channles, sta_frame, end_frame):
+    def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
 
         result_data = None
 
@@ -64,7 +66,7 @@ class AudioControl:
 
         print(result_data)
 
-        self.audio_individual_data[effect_id] = AudioIndividual(result_data, sound_channles, sta_frame, end_frame)
+        self.audio_individual_data[effect_id] = AudioIndividual(result_data, sound_channles, sta_frame, end_frame, effect_id)
 
     def del_audio_individual_data(self, effect_id):
         del self.audio_individual_data[effect_id]
@@ -81,6 +83,8 @@ class AudioControl:
             ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
             print("v.audio_data", v.audio_data)
             self.combined[ss:es] += v.audio_data[vss:ves]
+
+            cv2.imwrite('../log/{0}.png'.format(v.effect_id), self.combined)
 
         self.setup_flag = True
 
