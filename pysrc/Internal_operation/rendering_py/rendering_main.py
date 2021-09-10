@@ -17,25 +17,6 @@ import os
 file_all_control = {}
 
 
-# class FileSystem:
-#     def __init__(self):
-#         self.file_storage = {}
-
-#     def confirmation(self, path):
-#         keys = list(self.file_storage.keys())
-#         bool_confirmation = path in keys
-#         return bool_confirmation
-
-#     def file_storage_add(self, path, file_data):
-#         self.file_storage[path] = file_data
-
-#     def file_storage_del(self, path):
-#         del self.file_storage[path]
-
-# def file_list(self):
-#    print(self.file_storage.keys())
-
-
 class EffectPluginElements:
     def __init__(self, draw, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
         #self.draw = draw
@@ -96,7 +77,7 @@ class EffectPluginElements:
         print("file_all_control *** add_file_all_control", path, file)
 
         if not self.check_file_all_control(path):
-            file_all_control[path] = file
+            file_all_control[path] = copy.deepcopy(file)
 
         print(file_all_control, "end")
 

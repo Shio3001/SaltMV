@@ -1,7 +1,10 @@
 import wave
 import sounddevice
-import scipy
+
 import numpy as np
+
+import scipy
+import scipy.signal as signal
 
 
 class AudioControl:
@@ -40,26 +43,44 @@ class AudioControl:
         nyqF = (add_conversion_rate*convert_rate)/2.0     # 変換後のナイキスト周波数
         cF = (add_conversion_rate/2.0-500.)/nyqF             # カットオフ周波数を設定（変換前のナイキスト周波数より少し下を設定）
         taps = 511                          # フィルタ係数（奇数じゃないとだめ）
-        b = scipy.signal.firwin(taps, cF)   # LPFを用意
+        b = signal.firwin(taps, cF)   # LPFを用意
 
-        after_convert_len = round(convert_rate*add_conversion_rate)
+        #after_convert_len = round(convert_rate*add_conversion_rate)
 
         print("/   ")
-        print("interpolation_sample_num", interpolation_sample_num)
-        print("add_import_data[len]", len(add_import_data))
-        print("criterion_conversion_rate", self.criterion_conversion_rate)
-        print("add_conversion_rate", add_conversion_rate)
-        print("after_convert_len", after_convert_len)
+        print(" interpolation_sample_num", interpolation_sample_num)
+        print(" add_import_data[len]", len(add_import_data))
+        print(" criterion_conversion_rate", self.criterion_conversion_rate)
+        print(" add_conversion_rate", add_conversion_rate)
+        print(" convert_rate", convert_rate)
+        #print(" after_convert_len", after_convert_len)
         print("   /")
 
-        base = np.full(after_convert_len, 0)
-        base[::interpolation_sample_num] = add_import_data
+        principal_len = len(add_import_data)
+        shape_size = principal_len * convert_rate
 
-        result_data = scipy.signal.lfilter(b, 1, base)
+        pattern = -1 * (interpolation_sample_num-1)
+
+        base = np.full(shape_size, 0)
+        base[::pattern] = add_import_data
+
+        result_data = signal.lfilter(b, 1, base)
         return result_data
 
     def downsampling(self, add_import_data, add_conversion_rate):
-        pass
+        convert_rate = round(self.criterion_conversion_rate / add_conversion_rate)  # 1以上の値にならないといけない
+        interpolation_sample_num = convert_rate - 1  # -1をしているのは
+
+        nyqF = (add_conversion_rate*convert_rate)/2.0     # 変換後のナイキスト周波数
+        cF = (add_conversion_rate/2.0-500.)/nyqF             # カットオフ周波数を設定（変換前のナイキスト周波数より少し下を設定）
+        taps = 511                          # フィルタ係数（奇数じゃないとだめ）
+        b = signal.firwin(taps, cF)   # LPFを用意
+
+        result_data = signal.lfilter(b, 1, add_import_data)
+        pattern = -1 * (interpolation_sample_num-1)
+        new_base = np.delete(result_data, pattern, 0)
+
+        return result_data
 
     def sound_stop(self):
         sounddevice.stop()

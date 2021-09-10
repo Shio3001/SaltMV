@@ -13,6 +13,14 @@ import numpy as np
 import time
 
 
+class SendFileAudio:
+    def __init__(self, audio_numpy, sound_sampling_rate, sound_frame, sound_channles):
+        self.audio_numpy = audio_numpy
+        self.sound_sampling_rate = sound_sampling_rate
+        self.sound_frame = sound_frame
+        self.sound_channles = sound_channles
+
+
 class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = "音声"
@@ -54,18 +62,26 @@ class CentralRole:
             sound_file = None
 
             if rendering_main_data.check_file_all_control(file_name):
-                sound_file = rendering_main_data.get_file_all_control(file_name)
+                send_file_audio = rendering_main_data.get_file_all_control(file_name)
+
+                self.import_data = send_file_audio.audio_numpy
+                self.sound_sampling_rate = send_file_audio.sound_sampling_rate
+                self.sound_frame = send_file_audio.sound_frame  # フレーム数を取得
+                self.sound_channles = send_file_audio.sound_channles
+
+                #self.import_data = rendering_main_data.get_file_all_control(file_name).audio_numpy
             else:
                 sound_file = wave.open(file_name)
-                rendering_main_data.add_file_all_control(file_name, sound_file)
+
+                self.sound_sampling_rate = sound_file.getframerate()
+                self.sound_frame = sound_file.getnframes()  # フレーム数を取得
+                self.sound_channles = sound_file.getnchannels()
+
+                sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
+                self.import_data = np.frombuffer(sound_data, dtype='int16')
+
+                rendering_main_data.add_file_all_control(file_name, SendFileAudio(self.import_data, self.sound_sampling_rate, self.sound_frame, self.sound_channles))
             #data, samplerate = sf.read('existing_file.wav')
-
-            self.sound_sampling_rate = sound_file.getframerate()
-            self.sound_frame = sound_file.getnframes()  # フレーム数を取得
-            self.sound_channles = sound_file.getnchannels()
-
-            sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
-            self.import_data = np.frombuffer(sound_data, dtype='int16')
 
             print("サウンド", self.import_data, len(self.import_data), self.sound_sampling_rate, self.sound_frame)
 

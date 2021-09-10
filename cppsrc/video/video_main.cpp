@@ -628,7 +628,7 @@ BOOST_PYTHON_MODULE(video_main)
   Py_Initialize();
   np::initialize();
   py::class_<VideoMain::VideoExecutionCenter>("VideoExecutionCenter",
-                                              py::init<py::dict, py::dict>())
+                                              py::init<py::dict, py::dict>()) // VideoExecutionCenterコンストラクタへの引数型
 
       //.def("sta", &VideoExecutionCenter::sta)
       .def("scene_setup", &VideoMain::VideoExecutionCenter::scene_setup)
