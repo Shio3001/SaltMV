@@ -216,7 +216,7 @@ class SceneOutput:
         pass
 
     def sound_stop(self):
-        pass
+        self.audio_control.sound_stop()
 
     def output_tk(self, frame, tk_cash=True, run=False):
         #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)

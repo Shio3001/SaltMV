@@ -29,6 +29,9 @@ class AudioControl:
 
         self.combined = np.full(1, 0, dtype=np.int16)
 
+        self.setup_flag = False  # 流す準備ができているかどうか
+        self.run_flag = False  # 現在流しているか
+
         #self.audio_data = 0
 
     def main(self, fps, frame_len, criterion_conversion_rate, criterion_sound_channles):
@@ -77,7 +80,9 @@ class AudioControl:
             vss = 0
             ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
             print("v.audio_data", v.audio_data)
-            self.combined[ss:es] = v.audio_data[vss:ves]
+            self.combined[ss:es] += v.audio_data[vss:ves]
+
+        self.setup_flag = True
 
     def upsampling(self, add_import_data, add_conversion_rate, after_conversion_rate=None):
 
@@ -132,9 +137,17 @@ class AudioControl:
         return new_base
 
     def sound_stop(self):
+        self.run_flag = False
         sounddevice.stop()
 
     def sound_run(self):
+        if not self.setup_flag or self.run_flag:
+            return
+
+        print("再生", self.combined, self.criterion_conversion_rate)
+
         sounddevice.play(self.combined, self.criterion_conversion_rate)
+
+        self.run_flag = True
 
 # https://qiita.com/sumita_v09/items/808a3f8506065639cf51

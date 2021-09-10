@@ -112,7 +112,7 @@ class CentralRole:
 
         return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
 
-        rendering_main_data.audio_control.add(rendering_main_data.effect_id, return_import_data, 40000, 1, self.installation_sta, self.installation_end)
+        rendering_main_data.audio_control.add(rendering_main_data.effect_id, return_import_data, self.sound_sampling_rate, 1, self.installation_sta, self.installation_end)
         rendering_main_data.audio_control.addition_process()
 
     def main(self, rendering_main_data):
@@ -139,7 +139,7 @@ class CentralRole:
         print("sound_init", self.latest_process_time)
 
     def sound_stop(self):
-        sounddevice.stop()
+        pass
 
     def sound(self, now_frame, sta_bool=False):
 
