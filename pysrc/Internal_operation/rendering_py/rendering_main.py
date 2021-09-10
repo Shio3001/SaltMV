@@ -242,7 +242,7 @@ class SceneOutput:
         #print(self.audio_preview_function_list, run)
 
         if run:
-            pass
+            self.audio_control.sound_run()
 
         object_group = self.cpp_encode.object_group_recovery()
         self.get_set_media_object_group(data=object_group)

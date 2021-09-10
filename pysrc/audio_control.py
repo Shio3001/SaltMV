@@ -6,6 +6,7 @@ import numpy as np
 import scipy
 import scipy.signal as signal
 import math
+import copy
 
 
 class AudioIndividual:
@@ -24,9 +25,9 @@ class AudioControl:
 
         self.audio_individual_data = {}
 
-        self.one_fps_samplingsize = 0
+        self.one_fps_samplingsize = 1
 
-        self.combined = []
+        self.combined = np.full(1, 0, dtype=np.int16)
 
         #self.audio_data = 0
 
@@ -36,10 +37,10 @@ class AudioControl:
         self.criterion_conversion_rate = criterion_conversion_rate
         self.criterion_sound_channles = criterion_sound_channles
 
-        self.one_fps_samplingsize = round(frame_len / fps)
+        self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
         self.combined_size = frame_len * self.criterion_conversion_rate * self.criterion_sound_channles
-        self.combined = np.full(self.combined_size, 0)
+        self.combined = np.full(self.combined_size, 0, dtype=np.int16)
 
     def add(self, effect_id, add_import_data: np.numarray, add_conversion_rate, sound_channles, sta_frame, end_frame):
 
@@ -67,15 +68,21 @@ class AudioControl:
 
     def addition_process(self):
 
-        self.combined = np.full(self.combined_size, 0)
+        self.combined = np.full(self.combined_size, 0, dtype=np.int16)
 
         audio_individual_data_values = list(self.audio_individual_data.values())
         for v in audio_individual_data_values:
             ss = v.sta_frame * self.one_fps_samplingsize * v.sound_channles
             es = v.end_frame * self.one_fps_samplingsize * v.sound_channles
-            self.combined[ss:es] = v.audio_data[:]
+            vss = 0
+            ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
+            print("v.audio_data", v.audio_data)
+            self.combined[ss:es] = v.audio_data[vss:ves]
 
     def upsampling(self, add_import_data, add_conversion_rate, after_conversion_rate=None):
+
+        print("add_import_data.dtype", add_import_data.dtype)
+
         if after_conversion_rate is None:
             after_conversion_rate = self.criterion_conversion_rate
 
@@ -127,7 +134,7 @@ class AudioControl:
     def sound_stop(self):
         sounddevice.stop()
 
-    def sound(self, ):
+    def sound_run(self):
         sounddevice.play(self.combined, self.criterion_conversion_rate)
 
 # https://qiita.com/sumita_v09/items/808a3f8506065639cf51
