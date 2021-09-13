@@ -8,6 +8,7 @@ import scipy.signal as signal
 import math
 import copy
 import cv2
+import librosa
 
 
 class AudioIndividual:
@@ -21,6 +22,9 @@ class AudioIndividual:
 
 class AudioControl:
     def __init__(self):
+
+        print("     **********AudioControl __init__")
+
         self.fps = 0
         self.criterion_conversion_rate = 0
         self.criterion_sound_channles = 0
@@ -29,7 +33,7 @@ class AudioControl:
 
         self.one_fps_samplingsize = 1
 
-        self.combined = np.full(1, 0, dtype=np.int16)
+        self.combined = np.full(1, 0, dtype=np.float32)
 
         self.setup_flag = False  # 流す準備ができているかどうか
         self.run_flag = False  # 現在流しているか
@@ -37,6 +41,8 @@ class AudioControl:
         #self.audio_data = 0
 
     def main(self, fps, frame_len, criterion_conversion_rate, criterion_sound_channles):
+        print("     **********AudioControl main")
+
         self.fps = fps
         self.frame_len = frame_len
         self.criterion_conversion_rate = criterion_conversion_rate
@@ -45,9 +51,11 @@ class AudioControl:
         self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
         self.combined_size = frame_len * self.criterion_conversion_rate * self.criterion_sound_channles
-        self.combined = np.full(self.combined_size, 0, dtype=np.int16)
+        self.combined = np.full(self.combined_size, 0, dtype=np.float32)
 
     def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
+
+        print("     **********AudioControl add")
 
         result_data = None
 
@@ -69,11 +77,15 @@ class AudioControl:
         self.audio_individual_data[effect_id] = AudioIndividual(result_data, sound_channles, sta_frame, end_frame, effect_id)
 
     def del_audio_individual_data(self, effect_id):
+
+        print("     **********AudioControl del_audio_individual_data")
+
         del self.audio_individual_data[effect_id]
 
     def addition_process(self):
+        print("     **********AudioControl addition_process")
 
-        self.combined = np.full(self.combined_size, 0, dtype=np.int16)
+        self.combined = np.full(self.combined_size, 0, dtype=np.float32)
 
         audio_individual_data_values = list(self.audio_individual_data.values())
         for v in audio_individual_data_values:
@@ -82,13 +94,16 @@ class AudioControl:
             vss = 0
             ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
             print("v.audio_data", v.audio_data)
+            print("ss, es, vss, ves", ss, es, vss, ves)
             self.combined[ss:es] += v.audio_data[vss:ves]
 
-            cv2.imwrite('../log/{0}.png'.format(v.effect_id), self.combined)
+            print("combined", self.combined)
+            print("self.combined[ss:es]", self.combined[ss:es])
 
         self.setup_flag = True
 
     def upsampling(self, add_import_data, add_conversion_rate, after_conversion_rate=None):
+        print("     **********AudioControl upsampling")
 
         print("add_import_data.dtype", add_import_data.dtype)
 
@@ -126,6 +141,8 @@ class AudioControl:
         return result_data
 
     def downsampling(self, add_import_data, add_conversion_rate):
+        print("     **********AudioControl downsampling")
+
         convert_rate = round(self.criterion_conversion_rate / add_conversion_rate)  # 1以上の値にならないといけない
         interpolation_sample_num = convert_rate - 1  # -1をしているのは
 
@@ -141,16 +158,26 @@ class AudioControl:
         return new_base
 
     def sound_stop(self):
+        print("     **********AudioControl sound_stop")
+
+        print("停止 sound_stop")
+
         self.run_flag = False
         sounddevice.stop()
 
-    def sound_run(self):
+    def sound_run(self, now_frame):
+        print("     **********AudioControl sound_run")
+
         if not self.setup_flag or self.run_flag:
             return
 
-        print("再生", self.combined, self.criterion_conversion_rate)
+        sound_channles = 1
 
-        sounddevice.play(self.combined, self.criterion_conversion_rate)
+        ss = now_frame * self.one_fps_samplingsize * sound_channles
+
+        print("再生", self.combined[ss:-1], self.criterion_conversion_rate)
+
+        sounddevice.play(self.combined[ss:-1], self.criterion_conversion_rate)
 
         self.run_flag = True
 

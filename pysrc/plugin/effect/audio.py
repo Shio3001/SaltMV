@@ -7,7 +7,7 @@ import cv2
 
 import sounddevice
 import wave
-#import librosa
+import librosa
 
 import numpy as np
 import time
@@ -71,19 +71,23 @@ class CentralRole:
 
                 #self.import_data = rendering_main_data.get_file_all_control(file_name).audio_numpy
             else:
-                sound_file = wave.open(file_name)
+                #sound_file = wave.open(file_name)
 
-                self.sound_sampling_rate = sound_file.getframerate()
-                self.sound_frame = sound_file.getnframes()  # フレーム数を取得
-                self.sound_channles = sound_file.getnchannels()
+                #self.sound_sampling_rate = sound_file.getframerate()
+                # self.sound_frame = sound_file.getnframes()  # フレーム数を取得
+                #self.sound_channles = sound_file.getnchannels()
+                # sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
+                #self.import_data = np.frombuffer(sound_data, dtype='int16')
 
-                sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
-                self.import_data = np.frombuffer(sound_data, dtype='int16')
+                self.import_data, sr = librosa.load(file_name, sr=44100,mono=False)
+                self.sound_sampling_rate = 44100
+                self.sound_channles = 1
+                self.sound_frame = len(self.import_data) / self.sound_channles
 
                 rendering_main_data.add_file_all_control(file_name, SendFileAudio(self.import_data, self.sound_sampling_rate, self.sound_frame, self.sound_channles))
             #data, samplerate = sf.read('existing_file.wav')
 
-            print("サウンド", self.import_data, len(self.import_data), self.sound_sampling_rate, self.sound_frame)
+            print("サウンド", self.import_data, len(self.import_data), self.sound_sampling_rate, self.sound_frame, self.sound_channles)
 
             # file_list
 
