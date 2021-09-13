@@ -82,6 +82,10 @@ class AudioControl:
 
         del self.audio_individual_data[effect_id]
 
+    def edit_installation(self,effect_id,sta_frame,end_frame):
+        self.audio_individual_data[effect_id].sta_frame = sta_frame
+        self.audio_individual_data[effect_id].end_frame = end_frame
+
     def addition_process(self):
         print("     **********AudioControl addition_process")
 
