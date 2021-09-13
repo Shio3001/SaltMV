@@ -32,8 +32,6 @@ class EffectPluginElements:
         self.audio_control = operation["audio_control"]
         self.effect_id = effect_id
 
-        self.audio_control.main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], 1)
-
         print("audio_control", self.audio_control)
 
         self.draw_size = {"x": self.draw.shape[1], "y": self.draw.shape[0]}
@@ -132,6 +130,8 @@ class SceneOutput:
         self.frame = int(self.scene.editor["len"])
         self.preview = self.scene.editor["preview"]
         print("self.scene.editor", self.scene.editor)
+
+        operation["audio_control"].main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], 1)
 
         self.operation = operation
 
