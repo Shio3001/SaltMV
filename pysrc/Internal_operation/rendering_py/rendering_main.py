@@ -278,8 +278,8 @@ class SceneOutput:
     def image_tk_init(self, sta, end):
         self.data_image_tk = [None] * self.frame
 
-    # def image_stack(self):
-    #    self.data_image_tk = [None] * self.frame
+    def image_stack(self):
+        self.data_image_tk = [None] * self.frame
         #self.data_iamge = [None] * self.frame
 
     def output_OpenCV(self, sta=None, end=None):

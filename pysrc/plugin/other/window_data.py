@@ -23,6 +23,7 @@ class SendWindowData:  # window生成のためのデータ
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
+            self.window.protocol('WM_DELETE_WINDOW', (lambda: 'pass')())
         else:
             self.window = tk.Tk()
 
