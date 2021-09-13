@@ -166,8 +166,9 @@ class SceneOutput:
         self.fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
         self.size = (self.x, self.y)
         self.temp_path = "pysrc/Internal_operation/rendering_py/temp"
-        self.output_temp_file_path = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
-        self.writer = cv2.VideoWriter(self.output_temp_file_path, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
+        self.output_temp_file_path_mp4 = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
+        self.output_temp_file_path_wav = "{0}/temp_nonsound_temp.wav".format(self.temp_path)
+        self.writer = cv2.VideoWriter(self.output_temp_file_path_mp4, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
         #self.audio_preview_function_list = []
 
         self.audio_control = operation["audio_control"]
@@ -330,7 +331,11 @@ class SceneOutput:
 
         print("音源処理開始 [ffmpeg - python] *********")
 
-        #output_temp_file = ffmpeg.input(self.output_temp_file_path)
+        print("audio_control", self.audio_control)
+
+        self.audio_control.output_audio_file(self.output_temp_file_path_wav)
+
+        #output_temp_file = ffmpeg.input(self.output_temp_file_path_mp4)
         #silence_audio = output_temp_file.audio
 
         # for a in self.audio_preview_function_list:
@@ -344,13 +349,13 @@ class SceneOutput:
 
         #now_time = datetime.datetime.now()
         #temp_sound_file_name = "{0}/{1}_{2}.wav".format(self.temp_path, str(uuid.uuid1()), str(now_time.strftime('%y%m%H%M%S%f')))
-        #os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path, temp_sound_file_name,sta,end))
+        #os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path_mp4, temp_sound_file_name,sta,end))
 
         #file_data = ffmpeg.input(file_name)
 
         print("音源処理終了 [ffmpeg - python] *********")
 
-        os.system("rm -rf {0}".format(self.temp_path))
+        #os.system("rm -rf {0}".format(self.temp_path))
 
         print("")
         print("終了 所要時間 : {0}".format(print_time()))

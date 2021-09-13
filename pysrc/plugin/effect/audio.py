@@ -25,7 +25,7 @@ class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = "音声"
         setting_effect.effect_point = {}
-        setting_effect.various_fixed = {"path": ""}
+        setting_effect.various_fixed = {"path": "", "start_f": 0}
         setting_effect.procedure = CentralRole()
 
         setting_effect.audio = True
@@ -54,6 +54,8 @@ class CentralRole:
 
         self.run_flag = False
 
+        self.start_f = None
+
         #self.mode = None
 
     def setup(self, rendering_main_data, file_name):
@@ -79,7 +81,7 @@ class CentralRole:
                 # sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
                 #self.import_data = np.frombuffer(sound_data, dtype='int16')
 
-                self.import_data, sr = librosa.load(file_name, sr=44100,mono=False)
+                self.import_data, sr = librosa.load(file_name, sr=44100, mono=False)
                 self.sound_sampling_rate = 44100
                 self.sound_channles = 1
                 self.sound_frame = len(self.import_data) / self.sound_channles
@@ -103,16 +105,22 @@ class CentralRole:
 
         print("読み込み状況 :", self.open_status)
 
+        self.setup_audio_control(rendering_main_data)
+
+    def setup_audio_control(self, rendering_main_data):
+
         if not self.open_status:
             return
 
-        now_second = self.installation_sta / self.fps
-        end_second = self.installation_end / self.fps
+        self.start_f = int(copy.deepcopy(rendering_main_data.various_fixed["start_f"]))
+
+        now_inside_second = self.start_f / self.fps
+        end_inside_second = (self.start_f + self.installation_end - self.installation_sta) / self.fps
 
         conversion_rate = self.sound_channles * self.sound_sampling_rate
 
-        now_sound_rate_now = round(now_second * conversion_rate)
-        now_sound_rate_end = round(end_second * conversion_rate)
+        now_sound_rate_now = round(now_inside_second * conversion_rate)
+        now_sound_rate_end = round(end_inside_second * conversion_rate)
 
         return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
 
@@ -130,7 +138,8 @@ class CentralRole:
         if path != self.now_file or not self.open_status:
             self.setup(rendering_main_data, path)
 
-        # self.sound(rendering_main_data.b_now_time)
+        if int(rendering_main_data.various_fixed["start_f"]) != self.start_f:
+            self.setup_audio_control(rendering_main_data)
 
         return rendering_main_data.draw, self.starting_point
 

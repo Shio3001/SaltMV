@@ -5,6 +5,7 @@ import numpy as np
 
 import scipy
 import scipy.signal as signal
+from scipy.io.wavfile import write as scipy_write
 import math
 import copy
 import cv2
@@ -50,7 +51,7 @@ class AudioControl:
 
         self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
-        self.combined_size = frame_len * self.criterion_conversion_rate * self.criterion_sound_channles
+        self.combined_size = frame_len * self.one_fps_samplingsize * self.criterion_sound_channles
         self.combined = np.full(self.combined_size, 0, dtype=np.float32)
 
     def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
@@ -82,7 +83,7 @@ class AudioControl:
 
         del self.audio_individual_data[effect_id]
 
-    def edit_installation(self,effect_id,sta_frame,end_frame):
+    def edit_installation(self, effect_id, sta_frame, end_frame):
         self.audio_individual_data[effect_id].sta_frame = sta_frame
         self.audio_individual_data[effect_id].end_frame = end_frame
 
@@ -184,5 +185,12 @@ class AudioControl:
         sounddevice.play(self.combined[ss:-1], self.criterion_conversion_rate)
 
         self.run_flag = True
+
+    def output_audio_file(self, path):
+        print("     **********AudioControl output_audio_file")
+
+        #librosa.output.write_wav(path,self.combined, self.criterion_conversion_rate)
+        scipy_write(path, self.criterion_conversion_rate, self.combined)
+
 
 # https://qiita.com/sumita_v09/items/808a3f8506065639cf51
