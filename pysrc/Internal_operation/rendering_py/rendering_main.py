@@ -314,6 +314,8 @@ class SceneOutput:
 
         #np_zero = ""
 
+        # self.audio_control.addition_process()
+
         for f in range(sta, end):
 
             f_time_sta = datetime.datetime.now()
@@ -333,6 +335,7 @@ class SceneOutput:
 
         print("audio_control", self.audio_control)
 
+        self.audio_control.addition_process()
         self.audio_control.output_audio_file(self.output_temp_file_path_wav)
 
         #output_temp_file = ffmpeg.input(self.output_temp_file_path_mp4)

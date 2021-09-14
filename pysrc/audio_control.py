@@ -105,6 +105,8 @@ class AudioControl:
             print("combined", self.combined)
             print("self.combined[ss:es]", self.combined[ss:es])
 
+        print("音源総和", np.sum(self.combined))
+
         self.setup_flag = True
 
     def upsampling(self, add_import_data, add_conversion_rate, after_conversion_rate=None):
