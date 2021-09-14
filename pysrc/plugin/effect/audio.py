@@ -138,7 +138,13 @@ class CentralRole:
         if path != self.now_file or not self.open_status:
             self.setup(rendering_main_data, path)
 
-        if int(rendering_main_data.various_fixed["start_f"]) != self.start_f:
+        elif int(rendering_main_data.various_fixed["start_f"]) != self.start_f:
+            self.setup_audio_control(rendering_main_data)
+
+        sf, ef = rendering_main_data.audio_control.get_installation(rendering_main_data.effect_id)
+        installation_consistency = sf == self.installation_sta and ef == self.installation_end
+
+        if not installation_consistency:
             self.setup_audio_control(rendering_main_data)
 
         return rendering_main_data.draw, self.starting_point

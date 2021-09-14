@@ -56,7 +56,7 @@ class AudioControl:
 
     def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
 
-        print("     **********AudioControl add")
+        print("     **********AudioControl add", effect_id)
 
         result_data = None
 
@@ -87,8 +87,11 @@ class AudioControl:
         self.audio_individual_data[effect_id].sta_frame = sta_frame
         self.audio_individual_data[effect_id].end_frame = end_frame
 
+    def get_installation(self, effect_id):
+        return self.audio_individual_data[effect_id].sta_frame, self.audio_individual_data[effect_id].end_frame
+
     def addition_process(self):
-        print("     **********AudioControl addition_process")
+        print("     **********AudioControl addition_process", len(list(self.audio_individual_data.values())))
 
         self.combined = np.full(self.combined_size, 0, dtype=np.float32)
 
