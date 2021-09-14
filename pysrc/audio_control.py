@@ -54,6 +54,12 @@ class AudioControl:
         self.combined_size = frame_len * self.one_fps_samplingsize * self.criterion_sound_channles
         self.combined = np.full(self.combined_size, 0, dtype=np.float32)
 
+    def audio_individual_data_existence(self, effect_id):
+        keys = self.audio_individual_data.keys()
+
+        existence_bool = effect_id in keys
+        return existence_bool
+
     def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
 
         print("     **********AudioControl add", effect_id)

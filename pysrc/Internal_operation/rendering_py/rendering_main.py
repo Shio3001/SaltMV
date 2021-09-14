@@ -168,7 +168,7 @@ class SceneOutput:
         self.temp_path = "pysrc/Internal_operation/rendering_py/temp"
         self.output_temp_file_path_mp4 = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
         self.output_temp_file_path_wav = "{0}/temp_nonsound_temp.wav".format(self.temp_path)
-        self.writer = cv2.VideoWriter(self.output_temp_file_path_mp4, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
+
         #self.audio_preview_function_list = []
 
         self.audio_control = operation["audio_control"]
@@ -284,7 +284,9 @@ class SceneOutput:
         #self.data_iamge = [None] * self.frame
 
     def output_OpenCV(self, sta=None, end=None):
+
         os.system("mkdir {0}".format(self.temp_path))
+        self.writer = cv2.VideoWriter(self.output_temp_file_path_mp4, self.fmt, self.scene.editor["fps"], self.size)  # ライター作成
 
         def print_percent():
 
@@ -338,6 +340,17 @@ class SceneOutput:
         self.audio_control.addition_process()
         self.audio_control.output_audio_file(self.output_temp_file_path_wav)
 
+        os.system("ffmpeg -i {0} -i {1} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 {2}".format(self.output_temp_file_path_mp4, self.output_temp_file_path_wav, self.path))
+
+        # # 映像の読み込み
+        # instream_v = ffmpeg.input(self.output_temp_file_path_mp4)
+        # # 音声の読み込み
+        # instream_a = ffmpeg.input(self.output_temp_file_path_wav)
+        # # コーデックと出力ファイルの指定
+        # stream = ffmpeg.output(instream_v, instream_a, self.path, vcodec="copy", acodec="copy")
+        # # 実行
+        # ffmpeg.run(stream)
+
         #output_temp_file = ffmpeg.input(self.output_temp_file_path_mp4)
         #silence_audio = output_temp_file.audio
 
@@ -358,7 +371,7 @@ class SceneOutput:
 
         print("音源処理終了 [ffmpeg - python] *********")
 
-        #os.system("rm -rf {0}".format(self.temp_path))
+        os.system("rm -rf {0}".format(self.temp_path))
 
         print("")
         print("終了 所要時間 : {0}".format(print_time()))

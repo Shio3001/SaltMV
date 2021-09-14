@@ -10,6 +10,7 @@ import asyncio
 # self.edit_data.now_scene = 0  # 現在の操作シーン
 import threading
 from concurrent.futures.thread import ThreadPoolExecutor
+import datetime
 
 
 class Storage:
@@ -225,6 +226,14 @@ class Storage:
         target_layer_id = copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][1])
         new_copy_obj.effect_point_internal_id_time = {}
         new_copy_obj.obj_id = elements.make_id("obj_copy_{0}".format(new_copy_obj.obj_id))
+
+        now_time = datetime.datetime.now()
+
+        for ev in new_copy_obj.effect_group.values():
+            now_t = now_time.strftime('%y%m%H%M%S%f')
+
+            ev.effect_id += "_copy{0}".format(now_t)
+
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id] = [None, None]
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][0] = new_copy_obj
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][1] = target_layer_id
