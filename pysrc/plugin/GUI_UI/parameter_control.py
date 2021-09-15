@@ -13,7 +13,7 @@ class parts:
         pos_y_normal = box_size + gap
         sta_point = 10
 
-        new_button_for_parameter_control = UI_data.all_UI_data.callback_operation.get_event("new_button_for_parameter_control")[0]
+        new_button_for_parameter_control = UI_data.edit_data_control.callback_operation.get_event("new_button_for_parameter_control")[0]
         UI_data.button_parameter_control = new_button_for_parameter_control()  # effect_controller ←40行付近呼び出し先
 
         # UI_data.callback_operation = UI_data.operation["plugin"]["other"]["callback"].CallBackOne()
@@ -59,7 +59,7 @@ class parts:
             click_effect_point = (UI_data.background_mouse[1]-sta_point) // pos_y_normal
             UI_data.color_edit(click_effect_point, push_color="#1111ff")
             UI_data.window.update()
-            UI_data.all_UI_data.callback_operation.event("element_ui_all_del")
+            UI_data.edit_data_control.callback_operation.event("element_ui_all_del")
 
             # print("開始")
 

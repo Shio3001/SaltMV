@@ -14,7 +14,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
                  window,
                  canvas_data,
                  common_control,
-                 all_data,
+                 edit_data_control,
                  all_UI_data,
                  GUI_base_color,
                  GUI_alpha_color,
@@ -33,8 +33,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.window = window
         self.canvas_data = canvas_data
-        self.all_data = all_data
-        self.operation = all_data.operation
+        self.edit_data_control = edit_data_control
+        self.operation = edit_data_control.operation
         self.all_UI_data = all_UI_data
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
@@ -63,7 +63,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.operation["log"].write("UIdata生成")
         self.operation_timeline_calculation = self.operation["plugin"]["other"]["timeline_calculation"]
 
-        self.uidata_id = self.all_data.elements.make_id("ui_data")
+        self.uidata_id = self.edit_data_control.elements.make_id("ui_data")
 
         self.callback_operation = self.operation["plugin"]["other"]["callback"].CallBack()
 

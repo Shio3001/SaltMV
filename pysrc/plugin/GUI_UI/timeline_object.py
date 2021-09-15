@@ -10,20 +10,20 @@ import asyncio
 class KeyFrame:
     def __init__(self, UI_data, size, center_x, center_y, uu_id):
         # print(" * * * * * * * * * * keyframe設定", UI_data.option_data["media_id"])
-        self.uu_id = UI_data.all_UI_data.elements.make_id("keyframe") if uu_id is None else uu_id
+        self.uu_id = UI_data.edit_data_control.elements.make_id("keyframe") if uu_id is None else uu_id
 
         UI_data.new_diagram(self.uu_id)
 
         UI_data.set_shape_rhombus(self.uu_id, size, 100, 100)  # ひし形
         self.callback_operation = UI_data.operation["plugin"]["other"]["callback"].CallBack()
 
-        UI_data.all_UI_data.add_key_frame(0, UI_data.option_data["media_id"], self.uu_id)
+        UI_data.edit_data_control.add_key_frame(0, UI_data.option_data["media_id"], self.uu_id)
 
         def draw(send):
             sub_name, pos_px = send
             now = UI_data.edit_diagram_position(sub_name, x=pos_px)
             UI_data.diagram_draw(sub_name)
-            UI_data.all_UI_data.move_key_frame(UI_data.pxf.sub_point_f[self.uu_id], UI_data.option_data["media_id"], self.uu_id)
+            UI_data.edit_data_control.move_key_frame(UI_data.pxf.sub_point_f[self.uu_id], UI_data.option_data["media_id"], self.uu_id)
 
             print("sub_point_f", UI_data.pxf.sub_point_f[self.uu_id], pos_px)
 
@@ -58,7 +58,7 @@ class KeyFrame:
 
             # print(self.uu_id)
 
-            # self.key_frame_time_old_data = UI_data.all_UI_data.get_key_frame(UI_data.option_data["media_id"])
+            # self.key_frame_time_old_data = UI_data.edit_data_control.get_key_frame(UI_data.option_data["media_id"])
 
         def click_position(event):
             if not self.click_flag:
@@ -100,14 +100,14 @@ class KeyFrame:
 
             # ###print("thisdel")
             if info:
-                #self.key_frame_time_old_data = UI_data.all_UI_data.get_key_frame(UI_data.option_data["media_id"])
+                #self.key_frame_time_old_data = UI_data.edit_data_control.get_key_frame(UI_data.option_data["media_id"])
                 # key_frame_id = self.uu_id
                 # UI_data.stack_add("frame", (self.key_frame_time_old_data, UI_data.option_data["media_id"], key_frame_id))
                 UI_data.stack_add_timelime_keyframe(add_type="del", media_id=UI_data.option_data["media_id"])
 
                 # UI_data.stack_add("frame", (self.key_frame_time_old_data, UI_data.option_data["media_id"]))
 
-            UI_data.all_UI_data.del_key_frame_point(UI_data.option_data["media_id"], self.uu_id)
+            UI_data.edit_data_control.del_key_frame_point(UI_data.option_data["media_id"], self.uu_id)
 
             UI_data.del_diagram(self.uu_id)
             UI_data.pxf.del_sub_point(self.uu_id)
@@ -186,8 +186,8 @@ class parts:
             UI_data.edit_diagram_position("bar", x=px_pos)
             UI_data.edit_diagram_size("bar", x=px_size)
             UI_data.territory_draw()
-            UI_data.all_UI_data.move_key_frame(UI_data.pxf.ratio_f[0], UI_data.option_data["media_id"], "default_sta")
-            UI_data.all_UI_data.move_key_frame(UI_data.pxf.ratio_f[0] + UI_data.pxf.ratio_f[1], UI_data.option_data["media_id"], "default_end")
+            UI_data.edit_data_control.move_key_frame(UI_data.pxf.ratio_f[0], UI_data.option_data["media_id"], "default_sta")
+            UI_data.edit_data_control.move_key_frame(UI_data.pxf.ratio_f[0] + UI_data.pxf.ratio_f[1], UI_data.option_data["media_id"], "default_end")
 
         UI_data.pxf.callback_operation.set_event("draw_func", draw)
 
@@ -195,12 +195,12 @@ class parts:
 
         def media_object_del(stack=True):
 
-            # UI_data.all_UI_data.callback_operation.event("element_ui_all_del")
+            # UI_data.edit_data_control.callback_operation.event("element_ui_all_del")
 
-            UI_data.all_UI_data.callback_operation.get_event("media_lord")[0](del_all=True)
+            UI_data.edit_data_control.callback_operation.get_event("media_lord")[0](del_all=True)
 
             if stack:
-                # old_data = UI_data.all_UI_data.media_object_had_layer(UI_data.option_data["media_id"])
+                # old_data = UI_data.edit_data_control.media_object_had_layer(UI_data.option_data["media_id"])
                 UI_data.stack_add_timelime_media(add_type="del", media_id=UI_data.option_data["media_id"])
                 # UI_data.stack_add_timelime_media(add_type="del", media_id=UI_data.option_data["media_id"])
 
@@ -235,10 +235,10 @@ class parts:
 
         def add_key_frame():
             UI_data.stack_add_timelime_keyframe(add_type="add", media_id=UI_data.option_data["media_id"])
-            # self.key_frame_time_old_data = UI_data.all_UI_data.get_key_frame(UI_data.option_data["media_id"])
+            # self.key_frame_time_old_data = UI_data.edit_data_control.get_key_frame(UI_data.option_data["media_id"])
 
             new_key_frame = make_KeyFrame()
-            UI_data.all_UI_data.add_key_frame(UI_data.pxf.sub_point_f[new_key_frame.uu_id], UI_data.option_data["media_id"], new_key_frame.uu_id)
+            UI_data.edit_data_control.add_key_frame(UI_data.pxf.sub_point_f[new_key_frame.uu_id], UI_data.option_data["media_id"], new_key_frame.uu_id)
 
             # ckey_frame_id = new_key_frame.uu_id
             # UI_data.stack_add("frame", (self.key_frame_time_old_data, UI_data.option_data["media_id"], key_frame_id))
@@ -253,7 +253,7 @@ class parts:
             effect_user_list = ["エフェクト"]
 
             for k in effect_dict.keys():
-                effect_get = EffectGet(UI_data.all_data, UI_data.option_data["media_id"], k, UI_data.stack_add_timelime_effect)
+                effect_get = EffectGet(UI_data.edit_data_control, UI_data.option_data["media_id"], k, UI_data.stack_add_timelime_effect)
                 effect_user_list.append(k)
                 effect_user_list.append(effect_get.add_element)
 
@@ -262,7 +262,7 @@ class parts:
             synthetic_user_list = ["合成方式"]
 
             for k in synthetic_dict.keys():
-                synthetic_get = SyntheticGet(UI_data.all_data, UI_data.option_data["media_id"], k)
+                synthetic_get = SyntheticGet(UI_data.edit_data_control, UI_data.option_data["media_id"], k)
                 synthetic_user_list.append(k)
                 synthetic_user_list.append(synthetic_get.edit_synthetic)
 
@@ -316,7 +316,7 @@ class parts:
             send_data.now_f = UI_data.now_f_click_start_for_parameter_control
             send_data.media_id = UI_data.option_data["media_id"]
             send_data.stack_add_timelime_effect = UI_data.stack_add_timelime_effect
-            UI_data.all_UI_data.callback_operation.get_event("media_lord")[0](send_data)
+            UI_data.edit_data_control.callback_operation.get_event("media_lord")[0](send_data)
 
         UI_data.send_parameter_control = send_parameter_control
         UI_data.click_move_stack_flag = False
@@ -343,8 +343,8 @@ class parts:
             send_data.now_f = UI_data.now_f_click_start_for_parameter_control
             send_data.media_id = UI_data.option_data["media_id"]
             send_data.stack_add_timelime_effect = UI_data.stack_add_timelime_effect
-            UI_data.all_UI_data.callback_operation.get_event("media_lord")[0](send_data)
-            UI_data.all_UI_data.callback_operation.event("automatic_opening", info=key_number)
+            UI_data.edit_data_control.callback_operation.get_event("media_lord")[0](send_data)
+            UI_data.edit_data_control.callback_operation.event("automatic_opening", info=key_number)
 
         UI_data.window_event_data["add"]("Key", click_effect_shortcut)
 
@@ -352,7 +352,7 @@ class parts:
 
             print("click_start")
 
-            UI_data.click_start_sta_layer = UI_data.all_UI_data.get_now_layer_id(UI_data.option_data["media_id"])
+            UI_data.click_start_sta_layer = UI_data.edit_data_control.get_now_layer_id(UI_data.option_data["media_id"])
 
             if UI_data.mov_lock:
                 return
@@ -379,13 +379,13 @@ class parts:
             # send_UI_data.text_a_return = text_a_return
             # send_UI_data.text_b_return = text_b_return
 
-            # func = UI_data.all_UI_data.callback_operation.get_event("media_lord")[0]
-            # thread_1 = UI_data.all_UI_data.threading.Thread(target=func, args=(send_data,))
+            # func = UI_data.edit_data_control.callback_operation.get_event("media_lord")[0]
+            # thread_1 = UI_data.edit_data_control.threading.Thread(target=func, args=(send_data,))
             # thread_1.start()
 
             send_parameter_control()
 
-            # UI_data.click_start_old_media_data = UI_data.all_UI_data.media_object_had_layer(UI_data.option_data["media_id"])
+            # UI_data.click_start_old_media_data = UI_data.edit_data_control.media_object_had_layer(UI_data.option_data["media_id"])
 
             # ###print("非同期")
 
@@ -457,7 +457,7 @@ class parts:
             UI_data.callback_operation.event("mov", info=UI_data.pxf.get_event_data())
 
         def click_end(event):
-            UI_data.click_start_end_layer = UI_data.all_UI_data.get_now_layer_id(UI_data.option_data["media_id"])
+            UI_data.click_start_end_layer = UI_data.edit_data_control.get_now_layer_id(UI_data.option_data["media_id"])
 
             if UI_data.click_start_sta_layer != UI_data.click_start_end_layer:
                 UI_data.click_move_stack_flag = True
@@ -499,25 +499,25 @@ class parts:
 
 
 class SyntheticGet:
-    def __init__(self, all_data, media_id, synthetic_key):
-        self.all_data = all_data
+    def __init__(self, edit_data_control, media_id, synthetic_key):
+        self.edit_data_control = edit_data_control
         self.media_id = media_id
         self.synthetic_key = synthetic_key
 
     def edit_synthetic(self):
-        self.all_UI_data.edit_effect_synthetic(self.media_id, self.synthetic_key)
+        self.edit_data_control.edit_effect_synthetic(self.media_id, self.synthetic_key)
 
 
 class EffectGet:
-    def __init__(self, all_data, media_id, effect_key, stack_add_timelime_effect):
-        self.all_data = all_data
+    def __init__(self, edit_data_control, media_id, effect_key, stack_add_timelime_effect):
+        self.edit_data_control = edit_data_control
         self.effect_key = effect_key
         self.media_id = media_id
         self.stack_add_timelime_effect = stack_add_timelime_effect
 
     def add_element(self):
         self.stack_add_timelime_effect(add_type="effect_add", media_id=self.media_id)
-        self.all_UI_data.add_effect_elements(self.media_id, self.effect_key)
+        self.edit_data_control.add_effect_elements(self.media_id, self.effect_key)
 
 
 class ParameterSendData:
