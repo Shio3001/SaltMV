@@ -26,7 +26,7 @@ class UIManagement:
 
     def new_parameter_ui(self, now, parts_name=None, canvas_name=None):  # UIパーツを追加する
         if now >= int(len(self.ui_list)):
-            ui_id = self.data.all_data.elements.make_id("parameter_UI")
+            ui_id = self.data.edit_data_control.elements.make_id("parameter_UI")
             self.ui_list.append(None)
             self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=parts_name)
 

@@ -2,29 +2,29 @@ class parts:
     def __init__(self):
         print("")
 
-    def UI_set(self, data):
+    def UI_set(self, UI_data):
 
-        data.callback_operation = data.operation["plugin"]["other"]["callback"].CallBack()
+        UI_data.callback_operation = UI_data.operation["plugin"]["other"]["callback"].CallBack()
 
-        data.edit_territory_position(x=100, y=100)
-        data.edit_territory_size(x=100, y=20)
-        data.new_diagram("background")
+        UI_data.edit_territory_position(x=100, y=100)
+        UI_data.edit_territory_size(x=100, y=20)
+        UI_data.new_diagram("background")
 
-        data.edit_diagram_fill("background", True)
-        data.edit_diagram_color("background", "#ffffff")
+        UI_data.edit_diagram_fill("background", True)
+        UI_data.edit_diagram_color("background", "#ffffff")
 
-        data.new_diagram("text", diagram_type="text")
-        data.edit_diagram_text("text", text="てすと", center=True, font_size=20)
+        UI_data.new_diagram("text", diagram_type="text")
+        UI_data.edit_diagram_text("text", text="てすと", center=True, font_size=20)
 
-        data.diagram_stack("text", True)
+        UI_data.diagram_stack("text", True)
 
-        data.territory_draw()
+        UI_data.territory_draw()
 
         def click(event=None):
-            # print(data.option_data)
+            # print(UI_data.option_data)
             print("button_click通過")
-            data.callback_operation.event("button", info=data.option_data)
+            UI_data.callback_operation.event("button", info=UI_data.option_data)
 
-        data.add_territory_event("ButtonPress-1", click)
+        UI_data.add_territory_event("ButtonPress-1", click)
 
-        return data
+        return UI_data

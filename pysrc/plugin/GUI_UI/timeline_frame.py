@@ -1,5 +1,5 @@
 class parts:
-    def UI_set(self, data):
+    def UI_set(self, UI_data):
         pass
 
-        return data
+        return UI_data

@@ -1,9 +1,9 @@
 class parts:
-    def UI_set(self, data):
+    def UI_set(self, UI_data):
 
-        data = data.operation["plugin"]["other"]["scroll"].CentralRole().main(data, 0)
+        UI_data = UI_data.operation["plugin"]["other"]["scroll"].CentralRole().main(UI_data, 0)
 
-        #data.set_pxf_slope(sta_px=400, end_px=20, space=10)
-        #data.edit_percentage_percentage(position=0, size=50)
+        #UI_data.set_pxf_slope(sta_px=400, end_px=20, space=10)
+        #UI_data.edit_percentage_percentage(position=0, size=50)
 
-        return data
+        return UI_data

@@ -9,22 +9,24 @@ import cv2
 
 class InitialValue:
     def __init__(self, data):
-        self.data = data
-        self.operation = self.data.operation
-        #self.all_elements = self.data.all_elements
-        #self.elements = self.data.elements
-        self.tk = self.data.tk
+        self.window_control = data
+        self.operation = self.window_control.operation
+        #self.all_elements = self.window_control.all_elements
+        #self.elements = self.window_control.elements
+        self.tk = self.window_control.tk
 
-        self.UI_parts = self.data.UI_parts  # パーツひとつひとつのデータ
+        self.UI_parts = self.window_control.UI_parts  # パーツひとつひとつのデータ
 
         self.preview_image_tk = None
-        # self.UI_operation = self.data.UI_operation  # パーツを整形するためのデータ
+
+        self.save_path = None
+        # self.UI_operation = self.window_control.UI_operation  # パーツを整形するためのデータ
 
     def main(self):
 
-        self.data.new_canvas("gui_main")
-        self.data.edit_canvas_size("gui_main", x=640, y=360)
-        self.data.edit_canvas_position("gui_main", x=0, y=0)
+        self.window_control.new_canvas("gui_main")
+        self.window_control.edit_canvas_size("gui_main", x=640, y=360)
+        self.window_control.edit_canvas_position("gui_main", x=0, y=0)
 
         self.operation["log"].write("メイン画面起動")
 
@@ -43,39 +45,43 @@ class InitialValue:
         def send_open(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send
             print("send_open", editor_func_send)
-            self.data.all_data.file_input(editor_func_val)
+            self.save_path = self.window_control.edit_data_control.file_input(editor_func_val)
 
         def send_save(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send
             print("send_save", editor_func_send)
-            self.data.all_data.file_output(editor_func_val)
+            self.save_path = self.window_control.edit_data_control.file_output(editor_func_val)
 
         def project_open():
-            self.data.all_data.callback_operation.set_event("text_input_end", send_open, duplicate=False)
-            self.data.all_data.callback_operation.event("set_init_val", info="")
-            self.data.all_data.callback_operation.event("text_input_request", info="ファイルを入力")
+            self.window_control.edit_data_control.callback_operation.set_event("text_input_end", send_open, duplicate=False)
+            self.window_control.edit_data_control.callback_operation.event("set_init_val", info="")
+            self.window_control.edit_data_control.callback_operation.event("text_input_request", info="ファイルを入力")
 
-            # self.data.all_data.add_layer_elements()
+            # self.window_control.edit_data_control.add_layer_elements()
 
         def project_save():
-            self.data.all_data.callback_operation.set_event("text_input_end", send_save, duplicate=False)
-            self.data.all_data.callback_operation.event("set_init_val", info="")
-            self.data.all_data.callback_operation.event("text_input_request", info="保存先を入力")
+            self.window_control.edit_data_control.callback_operation.set_event("text_input_end", send_save, duplicate=False)
+            self.window_control.edit_data_control.callback_operation.event("set_init_val", info="")
+            self.window_control.edit_data_control.callback_operation.event("text_input_request", info="保存先を入力")
 
         def project_overwrite_save():
-            pass
+            print("send_save")
+            if not self.save_path is None:
+                self.window_control.edit_data_control.file_output(self.save_path)
+            else:
+                project_save()
 
-        preview_screen = self.data.new_parts("gui_main", "view", parts_name="pillow_view")
+        preview_screen = self.window_control.new_parts("gui_main", "view", parts_name="pillow_view")
         preview_screen.size_update(640, 360)
 
         def preview_setup():
-            self.operation["rendering_py"]["main"].set(self.operation, self.data.all_data.scene, self.data.all_data.media_object_group)
+            self.operation["rendering_py"]["main"].set(self.operation, self.window_control.edit_data_control.scene, self.window_control.edit_data_control.media_object_group)
 
-            scene_id = self.data.all_data.scene_id()
+            scene_id = self.window_control.edit_data_control.scene_id()
             print("preview_setup", scene_id)
             self.make_preview_data = self.operation["rendering_py"]["main"].make(scene_id, "../log/test.mp4")
 
-        self.data.all_data.callback_operation.set_event("preview_setup", preview_setup)
+        self.window_control.edit_data_control.callback_operation.set_event("preview_setup", preview_setup)
 
         preview_setup()
 
@@ -117,30 +123,30 @@ class InitialValue:
         def cash_clear():
             self.make_preview_data.image_stack()
 
-        self.data.all_data.callback_operation.set_event("preview", preview)
-        self.data.all_data.callback_operation.set_event("sound_init", sound_init)
-        self.data.all_data.callback_operation.set_event("sound_stop", sound_stop)
-        #self.data.all_data.callback_operation.set_event("make_preview_data", get_make_preview_data)
+        self.window_control.edit_data_control.callback_operation.set_event("preview", preview)
+        self.window_control.edit_data_control.callback_operation.set_event("sound_init", sound_init)
+        self.window_control.edit_data_control.callback_operation.set_event("sound_stop", sound_stop)
+        #self.window_control.edit_data_control.callback_operation.set_event("make_preview_data", get_make_preview_data)
 
         def send_rendering(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send
-            scene_id = self.data.all_data.scene_id()
+            scene_id = self.window_control.edit_data_control.scene_id()
             make_data = self.operation["rendering_py"]["main"].make(scene_id, editor_func_val)
             make_data.output_main()
 
         def rendering():
-            self.data.all_data.callback_operation.set_event("text_input_end", send_rendering, duplicate=False)
-            self.data.all_data.callback_operation.event("set_init_val", info="")
-            self.data.all_data.callback_operation.event("text_input_request", info="保存先を入力")
+            self.window_control.edit_data_control.callback_operation.set_event("text_input_end", send_rendering, duplicate=False)
+            self.window_control.edit_data_control.callback_operation.event("set_init_val", info="")
+            self.window_control.edit_data_control.callback_operation.event("text_input_request", info="保存先を入力")
 
             # make_data.output_OpenCV()
 
         def send_section_rendering(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send
-            scene_id = self.data.all_data.scene_id()
+            scene_id = self.window_control.edit_data_control.scene_id()
             make_data = self.operation["rendering_py"]["main"].make(scene_id, editor_func_val)
 
-            return_val_dict = self.data.all_data.callback_operation.event("get_timelime_scroll_status")
+            return_val_dict = self.window_control.edit_data_control.callback_operation.event("get_timelime_scroll_status")
             scrollbar_sta_end = return_val_dict["get_timelime_scroll_status"]
 
             sta = scrollbar_sta_end[0]
@@ -152,27 +158,27 @@ class InitialValue:
             # make_data.output_OpenCV()
 
         def section_rendering():
-            self.data.all_data.callback_operation.set_event("text_input_end", send_section_rendering, duplicate=False)
-            self.data.all_data.callback_operation.event("set_init_val", info="")
-            self.data.all_data.callback_operation.event("text_input_request", info="保存先を入力")
+            self.window_control.edit_data_control.callback_operation.set_event("text_input_end", send_section_rendering, duplicate=False)
+            self.window_control.edit_data_control.callback_operation.event("set_init_val", info="")
+            self.window_control.edit_data_control.callback_operation.event("text_input_request", info="保存先を入力")
 
         def edit_data_del():
-            self.data.all_data.callback_operation.event("reset")
+            self.window_control.edit_data_control.callback_operation.event("reset")
 
-        self.menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.data.window)
-        main_menubar_list = [("ファイル", "終了", self.data.window_exit, "新規作成", edit_data_del, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering, "表示区間の書き出し", section_rendering, "キャッシュクリア", cash_clear)]
+        self.menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.window_control.window)
+        main_menubar_list = [("ファイル", "終了", self.window_control.window_exit, "新規作成", edit_data_del, "開く", project_open, "保存", project_save, "上書き", project_overwrite_save, "書き出し", rendering, "表示区間の書き出し", section_rendering, "キャッシュクリア", cash_clear)]
         self.menubar.set(main_menubar_list)
 
-        display_size = self.data.display_size_get()
-        self.data.window_title_set("メインウインドウ")
+        display_size = self.window_control.display_size_get()
+        self.window_control.window_title_set("メインウインドウ")
         #size = [640, 360]
-        self.data.window_size_set(x=640, y=360)
+        self.window_control.window_size_set(x=640, y=360)
 
         # def window_size_change_event(self):
         #    pass
 
-        #self.data.window_event(processing=window_size_change_event, user_event="Motion")
+        #self.window_control.window_event(processing=window_size_change_event, user_event="Motion")
 
-        return self.data
+        return self.window_control
 
-        # self.data.all_data.add_layer_elements()
+        # self.window_control.edit_data_control.add_layer_elements()
