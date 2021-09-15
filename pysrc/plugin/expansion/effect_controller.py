@@ -23,19 +23,16 @@ class InitialValue:
         self.window_control.new_canvas("parameter_control")
         self.window_control.edit_canvas_size("parameter_control", x=220, y=1000)
         self.window_control.edit_canvas_position("parameter_control", x=0, y=0)
-
         self.window_control.ui_management = self.window_control.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.window_control)
-
-        # def make
 
         def color_edit(push_effect=None, push_color="#44ff44"):
             con_len = len(self.window_control.ui_management.ui_list)
 
             if not push_effect is None and push_effect < 0:
-                return
+                push_effect = 0
 
             if not push_effect is None and push_effect > con_len - 1:
-                return
+                push_effect = con_len - 1
 
             for now_exchange, now_UI in enumerate(self.window_control.ui_management.ui_list):
                 if now_exchange == push_effect and not push_effect is None:
@@ -90,40 +87,14 @@ class InitialValue:
 
             # self.window_control.window.update()
 
-        def effect_updown_measurement(pos, box_pos, sta_point, con_len):
-
-            layer_number = (pos - sta_point) // box_pos
-            if layer_number < 0:
-                layer_number = 0
-            if layer_number > con_len:
-                layer_number = copy.deepcopy(con_len)
-
-            return layer_number
-
-        def effect_updown_destination(A, B, box_pos, gap, sta_point):
-            con_len = len(self.window_control.ui_management.ui_list)
-
-            click_effect_point_destination = [0, 0]
-            click_effect_point_destination[0] = effect_updown_measurement(A, box_pos, sta_point, con_len)
-            click_effect_point_destination[1] = effect_updown_measurement(B, box_pos, sta_point, con_len)
-
-            print("layer_number 判定 A / B", click_effect_point_destination)
-
-            shape_updown_destination.edit_territory_position(y=click_effect_point_destination[1] * box_pos - gap + sta_point)
-
-            if click_effect_point_destination[0] == click_effect_point_destination[1]:
-                shape_updown_destination_view_False()
-            else:
-                shape_updown_destination_view_True()
-
             # shape_updown_destination.territory_draw()
 
-        def effect_del(A, box_pos, gap, sta_point):
+        def effect_del(A):
             self.send.stack_add_timelime_effect(add_type="effect_del", media_id=self.now_media_id)
 
             con_len = len(self.window_control.ui_management.ui_list)
 
-            click_effect_point = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
+            click_effect_point = A
 
             old_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             #old_values = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
@@ -131,24 +102,23 @@ class InitialValue:
             old_key_data = old_key[click_effect_point]
             #old_val_data = old_values[click_effect_point]
 
-            self.window_control.ui_management.set_old_elements_len()
             #del self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
             self.window_control.edit_control_auxiliary.del_effect_elements(self.now_media_id, old_key_data)
 
-            new_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
-            new_val = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+            self.window_control.ui_management.set_old_elements_len()
 
-            zip_data = dict(zip(new_key, new_val))
+            new_effect_group = self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group
+            #zip_data = dict(zip(new_key, new_val))
 
             now_exchange = 0
-            for k, e in zip(zip_data.keys(), zip_data.values()):
+            for k, e in zip(new_effect_group.keys(), new_effect_group.values()):
                 now_send = copy.deepcopy(self.send)
                 now_send.element_key = copy.deepcopy(k)
                 now_send.push_effect = copy.deepcopy(now_exchange)
                 self.window_control.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
                 self.window_control.ui_management.ui_list[now_exchange].button_parameter_control.get_set_option_data(copy.deepcopy(now_send), overwrite=True)
                 self.window_control.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
-                self.window_control.ui_management.ui_list[now_exchange].click_end(None)
+                # self.window_control.ui_management.ui_list[now_exchange].click_end(None)
 
                 #print(now_exchange, e.effect_name)
 
@@ -158,7 +128,7 @@ class InitialValue:
 
             self.window_control.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
 
-        def effect_updown(A, B, box_pos, gap, sta_point):
+        def effect_updown(A, B):
 
             #print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function)
 
@@ -168,10 +138,7 @@ class InitialValue:
 
             con_len = len(self.window_control.ui_management.ui_list)
 
-            click_effect_point = [0, 0]
-
-            click_effect_point[0] = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
-            click_effect_point[1] = effect_updown_measurement(B, box_pos, sta_point, con_len)
+            click_effect_point = [A, B]
 
             old_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             old_values = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
@@ -183,9 +150,6 @@ class InitialValue:
 
             new_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             new_val = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
-
-            if click_effect_point[1] > click_effect_point[0]:
-                click_effect_point[1] -= 1
 
             if con_len == len(new_key):
                 new_key.append(old_key_data)
@@ -221,6 +185,9 @@ class InitialValue:
 
             color_edit(click_effect_point[1], push_color="#ff0000")
 
+        def get_len_ui_list():
+            return int(len(self.window_control.ui_management.ui_list))
+
         def make(i, k, e):
             self.window_control.ui_management.new_parameter_ui(i, canvas_name="parameter_control", parts_name="parameter_control")
             now_send = copy.deepcopy(self.send)
@@ -233,15 +200,11 @@ class InitialValue:
             self.window_control.ui_management.ui_list[i].button_parameter_control.callback_operation.all_del_event()
             self.window_control.ui_management.ui_list[i].button_parameter_control.callback_operation.set_event("button", element_lord_ignition)
             self.window_control.ui_management.ui_list[i].effect_updown = effect_updown
-            self.window_control.ui_management.ui_list[i].effect_updown_destination = effect_updown_destination
             self.window_control.ui_management.ui_list[i].effect_del = effect_del
             self.window_control.ui_management.ui_list[i].color_edit = color_edit
             self.window_control.ui_management.ui_list[i].shape_updown_destination_view_True = shape_updown_destination_view_True
             self.window_control.ui_management.ui_list[i].shape_updown_destination_view_False = shape_updown_destination_view_False
-
-            # self.window_control.ui_management.ui_list[self.now].callback_operation.all_del_event()
-            #self.window_control.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("effect_updown", effect_updown)
-            #self.window_control.ui_management.ui_list[self.now].button_parameter_control.callback_operation.set_event("effect_updown_destination", effect_updown_destination)
+            self.window_control.ui_management.ui_list[i].get_len_ui_list = get_len_ui_list
 
             # ここが悪さしてる可能性あり
             #self.now += 1
@@ -300,7 +263,6 @@ class InitialValue:
 
         self.window_control.window_size_set(x=220, y=360, lock_x=False)
         self.window_control.window.update()
-        # self.window_control.edit_control_auxiliary.callback_operation.set_event("element_del", element_del)
 
         # data.element_lord = element_lord
 

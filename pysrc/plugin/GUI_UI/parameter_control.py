@@ -6,7 +6,7 @@ import time
 class parts:
     def UI_set(self, UI_auxiliary):
 
-        #print("インスタンス 化")
+        # print("インスタンス 化")
 
         box_size = 20
         gap = 5
@@ -44,22 +44,37 @@ class parts:
         UI_auxiliary.background_mouse = [0, 0]
         UI_auxiliary.background_now_mouse = [0, 0]
 
-        self.popup = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
-
-        def popup_del():
-            UI_auxiliary.effect_del(UI_auxiliary.background_mouse[1], pos_y_normal, gap, sta_point)
-            UI_auxiliary.shape_updown_destination_view_False()
-
-        popup_list = [("削除", popup_del)]
-        self.popup.set(popup_list)
-
-        def click_right(event):
-
+        def now_parameter():
             UI_auxiliary.background_mouse, _, _, xy = UI_auxiliary.get_window_contact()
             click_effect_point = (UI_auxiliary.background_mouse[1]-sta_point) // pos_y_normal
+            return click_effect_point,xy
+
+        def popup_del():
+            click_effect_point,xy = now_parameter()
+            UI_auxiliary.effect_del(click_effect_point)
+            UI_auxiliary.shape_updown_destination_view_False()
+
+        def click_right(event):
+            click_effect_point,xy = now_parameter()
             UI_auxiliary.color_edit(click_effect_point, push_color="#1111ff")
             UI_auxiliary.window.update()
             UI_auxiliary.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
+
+            self.popup = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
+
+            specify_destination = ["行先指定"]
+
+            len_ui_list = UI_auxiliary.get_len_ui_list()
+            for i in range(len_ui_list):
+                if i == click_effect_point:
+                    continue
+
+                ui_mov = UIMov(click_effect_point, i, UI_auxiliary.effect_updown)
+                specify_destination.append("{0} に移動".format(i))
+                specify_destination.append(ui_mov.run)
+
+            popup_list = [["削除", popup_del], specify_destination]
+            self.popup.set(popup_list)
 
             # print("開始")
 
@@ -71,66 +86,20 @@ class parts:
 
             UI_auxiliary.color_edit(click_effect_point)
             UI_auxiliary.shape_updown_destination_view_False()
-            UI_auxiliary.click_stop = False
 
-        #UI_auxiliary.Motion_flag = False
-
-        UI_auxiliary.click_stop = False
-
-        UI_auxiliary.end_to_sta_time = 0
-
-        def click_start(event):
-            bool_time = 0.1 <= time.time() - UI_auxiliary.end_to_sta_time
-            if not bool_time:
-                UI_auxiliary.click_stop = False
-                print("parameter_control拒否")
-                return
-
-            UI_auxiliary.click_stop = True
-            UI_auxiliary.background_mouse, _, _, _ = UI_auxiliary.get_window_contact()
-
-        def click_position(event):
-            if not UI_auxiliary.click_stop:
-                return
-            # print("押す[parameter_control]")
-            # if not UI_auxiliary.Motion_flag:
-            #UI_auxiliary.click_stop = True
-            #UI_auxiliary.background_mouse, _, _, _ = UI_auxiliary.get_window_contact()
-            #UI_auxiliary.Motion_flag = True
-
-            # if not UI_auxiliary.click_stop:
-            #    return
-
-            # UI_auxiliary.shape_updown_destination_view_True()
-
-            UI_auxiliary.background_now_mouse, _, _, _ = UI_auxiliary.get_window_contact()
-
-            UI_auxiliary.effect_updown_destination(UI_auxiliary.background_mouse[1], UI_auxiliary.background_now_mouse[1], pos_y_normal, gap, sta_point)
-
-        def click_end(event):
-            UI_auxiliary.shape_updown_destination_view_False()
-
-            if UI_auxiliary.click_stop == False:
-                return
-
-            UI_auxiliary.end_to_sta_time = time.time()
-
-            print("離す[parameter_control]")
-
-            UI_auxiliary.click_stop = False
-            #UI_auxiliary.Motion_flag = False
-            UI_auxiliary.background_now_mouse, _, _, _ = UI_auxiliary.get_window_contact()
-            UI_auxiliary.effect_updown(UI_auxiliary.background_mouse[1], UI_auxiliary.background_now_mouse[1],   pos_y_normal, gap, sta_point)
-
-        UI_auxiliary.click_end = click_end
+        #UI_auxiliary.effect_updown(UI_auxiliary.background_mouse[1], UI_auxiliary.background_now_mouse[1],   pos_y_normal, gap, sta_point)
 
         UI_auxiliary.button_parameter_control.add_diagram_event("text", "Button-2", click_right)
         UI_auxiliary.button_parameter_control.add_diagram_event("background", "Button-2", click_right)
 
-        UI_auxiliary.button_parameter_control.add_diagram_event("text", "Button-1", click_start)
-        UI_auxiliary.button_parameter_control.add_diagram_event("background", "Button-1", click_start)
-        UI_auxiliary.button_parameter_control.window_event_data["add"]("B1-Motion", click_position)
-        UI_auxiliary.button_parameter_control.add_diagram_event("text", "ButtonRelease-1", click_end)
-        UI_auxiliary.button_parameter_control.add_diagram_event("background", "ButtonRelease-1", click_end)
-
         return UI_auxiliary
+
+
+class UIMov:
+    def __init__(self, A, B, effect_updown):
+        self.A = A
+        self.B = B
+        self.effect_updown = effect_updown
+
+    def run(self):
+        self.effect_updown(self.A, self.B)

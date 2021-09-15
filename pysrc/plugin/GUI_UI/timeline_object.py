@@ -434,12 +434,6 @@ class parts:
 
                 sub_extremity = UI_auxiliary.pxf.get_extremity_px()
 
-                """
-                if not sub_extremity is None and pos + size <= sub_extremity[1]:
-                    # print("検知 B")
-                    size = sub_extremity[1] - pos + 1
-                """
-
                 if size < UI_auxiliary.pxf.f_to_px(1):
                     size = UI_auxiliary.pxf.f_to_px(1)
 
