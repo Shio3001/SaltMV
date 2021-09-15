@@ -6,7 +6,7 @@ import inspect
 
 
 class SendWindowData:  # window生成のためのデータ
-    def __init__(self, main_window, edit_data_control, UI_parts, UI_auxiliary, all_UI_data):
+    def __init__(self, main_window, edit_data_control, UI_parts, UI_auxiliary, UI_control):
         self.tk = tk
         self.menubar_list = {}
         self.window_size = [100, 100]
@@ -14,7 +14,7 @@ class SendWindowData:  # window生成のためのデータ
         self.main_window = main_window
         self.operation = edit_data_control.operation
         self.edit_data_control = edit_data_control
-        self.all_UI_data = all_UI_data
+        self.UI_control = UI_control
 
         self.GUI_base_color = "#1a1a1a"
         self.GUI_alpha_color = "#000000"
@@ -27,7 +27,7 @@ class SendWindowData:  # window生成のためのデータ
         else:
             self.window = tk.Tk()
 
-        self.common_control = all_UI_data.CommonControl(self.window, self.operation)
+        self.common_control = UI_control.CommonControl(self.window, self.operation)
         self.UI_parts = UI_parts
         self.UI_auxiliary = UI_auxiliary
 
@@ -173,7 +173,7 @@ class SendWindowData:  # window生成のためのデータ
                                                   self.canvas_data[name],
                                                   self.common_control,
                                                   self.edit_data_control,
-                                                  self.all_UI_data,
+                                                  self.UI_control,
                                                   self.GUI_base_color,
                                                   self.GUI_alpha_color,
                                                   window_event_data,

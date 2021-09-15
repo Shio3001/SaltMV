@@ -15,7 +15,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
                  canvas_data,
                  common_control,
                  edit_data_control,
-                 all_UI_data,
+                 UI_control,
                  GUI_base_color,
                  GUI_alpha_color,
                  window_event_data,
@@ -35,7 +35,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         self.canvas_data = canvas_data
         self.edit_data_control = edit_data_control
         self.operation = edit_data_control.operation
-        self.all_UI_data = all_UI_data
+        self.UI_control = UI_control
         self.GUI_base_color = GUI_base_color
         self.GUI_alpha_color = GUI_alpha_color
         self.common_control = common_control
