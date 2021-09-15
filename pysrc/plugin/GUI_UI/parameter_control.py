@@ -108,14 +108,19 @@ class parts:
             UI_auxiliary.effect_updown_destination(UI_auxiliary.background_mouse[1], UI_auxiliary.background_now_mouse[1], pos_y_normal, gap, sta_point)
 
         def click_end(event):
-            print("離す[parameter_control]")
             UI_auxiliary.shape_updown_destination_view_False()
+
+            if UI_auxiliary.click_stop == False:
+                return
+
+            UI_auxiliary.end_to_sta_time = time.time()
+
+            print("離す[parameter_control]")
+
             UI_auxiliary.click_stop = False
             #UI_auxiliary.Motion_flag = False
             UI_auxiliary.background_now_mouse, _, _, _ = UI_auxiliary.get_window_contact()
             UI_auxiliary.effect_updown(UI_auxiliary.background_mouse[1], UI_auxiliary.background_now_mouse[1],   pos_y_normal, gap, sta_point)
-
-            UI_auxiliary.end_to_sta_time = time.time()
 
         UI_auxiliary.click_end = click_end
 
