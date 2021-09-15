@@ -41,21 +41,16 @@ class parts:
 
         UI_auxiliary.click_stop = False
 
-        UI_auxiliary.background_mouse = [0, 0]
-        UI_auxiliary.background_now_mouse = [0, 0]
-
-        def now_parameter():
-            UI_auxiliary.background_mouse, _, _, xy = UI_auxiliary.get_window_contact()
-            click_effect_point = (UI_auxiliary.background_mouse[1]-sta_point) // pos_y_normal
-            return click_effect_point,xy
+        #UI_auxiliary.background_mouse = [0, 0]
+        #UI_auxiliary.background_now_mouse = [0, 0]
 
         def popup_del():
-            click_effect_point,xy = now_parameter()
-            UI_auxiliary.effect_del(click_effect_point)
+            
+            UI_auxiliary.effect_del(UI_auxiliary.now_exchange)
             UI_auxiliary.shape_updown_destination_view_False()
 
         def click_right(event):
-            click_effect_point,xy = now_parameter()
+            click_effect_point = UI_auxiliary.now_exchange
             UI_auxiliary.color_edit(click_effect_point, push_color="#1111ff")
             UI_auxiliary.window.update()
             UI_auxiliary.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
@@ -77,6 +72,8 @@ class parts:
             self.popup.set(popup_list)
 
             # print("開始")
+
+            UI_auxiliary.background_mouse, _, _, xy = UI_auxiliary.get_window_contact()
 
             mouse = [0, 0]
             for i in range(2):

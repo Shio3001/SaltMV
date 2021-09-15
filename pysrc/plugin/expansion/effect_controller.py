@@ -96,6 +96,8 @@ class InitialValue:
 
             click_effect_point = A
 
+            print("削除対象番号", click_effect_point)
+
             old_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
             #old_values = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
 
@@ -118,6 +120,7 @@ class InitialValue:
                 self.window_control.ui_management.ui_list[now_exchange].parameter_ui_set(column=now_exchange, text=e.effect_name)
                 self.window_control.ui_management.ui_list[now_exchange].button_parameter_control.get_set_option_data(copy.deepcopy(now_send), overwrite=True)
                 self.window_control.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
+                self.window_control.ui_management.ui_list[now_exchange].now_exchange = now_exchange
                 # self.window_control.ui_management.ui_list[now_exchange].click_end(None)
 
                 #print(now_exchange, e.effect_name)
@@ -178,6 +181,7 @@ class InitialValue:
                 self.window_control.ui_management.ui_list[now_exchange].button_parameter_control.get_set_option_data(copy.deepcopy(now_send), overwrite=True)
                 self.window_control.ui_management.ui_list[now_exchange].button_parameter_control.diagram_draw("background")
                 self.window_control.ui_management.ui_list[now_exchange].click_stop = False
+                self.window_control.ui_management.ui_list[now_exchange].now_exchange = now_exchange
 
                 #print(now_exchange, e.effect_name)
 
@@ -205,6 +209,7 @@ class InitialValue:
             self.window_control.ui_management.ui_list[i].shape_updown_destination_view_True = shape_updown_destination_view_True
             self.window_control.ui_management.ui_list[i].shape_updown_destination_view_False = shape_updown_destination_view_False
             self.window_control.ui_management.ui_list[i].get_len_ui_list = get_len_ui_list
+            self.window_control.ui_management.ui_list[i].now_exchange = i
 
             # ここが悪さしてる可能性あり
             #self.now += 1
