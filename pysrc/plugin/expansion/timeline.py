@@ -23,7 +23,7 @@ class InitialValue:
 
         self.time_lime_space_flag = 0
         self.nowtime_bar = None
-        #self.window_control.edit_data_control.now_time = 0
+        #self.window_control.edit_control_auxiliary.now_time = 0
         #self.redo_undo_stack = []
         #self.tthis_type_safe = ["media_length",]
         #self.add_type_safe_obj = ["add", "mov", "del", "split", "lord"]
@@ -35,9 +35,9 @@ class InitialValue:
         self.window_control.add_window_event("Command-Key-z", undo_run)
 
         def undo_run_frame(undo):
-            now_key_frame = self.window_control.edit_data_control.get_key_frame(undo.media_id)
+            now_key_frame = self.window_control.edit_control_auxiliary.get_key_frame(undo.media_id)
             del_undo_frame(undo.media_id, now_key_frame)
-            self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
+            self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
             undo_make_frame(undo.media_id, undo.media_id_key_frame)
 
         def del_undo_frame(media_id, id_time):
@@ -55,7 +55,7 @@ class InitialValue:
                 print("point_val, media_id, point_key", point_val, media_id, point_key)
                 #self.window_control.timeline_object[media_id].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
-                self.window_control.edit_data_control.move_key_frame(point_val, media_id, point_key)
+                self.window_control.edit_control_auxiliary.move_key_frame(point_val, media_id, point_key)
                 self.window_control.timeline_object[media_id].pxf.set_f_ratio_sub_point(point_key, point_val)
                 #self.window_control.timeline_object[media_id].callback_operation.event("sub_mov", info=self.window_control.timeline_object[media_id].pxf.get_event_data())
 
@@ -73,9 +73,9 @@ class InitialValue:
             old_data_layer = undo.target_media_data[1]
 
             if add_type == "add":  # 削除
-                self.window_control.edit_data_control.callback_operation.event("element_ui_all_del")
+                self.window_control.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
 
-                self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
+                self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
                 self.window_control.timeline_object[old_data_obj.obj_id].media_object_del(stack=False)
 
             if add_type == "mov":
@@ -84,17 +84,17 @@ class InitialValue:
                 undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
                 self.window_control.timeline_object[old_data_obj.obj_id].send_parameter_control()
-                self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
+                self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
 
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
                 end_f = old_data_obj.installation[1]
 
-                get_scene = self.window_control.edit_data_control.scene()
+                get_scene = self.window_control.edit_control_auxiliary.scene()
                 layer_number = get_scene.layer_group.layer_layer_id[old_data_layer]  # 所属レイヤー解釈
                 print("所属レイヤー解釈", old_data_layer, layer_number)
 
-                new_layer_id = self.window_control.edit_data_control.layer_number_to_layer_id(layer_number)
-                self.window_control.edit_data_control.layer_id_set(undo.media_id, new_layer_id)
+                new_layer_id = self.window_control.edit_control_auxiliary.layer_number_to_layer_id(layer_number)
+                self.window_control.edit_control_auxiliary.layer_id_set(undo.media_id, new_layer_id)
 
                 self.window_control.timeline_object[old_data_obj.obj_id].edit_layer(layer_number)
                 frame_len = get_scene.editor["len"]
@@ -117,12 +117,12 @@ class InitialValue:
                 del_object_ui(undo.split_media_id)
                 undo_make_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
-                self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
+                self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
 
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
                 end_f = old_data_obj.installation[1]
 
-                get_scene = self.window_control.edit_data_control.scene()
+                get_scene = self.window_control.edit_control_auxiliary.scene()
                 layer_number = get_scene.layer_group.layer_layer_id[old_data_layer]  # 所属レイヤー解釈
                 self.window_control.timeline_object[old_data_obj.obj_id].edit_layer(layer_number)
                 frame_len = get_scene.editor["len"]
@@ -136,18 +136,18 @@ class InitialValue:
                 undo_mov_frame(old_data_obj.obj_id, undo.media_id_key_frame)
 
             if add_type == "del":  # 再追加
-                self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
-                self.window_control.edit_data_control.callback_operation.event("element_ui_all_del")
+                self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
+                self.window_control.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
 
-                #self.window_control.edit_data_control.media_object_had_layer(old_data_obj.obj_id, old_data)
+                #self.window_control.edit_control_auxiliary.media_object_had_layer(old_data_obj.obj_id, old_data)
                 sta_f = old_data_obj.installation[0]  # 開始地点解釈
                 end_f = old_data_obj.installation[1]  # 終了地点解釈
-                get_scene = self.window_control.edit_data_control.scene()
+                get_scene = self.window_control.edit_control_auxiliary.scene()
                 layer_number = get_scene.layer_group.layer_layer_id[old_data_layer]  # 所属レイヤー解釈
                 make_object(old_data_obj.obj_id, sta=sta_f, end=end_f, layer_number=layer_number)
 
                 for point_key, point_val in zip(old_data_obj.effect_point_internal_id_time.keys(), old_data_obj.effect_point_internal_id_time.values()):
-                    self.window_control.edit_data_control.add_key_frame_point_onely(point_val, old_data_obj.obj_id, point_key)
+                    self.window_control.edit_control_auxiliary.add_key_frame_point_onely(point_val, old_data_obj.obj_id, point_key)
 
                     if point_key in ["default_sta", "default_end"]:
                         continue
@@ -159,11 +159,11 @@ class InitialValue:
 
         def undo_run_effect(undo):
             ##print("undo_run_effect", undo.media_id, undo.target_media_data)
-            self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
+            self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
             old_data_obj = undo.target_media_data[0]
             old_data_layer = undo.target_media_data[1]
 
-            # self.window_control.edit_data_control.callback_operation.event("media_lord")
+            # self.window_control.edit_control_auxiliary.callback_operation.event("media_lord")
 
             self.window_control.timeline_object[undo.media_id].send_parameter_control()
 
@@ -173,7 +173,7 @@ class InitialValue:
                 pass
 
         def undo_lord(undo):
-            #self.window_control.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
+            #self.window_control.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
 
             if undo.add_type == "lord":
                 for i in self.window_control.timeline_object.values():
@@ -253,11 +253,11 @@ class InitialValue:
         self.nowtime_bar.edit_territory_position(x=timeline_left, y=timeline_up)
         self.nowtime_bar.territory_draw()
 
-        # ##print(self.window_control.edit_data_control.now_time)
+        # ##print(self.window_control.edit_control_auxiliary.now_time)
 
         def now_time_edit(scroll_data):
             self.time_lime_space_flag == 0
-            self.window_control.edit_data_control.now_time_update(scroll_data)
+            self.window_control.edit_control_auxiliary.now_time_update(scroll_data)
 
         def time_lime_space(event):
             self.preview_move()
@@ -283,7 +283,7 @@ class InitialValue:
         timeline_scroll.callback_operation.set_event("sta", timeline_nowtime_approval_False)
         timeline_scroll.callback_operation.set_event("end", timeline_nowtime_approval_True)
 
-        # self.window_control.edit_data_control.callback_operation.set_event("del_layer_elements", del_layer_elements)
+        # self.window_control.edit_control_auxiliary.callback_operation.set_event("del_layer_elements", del_layer_elements)
 
         def media_object_separate(send):
             timeline_nowtime_approval_False()
@@ -299,10 +299,10 @@ class InitialValue:
             a_size = click_f_pos - scroll_data.ratio_f[0]
 
             self.window_control.timeline_object[media_id].mov_lock = True
-            old_data = self.window_control.edit_data_control.media_object_had_layer(media_id)
+            old_data = self.window_control.edit_control_auxiliary.media_object_had_layer(media_id)
 
-            copy_obj, layer_id = self.window_control.edit_data_control.copy_object_elements(media_id, sta=click_f_pos, end=scroll_data.ratio_f[1])
-            layer_number = self.window_control.edit_data_control.layer_id_to_layer_number(layer_id)
+            copy_obj, layer_id = self.window_control.edit_control_auxiliary.copy_object_elements(media_id, sta=click_f_pos, end=scroll_data.ratio_f[1])
+            layer_number = self.window_control.edit_control_auxiliary.layer_id_to_layer_number(layer_id)
             make_object(copy_obj.obj_id, sta=click_f_pos, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
 
             obj_stop_once[1](obj_stop_once[0], split_media_id=copy_obj.obj_id)
@@ -322,14 +322,14 @@ class InitialValue:
                     # self.window_control.timeline_object[media_id].pxf.sub_point_f[k] 矛盾
 
                     frame = copy.deepcopy(self.window_control.timeline_object[media_id].pxf.sub_point_f[k])
-                    self.window_control.edit_data_control.del_key_frame_point(media_id, k)
+                    self.window_control.edit_control_auxiliary.del_key_frame_point(media_id, k)
 
                     if k == "default_end" or k == "default_sta":
                         continue
 
                     self.window_control.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
                     self.window_control.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k, pos_f=frame)
-                    self.window_control.edit_data_control.add_key_frame_point_onely(frame, copy_obj.obj_id, k)
+                    self.window_control.edit_control_auxiliary.add_key_frame_point_onely(frame, copy_obj.obj_id, k)
 
                 if v == click_f_pos:  # ちょうど一緒
                     # #print("等")
@@ -354,12 +354,12 @@ class InitialValue:
 
         def reflect_timeline_to_movie(scroll_data):
             media_id = scroll_data.option_data["media_id"]
-            self.window_control.edit_data_control.edit_object_installation(media_id, sta=scroll_data.ratio_f[0], end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1])
+            self.window_control.edit_control_auxiliary.edit_object_installation(media_id, sta=scroll_data.ratio_f[0], end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1])
 
             # これを生成時に実行しないとダメ__?
 
         def new_layer():
-            new_layer = self.window_control.edit_data_control.add_layer_elements()
+            new_layer = self.window_control.edit_control_auxiliary.add_layer_elements()
             make_layer()
             # #print(new_layer.layer_id)
 
@@ -367,20 +367,20 @@ class InitialValue:
             pass
 
         def new_obj():
-            new_object = self.window_control.edit_data_control.add_object_elements()
-            nowtime = self.window_control.edit_data_control.now_time_update()
+            new_object = self.window_control.edit_control_auxiliary.add_object_elements()
+            nowtime = self.window_control.edit_control_auxiliary.now_time_update()
             make_object(new_object.obj_id, sta=nowtime, end=nowtime+20)
 
-            #old_data = self.window_control.edit_data_control.media_object_had_layer(new_object.obj_id)
+            #old_data = self.window_control.edit_control_auxiliary.media_object_had_layer(new_object.obj_id)
             #stack_add("add", old_data)
             stack_add_timelime_media(add_type="add", media_id=new_object.obj_id)
             #stack_add_timelime_keyframe(add_type="lord", media_id=new_object.obj_id)
 
         def layer_updown(mouse_pos):  # この関数重たそうだから要調整かな
             sta, end,  obj_id, edit_layer = mouse_pos
-            now_layer = self.window_control.edit_data_control.get_now_layer_number(obj_id)
+            now_layer = self.window_control.edit_control_auxiliary.get_now_layer_number(obj_id)
 
-            layer_num = len(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.layer_layer_id)
+            layer_num = len(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.layer_layer_id)
 
             new_layer = end // timeline_size
 
@@ -392,9 +392,9 @@ class InitialValue:
 
             ##print("new_layer", new_layer)
 
-            new_layer_id = self.window_control.edit_data_control.layer_number_to_layer_id(new_layer)
-            self.window_control.edit_data_control.layer_id_set(obj_id, new_layer_id)
-            #self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[obj_id][1] = new_layer_id
+            new_layer_id = self.window_control.edit_control_auxiliary.layer_number_to_layer_id(new_layer)
+            self.window_control.edit_control_auxiliary.layer_id_set(obj_id, new_layer_id)
+            #self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[obj_id][1] = new_layer_id
             edit_layer(new_layer)
 
         def del_object_ui(media_id):
@@ -402,29 +402,29 @@ class InitialValue:
             self.window_control.timeline_object[media_id].del_territory()
             # del self.window_control.timeline_object[media_id].callback_operation
             del self.window_control.timeline_object[media_id]
-            self.window_control.edit_data_control.del_object_elements(media_id)
-            self.window_control.edit_data_control.callback_operation.event("element_del")
+            self.window_control.edit_control_auxiliary.del_object_elements(media_id)
+            self.window_control.edit_control_auxiliary.callback_operation.event("element_del")
 
         def all_del_object_ui():
             for media_id in self.window_control.timeline_object.keys():
                 self.window_control.timeline_object[media_id].del_territory()
-                self.window_control.edit_data_control.del_object_elements(media_id)
+                self.window_control.edit_control_auxiliary.del_object_elements(media_id)
                 # ##print("削除 {0}".format(media_id))
 
             self.window_control.timeline_object = {}
-            self.window_control.edit_data_control.callback_operation.event("element_del")
+            self.window_control.edit_control_auxiliary.callback_operation.event("element_del")
             # ##print(self.window_control.timeline_object)
 
         # def media_objct_click():
 
         """
         def parameter(media_id):
-            obj = self.window_control.edit_data_control.media_object(media_id)
+            obj = self.window_control.edit_control_auxiliary.media_object(media_id)
             elements = obj.effect_group
-            # self.window_control.edit_data_control.callback_operation.event("media_lord", info=())
+            # self.window_control.edit_control_auxiliary.callback_operation.event("media_lord", info=())
 
-            send = (elements, self.window_control.edit_data_control.now_time)
-            func = self.window_control.edit_data_control.callback_operation.get_event("media_lord")[0]
+            send = (elements, self.window_control.edit_control_auxiliary.now_time)
+            func = self.window_control.edit_control_auxiliary.callback_operation.get_event("media_lord")[0]
             thread = threading.Thread(target=func, args=(send,))
             thread.start()
         """
@@ -454,7 +454,7 @@ class InitialValue:
             new_obj.callback_operation.set_event("end", timeline_nowtime_approval_True)
             new_obj.edit_layer(layer_number)
 
-            frame_len = self.window_control.edit_data_control.scene_editor()["len"]
+            frame_len = self.window_control.edit_control_auxiliary.scene_editor()["len"]
 
             new_obj.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             new_obj.pxf.set_sta_end_f(sta=self.scrollbar_sta_end[0], end=self.scrollbar_sta_end[1])
@@ -478,16 +478,16 @@ class InitialValue:
             self.window_control.timeline_object = {}
 
             if not new is None:
-                self.window_control.edit_data_control.change_now_scene(new)
+                self.window_control.edit_control_auxiliary.change_now_scene(new)
             # ここで現在シーンが変わる
 
-            get_scene = self.window_control.edit_data_control.scene()
+            get_scene = self.window_control.edit_control_auxiliary.scene()
             frame_len = get_scene.editor["len"]
 
             obj_list = [get_scene.layer_group.object_group.keys(), get_scene.layer_group.object_group.values()]
             timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())
 
-            nowtime = self.window_control.edit_data_control.now_time_update()
+            nowtime = self.window_control.edit_control_auxiliary.now_time_update()
 
             self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             self.nowtime_bar.frame_set(nowtime)
@@ -504,23 +504,23 @@ class InitialValue:
                 make_object(media_id=obj_k, sta=sta_f, end=end_f, layer_number=layer_number)
 
                 for point_key, point_val in zip(obj_v[0].effect_point_internal_id_time.keys(), obj_v[0].effect_point_internal_id_time.values()):
-                    self.window_control.edit_data_control.add_key_frame_point_onely(point_val, obj_k, point_key)
+                    self.window_control.edit_control_auxiliary.add_key_frame_point_onely(point_val, obj_k, point_key)
 
                     if point_key in ["default_sta", "default_end"]:
                         continue
 
                     self.window_control.timeline_object[obj_k].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
-            # self.window_control.edit_data_control.callback_operation.event("preview_setup")
+            # self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
 
         def edit_data_reset():
             all_del_object_ui()
-            self.window_control.edit_data_control.new_edit_data()
+            self.window_control.edit_control_auxiliary.new_edit_data()
             loading_movie_data()
 
-        self.window_control.edit_data_control.callback_operation.set_event("reset", edit_data_reset)
-        self.window_control.edit_data_control.callback_operation.set_event("file_input_before", all_del_object_ui)
-        self.window_control.edit_data_control.callback_operation.set_event("file_input_after", loading_movie_data)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("reset", edit_data_reset)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("file_input_before", all_del_object_ui)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("file_input_after", loading_movie_data)
 
         # new_object(s)
 
@@ -532,7 +532,7 @@ class InitialValue:
             media_obj.pxf.set_f_ratio()
 
         def timeline_view_range(scroll_data):
-            view_frame_len = self.window_control.edit_data_control.scene().editor["len"]
+            view_frame_len = self.window_control.edit_control_auxiliary.scene().editor["len"]
 
             #sta_end_long = scroll_data.sta_end_f[1] - scroll_data.sta_end_f[0]
 
@@ -546,7 +546,7 @@ class InitialValue:
             self.nowtime_bar.pxf.set_f_ratio()
             [obj_long_edit(media_obj, view_frame_len, view_sta_f, view_end_f) for media_obj in self.window_control.timeline_object.values()]
 
-            # with self.window_control.edit_data_control.ThreadPoolExecutor() as executor:
+            # with self.window_control.edit_control_auxiliary.ThreadPoolExecutor() as executor:
             #    [executor.submit(obj_long_edit(media_obj, frame_len, sta_f, end_f)) for media_obj in self.window_control.timeline_object.values()]
 
         timeline_scroll.callback_operation.set_event("mov", timeline_view_range)  # コールバック関数登録
@@ -555,7 +555,7 @@ class InitialValue:
         def get_timelime_scroll_status():
             return self.scrollbar_sta_end
 
-        self.window_control.edit_data_control.callback_operation.set_event("get_timelime_scroll_status", get_timelime_scroll_status)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("get_timelime_scroll_status", get_timelime_scroll_status)
 
         def window_size_edit(event):
             size_x, size_y = self.window_control.get_window_size()
@@ -574,7 +574,7 @@ class InitialValue:
 
             ###print("ウィンドウサイズ", size_x, size_y)
 
-            # length = self.window_control.edit_data_control.scene().editer["len"]
+            # length = self.window_control.edit_control_auxiliary.scene().editer["len"]
             timeline_scroll.edit_territory_size(x=timeline_width)
             timeline_scroll.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
             timeline_scroll.pxf.set_f_ratio()
@@ -606,12 +606,12 @@ class InitialValue:
             editor_func_name, editor_func_val = editor_func_send
             print("editor_func_send", editor_func_send)
             if editor_func_name == "preview":
-                self.window_control.edit_data_control.get_set_scene_edior(name=editor_func_name, data=editor_func_val, int_type=False)
+                self.window_control.edit_control_auxiliary.get_set_scene_edior(name=editor_func_name, data=editor_func_val, int_type=False)
             else:
-                self.window_control.edit_data_control.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
+                self.window_control.edit_control_auxiliary.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
 
-            loading_movie_data(new=self.window_control.edit_data_control.scene_id())
-            self.window_control.edit_data_control.callback_operation.event("preview_setup")
+            loading_movie_data(new=self.window_control.edit_control_auxiliary.scene_id())
+            self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
 
         def editor_setting_change(option_data):
             timeline_nowtime_approval_False(None)
@@ -620,10 +620,10 @@ class InitialValue:
 
             pop_list = []
 
-            edior = self.window_control.edit_data_control.get_set_scene_edior()
-            self.window_control.edit_data_control.callback_operation.set_event("text_input_end", editor_func, duplicate=False)
+            edior = self.window_control.edit_control_auxiliary.get_set_scene_edior()
+            self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", editor_func, duplicate=False)
             for k in edior.keys():
-                edior_get = EditorGet(self.window_control.edit_data_control, k, edior[k])
+                edior_get = EditorGet(self.window_control.edit_control_auxiliary, k, edior[k])
                 scene_name_func = ("{0} 現在:{1}".format(k, edior[k]), edior_get.run)
                 pop_list.append(scene_name_func)
 
@@ -643,14 +643,14 @@ class InitialValue:
 
             self.popup = self.window_control.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.window_control.window, popup=True)
 
-            scene_name_list = self.window_control.edit_data_control.get_scene_name_list()
+            scene_name_list = self.window_control.edit_control_auxiliary.get_scene_name_list()
 
             pop_list = []
 
             for k in scene_name_list:
                 scene_get = SceneGet(k, loading_movie_data, timeline_nowtime_approval_False, scene_list_button)
 
-                scene_name_func = ("　　 : " + k, scene_get.change) if k != self.window_control.edit_data_control.edit_data.now_scene else ("現在 : " + k, scene_get.change)
+                scene_name_func = ("　　 : " + k, scene_get.change) if k != self.window_control.edit_control_auxiliary.edit_data.now_scene else ("現在 : " + k, scene_get.change)
                 pop_list.append(scene_name_func)
 
             ##print(scene_name_list, pop_list)
@@ -702,7 +702,7 @@ class InitialValue:
         self.run_button.callback_operation.set_event("button", run_button_func)
 
         def add_scene():
-            self.window_control.edit_data_control.add_scene_elements()
+            self.window_control.edit_control_auxiliary.add_scene_elements()
 
         new_layer()
 
@@ -718,7 +718,7 @@ class InitialValue:
         self.time_lime_space_flag = 1 - self.time_lime_space_flag
 
         if self.time_lime_space_flag == 0:  # off
-            self.window_control.edit_data_control.callback_operation.event("sound_stop")
+            self.window_control.edit_control_auxiliary.callback_operation.event("sound_stop")
 
             self.run_button.edit_diagram_text("text", text="再生")
             self.run_button.edit_diagram_color("background", "#229922")
@@ -727,12 +727,12 @@ class InitialValue:
             self.run_button.edit_diagram_text("text", text="停止")
             self.run_button.edit_diagram_color("background", "#992222")
 
-            process_time = self.window_control.edit_data_control.get_now_time()
-            fps = self.window_control.edit_data_control.scene_editor()["fps"]
-            mov_len = self.window_control.edit_data_control.scene_editor()["len"]
+            process_time = self.window_control.edit_control_auxiliary.get_now_time()
+            fps = self.window_control.edit_control_auxiliary.scene_editor()["fps"]
+            mov_len = self.window_control.edit_control_auxiliary.scene_editor()["len"]
             one_fps = 1 / fps
 
-            self.window_control.edit_data_control.callback_operation.event("sound_init")
+            self.window_control.edit_control_auxiliary.callback_operation.event("sound_init")
 
             while True:
                 if process_time >= mov_len or self.time_lime_space_flag == 0:
@@ -740,8 +740,8 @@ class InitialValue:
 
                 print("再生", process_time)
 
-                if self.window_control.edit_data_control.scene_editor()["preview"] == "opencv":
-                    return_preview = self.window_control.edit_data_control.callback_operation.event("preview", info=(process_time, True))
+                if self.window_control.edit_control_auxiliary.scene_editor()["preview"] == "opencv":
+                    return_preview = self.window_control.edit_control_auxiliary.callback_operation.event("preview", info=(process_time, True))
                     self.nowtime_bar.preview_frame_set(process_time)
                     self.window_control.window.update()
                     preview_image_tk = return_preview["preview"]
@@ -752,12 +752,12 @@ class InitialValue:
 
                 sta_section_time = time.time()
 
-                self.window_control.edit_data_control.callback_operation.event("preview", info=(process_time, True))
+                self.window_control.edit_control_auxiliary.callback_operation.event("preview", info=(process_time, True))
                 self.nowtime_bar.preview_frame_set(process_time)
 
                 update_section_time = time.time()
 
-                # if not self.window_control.edit_data_control.scene_editor()["preview"] == "opencv":
+                # if not self.window_control.edit_control_auxiliary.scene_editor()["preview"] == "opencv":
                 self.window_control.window.update()
 
                 end_section_time = time.time()
@@ -781,14 +781,14 @@ class CentralRole:
 
 
 class EditorGet:
-    def __init__(self, edit_data_control, name, init_val):
+    def __init__(self, edit_control_auxiliary, name, init_val):
         self.name = name
-        self.edit_data_control = edit_data_control
+        self.edit_control_auxiliary = edit_control_auxiliary
         self.init_val = init_val
 
     def run(self):
-        self.edit_data_control.callback_operation.event("set_init_val", info=self.init_val)
-        self.edit_data_control.callback_operation.event("text_input_request", info=self.name)
+        self.edit_control_auxiliary.callback_operation.event("set_init_val", info=self.init_val)
+        self.edit_control_auxiliary.callback_operation.event("text_input_request", info=self.name)
 
 
 class SceneGet:

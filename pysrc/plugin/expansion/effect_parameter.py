@@ -15,10 +15,10 @@ class TextReceivePoint:
         self.int_type = int_type
         self.stack_add_timelime_effect = stack_add_timelime_effect
 
-        self.data.edit_data_control.undo_stack_list = []
+        self.data.edit_control_auxiliary.undo_stack_list = []
 
     def text_func(self, text):
-        old_text_data = self.data.edit_data_control.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key)
+        old_text_data = self.data.edit_control_auxiliary.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key)
 
         if not text:
             return
@@ -35,7 +35,7 @@ class TextReceivePoint:
         if old_s != now_s:
             self.stack_add_timelime_effect(media_id=self.media_id)
 
-        self.data.edit_data_control.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
+        self.data.edit_control_auxiliary.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
 
 
 class TextReceiveVariousFixed:
@@ -48,13 +48,13 @@ class TextReceiveVariousFixed:
         # self.int_type = int_type
 
     def text_func(self, text):
-        old_s = str(self.data.edit_data_control.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key))
+        old_s = str(self.data.edit_control_auxiliary.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key))
         now_s = str(text)
 
         if old_s != now_s:
             self.stack_add_timelime_effect(media_id=self.media_id)
 
-        self.data.edit_data_control.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key, text)
+        self.data.edit_control_auxiliary.edit_various_fixed(self.media_id, self.effect_id, self.various_fixed_key, text)
 
 
 class InitialValue:
@@ -64,18 +64,18 @@ class InitialValue:
         self.time_search = self.operation["plugin"]["other"]["time_search"].TimeSearch.time_search
         self.now = 0
         self.push_f = 0
-        # self.data.edit_data_control.undo_stack_list = []
+        # self.data.edit_control_auxiliary.undo_stack_list = []
         self.undo_stack_now = 0
 
         self.send = None
 
         # self.redo_stack_list = []
         # self.redo_stack_now = 0
-        # self.undo_stack_now = len(self.data.edit_data_control.undo_stack_list) - 1
+        # self.undo_stack_now = len(self.data.edit_control_auxiliary.undo_stack_list) - 1
 
     def stack_add_location_designation(self, number, media_id, effect_id, old_data):
         stack_data = {"media_id": media_id, "effect_id": effect_id, "old_data": old_data}
-        self.data.edit_data_control.undo_stack_list[number] = stack_data
+        self.data.edit_control_auxiliary.undo_stack_list[number] = stack_data
 
     def main(self):
         self.data.window_title_set("タイムライン設定")
@@ -87,8 +87,8 @@ class InitialValue:
         self.data.ui_management = self.data.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.data)
 
         def undo_stack(undo):
-            self.data.edit_data_control.media_object_had_layer(undo.media_id, undo.target_media_data)
-            self.send.effect_element.effect_point_internal_id_point = self.data.edit_data_control.get_key_frame_val_list(undo.media_id, undo.effect_id)
+            self.data.edit_control_auxiliary.media_object_had_layer(undo.media_id, undo.target_media_data)
+            self.send.effect_element.effect_point_internal_id_point = self.data.edit_control_auxiliary.get_key_frame_val_list(undo.media_id, undo.effect_id)
 
             self.now = 0
             self.data.ui_management.set_old_elements_len()
@@ -110,7 +110,7 @@ class InitialValue:
             #print("before_point, next_point", before_point, next_point)
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
-                    if pk_b in self.data.edit_data_control.effect_point_default_keys:
+                    if pk_b in self.data.edit_control_auxiliary.effect_point_default_keys:
                         continue
                     # #print("pk_b, pv_b", pk_b, pv_b)
 
@@ -122,7 +122,7 @@ class InitialValue:
 
             else:
                 for pk_b, pv_b, pk_n, pv_n in zip(before_point.keys(), before_point.values(), next_point.keys(), next_point.values()):
-                    if pk_b in self.data.edit_data_control.effect_point_default_keys:
+                    if pk_b in self.data.edit_control_auxiliary.effect_point_default_keys:
                         continue
 
                     left = TextReceivePoint(self.data, media_id, element.effect_id, left_key, pk_b, stack_add, int_type=True)
@@ -147,8 +147,8 @@ class InitialValue:
             if not self.send is None:
                 old_send_effect_id = copy.deepcopy(self.send.effect_element.effect_id)
 
-            self.data.edit_data_control.undo_stack_list = []
-            self.data.edit_data_control.undo_stack_list_number = 0
+            self.data.edit_control_auxiliary.undo_stack_list = []
+            self.data.edit_control_auxiliary.undo_stack_list_number = 0
             # element, effect_point_internal_id_time, now_f, text_a_return, text_b_return = element_self.send
             element = self.send.effect_element
             self.data.window_title_set("タイムライン設定 {0}".format(element.effect_name))
@@ -158,7 +158,7 @@ class InitialValue:
             self.data.ui_management.set_old_elements_len()
             make()
 
-            #old_text_data = self.data.edit_data_control.get_key_frame_val_list(self.send.media_id, self.send.effect_element.effect_id)
+            #old_text_data = self.data.edit_control_auxiliary.get_key_frame_val_list(self.send.media_id, self.send.effect_element.effect_id)
 
             new_send_effect_id = copy.deepcopy(self.send.effect_element.effect_id)
 
@@ -174,9 +174,9 @@ class InitialValue:
             self.data.ui_management.del_ignition(self.now)
             self.data.window_title_set("タイムライン設定")
 
-        self.data.edit_data_control.callback_operation.set_event("element_ui_all_del", element_ui_all_del)
-        self.data.edit_data_control.callback_operation.set_event("element_lord", element_lord)
-        self.data.edit_data_control.callback_operation.set_event("element_del", self.data.ui_management.element_del)
+        self.data.edit_control_auxiliary.callback_operation.set_event("element_ui_all_del", element_ui_all_del)
+        self.data.edit_control_auxiliary.callback_operation.set_event("element_lord", element_lord)
+        self.data.edit_control_auxiliary.callback_operation.set_event("element_del", self.data.ui_management.element_del)
 
         # data.element_lord = element_lord
 

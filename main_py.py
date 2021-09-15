@@ -35,8 +35,8 @@ from pysrc import audio_control
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
-all_data = edit_data_control.Storage(now_path)
-all_UI_data = UI_control
+edit_control_auxiliary = edit_data_control.Storage(now_path)
+#all_UI_data = UI_control
 
 operation = {}
 operation["audio_control"] = audio_control.AudioControl()
@@ -92,7 +92,7 @@ for i in range(2):
         for file_name in pl_section_inside_list:  # ファイルごとの処理
             file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
             path = os.path.relpath(file_path, py_path)
-            path_dot = path.replace(file_type, '').replace(all_data.slash, '.')
+            path_dot = path.replace(file_type, '').replace(edit_control_auxiliary.slash, '.')
 
             file_bool = file_name[-1*int(len(file_type)):] == file_type
 
@@ -115,15 +115,15 @@ operation["synthetic"] = synthetic.SyntheticControl()
 def set_operation():
     operation["log"].write(operation)
     operation["synthetic"].set_operation(operation)
-    all_data.set_operation(operation)
-    operation["rendering_py"]["main"].set(operation, all_data.scene, all_data.media_object_group)
+    edit_control_auxiliary.set_operation(operation)
+    operation["rendering_py"]["main"].set(operation, edit_control_auxiliary.scene, edit_control_auxiliary.media_object_group)
 
 
 set_operation()
-operation["undo"] = undo.UndoStack(all_data)
+operation["undo"] = undo.UndoStack(edit_control_auxiliary)
 
 #all_data.main_path = now_path
-print(all_data.main_path)
+print(edit_control_auxiliary.main_path)
 
 
 class CentralRole:
@@ -157,11 +157,11 @@ class CentralRole:
         return
 
     def main_CUI(self):
-        main_user_CUI.CUI(all_data).main()  # 次の選択を担うファイルへ送信
+        main_user_CUI.CUI(edit_control_auxiliary).main()  # 次の選択を担うファイルへ送信
         return
 
     def main_GUI(self):
-        main_user_GUI.GUI(all_data, all_UI_data).main()  # 次の選択を担うファイルへ送信
+        main_user_GUI.GUI(edit_control_auxiliary, UI_control).main()  # 次の選択を担うファイルへ送信
         return
 
 

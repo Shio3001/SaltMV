@@ -58,11 +58,11 @@ class InitialValue:
 
             color_edit(send.push_effect, push_color="#ff0000")
 
-            send.effect_element = self.window_control.edit_data_control.effect(send.media_id, key)
-            self.window_control.edit_data_control.callback_operation.event("element_lord", info=(send))
+            send.effect_element = self.window_control.edit_control_auxiliary.effect(send.media_id, key)
+            self.window_control.edit_control_auxiliary.callback_operation.event("element_lord", info=(send))
 
         def new_button_for_parameter_control():
-            ui_id = self.window_control.edit_data_control.elements.make_id("parameter_UI")
+            ui_id = self.window_control.edit_control_auxiliary.elements.make_id("parameter_UI")
             button = self.window_control.new_parts("parameter_control", ui_id, parts_name="button")
 
             #print(button, "ボタンをインスタンス 化しました")
@@ -125,18 +125,18 @@ class InitialValue:
 
             click_effect_point = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
 
-            old_key = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
-            #old_values = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+            old_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
+            #old_values = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
 
             old_key_data = old_key[click_effect_point]
             #old_val_data = old_values[click_effect_point]
 
             self.window_control.ui_management.set_old_elements_len()
-            #del self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
-            self.window_control.edit_data_control.del_effect_elements(self.now_media_id, old_key_data)
+            #del self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
+            self.window_control.edit_control_auxiliary.del_effect_elements(self.now_media_id, old_key_data)
 
-            new_key = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
-            new_val = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+            new_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
+            new_val = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
 
             zip_data = dict(zip(new_key, new_val))
 
@@ -156,7 +156,7 @@ class InitialValue:
 
             self.window_control.ui_management.del_ignition(con_len - 1)
 
-            self.window_control.edit_data_control.callback_operation.event("element_ui_all_del")
+            self.window_control.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
 
         def effect_updown(A, B, box_pos, gap, sta_point):
 
@@ -173,16 +173,16 @@ class InitialValue:
             click_effect_point[0] = effect_updown_measurement(A, box_pos, sta_point, con_len-1)
             click_effect_point[1] = effect_updown_measurement(B, box_pos, sta_point, con_len)
 
-            old_key = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
-            old_values = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+            old_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
+            old_values = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
 
             old_key_data = old_key[click_effect_point[0]]
             old_val_data = old_values[click_effect_point[0]]
 
-            del self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
+            del self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group[old_key_data]
 
-            new_key = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
-            new_val = list(self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
+            new_key = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.keys())
+            new_val = list(self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group.values())
 
             if click_effect_point[1] > click_effect_point[0]:
                 click_effect_point[1] -= 1
@@ -200,7 +200,7 @@ class InitialValue:
 
             #print(A, B, click_effect_point, "zipdata", zip_data)
 
-            self.window_control.edit_data_control.edit_data.scenes[self.window_control.edit_data_control.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group = copy.deepcopy(zip_data)
+            self.window_control.edit_control_auxiliary.edit_data.scenes[self.window_control.edit_control_auxiliary.edit_data.now_scene].layer_group.object_group[self.now_media_id][0].effect_group = copy.deepcopy(zip_data)
             self.send.effect_element = copy.deepcopy(zip_data)
 
             # self.window_control.ui_management.set_old_elements_len()
@@ -259,10 +259,10 @@ class InitialValue:
             if self.send is None:
                 return
 
-            self.send.effect_group = self.window_control.edit_data_control.media_object(self.send.media_id).effect_group
-            self.send.effect_point_internal_id_time = self.window_control.edit_data_control.media_object(self.send.media_id).effect_point_internal_id_time
+            self.send.effect_group = self.window_control.edit_control_auxiliary.media_object(self.send.media_id).effect_group
+            self.send.effect_point_internal_id_time = self.window_control.edit_control_auxiliary.media_object(self.send.media_id).effect_point_internal_id_time
 
-            self.window_control.edit_data_control.callback_operation.event("element_ui_all_del")
+            self.window_control.edit_control_auxiliary.callback_operation.event("element_ui_all_del")
 
             elements_effect = self.send.effect_group
             elements_len = int(len(elements_effect.values()))
@@ -279,7 +279,7 @@ class InitialValue:
 
             self.window_control.ui_management.del_ignition(list_len)
             self.window_control.window.update()
-            # self.window_control.edit_data_control.threading_lock.release()
+            # self.window_control.edit_control_auxiliary.threading_lock.release()
 
         def automatic_opening(number):
 
@@ -294,13 +294,13 @@ class InitialValue:
 
             # self.window_control.ui_management.ui_list[number].button_parameter_control.callback_operation.event("button_click")
 
-        self.window_control.edit_data_control.callback_operation.set_event("media_lord", media_lord)
-        self.window_control.edit_data_control.callback_operation.set_event("automatic_opening", automatic_opening)
-        self.window_control.edit_data_control.callback_operation.set_event("new_button_for_parameter_control", new_button_for_parameter_control)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("media_lord", media_lord)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("automatic_opening", automatic_opening)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("new_button_for_parameter_control", new_button_for_parameter_control)
 
         self.window_control.window_size_set(x=220, y=360, lock_x=False)
         self.window_control.window.update()
-        # self.window_control.edit_data_control.callback_operation.set_event("element_del", element_del)
+        # self.window_control.edit_control_auxiliary.callback_operation.set_event("element_del", element_del)
 
         # data.element_lord = element_lord
 

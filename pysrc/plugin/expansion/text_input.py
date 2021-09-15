@@ -56,14 +56,14 @@ class InitialValue:
             close_save.edit_diagram_color("background", "#111111")
             close_non_save.edit_diagram_color("background", "#111111")
             input_text = textbox.get_textbox_text("textbox")
-            self.window_control.edit_data_control.callback_operation.event("text_input_end", info=(self.now_name, input_text))
+            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_end", info=(self.now_name, input_text))
             self.window_control.window_open_close(False)
 
         def text_input_non_save_end(event):
             self.window_control.window_open_close(False)
 
-        self.window_control.edit_data_control.callback_operation.set_event("set_init_val", set_init_val)
-        self.window_control.edit_data_control.callback_operation.set_event("text_input_request", text_input_request, duplicate=False)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("set_init_val", set_init_val)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request", text_input_request, duplicate=False)
 
         close_save.edit_territory_size(x=100, y=20)
         close_save.edit_territory_position(x=0, y=30)
