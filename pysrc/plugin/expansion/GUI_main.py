@@ -4,15 +4,15 @@ import os
 import copy
 
 import cv2
-#from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
+# from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
 
 
 class InitialValue:
     def __init__(self, data):
         self.window_control = data
         self.operation = self.window_control.operation
-        #self.all_elements = self.window_control.all_elements
-        #self.elements = self.window_control.elements
+        # self.all_elements = self.window_control.all_elements
+        # self.elements = self.window_control.elements
         self.tk = self.window_control.tk
 
         self.UI_parts = self.window_control.UI_parts  # パーツひとつひとつのデータ
@@ -91,8 +91,13 @@ class InitialValue:
         def sound_stop():
             self.make_preview_data.sound_stop()
 
+        # def preview
+
+        def preview_reflect():
+            self.make_preview_data.re_scene()
+
         def preview(preview_frmae_run):
-            #frame, run=False
+            # frame, run=False
 
             frame, run = None, None
 
@@ -104,7 +109,6 @@ class InitialValue:
             elif type(preview_frmae_run) is int:
                 frame = preview_frmae_run
 
-            self.make_preview_data.re_scene()
             self.make_preview_data.output_tk(frame, run=run)
             self.preview_image_tk = self.make_preview_data.get_image_tk(frame)
 
@@ -122,11 +126,13 @@ class InitialValue:
 
         def cash_clear():
             self.make_preview_data.image_stack()
+            self.window_control.edit_control_auxiliary.callback_operation.event("preview_reflect")
 
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("preview_reflect", preview_reflect)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("preview", preview)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("sound_init", sound_init)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("sound_stop", sound_stop)
-        #self.window_control.edit_control_auxiliary.callback_operation.set_event("make_preview_data", get_make_preview_data)
+        # self.window_control.edit_control_auxiliary.callback_operation.set_event("make_preview_data", get_make_preview_data)
 
         def send_rendering(editor_func_send):
             editor_func_name, editor_func_val = editor_func_send
@@ -152,7 +158,7 @@ class InitialValue:
             sta = scrollbar_sta_end[0]
             end = scrollbar_sta_end[1]
 
-            #print("scroll_data.ratio_f", scroll_data.ratio_f)
+            # print("scroll_data.ratio_f", scroll_data.ratio_f)
 
             make_data.output_main(sta, end)
             # make_data.output_OpenCV()
@@ -171,13 +177,13 @@ class InitialValue:
 
         display_size = self.window_control.display_size_get()
         self.window_control.window_title_set("メインウインドウ")
-        #size = [640, 360]
+        # size = [640, 360]
         self.window_control.window_size_set(x=640, y=360)
 
         # def window_size_change_event(self):
         #    pass
 
-        #self.window_control.window_event(processing=window_size_change_event, user_event="Motion")
+        # self.window_control.window_event(processing=window_size_change_event, user_event="Motion")
 
         return self.window_control
 

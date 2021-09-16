@@ -94,7 +94,7 @@ namespace EffectProgress
       //cout << "effect_len"
       //<< " " << effect_len << endl;
 
-      py::object effect_group_val = effect_group.attr("values")();
+      py::object effect_group_val = py::list(effect_group.attr("values")());
 
       py::list starting_point_center;
 
@@ -105,14 +105,19 @@ namespace EffectProgress
 
       for (int i = 0; i < effect_len; i++)
       {
+        cout << "effect_group_val" << endl;
+
         py::object send_effect = effect_group_val[i];
+
+        cout << "send_effect" << endl;
+
         py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect));
 
         // ここから
-        //cout << "effect_draw_base" << endl;
+        cout << "effect_draw_base" << endl;
         effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
 
-        //cout << "starting_point" << endl;
+        cout << "starting_point" << endl;
         py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[1]);
 
         for (int a = 0; a < 2; a++)
@@ -125,27 +130,27 @@ namespace EffectProgress
         //starting_point_center[a] = starting_point_center[a] + py::extract<int>(procedure_return_starting_point_center[1]);
         //effect_draw_base = new_effect_draw_base;
       }
-      //cout << " effect_group_return A" << endl;
+      cout << " effect_group_return A" << endl;
 
       py::list effect_group_return;
 
-      //cout << " effect_group_return a1" << endl;
+      cout << " effect_group_return a1" << endl;
 
       effect_group_return.append(effect_draw_base);
 
-      //cout << " effect_group_return a2" << endl;
+      cout << " effect_group_return a2" << endl;
 
       effect_group_return.append(starting_point_center);
 
       //effect_group_return.append(audio_object);
 
-      //cout << " effect_group_return B" << endl;
+      cout << " effect_group_return B" << endl;
 
       return effect_group_return;
     }
     py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)
     {
-      //cout << "production_effect_individual" << endl;
+      cout << "production_effect_individual" << endl;
 
       py::object effect = send_effect;
 
@@ -158,13 +163,13 @@ namespace EffectProgress
       bool audio = effect.attr("audio");
 
       //string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
-      //cout << "procedure " << test_txt1 << endl;
+      cout << "procedure " << endl;
 
       string cpp_file = py::extract<string>(effect.attr("cpp_file"));
 
-      //cout << "before_value"
-      //<< " "
-      //<< "next_value" << endl;
+      cout << "before_value"
+           << " "
+           << "next_value" << endl;
 
       py::dict before_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[0]]);
       py::dict next_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[1]]);
@@ -175,7 +180,11 @@ namespace EffectProgress
       py::list before_value_values = py::extract<py::list>(before_value.values());
       py::list next_value_values = py::extract<py::list>(next_value.values());
 
-      //cout << "before_value"<< " "<< "next_value"<< " "<< "end" << endl;
+      cout << "before_value"
+           << " "
+           << "next_value"
+           << " "
+           << "end" << endl;
 
       if (before_time == next_time)
       {
@@ -191,7 +200,7 @@ namespace EffectProgress
       int b_n_section_time = next_time - before_time;
       int b_now_time = now_frame - before_time;
 
-      //cout << "before_value_key_len" << before_value_key_len << endl;
+      cout << "before_value_key_len" << before_value_key_len << endl;
 
       for (int i = 0; i < before_value_key_len; i++)
       {
@@ -217,11 +226,13 @@ namespace EffectProgress
 
       //string effect_id =
 
-      //cout << "effect_plugin_elements" << endl;
+      cout << "effect_plugin_elements" << endl;
       py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
 
-      //cout << "procedure_return" << endl;
+      cout << "procedure_return" << endl;
       py::object main_function = procedure.attr("main");
+
+      cout << "procedure_return2" << endl;
 
       //py::object main_function_self = py::extract<py::object>(main_function.attr("__func__"));
       //py::object run_main_function = py::extract<py::object>(py_out_func["plugin_run"]);

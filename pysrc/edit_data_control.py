@@ -291,9 +291,11 @@ class Storage:
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
 
-        for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
-            for ek in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys():
-                e.effect_point_internal_id_point[ek] = copy.deepcopy(e.effect_point)
+        e = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id]
+
+        # for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
+        for ek in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys():
+            e.effect_point_internal_id_point[ek] = copy.deepcopy(e.effect_point)
 
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 

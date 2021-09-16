@@ -724,6 +724,8 @@ class InitialValue:
             self.run_button.edit_diagram_color("background", "#229922")
 
         if self.time_lime_space_flag == 1:  # on
+            self.window_control.edit_control_auxiliary.callback_operation.event("preview_reflect")
+            
             self.run_button.edit_diagram_text("text", text="停止")
             self.run_button.edit_diagram_color("background", "#992222")
 
