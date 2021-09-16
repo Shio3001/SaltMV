@@ -52,15 +52,22 @@ class parts:
         #UI_auxiliary.scene_change_flag = True
 
         UI_auxiliary.mov_flag = False
+        UI_auxiliary.click_flag = True
 
         # mov_flagは内部用
         # click_flagは外部干渉用
+
+        def one_lock():
+            UI_auxiliary.click_flag = False
+
+        UI_auxiliary.one_lock = one_lock
 
         def click_start(event):
             #print("呼び出し先[nowtime申請]", inspect.stack()[1].filename, inspect.stack()[1].function)
             print("nowtime[申請] click_start")
 
             if not UI_auxiliary.click_flag:
+                UI_auxiliary.click_flag = True
                 return
 
             if not UI_auxiliary.get_permission_elapsed_time():

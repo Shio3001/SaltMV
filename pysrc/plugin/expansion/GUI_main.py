@@ -93,9 +93,6 @@ class InitialValue:
 
         # def preview
 
-        def preview_reflect():
-            self.make_preview_data.re_scene()
-
         def preview(preview_frmae_run):
             # frame, run=False
 
@@ -123,9 +120,9 @@ class InitialValue:
 
         def cash_clear():
             self.make_preview_data.image_stack()
-            self.window_control.edit_control_auxiliary.callback_operation.event("preview_reflect")
+            self.make_preview_data.re_scene()
 
-        self.window_control.edit_control_auxiliary.callback_operation.set_event("preview_reflect", preview_reflect)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("cash_clear", cash_clear)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("preview", preview)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("sound_init", sound_init)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("sound_stop", sound_stop)

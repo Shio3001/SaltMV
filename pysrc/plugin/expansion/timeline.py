@@ -511,7 +511,7 @@ class InitialValue:
 
                     self.window_control.timeline_object[obj_k].make_KeyFrame(uu_id=point_key, pos_f=point_val)
 
-            # self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
+            self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
 
         def edit_data_reset():
             all_del_object_ui()
@@ -603,6 +603,9 @@ class InitialValue:
         #    self.nowtime_bar.scene_change_flag = False
 
         def editor_func(editor_func_send):
+
+            timeline_nowtime_approval_False(None)
+
             editor_func_name, editor_func_val = editor_func_send
             print("editor_func_send", editor_func_send)
             if editor_func_name == "preview":
@@ -612,6 +615,8 @@ class InitialValue:
 
             loading_movie_data(new=self.window_control.edit_control_auxiliary.scene_id())
             self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
+
+            timeline_nowtime_approval_True(None)
 
         def editor_setting_change(option_data):
             timeline_nowtime_approval_False(None)
@@ -639,6 +644,7 @@ class InitialValue:
             timeline_nowtime_approval_True(None)
 
         def scene_change(option_data):
+            # self.nowtime_bar.one_lock()
             timeline_nowtime_approval_False(None)
 
             self.popup = self.window_control.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.window_control.window, popup=True)
@@ -690,6 +696,7 @@ class InitialValue:
 
         def run_button_func(r=None):
             self.preview_move()
+            self.nowtime_bar.one_lock()
 
         self.run_button = self.window_control.new_parts("timeline", "run_button", parts_name="button")  # 左側のやつ
         self.run_button.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
@@ -700,6 +707,20 @@ class InitialValue:
         self.run_button.edit_diagram_text("text", text="再生")
         self.run_button.territory_draw()
         self.run_button.callback_operation.set_event("button", run_button_func)
+
+        def run_cash_clear_func(r=None):
+            self.nowtime_bar.one_lock()
+            self.window_control.edit_control_auxiliary.callback_operation.event("cash_clear")
+
+        self.run_cash_clear = self.window_control.new_parts("timeline", "run_cash_clear", parts_name="button")  # 左側のやつ
+        self.run_cash_clear.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
+        self.run_cash_clear.edit_territory_position(x=timeline_left+3*list_button, y=5)
+        self.run_cash_clear.edit_diagram_color("background", "#222299")
+        self.run_cash_clear.edit_diagram_color("text", "#ffffff")
+        self.run_cash_clear.diagram_stack("text", True)
+        self.run_cash_clear.edit_diagram_text("text", text="キャッシュ削除", font_size=15)
+        self.run_cash_clear.territory_draw()
+        self.run_cash_clear.callback_operation.set_event("button", run_cash_clear_func)
 
         def add_scene():
             self.window_control.edit_control_auxiliary.add_scene_elements()
@@ -724,7 +745,7 @@ class InitialValue:
             self.run_button.edit_diagram_color("background", "#229922")
 
         if self.time_lime_space_flag == 1:  # on
-            self.window_control.edit_control_auxiliary.callback_operation.event("preview_reflect")
+            self.window_control.edit_control_auxiliary.callback_operation.event("cash_clear")
 
             self.run_button.edit_diagram_text("text", text="停止")
             self.run_button.edit_diagram_color("background", "#992222")
