@@ -16,7 +16,7 @@ namespace EffectProgressPlugin
   class EffectPluginElements
   {
     np::ndarray draw;
-    EffectPluginElements(np::ndarray send_draw, py::dict send_effect_value, py::dict send_before_value, py::dict send_next_value, py::dict send_various_fixed, int send_now_frame, py::dict send_editor)
+    EffectPluginElements(np::ndarray send_draw, py::object send_effect_value, py::object send_before_value, py::object send_next_value, py::object send_various_fixed, int send_now_frame, py::object send_editor)
     {
       draw = send_draw;
       send_effect_value;
@@ -29,12 +29,12 @@ namespace EffectProgress
   class EffectProduction
   {
   public:
-    py::dict effect_group;
-    py::dict py_out_func;
-    py::dict python_operation;
+    py::object effect_group;
+    py::object py_out_func;
+    py::object python_operation;
     py::object video_image_control;
-    py::dict editor;
-    py::dict effect_point_internal_id_time;
+    py::object editor;
+    py::object effect_point_internal_id_time;
     vector<string> around_point_key;
     int now_frame;
     int before_time;
@@ -42,9 +42,9 @@ namespace EffectProgress
     int installation_sta;
     int installation_end;
 
-    //py::list audio_object;
+    //py::object audio_object;
 
-    EffectProduction(int send_now_frame, py::dict &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key, py::dict &send_effect_point_internal_id_time, int send_installation_sta, int send_installation_end)
+    EffectProduction(int send_now_frame, py::object &send_effect_group, py::object &send_py_out_func, py::object &send_python_operation, py::object &send_video_image_control, py::object &send_editor, vector<string> send_around_point_key, py::object &send_effect_point_internal_id_time, int send_installation_sta, int send_installation_end)
     {
       effect_group = send_effect_group;
       py_out_func = send_py_out_func;
@@ -79,24 +79,24 @@ namespace EffectProgress
 
       //cout << before_time << " " << next_time << endl;
     }
-    /*py::list get_audio_object()
+    /*py::object get_audio_object()
     {
       return audio_object;
     }*/
 
-    py::list production_effect_group()
+    py::object production_effect_group()
     {
       //cout << "production_effect_group" << endl;
       int effect_len = py::len(effect_group);
-      py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
+      py::object shape_size = py::make_tuple(editor["y"], editor["x"], 4);
       np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       //cout << "effect_len"
       //<< " " << effect_len << endl;
 
-      py::list effect_group_val = py::extract<py::list>(effect_group.values());
+      py::object effect_group_val = effect_group.values();
 
-      py::list starting_point_center;
+      py::object starting_point_center;
 
       for (int a = 0; a < 2; a++)
       {
@@ -106,14 +106,14 @@ namespace EffectProgress
       for (int i = 0; i < effect_len; i++)
       {
         py::object send_effect = effect_group_val[i];
-        py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect));
+        py::object procedure_return = production_effect_individual(effect_draw_base, send_effect);
 
         // ここから
         //cout << "effect_draw_base" << endl;
         effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
 
         //cout << "starting_point" << endl;
-        py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[1]);
+        py::object procedure_return_starting_point_center = procedure_return[1];
 
         for (int a = 0; a < 2; a++)
         {
@@ -127,7 +127,7 @@ namespace EffectProgress
       }
       //cout << " effect_group_return A" << endl;
 
-      py::list effect_group_return;
+      py::object effect_group_return;
 
       //cout << " effect_group_return a1" << endl;
 
@@ -143,21 +143,21 @@ namespace EffectProgress
 
       return effect_group_return;
     }
-    py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)
+    py::object production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)
     {
       //cout << "production_effect_individual" << endl;
 
       py::object effect = send_effect;
 
-      py::dict effect_point_internal_id_point = py::extract<py::dict>(effect.attr("effect_point_internal_id_point"));
+      py::object effect_point_internal_id_point = effect.attr("effect_point_internal_id_point");
       string effect_name = py::extract<string>(effect.attr("effect_name"));
       string effect_id = py::extract<string>(effect.attr("effect_id"));
-      py::dict various_fixed = py::extract<py::dict>(effect.attr("various_fixed"));
-      //py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
-      py::object procedure = py::extract<py::object>(effect.attr("procedure"));
+      py::object various_fixed = effect.attr("various_fixed");
+      //py::object effect_point = effect.attr("effect_point"));
+      py::object procedure = effect.attr("procedure");
       bool audio = effect.attr("audio");
 
-      //string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
+      //string test_txt1 = py::extract<string>(procedure.attr("now_file")));
       //cout << "procedure " << test_txt1 << endl;
 
       string cpp_file = py::extract<string>(effect.attr("cpp_file"));
@@ -166,14 +166,14 @@ namespace EffectProgress
       //<< " "
       //<< "next_value" << endl;
 
-      py::dict before_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[0]]);
-      py::dict next_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[1]]);
+      py::object before_value = effect_point_internal_id_point[around_point_key[0]];
+      py::object next_value = effect_point_internal_id_point[around_point_key[1]];
 
-      py::list before_value_key = py::extract<py::list>(before_value.keys());
-      py::list next_value_key = py::extract<py::list>(next_value.keys());
+      py::object before_value_key = before_value.keys();
+      py::object next_value_key = next_value.keys();
 
-      py::list before_value_values = py::extract<py::list>(before_value.values());
-      py::list next_value_values = py::extract<py::list>(next_value.values());
+      py::object before_value_values = before_value.values();
+      py::object next_value_values = next_value.values();
 
       //cout << "before_value"<< " "<< "next_value"<< " "<< "end" << endl;
 
@@ -182,7 +182,7 @@ namespace EffectProgress
         next_time += 1;
       }
 
-      py::dict effect_value = {};
+      py::object effect_value = {};
 
       int effect_point_len = py::len(effect_point_internal_id_point);
       int before_value_key_len = py::len(before_value_key);
@@ -213,27 +213,27 @@ namespace EffectProgress
         //cout << "pos : " << pos << endl;
       }
 
-      //py::object FileSystem = py::extract<py::object>(py_out_func["FileSystem"]);
+      //py::object FileSystem = py_out_func["FileSystem"]);
 
       //string effect_id =
 
       //cout << "effect_plugin_elements" << endl;
-      py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
+      py::object effect_plugin_elements = py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end);
 
       //cout << "procedure_return" << endl;
-      py::object main_function = py::extract<py::object>(procedure.attr("main"));
+      py::object main_function = procedure.attr("main");
 
-      //py::object main_function_self = py::extract<py::object>(main_function.attr("__func__"));
-      //py::object run_main_function = py::extract<py::object>(py_out_func["plugin_run"]);
+      //py::object main_function_self = main_function.attr("__func__"));
+      //py::object run_main_function = py_out_func["plugin_run"]);
 
-      //py::object self_data = py::extract<py::object>(main_function.attr("__self__"));
-      py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
+      //py::object self_data = main_function.attr("__self__"));
+      py::object procedure_return = main_function(effect_plugin_elements);
 
       /*
 
       if (audio == true)
       {
-        py::list temp_audio_object_add;
+        py::object temp_audio_object_add;
 
         temp_audio_object_add.append(procedure.attr("sound"));
         temp_audio_object_add.append(procedure.attr("sound_init"));
@@ -242,7 +242,7 @@ namespace EffectProgress
         audio_object.append(temp_audio_object_add);
       }*/
 
-      //string test_txt2 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
+      //string test_txt2 = py::extract<string>(procedure.attr("now_file")));
       //cout << "procedure2 " << test_txt2 << endl;
 
       cout << "effect終了" << endl;
@@ -269,18 +269,18 @@ namespace ObjectProgress
   public:
     int frame;
 
-    py::dict py_out_func;
-    py::dict python_operation;
+    py::object py_out_func;
+    py::object python_operation;
     py::object video_image_control;
-    py::dict object_group;
-    py::dict layer_layer_id;
+    py::object object_group;
+    py::object layer_layer_id;
     map<int, py::object> order_decision_object_group;
     vector<int> order_decision_object_group_number;
-    py::dict editor;
+    py::object editor;
 
     int object_len;
 
-    ObjectProduction(int send_frame, py::dict &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor)
+    ObjectProduction(int send_frame, py::object &send_object_group, py::object &send_layer_layer_id, py::object &send_py_out_func, py::object &send_python_operation, py::object &send_video_image_control, py::object &send_editor)
     {
       frame = send_frame;
       object_group = send_object_group;
@@ -297,8 +297,8 @@ namespace ObjectProgress
       for (int i = 0; i < object_len; i++)
       {
 
-        py::object this_object = py::list(object_group.values())[i];
-        py::list installation = py::extract<py::list>(this_object[0].attr("installation"));
+        py::object this_object = py::object(object_group.values())[i];
+        py::object installation = this_object[0].attr("installation");
 
         bool low = py::extract<int>(installation[0]) <= frame;
         bool high = frame < py::extract<int>(installation[1]);
@@ -328,7 +328,7 @@ namespace ObjectProgress
     np::ndarray production_object_group()
     {
 
-      py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
+      py::object shape_size = py::make_tuple(editor["y"], editor["x"], 4);
       np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
@@ -350,35 +350,35 @@ namespace ObjectProgress
     {
       //cout << "production_object_individual" << endl;
 
-      py::dict effect_point_internal_id_time = py::extract<py::dict>(now_objcet.attr("effect_point_internal_id_time"));
-      py::list id_time_key = py::extract<py::list>(effect_point_internal_id_time.keys());
-      py::list id_time_value = py::extract<py::list>(effect_point_internal_id_time.values());
+      py::object effect_point_internal_id_time = now_objcet.attr("effect_point_internal_id_time");
+      py::object id_time_key = effect_point_internal_id_time.keys();
+      py::object id_time_value = effect_point_internal_id_time.values();
 
-      py::list installation = py::extract<py::list>(now_objcet.attr("installation"));
+      py::object installation = now_objcet.attr("installation");
 
       int installation_sta = py::extract<int>(installation[0]);
       int installation_end = py::extract<int>(installation[1]);
 
       vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value, installation_sta, installation_end);
-      py::dict effect_group = py::extract<py::dict>(now_objcet.attr("effect_group")); //ここ  now_objcet  に effect_pointがあるわけないやろばか
+      py::object effect_group = now_objcet.attr("effect_group"); //ここ  now_objcet  に effect_pointがあるわけないやろばか
       string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
       EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time, installation_sta, installation_end);
-      py::list effect_group_return = effect_production->production_effect_group();
+      py::object effect_group_return = effect_production->production_effect_group();
 
       // ここから
       //cout << "effect_group_return" << endl;
       np::ndarray new_effect_draw = py::extract<np::ndarray>(effect_group_return[0]);
 
       //cout << "starting_point" << endl;
-      py::list starting_point_center = py::extract<py::list>(effect_group_return[1]);
+      py::object starting_point_center = effect_group_return[1];
 
-      //py::list new_audio_function_list = py::extract<py::list>(effect_group_return[2]);
+      //py::object new_audio_function_list = effect_group_return[2]);
 
       //audio_function_list.extend(new_audio_function_list);
 
       ////cout << starting_point_center[0] << " " << starting_point_center[1] << endl;
 
-      py::tuple new_draw_size_shape = py::extract<py::tuple>(new_effect_draw.attr("shape"));
+      py::object new_draw_size_shape = new_effect_draw.attr("shape");
 
       int new_effect_draw_size[2];
       new_effect_draw_size[0] = py::extract<int>(new_draw_size_shape[1]);
@@ -387,10 +387,10 @@ namespace ObjectProgress
       string xy[] = {"x",
                      "y"};
 
-      py::list list_base_draw_range_lu;
-      py::list list_base_draw_range_rd;
-      py::list list_add_draw_range_lu;
-      py::list list_add_draw_range_rd;
+      py::object list_base_draw_range_lu;
+      py::object list_base_draw_range_rd;
+      py::object list_add_draw_range_lu;
+      py::object list_add_draw_range_rd;
 
       vector<int> base_draw_range_lu = {0, 0};
       vector<int> base_draw_range_rd = {0, 0};
@@ -465,13 +465,13 @@ namespace ObjectProgress
         ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
-      py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
+      py::object synthetic_func = python_operation["synthetic"].attr("call");
       np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));
 
       return sy_draw;
     }
 
-    vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
+    vector<string> around_point_search(int frame, py::object &id_time_key, py::object &id_time_value, int installation_sta, int installation_end)
     {
       vector<string> around_point{"", ""};
 
@@ -518,17 +518,17 @@ namespace VideoMain
   class VideoExecutionCenter
   {
     py::object scene;
-    py::dict editor;
-    py::dict py_out_func;
-    py::dict python_operation;
+    py::object editor;
+    py::object py_out_func;
+    py::object python_operation;
     py::object video_image_control;
 
     py::object layer_group;
-    py::dict object_group;
-    py::dict layer_layer_id;
+    py::object object_group;
+    py::object layer_layer_id;
 
   public:
-    VideoExecutionCenter(py::dict send_operation, py::dict send_py_out_func)
+    VideoExecutionCenter(py::object send_operation, py::object send_py_out_func)
     {
       // editor["x"] = extract<int>(x);
       // editor["y"] = extract<int>(y);
@@ -547,10 +547,14 @@ namespace VideoMain
     void scene_setup(py::object &send_scene)
     {
       scene = send_scene;
-      editor = py::extract<py::dict>(send_scene.attr("editor"));
-      layer_group = py::extract<py::object>(scene.attr("layer_group"));
-      object_group = py::extract<py::dict>(layer_group.attr("object_group"));
-      layer_layer_id = py::extract<py::dict>(layer_group.attr("layer_layer_id"));
+      editor = send_scene.attr("editor");
+      layer_group = scene.attr("layer_group");
+
+      object_group = layer_group.attr("object_group");
+
+      cout << &object_group << endl;
+
+      layer_layer_id = layer_group.attr("layer_layer_id");
     }
 
     np::ndarray execution_main(int frame)
@@ -630,7 +634,7 @@ BOOST_PYTHON_MODULE(video_main)
   Py_Initialize();
   np::initialize();
   py::class_<VideoMain::VideoExecutionCenter>("VideoExecutionCenter",
-                                              py::init<py::dict, py::dict>()) // VideoExecutionCenterコンストラクタへの引数型
+                                              py::init<py::object, py::object>()) // VideoExecutionCenterコンストラクタへの引数型
 
       //.def("sta", &VideoExecutionCenter::sta)
       .def("scene_setup", &VideoMain::VideoExecutionCenter::scene_setup)
