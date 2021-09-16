@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class SyntheticControl:
     def __init__(self):
         pass
@@ -35,9 +38,11 @@ class SyntheticControl:
         add_section = add_float64[add_up:add_down, add_left:add_right] / 255
 
         process = self.operation["plugin"]["synthetic"][synthetic_name].main(base_section, add_section)  # source, additions
-        process[:, :, 0:3] *= 255
+        process[:, :, 0:4] *= 255
         process_uint8 = process.astype('uint8')
 
         base[base_up:base_down, base_left:base_right] = process_uint8
+
+        print("base", np.sum(base[:, :, 3]))
 
         return base

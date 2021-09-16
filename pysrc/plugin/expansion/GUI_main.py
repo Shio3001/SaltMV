@@ -114,9 +114,6 @@ class InitialValue:
 
             print("preview", frame, self.make_preview_data.preview)
 
-            if self.make_preview_data.preview == "opencv":
-                return self.preview_image_tk
-
             #     print("opencv描画モード")
             #     cv2.imshow('opencv preview', self.preview_image_tk)  # この時点ではウィンドウは表示されない
             #     cv2.waitKey(0)

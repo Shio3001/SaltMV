@@ -219,6 +219,23 @@ class SceneOutput:
     def sound_stop(self):
         self.audio_control.sound_stop()
 
+    def del_alpha(self, had_alpha):
+
+        had_alpha = had_alpha.astype('float64')
+
+        print("had_alpha RGB", np.sum(had_alpha[:, :, 0:3]))
+        print("had_alpha A  ", np.sum(had_alpha[:, :, 3]))
+        print("had_alpha A8", np.sum(had_alpha[:, :, 3] / 255))
+
+        RGB = had_alpha[:, :, 0:3]
+        RGB[:, :, 0] *= (had_alpha[:, :, 3] / 255)
+        RGB[:, :, 1] *= (had_alpha[:, :, 3] / 255)
+        RGB[:, :, 2] *= (had_alpha[:, :, 3] / 255)
+
+        print("RGB", np.sum(RGB))
+
+        return RGB.astype('uint8')
+
     def output_tk(self, frame, tk_cash=True, run=False):
         #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
 
@@ -248,20 +265,21 @@ class SceneOutput:
         #object_group = self.cpp_encode.object_group_recovery()
         # self.get_set_media_object_group(data=object_group)
 
-        if self.preview == "opencv":
-            #resize_size_opencv = (640, 360)
-            #img_resize_opencv = image.resize(resize_size_opencv)
-            self.data_image_tk[frame] = image.astype('uint8')
-            return
-
         if cash_process_flag:
             return
 
-        image_cvt = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGBA2RGB)
+        output_data = self.del_alpha(image)
+
+        #image[:, :, 0] *= image[:, :, 3]
+        #image[:, :, 1] *= image[:, :, 3]
+        #image[:, :, 2] *= image[:, :, 3]
+
+        #image_cvt = cv2.cvtColor(image.astype('uint8'))
+        #print("B合成RGB", np.sum(image_cvt[:, :, 0:3]))
 
         #cv2.imwrite('wiwi.jpg', image.astype('uint8'))
 
-        image_pil = Image.fromarray(image_cvt)
+        image_pil = Image.fromarray(output_data)
         resize_size = (640, 360)
         img_resize = image_pil.resize(resize_size)
         # self.image_tk_PhotoImage =
@@ -326,8 +344,10 @@ class SceneOutput:
             print("f_time", f_time_end - f_time_sta)
             #print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
 
-            output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
-            self.writer.write(output_data)
+            #output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
+            output_data = self.del_alpha(export_draw)
+
+            self.writer.write(output_data.astype('uint8'))
 
         self.writer.release()
         #file_all_control = {}

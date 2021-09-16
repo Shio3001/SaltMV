@@ -25,6 +25,11 @@ class CentralRole:
 
         # 透明度
         alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.effect_value["alpha"] * 0.01)
+
+        print(data.draw[:, :, 3])
+
         data.draw[:, :, 3] *= alpha_draw
+
+        print(data.draw[:, :, 3])
 
         return data.draw, self.starting_point

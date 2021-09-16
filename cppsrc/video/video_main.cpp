@@ -349,8 +349,7 @@ namespace ObjectProgress
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
-        np::ndarray new_object_draw_base = production_object_individual(now_objcet, object_draw_base);
-        object_draw_base = new_object_draw_base;
+        object_draw_base = production_object_individual(now_objcet, object_draw_base);
       }
 
       return object_draw_base;
@@ -626,6 +625,10 @@ namespace VideoMain
       np::ndarray object_draw_base = object_production->production_object_group();
       //audio_function_list = object_production->get_audio_function_list();
       delete object_production;
+
+      //object_draw_base[0:720,0:1280,0] *= object_draw_base[:][:][3];
+      //object_draw_base[0:720,0:1280,1] *= object_draw_base[:][:][3];
+      //object_draw_base[0:720,0:1280,2] *= object_draw_base[:][:][3];
 
       cout << "フレーム[処理終了] " << frame << endl;
       cout << " " << endl;

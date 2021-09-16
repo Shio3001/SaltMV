@@ -725,7 +725,7 @@ class InitialValue:
 
         if self.time_lime_space_flag == 1:  # on
             self.window_control.edit_control_auxiliary.callback_operation.event("preview_reflect")
-            
+
             self.run_button.edit_diagram_text("text", text="停止")
             self.run_button.edit_diagram_color("background", "#992222")
 
@@ -741,16 +741,6 @@ class InitialValue:
                     break
 
                 print("再生", process_time)
-
-                if self.window_control.edit_control_auxiliary.scene_editor()["preview"] == "opencv":
-                    return_preview = self.window_control.edit_control_auxiliary.callback_operation.event("preview", info=(process_time, True))
-                    self.nowtime_bar.preview_frame_set(process_time)
-                    self.window_control.window.update()
-                    preview_image_tk = return_preview["preview"]
-                    cv2.imshow('opencv preview', preview_image_tk)  # この時点ではウィンドウは表示されない
-                    cv2.waitKey(round(one_fps))
-                    process_time += 1
-                    continue
 
                 sta_section_time = time.time()
 

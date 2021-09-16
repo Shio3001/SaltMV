@@ -10,7 +10,7 @@ import numpy as np
 class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = "図形[四角形]"
-        setting_effect.effect_point = {"R": 255, "G": 255, "B": 255}
+        setting_effect.effect_point = {"R": 255, "G": 255, "B": 255, "A": 255}
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -34,6 +34,8 @@ class CentralRole:
         p2[:, :, 0] = np.full((50, 50), data.effect_value["R"])
         p2[:, :, 1] = np.full((50, 50), data.effect_value["G"])
         p2[:, :, 2] = np.full((50, 50), data.effect_value["B"])
+        p2[:, :, 3] = np.full((50, 50), data.effect_value["A"])
+
         print(p2.shape)
 
         data.draw = p2
