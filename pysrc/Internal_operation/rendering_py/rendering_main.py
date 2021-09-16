@@ -245,8 +245,8 @@ class SceneOutput:
         if run:
             self.audio_control.sound_run(frame)
 
-        object_group = self.cpp_encode.object_group_recovery()
-        self.get_set_media_object_group(data=object_group,copy_obj=False)
+        #object_group = self.cpp_encode.object_group_recovery()
+        # self.get_set_media_object_group(data=object_group)
 
         if self.preview == "opencv":
             #resize_size_opencv = (640, 360)
