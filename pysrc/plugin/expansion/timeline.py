@@ -23,6 +23,7 @@ class InitialValue:
 
         self.time_lime_space_flag = 0
         self.nowtime_bar = None
+        self.layer_draw = 0
         #self.window_control.edit_control_auxiliary.now_time = 0
         #self.redo_undo_stack = []
         #self.tthis_type_safe = ["media_length",]
@@ -358,18 +359,34 @@ class InitialValue:
 
             # これを生成時に実行しないとダメ__?
 
+        self.window_control.layer_object = []
+
         def new_layer():
             new_layer = self.window_control.edit_control_auxiliary.add_layer_elements()
-            make_layer()
+            len_layer = len(new_layer.layer_layer_id)
+            make_layer(len_layer)
             # #print(new_layer.layer_id)
 
-        def make_layer():
-            pass
+        def make_layer(len_layer):
 
-        def new_obj():
-            new_object = self.window_control.edit_control_auxiliary.add_object_elements()
+            for lb in self.window_control.layer_object:
+                lb.del_territory()
+
+            self.window_control.layer_object = []
+
+            for i in range(len_layer):
+                now_lb = self.window_control.new_parts("timeline", "layer_{0}".format(i), parts_name="timeline_layer")  # 左側のやつ
+                now_lb.set_layer_number(i)
+
+                now_lb.new_obj = new_obj
+                now_lb.timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
+                now_lb.timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
+                self.window_control.layer_object.append(now_lb)
+
+        def new_obj(layer_number=0):
+            new_object = self.window_control.edit_control_auxiliary.add_object_elements(layer_number=layer_number)
             nowtime = self.window_control.edit_control_auxiliary.now_time_update()
-            make_object(new_object.obj_id, sta=nowtime, end=nowtime+20)
+            make_object(new_object.obj_id, sta=nowtime, end=nowtime+20, layer_number=layer_number)
 
             #old_data = self.window_control.edit_control_auxiliary.media_object_had_layer(new_object.obj_id)
             #stack_add("add", old_data)
@@ -491,6 +508,9 @@ class InitialValue:
 
             self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             self.nowtime_bar.frame_set(nowtime)
+
+            len_layer = len(get_scene.layer_group.layer_layer_id)
+            make_layer(len_layer)
 
             for obj_k, obj_v in zip(obj_list[0], obj_list[1]):
                 ##print(obj_k, "実行")
@@ -728,7 +748,7 @@ class InitialValue:
         new_layer()
 
         self.timeline_menubar = self.operation["plugin"]["other"]["menu_popup"].MenuPopup(self.window_control.window)
-        main_menubar_list = [("ファイル", "終了", self.window_control.window_exit), ("新規", "シーン", add_scene, "レイヤー", new_layer), ("追加", "オブジェクト", new_obj)]
+        main_menubar_list = [("ファイル", "終了", self.window_control.window_exit), ("新規", "シーン", add_scene, "レイヤー", new_layer)]
         self.timeline_menubar.set(main_menubar_list)
         self.window_control.window_title_set("タイムライン")
         self.window_control.window_size_set(x=1200, y=700)
@@ -745,7 +765,7 @@ class InitialValue:
             self.run_button.edit_diagram_color("background", "#229922")
 
         if self.time_lime_space_flag == 1:  # on
-            self.window_control.edit_control_auxiliary.callback_operation.event("cash_clear")
+            self.window_control.edit_control_auxiliary.callback_operation.event("re_scene")
 
             self.run_button.edit_diagram_text("text", text="停止")
             self.run_button.edit_diagram_color("background", "#992222")

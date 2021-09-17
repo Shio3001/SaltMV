@@ -214,6 +214,14 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.canvas_data.territory[self.te_name].diagram[di_name].fill[direction] = select
 
+    def edit_diagram_width(self,  di_name, width, outline=None):
+        self.canvas_data.territory[self.te_name].diagram[di_name].width = width
+
+        if not outline is None and outline[0] == "#":
+            self.canvas_data.territory[self.te_name].diagram[di_name].outline = outline
+
+        self.canvas_data.canvas.itemconfigure(self.canvas_data.territory[self.te_name].diagram[di_name].tag, width=self.canvas_data.territory[self.te_name].diagram[di_name].width, outline=self.canvas_data.territory[self.te_name].diagram[di_name].outline)
+
     def edit_diagram_color(self,  di_name, color=None):
         if not self.get_diagram_type(di_name, "DiagramData") and not self.get_diagram_type(di_name, "DiagramTextData"):
             return
@@ -484,11 +492,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
         if not diagram_data.draw_tag and not diagram_data.shape_point is None:
             # #print(diagram_data.shape_point)
             self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
-            self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline="", width=0, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag, joinstyle=tk.BEVEL)
+            self.canvas_data.canvas.create_polygon(diagram_data.shape_point, fill=color, outline=diagram_data.outline, width=diagram_data.width, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag, joinstyle=tk.BEVEL)
 
         elif not diagram_data.draw_tag:
             self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
-            self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline="", width=0, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag)  # 塗りつぶし
+            self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline=diagram_data.outline, width=diagram_data.width, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag)  # 塗りつぶし
 
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name, di_del):
 
@@ -674,14 +682,6 @@ class TerritoryData:
         # ##print("生成")
 
 
-class DiagramBase:  # 指定不可
-    size = [0, 0]
-    position = [0, 0]
-    color = None
-    fill = [False, False]
-    draw_tag = False
-    event = {}
-
 # diagram_base = DiagramBase()
 
 
@@ -711,6 +711,9 @@ class DiagramData():
         self.view_state = 0  # 0,1,2 #通常 #選択不可 #非表示
 
         self.tag = None
+
+        self.width = 0
+        self.outline = "#ffffff"
 
 
 class DiagramTextData():

@@ -158,6 +158,9 @@ class parts:
         UI_auxiliary.edit_diagram_size("bar", x=100, y=20)
         UI_auxiliary.edit_diagram_position("bar", x=100, y=0)
         UI_auxiliary.edit_diagram_color("bar", "#00ff00")
+
+        UI_auxiliary.edit_diagram_width("bar", 2, outline="#ffffff")
+
         UI_auxiliary.territory_draw()
         UI_auxiliary.territory_stack(False)
 
@@ -183,6 +186,7 @@ class parts:
 
         def draw(info):
             px_pos, px_size = info
+
             UI_auxiliary.edit_diagram_position("bar", x=px_pos)
             UI_auxiliary.edit_diagram_size("bar", x=px_size)
             UI_auxiliary.territory_draw()

@@ -122,6 +122,10 @@ class InitialValue:
             self.make_preview_data.image_stack()
             self.make_preview_data.re_scene()
 
+        def re_scene():
+            self.make_preview_data.re_scene()
+
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("re_scene", re_scene)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("cash_clear", cash_clear)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("preview", preview)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("sound_init", sound_init)

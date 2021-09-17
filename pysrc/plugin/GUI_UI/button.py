@@ -16,9 +16,9 @@ class parts:
         UI_auxiliary.new_diagram("text", diagram_type="text")
         UI_auxiliary.edit_diagram_text("text", text="てすと", center=True, font_size=20)
 
-        UI_auxiliary.diagram_stack("text", True)
-
         UI_auxiliary.territory_draw()
+
+        UI_auxiliary.diagram_stack("text", True)
 
         def click(event=None):
             # print(UI_auxiliary.option_data)
