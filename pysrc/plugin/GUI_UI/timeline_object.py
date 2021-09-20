@@ -126,11 +126,12 @@ class KeyFrame:
 
         # ###print(self.callback_operation.all_get_event())
 
-        self.popup2 = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
-        popup_list = [("中間点削除", this_del)]
-        self.popup2.set(popup_list)
-
         def right_click(event):
+
+            self.popup2 = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
+            popup_list = [("中間点削除", this_del)]
+            self.popup2.set(popup_list)
+
             mouse, _, _, xy = UI_auxiliary.window_event_data["contact"]()
             UI_auxiliary.popup_click_position, _, _ = UI_auxiliary.get_diagram_contact("bar")
 
@@ -273,11 +274,12 @@ class parts:
             popup_list = [effect_user_list, synthetic_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
             self.popup.set(popup_list)
 
-        UI_auxiliary.set_right_click_pop = set_right_click_pop
+        #UI_auxiliary.set_right_click_pop = set_right_click_pop
 
         UI_auxiliary.popup_click_position = [0, 0]
 
         def right_click(event):
+            set_right_click_pop()
             mouse, _, _, xy = UI_auxiliary.window_event_data["contact"]()
             UI_auxiliary.popup_click_position, _, _ = UI_auxiliary.get_diagram_contact("bar")
 

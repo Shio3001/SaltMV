@@ -7,7 +7,7 @@ import datetime
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-
+import uuid
 
 class SendUIData:  # パーツひとつあたりのためのclass
     def __init__(self,
@@ -77,6 +77,12 @@ class SendUIData:  # パーツひとつあたりのためのclass
         # self.timeline_calculation = None
 
         # self.operation["log"].write("UI生成")
+
+    def make_id(self,memo):
+        now_time = datetime.datetime.now()
+        # new_id =
+        new_id = "u"+str(uuid.uuid1()) + "t" + now_time.strftime('%y%m%H%M%S%f') + "UI_auxiliary" + str(memo)
+        return copy.deepcopy(new_id)
 
     def event_not_func(self, event):
         pass
