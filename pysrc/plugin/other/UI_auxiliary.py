@@ -8,6 +8,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import uuid
+from tkinter import filedialog
+
 
 class SendUIData:  # パーツひとつあたりのためのclass
     def __init__(self,
@@ -78,7 +80,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         # self.operation["log"].write("UI生成")
 
-    def make_id(self,memo):
+    def make_id(self, memo):
         now_time = datetime.datetime.now()
         # new_id =
         new_id = "u"+str(uuid.uuid1()) + "t" + now_time.strftime('%y%m%H%M%S%f') + "UI_auxiliary" + str(memo)
@@ -632,6 +634,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def get_text(self, di_name):
         return copy.deepcopy(self.canvas_data.territory[self.te_name].diagram[di_name].text)
 
+    def run_entry_event_callback(self, di_name):
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry_event_callback(self.get_text(di_name))
+
     def edit_diagram_text(self,
                           di_name,
                           text=None,
@@ -675,6 +680,24 @@ class SendUIData:  # パーツひとつあたりのためのclass
         #    self.canvas_data.territory[self.te_name].diagram[di_name].set_int_type(set_int_type)
 
         self.diagram_draw(di_name)
+
+    def open_file_select(self, default):
+
+        if default is None:
+            default = "~/"
+
+        file_name = filedialog.askopenfilename(initialdir=default)
+        return file_name
+
+    def open_folder_select(self, default):
+
+        if default is None:
+            default = "~/"
+
+        file_name = filedialog.askdirectory(initialdir=default)
+        return file_name
+
+    # folder
 
 
 class TerritoryData:

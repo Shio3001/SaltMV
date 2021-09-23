@@ -5,6 +5,7 @@ import copy
 import inspect
 
 
+
 class SendWindowData:  # window生成のためのデータ
     def __init__(self, main_window, edit_control_auxiliary, UI_parts, UI_auxiliary, UI_control):
         self.tk = tk

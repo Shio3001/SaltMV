@@ -356,7 +356,10 @@ namespace ObjectProgress
     np::ndarray production_object_group()
     {
 
-      py::tuple shape_size = py::make_tuple(1, 1, 4);
+      int editor_x = py::extract<double>(editor["x"]);
+      int editor_y = py::extract<double>(editor["y"]);
+
+      py::tuple shape_size = py::make_tuple(editor_y, editor_x, 4);
       np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       for (int i = 0; i < order_decision_object_group_number.size(); i++)

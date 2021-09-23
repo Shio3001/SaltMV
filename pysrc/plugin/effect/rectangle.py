@@ -10,7 +10,7 @@ import numpy as np
 class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = "図形[四角形]"
-        setting_effect.effect_point = {"R": 255, "G": 255, "B": 255, "A": 255}
+        setting_effect.effect_point = {"R": 255, "G": 255, "B": 255, "A": 255, "X size": 50, "Y size": 50}
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -24,17 +24,17 @@ class CentralRole:
 
         # print("aho")
 
-        x = int(round(data.draw_size["x"] / 2))
-        y = int(round(data.draw_size["y"] / 2))
+        X = int(data.effect_value["X size"])
+        Y = int(data.effect_value["Y size"])
 
         #px = np.array([255, 255, 255, 100])
 
         #p = np.full(20, px)
-        p2 = np.full((50, 50, 4), 255)
-        p2[:, :, 0] = np.full((50, 50), data.effect_value["R"])
-        p2[:, :, 1] = np.full((50, 50), data.effect_value["G"])
-        p2[:, :, 2] = np.full((50, 50), data.effect_value["B"])
-        p2[:, :, 3] = np.full((50, 50), data.effect_value["A"])
+        p2 = np.full((Y, X, 4), 255)
+        p2[:, :, 0] = np.full((Y, X), data.effect_value["R"])
+        p2[:, :, 1] = np.full((Y, X), data.effect_value["G"])
+        p2[:, :, 2] = np.full((Y, X), data.effect_value["B"])
+        p2[:, :, 3] = np.full((Y, X), data.effect_value["A"])
 
         print(p2.shape)
 

@@ -52,31 +52,40 @@ class parts:
             elif judgement_num < 0:
                 over_del(num)
 
-        def set_bpm(fps, bpm):
+        UI_auxiliary.bpm_y_view_size = 50  # temp
 
-            section = int(60 * fps // bpm)
+        def set_bpm(fps=None, bpm=None, bpm_y_view_size=None):
+
+            section = 60 * fps / bpm
 
             view_fps = UI_auxiliary.pxf.sta_end_f[1] - UI_auxiliary.pxf.sta_end_f[0]
 
-            quantity = round(view_fps // section) + 1
+            quantity = round(view_fps / section) + 1
 
             judgement(quantity)
 
             origin_point = int(UI_auxiliary.pxf.sta_end_f[0] - UI_auxiliary.pxf.sta_end_f_init[0])
 
-            origin_point_mod = origin_point & section
+            origin_point_quotient = origin_point // section
+            #origin_point_mod = origin_point & section
 
             print("quantity", quantity)
             print("section", section)
             print("view_fps", view_fps)
             print("origin_point", origin_point)
-            print("origin_point_mod", origin_point_mod)
+            print("origin_point_quotient", origin_point_quotient)
 
             for i in range(quantity):
                 name = UI_auxiliary.bpm_shape_key[i]
-                set_px = UI_auxiliary.pxf.f_to_px(section * (i+1))
-                UI_auxiliary.edit_diagram_size(name, x=0, y=100)
-                UI_auxiliary.edit_diagram_position(name, x=set_px, y=50)
+                set_px = UI_auxiliary.pxf.f_to_px(section * (i+1+origin_point_quotient))
+                UI_auxiliary.edit_diagram_size(name, x=1)
+
+                if not bpm_y_view_size is None:
+                    UI_auxiliary.bpm_y_view_size = bpm_y_view_size
+
+                UI_auxiliary.edit_diagram_size(name, y=UI_auxiliary.bpm_y_view_size)
+
+                UI_auxiliary.edit_diagram_position(name, x=set_px, y=0)
                 UI_auxiliary.edit_diagram_color(name, "#cccccc")
 
             # for i in range(quantity):

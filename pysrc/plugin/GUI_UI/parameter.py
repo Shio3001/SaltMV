@@ -28,8 +28,19 @@ class parts:
         def textbox2(text):
             print(text)
 
-        def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None, text_a_return=None, text_b_return=None, text_fixed=None):
+        def file_open(e=None):
+            default = UI_auxiliary.get_text("textbox1")
+            file_open_text = UI_auxiliary.open_file_select(default)
+            UI_auxiliary.edit_diagram_text("textbox1", text=file_open_text)
+
+            UI_auxiliary.run_entry_event_callback("textbox1")
+
+        UI_auxiliary.file_path_open_flag = False
+
+        def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None, text_a_return=None, text_b_return=None, text_fixed=None, file_path=False):
             pos_y = pos_y_normal * column
+            text_fixed_x_size = textbox2_x - textbox1_x + 100
+
             UI_auxiliary.edit_diagram_text("text", text=text)
             UI_auxiliary.edit_diagram_text("textbox1", text=text_a,  entry_event=text_a_return)
             UI_auxiliary.edit_diagram_text("textbox2", readonly=1-motion, text=text_b, entry_event=text_b_return)
@@ -41,9 +52,27 @@ class parts:
 
             UI_auxiliary.edit_diagram_position("textbox2", x=textbox2_x, y=pos_y)
 
+            if text_fixed and file_path:
+                print("text_fixed and file_path")
+
+                new_button_for_parameter = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter")[0]
+                UI_auxiliary.button_parameter_control = new_button_for_parameter()  # effect_controller ←40行付近呼び出し先
+                UI_auxiliary.button_parameter_control.edit_diagram_text("text", "ファイル設定", font_size=15)
+                UI_auxiliary.button_parameter_control.edit_territory_position(x=text_fixed_x_size+150, y=pos_y)
+                UI_auxiliary.button_parameter_control.edit_territory_size(x=100, y=20)
+                UI_auxiliary.button_parameter_control.edit_diagram_color("background", "#44ff44")
+                UI_auxiliary.button_parameter_control.diagram_stack("text", True)
+                UI_auxiliary.button_parameter_control.territory_draw()
+
+                UI_auxiliary.button_parameter_control.add_diagram_event("text", "Button-1", file_open)
+                UI_auxiliary.button_parameter_control.add_diagram_event("background", "Button-1", file_open)
+
+            elif UI_auxiliary.file_path_open_flag:
+                UI_auxiliary.button_parameter_control.del_territory()
+
             if text_fixed:
                 UI_auxiliary.diagram_forget("textbox2", True)
-                UI_auxiliary.edit_diagram_size("textbox1", x=textbox2_x - textbox1_x + 100)
+                UI_auxiliary.edit_diagram_size("textbox1", x=text_fixed_x_size)
                 #UI_auxiliary.edit_diagram_text("textbox1", set_int_type=False)
                 #UI_auxiliary.edit_diagram_text("textbox2", set_int_type=False)
 

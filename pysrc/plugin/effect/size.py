@@ -23,10 +23,14 @@ class CentralRole:
         if data.draw_size["x"] == 0 or data.draw_size["y"] == 1:
             return data.draw, self.starting_point
 
-        resize_value = [round(data.effect_value["size_x"] * 0.01 * data.draw_size["x"]), round(data.effect_value["size_y"] * 0.01 * data.draw_size["y"])]
+        size_x = data.effect_value["size_x"]
+        size_y = data.effect_value["size_y"]
 
         if data.various_fixed["size_lnk"] == True:
-            resize_value[1] = resize_value[0]
+            size_y = size_x
+
+        resize_value = [round(size_x * 0.01 * data.draw_size["x"]), round(size_y * 0.01 * data.draw_size["y"])]
+
         data.draw = data.cv2.resize(data.draw, (resize_value))
 
         return data.draw, self.starting_point

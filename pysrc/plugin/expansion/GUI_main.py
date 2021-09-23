@@ -5,6 +5,7 @@ import copy
 
 import cv2
 # from PIL import Image, ImageDraw, ImageFilter, ImageTk, ImageFont
+import datetime
 
 
 class InitialValue:
@@ -55,14 +56,14 @@ class InitialValue:
         def project_open():
             self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", send_open, duplicate=False)
             self.window_control.edit_control_auxiliary.callback_operation.event("set_init_val", info="")
-            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request", info="ファイルを入力")
+            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request_file_open", info="ファイルを入力")
 
             # self.window_control.edit_control_auxiliary.add_layer_elements()
 
         def project_save():
             self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", send_save, duplicate=False)
             self.window_control.edit_control_auxiliary.callback_operation.event("set_init_val", info="")
-            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request", info="保存先を入力")
+            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request_file_open", info="保存先を入力")
 
         def project_overwrite_save():
             print("send_save")
@@ -109,7 +110,7 @@ class InitialValue:
             self.make_preview_data.output_tk(frame, run=run)
             self.preview_image_tk = self.make_preview_data.get_image_tk(frame)
 
-            print("preview", frame, self.make_preview_data.preview)
+            #print("preview", frame, self.make_preview_data.preview)
 
             #     print("opencv描画モード")
             #     cv2.imshow('opencv preview', self.preview_image_tk)  # この時点ではウィンドウは表示されない
@@ -132,23 +133,28 @@ class InitialValue:
         self.window_control.edit_control_auxiliary.callback_operation.set_event("sound_stop", sound_stop)
         # self.window_control.edit_control_auxiliary.callback_operation.set_event("make_preview_data", get_make_preview_data)
 
-        def send_rendering(editor_func_send):
-            editor_func_name, editor_func_val = editor_func_send
-            scene_id = self.window_control.edit_control_auxiliary.scene_id()
-            make_data = self.operation["rendering_py"]["main"].make(scene_id, editor_func_val)
-            make_data.output_main()
+        def output_file_path():
+            get_scene = self.window_control.edit_control_auxiliary.scene()
+            output_folder = get_scene.editor["output_folder"]
+
+            now_time = datetime.datetime.now()
+
+            output_file_name = "output_" + str(now_time.strftime('%y_%m_%H_%M_%S_%f'))
+            path = os.path.join(output_folder, output_file_name)
+            return path
 
         def rendering():
-            self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", send_rendering, duplicate=False)
-            self.window_control.edit_control_auxiliary.callback_operation.event("set_init_val", info="")
-            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request", info="保存先を入力")
+            #editor_func_name, editor_func_val = editor_func_send
+            scene_id = self.window_control.edit_control_auxiliary.scene_id()
+            make_data = self.operation["rendering_py"]["main"].make(scene_id, output_file_path())
+            make_data.output_main()
 
             # make_data.output_OpenCV()
 
-        def send_section_rendering(editor_func_send):
-            editor_func_name, editor_func_val = editor_func_send
+        def section_rendering():
+            #editor_func_name, editor_func_val = editor_func_send
             scene_id = self.window_control.edit_control_auxiliary.scene_id()
-            make_data = self.operation["rendering_py"]["main"].make(scene_id, editor_func_val)
+            make_data = self.operation["rendering_py"]["main"].make(scene_id, output_file_path())
 
             return_val_dict = self.window_control.edit_control_auxiliary.callback_operation.event("get_timelime_scroll_status")
             scrollbar_sta_end = return_val_dict["get_timelime_scroll_status"]
@@ -160,11 +166,6 @@ class InitialValue:
 
             make_data.output_main(sta, end)
             # make_data.output_OpenCV()
-
-        def section_rendering():
-            self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", send_section_rendering, duplicate=False)
-            self.window_control.edit_control_auxiliary.callback_operation.event("set_init_val", info="")
-            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request", info="保存先を入力")
 
         def edit_data_del():
             self.window_control.edit_control_auxiliary.callback_operation.event("reset")

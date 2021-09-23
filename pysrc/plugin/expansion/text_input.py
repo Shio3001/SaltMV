@@ -38,6 +38,7 @@ class InitialValue:
 
         green = "#229922"
         red = "#992222"
+        gray = "#111111"
 
         def set_init_val(init_val):
             textbox.edit_diagram_text("textbox", text=init_val)
@@ -52,9 +53,36 @@ class InitialValue:
 
             self.window_control.window_title_set(str(name))
 
+        def text_input_request_file_open(name):
+
+            text_input_request(name)
+            close_save.edit_diagram_color("background", gray)
+            close_non_save.edit_diagram_color("background", gray)
+            self.window_control.window.update()
+
+            default = textbox.get_text("textbox")
+            file_open_text = textbox.open_file_select(default)
+            textbox.edit_diagram_text("textbox", text=file_open_text)
+
+            close_save.edit_diagram_color("background", green)
+            close_non_save.edit_diagram_color("background", red)
+
+        def text_input_request_folder_open(name):
+            text_input_request(name)
+            close_save.edit_diagram_color("background", gray)
+            close_non_save.edit_diagram_color("background", gray)
+            self.window_control.window.update()
+
+            default = textbox.get_text("textbox")
+            folder_open_text = textbox.open_folder_select(default)
+            textbox.edit_diagram_text("textbox", text=folder_open_text)
+
+            close_save.edit_diagram_color("background", green)
+            close_non_save.edit_diagram_color("background", red)
+
         def text_input_save_end(event):
-            close_save.edit_diagram_color("background", "#111111")
-            close_non_save.edit_diagram_color("background", "#111111")
+            close_save.edit_diagram_color("background", gray)
+            close_non_save.edit_diagram_color("background", gray)
             input_text = textbox.get_textbox_text("textbox")
             self.window_control.edit_control_auxiliary.callback_operation.event("text_input_end", info=(self.now_name, input_text))
             self.window_control.window_open_close(False)
@@ -64,6 +92,8 @@ class InitialValue:
 
         self.window_control.edit_control_auxiliary.callback_operation.set_event("set_init_val", set_init_val)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request", text_input_request, duplicate=False)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request_file_open", text_input_request_file_open, duplicate=False)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request_folder_open", text_input_request_folder_open, duplicate=False)
 
         close_save.edit_territory_size(x=100, y=20)
         close_save.edit_territory_position(x=0, y=30)

@@ -128,8 +128,8 @@ class SceneOutput:
         self.y = int(self.scene.editor["y"])
         self.fps = int(self.scene.editor["fps"])
         self.frame = int(self.scene.editor["len"])
-        self.preview = self.scene.editor["preview"]
-        print("self.scene.editor", self.scene.editor)
+        #self.preview = self.scene.editor["preview"]
+        #print("self.scene.editor", self.scene.editor)
 
         operation["audio_control"].main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], 1)
 

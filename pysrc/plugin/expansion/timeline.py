@@ -508,6 +508,8 @@ class InitialValue:
             self.nowtime_bar.pxf.init_set_sta_end_f(sta=0, end=frame_len)
             self.nowtime_bar.frame_set(nowtime)
 
+            self.timeline_bpm.pxf.init_set_sta_end_f(sta=0, end=frame_len)
+
             len_layer = len(get_scene.layer_group.layer_layer_id)
             make_layer(len_layer)
 
@@ -550,7 +552,9 @@ class InitialValue:
             media_obj.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
             media_obj.pxf.set_f_ratio()
 
-        timeline_bpm = self.window_control.new_parts("timeline", "bpm_view", parts_name="timeline_bpm")
+        self.timeline_bpm = self.window_control.new_parts("timeline", "bpm_view", parts_name="timeline_bpm")
+        self.timeline_bpm.edit_territory_position(x=timeline_left, y=timeline_up)
+        self.timeline_bpm.territory_draw()
 
         def timeline_view_range(scroll_data):
             view_frame_len = self.window_control.edit_control_auxiliary.scene().editor["len"]
@@ -567,9 +571,9 @@ class InitialValue:
             self.nowtime_bar.pxf.set_f_ratio()
             [obj_long_edit(media_obj, view_frame_len, view_sta_f, view_end_f) for media_obj in self.window_control.timeline_object.values()]
 
-            timeline_bpm.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
-            timeline_bpm.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
-            timeline_bpm.set_bpm(30, 120)
+            self.timeline_bpm.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
+            self.timeline_bpm.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
+            self.timeline_bpm.set_bpm(30, 120)
 
             # with self.window_control.edit_control_auxiliary.ThreadPoolExecutor() as executor:
             #    [executor.submit(obj_long_edit(media_obj, frame_len, sta_f, end_f)) for media_obj in self.window_control.timeline_object.values()]
@@ -614,8 +618,8 @@ class InitialValue:
             shape[0].territory_draw()
             shape[1].territory_draw()
 
-            timeline_bpm.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
-            timeline_bpm.set_bpm(30, 120)
+            self.timeline_bpm.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
+            self.timeline_bpm.set_bpm(30, 120, bpm_y_view_size=timeline_hight)
 
         self.window_control.add_window_event("Configure", window_size_edit)
         window_size_edit()
@@ -636,10 +640,8 @@ class InitialValue:
 
             editor_func_name, editor_func_val = editor_func_send
             print("editor_func_send", editor_func_send)
-            if editor_func_name == "preview":
-                self.window_control.edit_control_auxiliary.get_set_scene_edior(name=editor_func_name, data=editor_func_val, int_type=False)
-            else:
-                self.window_control.edit_control_auxiliary.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
+
+            self.window_control.edit_control_auxiliary.get_set_scene_edior(name=editor_func_name, data=editor_func_val)
 
             loading_movie_data(new=self.window_control.edit_control_auxiliary.scene_id())
             self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
@@ -656,7 +658,10 @@ class InitialValue:
             edior = self.window_control.edit_control_auxiliary.get_set_scene_edior()
             self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", editor_func, duplicate=False)
             for k in edior.keys():
-                edior_get = EditorGet(self.window_control.edit_control_auxiliary, k, edior[k])
+                EditorGet_file = self.window_control.edit_control_auxiliary.get_bool_editor_select_file(k)
+                EditorGet_folder = self.window_control.edit_control_auxiliary.get_bool_editor_select_folder(k)
+
+                edior_get = EditorGet(self.window_control.edit_control_auxiliary, k, edior[k], EditorGet_file, EditorGet_folder)
                 scene_name_func = ("{0} 現在:{1}".format(k, edior[k]), edior_get.run)
                 pop_list.append(scene_name_func)
 
@@ -746,7 +751,7 @@ class InitialValue:
         self.run_cash_clear.edit_diagram_color("background", "#222299")
         self.run_cash_clear.edit_diagram_color("text", "#ffffff")
         self.run_cash_clear.diagram_stack("text", True)
-        self.run_cash_clear.edit_diagram_text("text", text="キャッシュ削除", font_size=15)
+        self.run_cash_clear.edit_diagram_text("text", text="一時保存削除", font_size=15)
         self.run_cash_clear.territory_draw()
         self.run_cash_clear.callback_operation.set_event("button", run_cash_clear_func)
 
@@ -760,12 +765,6 @@ class InitialValue:
         self.timeline_menubar.set(main_menubar_list)
         self.window_control.window_title_set("タイムライン")
         self.window_control.window_size_set(x=1200, y=700)
-
-        for i in range(30):
-            new_layer()
-
-        for i in range(500):
-            new_obj(round(i / 30), round(i / 6))
 
         return self.window_control
 
@@ -828,14 +827,22 @@ class CentralRole:
 
 
 class EditorGet:
-    def __init__(self, edit_control_auxiliary, name, init_val):
+    def __init__(self, edit_control_auxiliary, name, init_val, file=False, folder=False):
         self.name = name
         self.edit_control_auxiliary = edit_control_auxiliary
         self.init_val = init_val
+        self.file = file
+        self.folder = folder
 
     def run(self):
         self.edit_control_auxiliary.callback_operation.event("set_init_val", info=self.init_val)
-        self.edit_control_auxiliary.callback_operation.event("text_input_request", info=self.name)
+
+        if self.file:
+            self.edit_control_auxiliary.callback_operation.event("text_input_request_file_open", info=self.name)
+        elif self.folder:
+            self.edit_control_auxiliary.callback_operation.event("text_input_request_folder_open", info=self.name)
+        else:
+            self.edit_control_auxiliary.callback_operation.event("text_input_request", info=self.name)
 
 
 class SceneGet:

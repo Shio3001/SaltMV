@@ -136,7 +136,10 @@ class InitialValue:
 
                 text = TextReceiveVariousFixed(self.window_control, media_id, element.effect_id, vk, stack_add)
                 self.window_control.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
-                self.window_control.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None, text_a_return=text.text_func, text_fixed=True)
+
+                file_path = True if vk == "path" else False
+
+                self.window_control.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None, text_a_return=text.text_func, text_fixed=True, file_path=file_path)
                 self.now += 1
 
         def element_lord(send):
@@ -177,6 +180,15 @@ class InitialValue:
         self.window_control.edit_control_auxiliary.callback_operation.set_event("element_ui_all_del", element_ui_all_del)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("element_lord", element_lord)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("element_del", self.window_control.ui_management.element_del)
+
+        def new_button_for_parameter():
+            ui_id = self.window_control.edit_control_auxiliary.elements.make_id("parameter_UI")
+            button = self.window_control.new_parts("parameter", ui_id, parts_name="button")
+
+            #print(button, "ボタンをインスタンス 化しました")
+            return button
+
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("new_button_for_parameter", new_button_for_parameter)
 
         # data.element_lord = element_lord
 

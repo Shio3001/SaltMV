@@ -194,10 +194,14 @@ class Storage:
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[effect_order])
 
-    def get_set_scene_edior(self, editor=None, name=None, data=None, int_type=True):
+    def get_bool_editor_select_file(self, name):
+        return name in self.edit_data.scenes[self.edit_data.now_scene].editor_select_file
+
+    def get_bool_editor_select_folder(self, name):
+        return name in self.edit_data.scenes[self.edit_data.now_scene].editor_select_folder
+
+    def get_set_scene_edior(self, editor=None, name=None, data=None):
         if not name is None and not data is None:
-            if int_type:
-                data = int(data)
             self.edit_data.scenes[self.edit_data.now_scene].editor[name] = data
             return
 
@@ -251,7 +255,7 @@ class Storage:
 
         return copy.deepcopy(self.layer().object_group[new_copy_obj.obj_id][0]), target_layer_id
 
-    def add_object_elements(self,layer_number=0):
+    def add_object_elements(self, layer_number=0):
         new_obj = elements.ObjectElements()
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id] = [None, None]
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_obj.obj_id][0] = new_obj

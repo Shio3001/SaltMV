@@ -250,9 +250,12 @@ class parts:
 
             # UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data,UI_auxiliary.option_data["media_id"]))
 
-        self.popup = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
+        UI_auxiliary.popup_click_flag = False
 
         def set_right_click_pop():
+
+            UI_auxiliary.popup = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
+
             effect_dict = UI_auxiliary.operation["plugin"]["effect"]
 
             effect_user_list = ["エフェクト"]
@@ -272,14 +275,20 @@ class parts:
                 synthetic_user_list.append(synthetic_get.edit_synthetic)
 
             popup_list = [effect_user_list, synthetic_user_list, ("分割", media_object_separate), ("削除", media_object_del), ("中間点追加", add_key_frame)]
-            self.popup.set(popup_list)
+            UI_auxiliary.popup.set(popup_list)
 
         #UI_auxiliary.set_right_click_pop = set_right_click_pop
 
         UI_auxiliary.popup_click_position = [0, 0]
 
         def right_click(event):
-            set_right_click_pop()
+            UI_auxiliary.edit_diagram_color("bar", "#0000ff")
+
+            if not UI_auxiliary.popup_click_flag:
+                set_right_click_pop()
+
+            UI_auxiliary.popup_click_flag = True
+
             mouse, _, _, xy = UI_auxiliary.window_event_data["contact"]()
             UI_auxiliary.popup_click_position, _, _ = UI_auxiliary.get_diagram_contact("bar")
 
@@ -289,15 +298,17 @@ class parts:
             same_value = UI_auxiliary.pxf.get_same_value(UI_auxiliary.pxf.px_to_f(UI_auxiliary.popup_click_position[0]))
 
             if not same_value is None:
-                self.popup.edit_bool_twice("中間点追加", False)
+                UI_auxiliary.popup.edit_bool_twice("中間点追加", False)
 
             if UI_auxiliary.pxf.ratio_f[1] <= 1:
-                self.popup.edit_bool_twice("分割", False)
-                self.popup.edit_bool_twice("中間点追加", False)
+                UI_auxiliary.popup.edit_bool_twice("分割", False)
+                UI_auxiliary.popup.edit_bool_twice("中間点追加", False)
 
-            self.popup.show(mouse[0], mouse[1])
-            self.popup.edit_bool_twice("中間点追加", True)
-            self.popup.edit_bool_twice("分割", True)
+            UI_auxiliary.popup.show(mouse[0], mouse[1])
+            UI_auxiliary.popup.edit_bool_twice("中間点追加", True)
+            UI_auxiliary.popup.edit_bool_twice("分割", True)
+
+            UI_auxiliary.edit_diagram_color("bar", "#00ff00")
 
         UI_auxiliary.add_diagram_event("bar", "Button-2", right_click)
 
