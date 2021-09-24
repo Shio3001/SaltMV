@@ -27,6 +27,9 @@ class CentralRole:
         self.now_file = copy.deepcopy(file_name)
         self.open_status = self.video_data.isOpened()
 
+        if not self.open_status:
+            return
+
     def main(self, data):
 
         if data.various_fixed["path"] != self.now_file or not self.open_status:
@@ -39,13 +42,14 @@ class CentralRole:
 
         fps = data.editor["fps"]
 
+        print("fps", fps, "video_fps", self.video_fps)
+
         if not data.various_fixed["frame_configuration"]:
 
             fps_point_editor = fps_point + data.now_frame - data.installation[0]
             fps_point = round(fps_point_editor * fps / self.video_fps)
 
         self.video_data.set(cv2.CAP_PROP_POS_FRAMES, fps_point)
-
         ret, frame = self.video_data.read()
         data.draw = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
 
