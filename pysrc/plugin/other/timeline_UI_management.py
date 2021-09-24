@@ -14,6 +14,8 @@ class UIManagement:
             end = int(len(self.ui_list))
 
         for i in range(sta, end):
+            self.ui_list[i].callback_operation.event("parameter_diagram_del")
+
             if not self.ui_list[i].te_name in self.ui_list[i].canvas_data.territory.keys():
                 continue
 
@@ -30,7 +32,7 @@ class UIManagement:
             self.ui_list.append(None)
             self.ui_list[now] = self.data.new_parts(canvas_name, ui_id, parts_name=parts_name)
 
-            #print("生成", now, "parts_name", parts_name, "canvas_name", canvas_name)
+            # print("生成", now, "parts_name", parts_name, "canvas_name", canvas_name)
 
     def set_old_elements_len(self, set_number=None):
         if set_number is None:

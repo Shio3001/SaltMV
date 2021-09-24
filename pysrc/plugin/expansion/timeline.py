@@ -323,9 +323,9 @@ class InitialValue:
                     # self.window_control.timeline_object[media_id].pxf.sub_point_f[k] 矛盾
 
                     frame = copy.deepcopy(self.window_control.timeline_object[media_id].pxf.sub_point_f[k])
-                    self.window_control.edit_control_auxiliary.del_key_frame_point(media_id, k)
 
                     if k == "default_end" or k == "default_sta":
+                        self.window_control.edit_control_auxiliary.del_key_frame_point(media_id, k)
                         continue
 
                     self.window_control.timeline_object[media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
@@ -465,7 +465,7 @@ class InitialValue:
             new_obj.callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             new_obj.callback_operation.set_event("updown", layer_updown)
             new_obj.callback_operation.set_event("del", del_object_ui)
-            new_obj.callback_operation.set_event("separate", media_object_separate)
+            new_obj.callback_operation.set_event("separate", media_object_separate, duplicate=False)
             new_obj.callback_operation.set_event("sta", timeline_nowtime_approval_False)
             new_obj.callback_operation.set_event("end", timeline_nowtime_approval_True)
             new_obj.edit_layer(layer_number)
@@ -499,6 +499,8 @@ class InitialValue:
 
             get_scene = self.window_control.edit_control_auxiliary.scene()
             frame_len = get_scene.editor["len"]
+            bpm = get_scene.editor["bpm"]
+            fps = get_scene.editor["fps"]
 
             obj_list = [get_scene.layer_group.object_group.keys(), get_scene.layer_group.object_group.values()]
             timeline_scroll.callback_operation.event("mov", info=timeline_scroll.pxf.get_event_data())
@@ -531,6 +533,9 @@ class InitialValue:
                         continue
 
                     self.window_control.timeline_object[obj_k].make_KeyFrame(uu_id=point_key, pos_f=point_val)
+
+            self.timeline_bpm.set_bpm(fps=fps, bpm=bpm)
+            window_size_edit()
 
             self.window_control.edit_control_auxiliary.callback_operation.event("preview_setup")
 
@@ -573,7 +578,7 @@ class InitialValue:
 
             self.timeline_bpm.pxf.init_set_sta_end_f(sta=0, end=view_frame_len)
             self.timeline_bpm.pxf.set_sta_end_f(sta=view_sta_f, end=view_end_f)
-            self.timeline_bpm.set_bpm(30, 120)
+            self.timeline_bpm.set_bpm()
 
             # with self.window_control.edit_control_auxiliary.ThreadPoolExecutor() as executor:
             #    [executor.submit(obj_long_edit(media_obj, frame_len, sta_f, end_f)) for media_obj in self.window_control.timeline_object.values()]
@@ -619,10 +624,15 @@ class InitialValue:
             shape[1].territory_draw()
 
             self.timeline_bpm.pxf.set_sta_end_px(sta=timeline_left, end=size_x, space=0)
-            self.timeline_bpm.set_bpm(30, 120, bpm_y_view_size=timeline_hight)
+            self.timeline_bpm.set_bpm(bpm_y_view_size=timeline_hight)
 
         self.window_control.add_window_event("Configure", window_size_edit)
         window_size_edit()
+
+        get_scene = self.window_control.edit_control_auxiliary.scene()
+        bpm = get_scene.editor["bpm"]
+        fps = get_scene.editor["fps"]
+        self.timeline_bpm.set_bpm(fps=fps, bpm=bpm)
 
         """
         scene_now_view = self.window_control.new_parts("timeline", "scene_now_view", parts_name="textbox")

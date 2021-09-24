@@ -10,7 +10,7 @@ class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
         setting_effect.effect_point = {"fps_point": 0}
-        setting_effect.various_fixed = {"path": "", "size_control": False}
+        setting_effect.various_fixed = {"path": "", "frame_configuration": False}
         setting_effect.procedure = CentralRole()
 
 
@@ -23,8 +23,8 @@ class CentralRole:
 
     def setup(self, file_name):
         self.video_data = cv2.VideoCapture(file_name)
+        self.video_fps = self.video_data.get(cv2.CAP_PROP_FPS)
         self.now_file = copy.deepcopy(file_name)
-
         self.open_status = self.video_data.isOpened()
 
     def main(self, data):
@@ -37,8 +37,12 @@ class CentralRole:
 
         fps_point = data.effect_value["fps_point"]
 
-        if data.next_value["fps_point"] == data.before_value["fps_point"]:
-            fps_point += data.now_frame - data.installation[0]
+        fps = data.editor["fps"]
+
+        if not data.various_fixed["frame_configuration"]:
+
+            fps_point_editor = fps_point + data.now_frame - data.installation[0]
+            fps_point = round(fps_point_editor * fps / self.video_fps)
 
         self.video_data.set(cv2.CAP_PROP_POS_FRAMES, fps_point)
 

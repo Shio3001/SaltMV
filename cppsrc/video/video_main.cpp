@@ -500,8 +500,12 @@ namespace ObjectProgress
         ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
+      cout << "synthetic_func" << endl;
+
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
       np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));
+
+      cout << "synthetic_func2" << endl;
 
       return sy_draw;
     }

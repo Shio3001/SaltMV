@@ -91,7 +91,7 @@ class InitialValue:
             self.window_control.window_open_close(False)
 
         self.window_control.edit_control_auxiliary.callback_operation.set_event("set_init_val", set_init_val)
-        self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request", text_input_request, duplicate=False)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request", text_input_request)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request_file_open", text_input_request_file_open, duplicate=False)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_request_folder_open", text_input_request_folder_open, duplicate=False)
 

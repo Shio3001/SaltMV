@@ -54,9 +54,21 @@ class parts:
 
         UI_auxiliary.bpm_y_view_size = 50  # temp
 
+        UI_auxiliary.set_bpm_fps = 0
+        UI_auxiliary.set_bpm_bpm = 0
+
         def set_bpm(fps=None, bpm=None, bpm_y_view_size=None):
 
-            section = 60 * fps / bpm
+            if not fps is None:
+                UI_auxiliary.set_bpm_fps = int(fps)
+            if not bpm is None:
+                UI_auxiliary.set_bpm_bpm = int(bpm)
+
+            if UI_auxiliary.set_bpm_bpm == 0:
+                judgement(0)
+                return
+
+            section = 60 * UI_auxiliary.set_bpm_fps / UI_auxiliary.set_bpm_bpm
 
             view_fps = UI_auxiliary.pxf.sta_end_f[1] - UI_auxiliary.pxf.sta_end_f[0]
 

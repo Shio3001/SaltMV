@@ -98,11 +98,13 @@ class Storage:
         return font_path
 
     def read_font(self):
-        return
         font_path = self.get_font_path()
 
         if self.os_type == "ml":
             for k, kv in zip(font_path.keys(), font_path.values()):
+                if not os.path.isdir(kv):
+                    continue
+
                 font_file_name = os.listdir(kv)
 
                 ##print("{0}ファイル量 : {1}".format(k, len(font_file_name)))
@@ -202,6 +204,10 @@ class Storage:
 
     def get_set_scene_edior(self, editor=None, name=None, data=None):
         if not name is None and not data is None:
+
+            if name in self.edit_data.scenes[self.edit_data.now_scene].editor_select_int:
+                data = int(data)
+
             self.edit_data.scenes[self.edit_data.now_scene].editor[name] = data
             return
 
@@ -304,14 +310,26 @@ class Storage:
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
     def add_key_frame(self, time, obj_id, key_frame_id):
+
+        print("add_key_frame")
+
         self.add_key_frame_point_onely(time, obj_id, key_frame_id)
         self.add_key_frame_inside_data(obj_id, key_frame_id)
 
     def add_key_frame_point_onely(self, time, obj_id, key_frame_id):
+
+        print("add_key_frame_point_onely1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = copy.deepcopy(time)
 
+        print("add_key_frame_point_onely2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
     def del_key_frame_point(self, obj_id, key_frame_id):
+        print("del_key_frame_point1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
         del self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id]
+
+        print("del_key_frame_point2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def add_key_frame_inside_data(self, obj_id, key_frame_id):
         effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group

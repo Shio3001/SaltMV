@@ -35,7 +35,15 @@ class parts:
 
             UI_auxiliary.run_entry_event_callback("textbox1")
 
+        UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
+
         UI_auxiliary.file_path_open_flag = False
+
+        def file_path_open_del_button():
+            if UI_auxiliary.file_path_open_flag:
+                UI_auxiliary.button_parameter_control.del_territory()
+
+        UI_auxiliary.callback_operation.set_event("parameter_diagram_del", file_path_open_del_button)
 
         def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None, text_a_return=None, text_b_return=None, text_fixed=None, file_path=False):
             pos_y = pos_y_normal * column
@@ -58,7 +66,7 @@ class parts:
                 new_button_for_parameter = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter")[0]
                 UI_auxiliary.button_parameter_control = new_button_for_parameter()  # effect_controller ←40行付近呼び出し先
                 UI_auxiliary.button_parameter_control.edit_diagram_text("text", "ファイル設定", font_size=15)
-                UI_auxiliary.button_parameter_control.edit_territory_position(x=text_fixed_x_size+150, y=pos_y)
+                UI_auxiliary.button_parameter_control.edit_territory_position(x=text_fixed_x_size+110, y=pos_y)
                 UI_auxiliary.button_parameter_control.edit_territory_size(x=100, y=20)
                 UI_auxiliary.button_parameter_control.edit_diagram_color("background", "#44ff44")
                 UI_auxiliary.button_parameter_control.diagram_stack("text", True)
@@ -66,6 +74,8 @@ class parts:
 
                 UI_auxiliary.button_parameter_control.add_diagram_event("text", "Button-1", file_open)
                 UI_auxiliary.button_parameter_control.add_diagram_event("background", "Button-1", file_open)
+
+                UI_auxiliary.file_path_open_flag = True
 
             elif UI_auxiliary.file_path_open_flag:
                 UI_auxiliary.button_parameter_control.del_territory()
