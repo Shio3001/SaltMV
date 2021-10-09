@@ -7,6 +7,26 @@ import time
 import asyncio
 
 
+class TimelineSendData:
+    def __init__(self):
+        pass
+
+    def set_timeline_nowtime_approval_False(self, send):
+        self.timeline_nowtime_approval_False = send  # 定義
+
+    def set_timeline_nowtime_approval_True(self, send):
+        self.timeline_nowtime_approval_True = send  # 定義
+
+    def set_stack_add_timelime_media(self, send):
+        self.stack_add_timelime_media = send
+
+    def set_stack_add_timelime_keyframe(self, send):
+        self.stack_add_timelime_keyframe = send
+
+    def set_stack_add_timelime_effect(self, send):
+        self.stack_add_timelime_effect = send
+
+
 class KeyFrame:
     def __init__(self, UI_auxiliary, size, center_x, center_y, uu_id):
         # print(" * * * * * * * * * * keyframe設定", UI_auxiliary.option_data["media_id"])
@@ -103,7 +123,7 @@ class KeyFrame:
                 #self.key_frame_time_old_data = UI_auxiliary.edit_control_auxiliary.get_key_frame(UI_auxiliary.option_data["media_id"])
                 # key_frame_id = self.uu_id
                 # UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data, UI_auxiliary.option_data["media_id"], key_frame_id))
-                UI_auxiliary.stack_add_timelime_keyframe(add_type="del", media_id=UI_auxiliary.option_data["media_id"])
+                UI_auxiliary.timeline_send_data.stack_add_timelime_keyframe(add_type="del", media_id=UI_auxiliary.option_data["media_id"])
 
                 # UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data, UI_auxiliary.option_data["media_id"]))
 
@@ -151,6 +171,8 @@ class KeyFrame:
 class parts:
 
     def UI_set(self, UI_auxiliary):  # data ←継承元(ファイルが違う＋プラグイン形式なのでこのような形に)
+
+        UI_auxiliary.timeline_send_data = TimelineSendData()
 
         UI_auxiliary.value = 0
         UI_auxiliary.click_flag = False
@@ -206,7 +228,7 @@ class parts:
 
             if stack:
                 # old_data = UI_auxiliary.edit_control_auxiliary.media_object_had_layer(UI_auxiliary.option_data["media_id"])
-                UI_auxiliary.stack_add_timelime_media(add_type="del", media_id=UI_auxiliary.option_data["media_id"])
+                UI_auxiliary.timeline_send_data.stack_add_timelime_media(add_type="del", media_id=UI_auxiliary.option_data["media_id"])
                 # UI_auxiliary.stack_add_timelime_media(add_type="del", media_id=UI_auxiliary.option_data["media_id"])
 
             UI_auxiliary.callback_operation.event("end", info=UI_auxiliary.pxf.get_event_data())
@@ -231,15 +253,15 @@ class parts:
             center_x = copy.deepcopy(UI_auxiliary.popup_click_position[0]) if pos_f is None else UI_auxiliary.pxf.f_to_px(pos_f)
             center_y = copy.deepcopy(bar_pos[1])
             new_key_frame = KeyFrame(UI_auxiliary, size, center_x, center_y, uu_id=uu_id)
-            new_key_frame.callback_operation.set_event("sub_sta", UI_auxiliary.timeline_nowtime_approval_False)
-            new_key_frame.callback_operation.set_event("sub_end", UI_auxiliary.timeline_nowtime_approval_True)
+            new_key_frame.callback_operation.set_event("sub_sta", UI_auxiliary.timeline_send_datatimeline_nowtime_approval_False)
+            new_key_frame.callback_operation.set_event("sub_end", UI_auxiliary.timeline_send_data.timeline_nowtime_approval_True)
 
             return new_key_frame
 
         UI_auxiliary.make_KeyFrame = make_KeyFrame
 
         def add_key_frame():
-            UI_auxiliary.stack_add_timelime_keyframe(add_type="add", media_id=UI_auxiliary.option_data["media_id"])
+            UI_auxiliary.timeline_send_data.stack_add_timelime_keyframe(add_type="add", media_id=UI_auxiliary.option_data["media_id"])
             # self.key_frame_time_old_data = UI_auxiliary.edit_control_auxiliary.get_key_frame(UI_auxiliary.option_data["media_id"])
 
             new_key_frame = make_KeyFrame()
@@ -261,7 +283,7 @@ class parts:
             effect_user_list = ["エフェクト"]
 
             for k in effect_dict.keys():
-                effect_get = EffectGet(UI_auxiliary.edit_control_auxiliary, UI_auxiliary.option_data["media_id"], k, UI_auxiliary.stack_add_timelime_effect)
+                effect_get = EffectGet(UI_auxiliary.edit_control_auxiliary, UI_auxiliary.option_data["media_id"], k, UI_auxiliary.timeline_send_data.stack_add_timelime_effect)
                 effect_user_list.append(k)
                 effect_user_list.append(effect_get.add_element)
 
@@ -332,7 +354,7 @@ class parts:
             send_data = ParameterSendData()
             send_data.now_f = UI_auxiliary.now_f_click_start_for_parameter_control
             send_data.media_id = UI_auxiliary.option_data["media_id"]
-            send_data.stack_add_timelime_effect = UI_auxiliary.stack_add_timelime_effect
+            send_data.stack_add_timelime_effect = UI_auxiliary.timeline_send_data.stack_add_timelime_effect
             UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("media_lord")[0](send_data)
 
         UI_auxiliary.send_parameter_control = send_parameter_control
@@ -359,7 +381,7 @@ class parts:
             send_data = ParameterSendData()
             send_data.now_f = UI_auxiliary.now_f_click_start_for_parameter_control
             send_data.media_id = UI_auxiliary.option_data["media_id"]
-            send_data.stack_add_timelime_effect = UI_auxiliary.stack_add_timelime_effect
+            send_data.stack_add_timelime_effect = UI_auxiliary.timeline_send_data.stack_add_timelime_effect
             UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("media_lord")[0](send_data)
             UI_auxiliary.edit_control_auxiliary.callback_operation.event("automatic_opening", info=key_number)
 
@@ -374,7 +396,7 @@ class parts:
             if UI_auxiliary.mov_lock:
                 return
 
-            UI_auxiliary.obj_stop_once = UI_auxiliary.stack_add_timelime_media(stop_once=True, add_type="mov", media_id=UI_auxiliary.option_data["media_id"])
+            UI_auxiliary.obj_stop_once = UI_auxiliary.timeline_send_data.stack_add_timelime_media(stop_once=True, add_type="mov", media_id=UI_auxiliary.option_data["media_id"])
 
             UI_auxiliary.click_move_stack_flag = False
             UI_auxiliary.click_flag = True

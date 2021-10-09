@@ -64,24 +64,8 @@ class AudioControl:
 
         print("     **********AudioControl add", effect_id)
 
-        result_data = None
 
-        if add_conversion_rate != self.criterion_conversion_rate:
-
-            lcm = math.lcm(add_conversion_rate, self.criterion_conversion_rate)
-
-            lcm_data = self.upsampling(add_import_data, add_conversion_rate, lcm)
-            print("lcm_data", lcm_data)
-            result_data = self.downsampling(lcm_data, add_conversion_rate)
-            print("result_data", result_data)
-
-        if add_conversion_rate == self.criterion_conversion_rate:
-            result_data = add_import_data
-            print("=")
-
-        print(result_data)
-
-        self.audio_individual_data[effect_id] = AudioIndividual(result_data, sound_channles, sta_frame, end_frame, effect_id)
+        self.audio_individual_data[effect_id] = AudioIndividual(add_import_data, sound_channles, sta_frame, end_frame, effect_id)
 
     def del_audio_individual_data(self, effect_id):
 
@@ -117,61 +101,6 @@ class AudioControl:
         print("音源総和", np.sum(self.combined))
 
         self.setup_flag = True
-
-    def upsampling(self, add_import_data, add_conversion_rate, after_conversion_rate=None):
-        print("     **********AudioControl upsampling")
-
-        print("add_import_data.dtype", add_import_data.dtype)
-
-        if after_conversion_rate is None:
-            after_conversion_rate = self.criterion_conversion_rate
-
-        convert_rate = round(after_conversion_rate / add_conversion_rate)  # 1以上の値にならないといけない
-        interpolation_sample_num = convert_rate - 1  # -1をしているのは
-
-        nyqF = (add_conversion_rate*convert_rate)/2.0     # 変換後のナイキスト周波数
-        cF = (add_conversion_rate/2.0-500.)/nyqF             # カットオフ周波数を設定（変換前のナイキスト周波数より少し下を設定）
-        taps = 511                          # フィルタ係数（奇数じゃないとだめ）
-        b = signal.firwin(taps, cF)   # LPFを用意
-
-        #after_convert_len = round(convert_rate*add_conversion_rate)
-
-        print("/   ")
-        print(" interpolation_sample_num", interpolation_sample_num)
-        print(" add_import_data[len]", len(add_import_data))
-        print(" after_conversion_rate", after_conversion_rate)
-        print(" add_conversion_rate", add_conversion_rate)
-        print(" convert_rate", convert_rate)
-        #print(" after_convert_len", after_convert_len)
-        print("   /")
-
-        principal_len = len(add_import_data)
-        shape_size = principal_len * convert_rate
-
-        pattern = convert_rate  # パターン等間隔設定
-
-        base = np.full(shape_size, 0)
-        base[::pattern] = add_import_data
-
-        result_data = signal.lfilter(b, 1, base)
-        return result_data
-
-    def downsampling(self, add_import_data, add_conversion_rate):
-        print("     **********AudioControl downsampling")
-
-        convert_rate = round(self.criterion_conversion_rate / add_conversion_rate)  # 1以上の値にならないといけない
-        interpolation_sample_num = convert_rate - 1  # -1をしているのは
-
-        nyqF = (add_conversion_rate*convert_rate)/2.0     # 変換後のナイキスト周波数
-        cF = (add_conversion_rate/2.0-500.)/nyqF             # カットオフ周波数を設定（変換前のナイキスト周波数より少し下を設定）
-        taps = 511                          # フィルタ係数（奇数じゃないとだめ）
-        b = signal.firwin(taps, cF)   # LPFを用意
-
-        result_data = signal.lfilter(b, 1, add_import_data)
-        pattern = -1 * convert_rate  # 削除パターン生成
-        new_base = np.delete(result_data, pattern, 0)
-
-        return new_base
 
     def sound_stop(self):
         print("     **********AudioControl sound_stop")

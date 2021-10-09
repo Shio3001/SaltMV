@@ -452,11 +452,11 @@ class InitialValue:
 
             new_obj = self.window_control.new_parts("timeline", media_id, parts_name="timeline_object", option_data=option_data)
 
-            new_obj.timeline_nowtime_approval_False = timeline_nowtime_approval_False  # 定義
-            new_obj.timeline_nowtime_approval_True = timeline_nowtime_approval_True  # 定義
-            new_obj.stack_add_timelime_media = stack_add_timelime_media
-            new_obj.stack_add_timelime_keyframe = stack_add_timelime_keyframe
-            new_obj.stack_add_timelime_effect = stack_add_timelime_effect
+            new_obj.timeline_send_data.set_timeline_nowtime_approval_False(timeline_nowtime_approval_False)  # 定義
+            new_obj.timeline_send_data.set_timeline_nowtime_approval_True(timeline_nowtime_approval_True)  # 定義
+            new_obj.timeline_send_data.set_stack_add_timelime_media(stack_add_timelime_media)
+            new_obj.timeline_send_data.set_stack_add_timelime_keyframe(stack_add_timelime_keyframe)
+            new_obj.timeline_send_data.set_stack_add_timelime_effect(stack_add_timelime_effect)
 
             # new_obj.set_right_click_pop()
 
