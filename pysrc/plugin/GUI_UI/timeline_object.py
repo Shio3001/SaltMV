@@ -123,7 +123,7 @@ class KeyFrame:
 
         self.UI_auxiliary.del_diagram(self.uu_id)
         self.UI_auxiliary.pxf.del_sub_point(self.uu_id)
-        self.UI_auxiliary.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
+        self.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
         self.UI_auxiliary.pxf.callback_operation.del_event("obj_sub_point", func=self.draw)
 
         self.callback_operation.all_del_event()
@@ -131,7 +131,7 @@ class KeyFrame:
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
-        self.UI_auxiliary.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), self.this_del)  # これはdata指定!!!!!!slef.じゃないよ！気をつけて!!!!!!!!1
+        self.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), self.this_del)  # これはdata指定!!!!!!slef.じゃないよ！気をつけて!!!!!!!!1
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
         # 気をつけて!!!!!!!!
@@ -168,10 +168,11 @@ class KeyFrame:
 
 
 class parts:
+
     def __init__(self, UI_auxiliary):
+
         self.UI_auxiliary = UI_auxiliary
         self.pxf = self.UI_auxiliary.plus_px_frame_data(direction=0, debug_name="obj")
-        self.pxf.callback_operation.set_event("draw_func", self.draw)
         self.timeline_send_data = TimelineSendData()
         self.value = 0
         self.click_flag = False
@@ -185,12 +186,6 @@ class parts:
         self.click_start_sta_layer = ""
         self.click_start_end_layer = ""
 
-        self.UI_auxiliary.add_diagram_event("bar", "Button-2", self.right_click)
-        self.UI_auxiliary.window_event_data["add"]("Key", self.click_effect_shortcut)
-        self.UI_auxiliary.add_diagram_event("bar", "Button-1", self.click_start)
-        self.UI_auxiliary.window_event_data["add"]("Motion", self.click_position)
-        self.UI_auxiliary.add_diagram_event("bar", "ButtonRelease-1", self.click_end)
-
         self.UI_auxiliary.new_diagram("bar")
         self.UI_auxiliary.edit_diagram_size("bar", x=100, y=20)
         self.UI_auxiliary.edit_diagram_position("bar", x=100, y=0)
@@ -201,11 +196,20 @@ class parts:
         self.UI_auxiliary.territory_draw()
         self.UI_auxiliary.territory_stack(False)
 
-    def get_I_auxiliary(self):
-        return self.UI_auxiliary
+        self.UI_auxiliary.add_diagram_event("bar", "Button-2", self.right_click)
+        self.UI_auxiliary.window_event_data["add"]("Key", self.click_effect_shortcut)
+        self.UI_auxiliary.add_diagram_event("bar", "Button-1", self.click_start)
+        self.UI_auxiliary.window_event_data["add"]("Motion", self.click_position)
+        self.UI_auxiliary.add_diagram_event("bar", "ButtonRelease-1", self.click_end)
+
+        self.pxf.callback_operation.set_event("draw_func", self.draw, run=True)
+
+    # def after_setup(self):
 
     def draw(self, info):
         px_pos, px_size = info
+
+        print("draw")
 
         self.UI_auxiliary.edit_diagram_position("bar", x=px_pos)
         self.UI_auxiliary.edit_diagram_size("bar", x=px_size)
@@ -242,8 +246,8 @@ class parts:
             self.timeline_send_data.stack_add_timelime_media(add_type="del", media_id=self.UI_auxiliary.option_data["media_id"])
             # self.UI_auxiliary.stack_add_timelime_media(add_type="del", media_id=self.UI_auxiliary.option_data["media_id"])
 
-        self.UI_auxiliary.callback_operation.event("end", info=self.pxf.get_event_data())
-        self.UI_auxiliary.callback_operation.event("del", self.UI_auxiliary.option_data["media_id"])
+        self.callback_operation.event("end", info=self.pxf.get_event_data())
+        self.callback_operation.event("del", self.UI_auxiliary.option_data["media_id"])
 
     def right_click(self, event):
         self.UI_auxiliary.edit_diagram_color("bar", "#0000ff")
@@ -314,10 +318,10 @@ class parts:
     def media_object_separate(self):
         frame = self.pxf.px_to_f(self.popup_click_position[0])
 
-        # self.UI_auxiliary.callback_operation.event("tihs_del_{0}".format(k))
+        # self.callback_operation.event("tihs_del_{0}".format(k))
 
         # click_f_pos = self.pxf.px_to_f(frame)
-        self.UI_auxiliary.callback_operation.event("separate", info=(self.UI_auxiliary.option_data["media_id"], frame))
+        self.callback_operation.event("separate", info=(self.UI_auxiliary.option_data["media_id"], frame))
 
     def send_parameter_control(self):
         send_data = ParameterSendData()
@@ -367,7 +371,7 @@ class parts:
 
         self.UI_auxiliary.edit_diagram_color("bar", "#ff0000")
 
-        self.UI_auxiliary.callback_operation.event("sta", info=self.pxf.get_event_data())
+        self.callback_operation.event("sta", info=self.pxf.get_event_data())
 
         self.now_f_click_start_for_parameter_control = self.pxf.px_to_f(self.mouse_sta[0])
 
@@ -446,9 +450,9 @@ class parts:
             # print("now_mov_x", now_mov_x, self.UI_auxiliary.click_move_stack_flag)
 
             self.pxf.set_px_ratio(position=pos, size=size, sub_mov=True, main_mov=False)
-            self.UI_auxiliary.callback_operation.event("updown", info=(self.mouse_sta[1], now_mouse[1],  self.option_data["media_id"], self.edit_layer))
+            self.callback_operation.event("updown", info=(self.mouse_sta[1], now_mouse[1],  self.option_data["media_id"], self.edit_layer))
 
-        self.UI_auxiliary.callback_operation.event("mov", info=self.pxf.get_event_data())
+        self.callback_operation.event("mov", info=self.pxf.get_event_data())
 
     def click_end(self, event):
         self.click_start_end_layer = self.UI_auxiliary.edit_control_auxiliary.get_now_layer_id(self.UI_auxiliary.option_data["media_id"])
@@ -466,7 +470,7 @@ class parts:
         _, _, self.diagram_join = self.UI_auxiliary.get_diagram_contact("bar", del_mouse=True)
 
         self.UI_auxiliary.edit_diagram_color("bar", "#00ff00")
-        self.UI_auxiliary.callback_operation.event("end", info=self.pxf.get_event_data())
+        self.callback_operation.event("end", info=self.pxf.get_event_data())
 
 
 class SyntheticGet:

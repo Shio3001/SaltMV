@@ -287,6 +287,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     ###########
 
+    #self.canvas_data.territory[self.te_name].diagram[di_name].function
+
     def add_diagram_event(self,  di_name, key, func):  # event
 
         tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
@@ -296,7 +298,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         # print("テリトリーの数", len(self.canvas_data.territory))
 
-        self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = copy.deepcopy([key, func, bind_id, tag])
+        self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)] = [copy.deepcopy(key), func, copy.deepcopy(bind_id), copy.deepcopy(tag)]
         # print("追加事項", self.canvas_data.territory[self.te_name].diagram[di_name].event[self.common_control.get_tag_name(key, func)])
 
     def del_diagram_event(self,  di_name, key, func):  # event
@@ -743,6 +745,8 @@ class DiagramData():
 
         self.width = 0
         self.outline = "#ffffff"
+
+        self.function = {}
 
 
 class DiagramTextData():

@@ -5,7 +5,6 @@ import copy
 import inspect
 
 
-
 class SendWindowData:  # window生成のためのデータ
     def __init__(self, main_window, edit_control_auxiliary, UI_parts, UI_auxiliary, UI_control):
         self.tk = tk
@@ -187,6 +186,11 @@ class SendWindowData:  # window生成のためのデータ
                                                   option_data,
                                                   self.get_window_contact,
                                                   self.get_window_view_flag)
+
+        if parts_name == "timeline_object":
+            new_parts_obj = self.UI_parts[parts_name].parts(new_UIdata)
+            #new_parts_obj.after_setup()
+            return new_parts_obj
 
         # new_UIdata.new_territory()
 

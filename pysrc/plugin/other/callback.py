@@ -3,6 +3,18 @@ import inspect
 import asyncio
 
 
+class FunctionStorage:
+    def __init__(self, func):
+        self.func = func
+
+    def run(self, info):
+        return_val = self.func(info)
+        return return_val
+
+    def get(self):
+        return self.func
+
+
 class CallBackOne:
     def __init__(self):
         self.__event_data = None
@@ -29,16 +41,19 @@ class CallBack:
         if not name in self.__event_data.keys():
             self.__event_data[name] = []
 
+        func_data = FunctionStorage(func)
+
         if duplicate:
-            self.__event_data[name].append(func)  # 一度に複数の関数を実行できるようにするため
+            self.__event_data[name].append(func_data)  # 一度に複数の関数を実行できるようにするため
         else:
-            self.__event_data[name] = [func]
+            self.__event_data[name] = []
+            self.__event_data[name].append(func_data)
 
         if run:
             func(None)
 
-        if name == "effect_updown":
-            print("呼び出し先[callback_set]", inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
+        if name == "draw_func":
+            print("呼び出し先[callback_set]", self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         #print("呼び出し先[set_event]", inspect.stack()[1].filename, inspect.stack()[1].function, name, func, self.__event_data[name])
 
@@ -46,11 +61,11 @@ class CallBack:
 
         return_val_dict = {}
 
-        if name == "effect_updown":
-            print("呼び出し先[callback]", inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
+        if name == "draw_func" and name in list(self.__event_data.keys()):
+            print("呼び出し先[callback]", self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         if not name in self.__event_data.keys():
-            # print("返送")
+            print("返送", name)
             return
 
         # print("実行")
@@ -61,18 +76,18 @@ class CallBack:
                 return_val = None
 
                 if not info is None:
-                    return_val = d(info)
+                    return_val = d.run(info)
                 else:
-                    return_val = d()
+                    return_val = d.run()
 
-                func_name = d.__name__
+                func_name = d.func.__name__
                 return_val_dict[func_name] = return_val
 
         return return_val_dict
         # print("実行")
 
     def get_event(self, name):
-        return copy.deepcopy(self.__event_data[name])
+        return self.__event_data[name].get()
 
     def del_event(self, name, func=None):
         if not name in list(self.__event_data.keys()):

@@ -415,7 +415,7 @@ class InitialValue:
 
         def del_object_ui(media_id):
             # print("削除対象物:", media_id)
-            self.window_control.timeline_object[media_id].del_territory()
+            self.window_control.timeline_object[media_id].UI_auxiliary.del_territory()
             # del self.window_control.timeline_object[media_id].callback_operation
             del self.window_control.timeline_object[media_id]
             self.window_control.edit_control_auxiliary.del_object_elements(media_id)
@@ -423,7 +423,7 @@ class InitialValue:
 
         def all_del_object_ui():
             for media_id in self.window_control.timeline_object.keys():
-                self.window_control.timeline_object[media_id].del_territory()
+                self.window_control.timeline_object[media_id].UI_auxiliary.del_territory()
                 self.window_control.edit_control_auxiliary.del_object_elements(media_id)
                 # ##print("削除 {0}".format(media_id))
 
@@ -460,8 +460,8 @@ class InitialValue:
 
             # new_obj.set_right_click_pop()
 
-            new_obj.edit_territory_position(x=timeline_left, y=timeline_up)
-            new_obj.edit_diagram_size("bar", y=timeline_size)
+            new_obj.UI_auxiliary.edit_territory_position(x=timeline_left, y=timeline_up)
+            new_obj.UI_auxiliary.edit_diagram_size("bar", y=timeline_size)
             new_obj.callback_operation.set_event("mov", reflect_timeline_to_movie)  # コールバック関数登録
             new_obj.callback_operation.set_event("updown", layer_updown)
             new_obj.callback_operation.set_event("del", del_object_ui)
@@ -614,7 +614,7 @@ class InitialValue:
             timeline_scroll.pxf.set_f_ratio()
 
             for i in self.window_control.timeline_object.values():
-                i.edit_territory_size(x=timeline_width, y=timeline_hight)
+                i.UI_auxiliary.edit_territory_size(x=timeline_width, y=timeline_hight)
                 i.pxf.set_sta_end_px(sta=timeline_left, end=size_x)
                 i.pxf.set_f_ratio()
 
