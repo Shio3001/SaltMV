@@ -8,7 +8,9 @@ class FunctionStorage:
         self.func = func
 
     def run(self, info):
+        print("実行A", self.func)
         return_val = self.func(info)
+        print("実行B", self.func, return_val)
         return return_val
 
     def get(self):

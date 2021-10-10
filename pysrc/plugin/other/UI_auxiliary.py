@@ -287,9 +287,11 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
     ###########
 
-    #self.canvas_data.territory[self.te_name].diagram[di_name].function
+    # self.canvas_data.territory[self.te_name].diagram[di_name].function
 
     def add_diagram_event(self,  di_name, key, func):  # event
+
+        print(key, func)
 
         tag = self.canvas_data.territory[self.te_name].diagram[di_name].tag
         bind_id = self.canvas_data.canvas.tag_bind(tag, "<{0}>".format(key), func, "+")
@@ -746,7 +748,7 @@ class DiagramData():
         self.width = 0
         self.outline = "#ffffff"
 
-        self.function = {}
+        #self.function = {}
 
 
 class DiagramTextData():
