@@ -13,7 +13,7 @@ class parts:
         pos_y_normal = box_size + gap
         sta_point = 10
 
-        new_button_for_parameter_control = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter_control")[0]
+        new_button_for_parameter_control = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter_control", 0)
         UI_auxiliary.button_parameter_control = new_button_for_parameter_control()  # effect_controller ←40行付近呼び出し先
 
         # UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBackOne()
@@ -45,7 +45,7 @@ class parts:
         #UI_auxiliary.background_now_mouse = [0, 0]
 
         def popup_del():
-            
+
             UI_auxiliary.effect_del(UI_auxiliary.now_exchange)
             UI_auxiliary.shape_updown_destination_view_False()
 

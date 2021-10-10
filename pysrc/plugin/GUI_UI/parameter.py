@@ -63,7 +63,7 @@ class parts:
             if text_fixed and file_path:
                 print("text_fixed and file_path")
 
-                new_button_for_parameter = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter")[0]
+                new_button_for_parameter = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter", 0)
                 UI_auxiliary.button_parameter_control = new_button_for_parameter()  # effect_controller ←40行付近呼び出し先
                 UI_auxiliary.button_parameter_control.edit_diagram_text("text", "ファイル設定", font_size=15)
                 UI_auxiliary.button_parameter_control.edit_territory_position(x=text_fixed_x_size+110, y=pos_y)

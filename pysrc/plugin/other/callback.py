@@ -7,12 +7,6 @@ class FunctionStorage:
     def __init__(self, func):
         self.func = func
 
-    def run(self, info):
-        print("実行A", self.func)
-        return_val = self.func(info)
-        print("実行B", self.func, return_val)
-        return return_val
-
     def get(self):
         return self.func
 
@@ -73,23 +67,27 @@ class CallBack:
         # print("実行")
 
         for d in self.__event_data[name]:
-            if str(type(d)) == "<class 'function'>":
+            if str(type(d.func)) == "<class 'function'>":
 
                 return_val = None
 
                 if not info is None:
-                    return_val = d.run(info)
-                else:
-                    return_val = d.run()
+                    return_val = d.func(info)
+
+                elif info is None:
+                    return_val = d.func()
 
                 func_name = d.func.__name__
                 return_val_dict[func_name] = return_val
 
+        print(name, "実行終了")
+
         return return_val_dict
         # print("実行")
 
-    def get_event(self, name):
-        return self.__event_data[name].get()
+    def get_event(self, name, number):
+        print("get_event")
+        return self.__event_data[name][number].get()
 
     def del_event(self, name, func=None):
         if not name in list(self.__event_data.keys()):
