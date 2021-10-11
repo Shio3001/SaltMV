@@ -489,7 +489,7 @@ class InitialValue:
             self.window_control.operation["undo"].all_del_stack()
 
             for media_ui in self.window_control.timeline_object.values():
-                media_ui.del_territory()
+                media_ui.UI_auxiliary.del_territory()
 
             self.window_control.timeline_object = {}
 
