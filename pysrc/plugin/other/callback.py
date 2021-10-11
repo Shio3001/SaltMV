@@ -48,8 +48,7 @@ class CallBack:
         if run:
             func(None)
 
-        if name == "draw_func":
-            print("呼び出し先[callback_set]", self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
+        print("呼び出し先[callback_set]", name, self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         #print("呼び出し先[set_event]", inspect.stack()[1].filename, inspect.stack()[1].function, name, func, self.__event_data[name])
 
@@ -61,7 +60,7 @@ class CallBack:
             print("呼び出し先[callback]", self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         if not name in self.__event_data.keys():
-            print("返送", name)
+            print("返送", name, inspect.stack()[1].filename, inspect.stack()[1].function)
             return
 
         # print("実行")
@@ -108,12 +107,15 @@ class CallBack:
                     break
 
             if num_flag:
+                print("呼び出し先[callback_del] 削除 : ", name, num)
                 del self.__event_data[name][num]
                 return
 
+        print("呼び出し先[callback_del]  : ", name)
         del self.__event_data[name]
 
     def all_del_event(self):
+        print(" [ callback ] [ すべて削除 ] ", self.__event_data, len(self.__event_data), inspect.stack()[1].filename, inspect.stack()[1].function, " - - - - - - - - - - - - - - - -")
         self.__event_data = {}
 
     def all_get_event(self):

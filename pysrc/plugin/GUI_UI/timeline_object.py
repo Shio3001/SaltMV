@@ -32,11 +32,14 @@ class TimelineSendData:
 
 
 class KeyFrame:
-    def __init__(self, UI_auxiliary, pxf, timeline_send_data, callback_operation, center_x, center_y, uu_id):
+    def __init__(self, UI_auxiliary, pxf, timeline_send_data, media_callback_operation, center_x, center_y, uu_id):
         self.UI_auxiliary = UI_auxiliary
         self.pxf = pxf
         self.timeline_send_data = timeline_send_data
-        self.callback_operation = callback_operation
+
+        self.media_callback_operation = media_callback_operation
+        self.keyframe_callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
+
         self.uu_id = self.UI_auxiliary.edit_control_auxiliary.elements.make_id("keyframe") if uu_id is None else uu_id
 
         self.center_x = center_x
@@ -59,10 +62,8 @@ class KeyFrame:
             self.this_del(info=None)
 
         self.pxf.callback_operation.set_event("obj_sub_point", draw_run)
-        self.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), media_id_run)
+        self.media_callback_operation.set_event("tihs_del_{0}".format(self.uu_id), media_id_run)
         # print(" * * * * * * * * * * keyframe設定", self.UI_auxiliary.option_data["media_id"])
-
-    def key_frame_ui_setup(self):
 
         _, self.size = self.UI_auxiliary.get_diagram_position_size("bar")
         self.UI_auxiliary.new_diagram(self.uu_id)
@@ -89,7 +90,7 @@ class KeyFrame:
         self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = self.UI_auxiliary.get_diagram_contact(self.uu_id)
 
         self.view_pos_sta = self.UI_auxiliary.edit_diagram_position(self.uu_id)[0]
-        self.callback_operation.event("sub_sta", info=self.pxf.get_event_data())
+        self.keyframe_callback_operation.event("sub_sta", info=self.pxf.get_event_data())
 
         self.UI_auxiliary.edit_diagram_color(self.uu_id, "#ff0000")
 
@@ -106,7 +107,7 @@ class KeyFrame:
         # if self.UI_auxiliary.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
         self.pxf.set_px_ratio_sub_point(self.uu_id, pos)
 
-        self.callback_operation.event("sub_mov", info=self.pxf.get_event_data())
+        self.keyframe_callback_operation.event("sub_mov", info=self.pxf.get_event_data())
 
     def click_end(self, event):
 
@@ -116,7 +117,7 @@ class KeyFrame:
         self.click_flag = False
         self.mouse_sta, _, self.diagram_join_sta = self.UI_auxiliary.get_diagram_contact(self.uu_id, del_mouse=True)
         _, _, self.diagram_join = self.UI_auxiliary.get_diagram_contact(self.uu_id, del_mouse=True)
-        self.callback_operation.event("sub_end", info=self.pxf.get_event_data())
+        self.keyframe_callback_operation.event("sub_end", info=self.pxf.get_event_data())
 
         # self.UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data, self.UI_auxiliary.option_data["media_id"], key_frame_id))
         self.UI_auxiliary.edit_diagram_color(self.uu_id, "#000000")
@@ -130,10 +131,9 @@ class KeyFrame:
 
         self.UI_auxiliary.del_diagram(self.uu_id)
         self.pxf.del_sub_point(self.uu_id)
-        self.callback_operation.del_event("tihs_del_{0}".format(self.uu_id))
+        self.media_callback_operation.del_event("tihs_del_{0}".format(self.uu_id))  # mi
         self.pxf.callback_operation.del_event("obj_sub_point", func=self.draw)
-
-        self.callback_operation.all_del_event()
+        self.keyframe_callback_operation.all_del_event()
 
         # これはdata指定!!!!!!slef.じゃないよ！気をつけて!!!!!!!!1
 
@@ -162,10 +162,6 @@ class KeyFrame:
         self.UI_auxiliary.edit_control_auxiliary.move_key_frame(self.pxf.sub_point_f[self.uu_id], self.UI_auxiliary.option_data["media_id"], self.uu_id)
 
         print("sub_point_f", self.pxf.sub_point_f[self.uu_id], pos_px)
-
-        # 気をつけて!!!!!!!!
-        # 気をつけて!!!!!!!!
-        # 気をつけて!!!!!!!!
 
 
 class parts:
@@ -208,6 +204,8 @@ class parts:
 
         self.pxf.callback_operation.set_event("draw_func", draw_run)
 
+        self.del_flag = False
+
     # def after_setup(self):
 
     def draw(self, info):
@@ -236,9 +234,9 @@ class parts:
         center_x = copy.deepcopy(self.popup_click_position[0]) if pos_f is None else self.pxf.f_to_px(pos_f)
         center_y = copy.deepcopy(bar_pos[1])
         new_key_frame = KeyFrame(self.UI_auxiliary, self.pxf, self.timeline_send_data, self.callback_operation, center_x, center_y, uu_id=uu_id)
-        new_key_frame.key_frame_ui_setup()
-        new_key_frame.callback_operation.set_event("sub_sta", self.timeline_send_data.timeline_nowtime_approval_False)
-        new_key_frame.callback_operation.set_event("sub_end", self.timeline_send_data.timeline_nowtime_approval_True)
+        # new_key_frame.key_frame_ui_setup()
+        new_key_frame.keyframe_callback_operation.set_event("sub_sta", self.timeline_send_data.timeline_nowtime_approval_False)
+        new_key_frame.keyframe_callback_operation.set_event("sub_end", self.timeline_send_data.timeline_nowtime_approval_True)
 
         return new_key_frame
 
@@ -252,6 +250,8 @@ class parts:
 
         self.callback_operation.event("end", info=self.pxf.get_event_data())
         self.callback_operation.event("del", self.UI_auxiliary.option_data["media_id"])
+
+        self.del_flag = True
 
     def right_click(self, event):
         self.UI_auxiliary.edit_diagram_color("bar", "#0000ff")
@@ -279,6 +279,9 @@ class parts:
         self.popup.show(mouse[0], mouse[1])
         self.popup.edit_bool_twice("中間点追加", True)
         self.popup.edit_bool_twice("分割", True)
+
+        if self.del_flag:
+            return
 
         self.UI_auxiliary.edit_diagram_color("bar", "#00ff00")
 
@@ -332,7 +335,7 @@ class parts:
         send_data.now_f = self.now_f_click_start_for_parameter_control
         send_data.media_id = self.UI_auxiliary.option_data["media_id"]
         send_data.stack_add_timelime_effect = self.timeline_send_data.stack_add_timelime_effect
-        self.UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("media_lord")[0](send_data)
+        self.UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("media_lord", 0)(send_data)
 
     def click_effect_shortcut(self, event):
         key = event.keysym
