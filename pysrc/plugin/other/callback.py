@@ -57,7 +57,7 @@ class CallBack:
 
         return_val_dict = {}
 
-        if name == "draw_func" and name in list(self.__event_data.keys()):
+        if name in list(self.__event_data.keys()):
             print("呼び出し先[callback]", self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         if not name in self.__event_data.keys():
@@ -97,14 +97,18 @@ class CallBack:
         # print("削除通過")
 
         if not func is None:
-            num = self.__event_data[name].index(func)
 
-            #print("同値削除要請 ", func, num)
+            num_flag = False
+            len_event = len(self.__event_data[name])
 
-            if not num is None:
+            for num in range(len_event):
+
+                if self.__event_data[name][num].func == func:
+                    num_flag = True
+                    break
+
+            if num_flag:
                 del self.__event_data[name][num]
-                #print("同値検知 削除", name, " ", num)
-
                 return
 
         del self.__event_data[name]

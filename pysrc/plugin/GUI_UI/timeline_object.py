@@ -32,30 +32,42 @@ class TimelineSendData:
 
 
 class KeyFrame:
-    def __init__(self, UI_auxiliary, pxf, center_x, center_y, uu_id):
+    def __init__(self, UI_auxiliary, pxf, timeline_send_data, callback_operation, center_x, center_y, uu_id):
         self.UI_auxiliary = UI_auxiliary
         self.pxf = pxf
+        self.timeline_send_data = timeline_send_data
+        self.callback_operation = callback_operation
         self.uu_id = self.UI_auxiliary.edit_control_auxiliary.elements.make_id("keyframe") if uu_id is None else uu_id
 
-        _, self.size = self.UI_auxiliary.get_diagram_position_size("bar")
         self.center_x = center_x
         self.center_y = center_y
         self.click_flag = False
         self.pos = 0
-        self.key_stop_once = None
+        self.key_stop_once = [0, 0]
         self.popup2 = None
+
+        self.mouse_sta = [0, 0]
+        self.mouse_touch_sta = [0, 0]
+        self.diagram_join_sta = [0, 0]
+        self.now_mouse = [0, 0]
+        self.diagram_join = [0, 0]
 
         def draw_run(send):
             self.draw(send)
 
+        def media_id_run(info=None):
+            self.this_del(info=None)
+
         self.pxf.callback_operation.set_event("obj_sub_point", draw_run)
+        self.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), media_id_run)
         # print(" * * * * * * * * * * keyframe設定", self.UI_auxiliary.option_data["media_id"])
 
     def key_frame_ui_setup(self):
 
+        _, self.size = self.UI_auxiliary.get_diagram_position_size("bar")
         self.UI_auxiliary.new_diagram(self.uu_id)
-        self.UI_auxiliary.set_shape_rhombus(self.uu_id, self.size[1]/2, 100, 100)  # ひし形
-        self.callback_operation = self.UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
+        self.UI_auxiliary.set_shape_rhombus(self.uu_id, self.size[1] / 2, 100, 100)  # ひし形
+
         self.UI_auxiliary.edit_control_auxiliary.add_key_frame(0, self.UI_auxiliary.option_data["media_id"], self.uu_id)
         self.pxf.set_sub_point(self.uu_id)
         self.pxf.set_px_ratio_sub_point(self.uu_id, self.center_x)
@@ -71,9 +83,9 @@ class KeyFrame:
         self.UI_auxiliary.diagram_stack(self.uu_id, False)
         self.UI_auxiliary.diagram_stack(self.uu_id, True, "bar")
 
-    def click_start(self, event):
+    def click_start(self, event=None):
         self.click_flag = True
-        self.key_stop_once = self.UI_auxiliary.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=self.UI_auxiliary.option_data["media_id"])
+        self.key_stop_once = self.timeline_send_data.stack_add_timelime_keyframe(stop_once=True, add_type="mov", media_id=self.UI_auxiliary.option_data["media_id"])
         self.mouse_sta, self.mouse_touch_sta, self.diagram_join_sta = self.UI_auxiliary.get_diagram_contact(self.uu_id)
 
         self.view_pos_sta = self.UI_auxiliary.edit_diagram_position(self.uu_id)[0]
@@ -81,22 +93,18 @@ class KeyFrame:
 
         self.UI_auxiliary.edit_diagram_color(self.uu_id, "#ff0000")
 
-        # print(self.uu_id)
-
-        # self.key_frame_time_old_data = self.UI_auxiliary.edit_control_auxiliary.get_key_frame(self.UI_auxiliary.option_data["media_id"])
-
     def click_position(self, event):
         if not self.click_flag:
             return
         self.now_mouse, _, self.diagram_join = self.UI_auxiliary.get_diagram_contact(self.uu_id)
 
-        self.now_mov_x = copy.deepcopy(self.now_mouse[0] - self.mouse_sta[0])
+        now_mov_x = copy.deepcopy(self.now_mouse[0] - self.mouse_sta[0])
 
-        self.pos = self.view_pos_sta + self.now_mov_x
+        pos = self.view_pos_sta + now_mov_x
         # print("sub_pos", self.pos)
 
         # if self.UI_auxiliary.diagram_join_sta[2]:  # 範囲内に入っているか確認します この関数に限りmotion判定でwindowに欠けているので必要です
-        self.pxf.set_px_ratio_sub_point(self.uu_id, self.pos)
+        self.pxf.set_px_ratio_sub_point(self.uu_id, pos)
 
         self.callback_operation.event("sub_mov", info=self.pxf.get_event_data())
 
@@ -110,20 +118,13 @@ class KeyFrame:
         _, _, self.diagram_join = self.UI_auxiliary.get_diagram_contact(self.uu_id, del_mouse=True)
         self.callback_operation.event("sub_end", info=self.pxf.get_event_data())
 
-        key_frame_id = self.uu_id
         # self.UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data, self.UI_auxiliary.option_data["media_id"], key_frame_id))
         self.UI_auxiliary.edit_diagram_color(self.uu_id, "#000000")
 
     def this_del(self, info=True):  # このinfoはundostackに追加するかどうか
 
-        # ###print("thisdel")
         if info:
-            #self.key_frame_time_old_data = self.UI_auxiliary.edit_control_auxiliary.get_key_frame(self.UI_auxiliary.option_data["media_id"])
-            # key_frame_id = self.uu_id
-            # self.UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data, self.UI_auxiliary.option_data["media_id"], key_frame_id))
-            self.UI_auxiliary.timeline_send_data.stack_add_timelime_keyframe(add_type="del", media_id=self.UI_auxiliary.option_data["media_id"])
-
-            # self.UI_auxiliary.stack_add("frame", (self.key_frame_time_old_data, self.UI_auxiliary.option_data["media_id"]))
+            self.timeline_send_data.stack_add_timelime_keyframe(add_type="del", media_id=self.UI_auxiliary.option_data["media_id"])
 
         self.UI_auxiliary.edit_control_auxiliary.del_key_frame_point(self.UI_auxiliary.option_data["media_id"], self.uu_id)
 
@@ -134,13 +135,7 @@ class KeyFrame:
 
         self.callback_operation.all_del_event()
 
-        # 気をつけて!!!!!!!!
-        # 気をつけて!!!!!!!!
-        # 気をつけて!!!!!!!!
-        self.callback_operation.set_event("tihs_del_{0}".format(self.uu_id), self.this_del)  # これはdata指定!!!!!!slef.じゃないよ！気をつけて!!!!!!!!1
-        # 気をつけて!!!!!!!!
-        # 気をつけて!!!!!!!!
-        # 気をつけて!!!!!!!!
+        # これはdata指定!!!!!!slef.じゃないよ！気をつけて!!!!!!!!1
 
         # ###print(self.callback_operation.all_get_event())
 
@@ -240,7 +235,7 @@ class parts:
 
         center_x = copy.deepcopy(self.popup_click_position[0]) if pos_f is None else self.pxf.f_to_px(pos_f)
         center_y = copy.deepcopy(bar_pos[1])
-        new_key_frame = KeyFrame(self.UI_auxiliary, self.pxf, center_x, center_y, uu_id=uu_id)
+        new_key_frame = KeyFrame(self.UI_auxiliary, self.pxf, self.timeline_send_data, self.callback_operation, center_x, center_y, uu_id=uu_id)
         new_key_frame.key_frame_ui_setup()
         new_key_frame.callback_operation.set_event("sub_sta", self.timeline_send_data.timeline_nowtime_approval_False)
         new_key_frame.callback_operation.set_event("sub_end", self.timeline_send_data.timeline_nowtime_approval_True)
