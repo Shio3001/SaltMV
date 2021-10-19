@@ -165,9 +165,7 @@ class KeyFrame:
 
 
 class parts:
-
     def __init__(self, UI_auxiliary):
-
         self.UI_auxiliary = UI_auxiliary
         self.pxf = self.UI_auxiliary.plus_px_frame_data(direction=0, debug_name="obj")
         self.timeline_send_data = TimelineSendData()

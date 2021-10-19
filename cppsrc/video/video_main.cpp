@@ -500,6 +500,7 @@ namespace ObjectProgress
         ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
+
       cout << "synthetic_func" << endl;
 
       py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));

@@ -510,6 +510,8 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].tag = self.common_control.get_tag_name(self.uidata_id, self.te_name, di_name)
             self.canvas_data.canvas.create_rectangle(xy[0], xy[1], size_xy[0]+xy[0], size_xy[1]+xy[1], fill=color, outline=diagram_data.outline, width=diagram_data.width, tags=self.canvas_data.territory[self.te_name].diagram[di_name].tag)  # 塗りつぶし
 
+        print(self.canvas_data.canvas.__dict__)
+
     def __diagram_text_draw(self, territory_data, diagram_data,  di_name, di_del):
 
         if di_del:

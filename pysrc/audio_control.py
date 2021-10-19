@@ -63,8 +63,6 @@ class AudioControl:
     def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
 
         print("     **********AudioControl add", effect_id)
-
-
         self.audio_individual_data[effect_id] = AudioIndividual(add_import_data, sound_channles, sta_frame, end_frame, effect_id)
 
     def del_audio_individual_data(self, effect_id):

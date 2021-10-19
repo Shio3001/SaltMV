@@ -345,7 +345,9 @@ class SceneOutput:
             #print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
 
             #output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
-            output_data = self.del_alpha(export_draw)
+            output_dataBGR = self.del_alpha(export_draw)
+
+            output_data = cv2.cvtColor(output_dataBGR, cv2.COLOR_BGR2RGB)
 
             self.writer.write(output_data.astype('uint8'))
 
