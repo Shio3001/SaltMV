@@ -9,6 +9,13 @@
 using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
+#include "synthetic.hpp"
+#include "../synthetic/normal.hpp"
+
+std::map<std::string, any> synthetic_class;
+
+SyntheticNormal synthetic_normal = new SyntheticNormal;
+synthetic_class["normal"] = *synthetic_normal;
 
 /*
 namespace EffectProgressPlugin
@@ -228,16 +235,9 @@ namespace EffectProgress
 
       cout << "effect_plugin_elements" << endl;
       py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
-
       cout << "procedure_return" << endl;
       py::object main_function = procedure.attr("main");
-
       cout << "procedure_return2" << endl;
-
-      //py::object main_function_self = py::extract<py::object>(main_function.attr("__func__"));
-      //py::object run_main_function = py::extract<py::object>(py_out_func["plugin_run"]);
-
-      //py::object self_data = py::extract<py::object>(main_function.attr("__self__"));
       py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
 
       /*
@@ -499,7 +499,6 @@ namespace ObjectProgress
 
         ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
-
 
       cout << "synthetic_func" << endl;
 
