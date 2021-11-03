@@ -361,6 +361,7 @@ namespace ObjectProgress
       np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
       int *draw = new int[editor_y * editor_x * 4];
+      int now_xy_size[2] = {editor_x, editor_y};
 
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
       {
@@ -370,7 +371,7 @@ namespace ObjectProgress
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
-        draw = production_object_individual(now_objcet, draw);
+        draw = production_object_individual(now_objcet, draw, now_xy_size);
       }
 
       for (int y = 0; y < editor_y; y++)
@@ -399,7 +400,7 @@ namespace ObjectProgress
       return object_draw_base;
     }
 
-    np::ndarray production_object_individual(py::object &now_objcet, int *draw_object_draw_base)
+    np::ndarray production_object_individual(py::object &now_objcet, int *draw_object_draw_base, int *now_xy_size)
     {
       //cout << "production_object_individual" << endl;
 
@@ -444,11 +445,6 @@ namespace ObjectProgress
       vector<int> base_draw_range_rd = {0, 0};
       vector<int> add_draw_range_lu = {0, 0};
       vector<int> add_draw_range_rd = {0, 0};
-
-      py::tuple now_xy_size_shape = py::extract<py::tuple>(object_individual_draw_base.attr("shape"));
-      int now_xy_size[2];
-      now_xy_size[0] = py::extract<double>(now_xy_size_shape[1]);
-      now_xy_size[1] = py::extract<double>(now_xy_size_shape[0]);
 
       for (int i = 0; i < 2; i++)
       {
@@ -536,8 +532,8 @@ namespace ObjectProgress
 
             for (int i = 0; i < 4; i++)
             {
-              source[i] = draw_object_draw_base[ya][xa][i];
-              additions[i] = py::extract<uint>(new_effect_draw[ya][xa][i]);
+              //source[i] = draw_object_draw_base[ya][xa][i];
+              //additions[i] = py::extract<uint>(new_effect_draw[ya][xa][i]);
             }
 
             //cout << "func approach" << endl;
@@ -553,7 +549,7 @@ namespace ObjectProgress
 
             for (int j = 0; j < 4; j++)
             {
-              draw_object_draw_base[ya][xa][j] = calculation[j];
+              //draw_object_draw_base[ya][xa][j] = calculation[j];
             }
 
             //cout << "end" << endl;
@@ -569,7 +565,7 @@ namespace ObjectProgress
 
       cout << "synthetic_func2" << endl;
 
-      return object_individual_draw_base;
+      return draw_object_draw_base;
       //return sy_draw;
     }
 
