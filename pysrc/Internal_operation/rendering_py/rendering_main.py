@@ -250,10 +250,10 @@ class SceneOutput:
             print("キャッシュ生成済み")
             cash_process_flag = True
 
-        image = None
+        output_data = None
 
         if not cash_process_flag:
-            image = self.cpp_encode.execution_preview(frame)
+            output_data = self.cpp_encode.execution_preview(frame)
 
             #self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
 
@@ -268,7 +268,7 @@ class SceneOutput:
         if cash_process_flag:
             return
 
-        output_data = self.del_alpha(image)
+        #output_data = self.del_alpha(image)
 
         #image[:, :, 0] *= image[:, :, 3]
         #image[:, :, 1] *= image[:, :, 3]

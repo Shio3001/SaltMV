@@ -60,57 +60,57 @@ operation["error"] = error.ErrorAction(operation["log"])
 this_name = str(os.path.basename(__file__))
 py_path = (os.path.abspath(__file__)).replace(this_name, '')
 
-for i in range(2):
-    file_type = ""
-    file_py_cpp = ""
-    plugin_dict_name = ""
-    if i == 0:  # python
-        file_py_cpp = "pysrc"
-        file_type = ".py"
-        plugin_dict_name = "plugin"
-    if i == 1:  # cpp
-        file_py_cpp = "cppsrc"
-        file_type = ".so"
-        plugin_dict_name = "cpp_plugin"
+file_type = ""
+file_py_cpp = ""
+plugin_dict_name = ""
 
-    plugin_path = os.path.join(py_path.replace(this_name, ''), file_py_cpp, "plugin")
-    operation["log"].write(now_path)
-    operation["log"].write(py_path)
-    operation["log"].write(plugin_path)
+file_py_cpp = "pysrc"
+file_type = ".py"
+plugin_dict_name = "plugin"
 
-    plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全取得
-    plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
 
-    operation[plugin_dict_name] = {}
-    for plugin_folder_name in plugin_folder:  # Folder分だけまわす
+plugin_path = os.path.join(py_path.replace(this_name, ''), file_py_cpp, "plugin")
+operation["log"].write(now_path)
+operation["log"].write(py_path)
+operation["log"].write(plugin_path)
 
-        pl_section_inside = os.listdir(os.path.join(plugin_path, plugin_folder_name))  # pluginfolder内のアイテムを全取得
-        pl_section_inside_list = [f for f in pl_section_inside if os.path.isfile(os.path.join(plugin_path, plugin_folder_name, f))]
+plugin_inside = os.listdir(plugin_path)  # pluginfolder内のアイテムを全取得
+plugin_folder = [p for p in plugin_inside if os.path.isdir(os.path.join(plugin_path, p))]  # Folderにしぼりこむ
 
-        operation[plugin_dict_name][str(plugin_folder_name)] = {}
+operation[plugin_dict_name] = {}
+for plugin_folder_name in plugin_folder:  # Folder分だけまわす
 
-        for file_name in pl_section_inside_list:  # ファイルごとの処理
-            file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
-            path = os.path.relpath(file_path, py_path)
-            path_dot = path.replace(file_type, '').replace(edit_control_auxiliary.slash, '.')
+    pl_section_inside = os.listdir(os.path.join(plugin_path, plugin_folder_name))  # pluginfolder内のアイテムを全取得
+    pl_section_inside_list = [f for f in pl_section_inside if os.path.isfile(os.path.join(plugin_path, plugin_folder_name, f))]
 
-            file_bool = file_name[-1*int(len(file_type)):] == file_type
+    operation[plugin_dict_name][str(plugin_folder_name)] = {}
 
-            if not file_bool:
-                continue
-            print("plugin lord : {0}".format(file_name))
-            import_data = importlib.import_module(path_dot, py_path)
+    for file_name in pl_section_inside_list:  # ファイルごとの処理
+        file_path = os.path.join(plugin_path, plugin_folder_name, file_name)  # pluginの絶対パス
+        path = os.path.relpath(file_path, py_path)
+        path_dot = path.replace(file_type, '').replace(edit_control_auxiliary.slash, '.')
 
-            if str(plugin_folder_name) == "synthetic":
-                import_data = import_data.Synthetic()
+        file_bool = file_name[-1*int(len(file_type)):] == file_type
 
-            final_name = str(file_name.replace(file_type, ''))
-            operation[plugin_dict_name][str(plugin_folder_name)][final_name] = import_data
+        if not file_bool:
+            continue
+        print("plugin lord : {0}".format(file_name))
+        import_data = importlib.import_module(path_dot, py_path)
+
+        if str(plugin_folder_name) == "synthetic":
+            import_data = import_data.Synthetic()
+
+        final_name = str(file_name.replace(file_type, ''))
+        operation[plugin_dict_name][str(plugin_folder_name)][final_name] = import_data
 
 operation["synthetic"] = synthetic.SyntheticControl()
+operation["plugin"]["synthetic"] = {}
 
+typecpp_message = "TypeHppfileDefaultInclude"
+operation["plugin"]["synthetic"]["normal"] = typecpp_message
 
 # plugin読み込み終了
+
 
 def set_operation():
     operation["log"].write(operation)

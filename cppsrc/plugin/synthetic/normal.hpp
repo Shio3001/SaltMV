@@ -4,7 +4,7 @@ public:
     SyntheticNormal()
     {
     }
-    void run(int &calculation[], int &source[], int &additions[]) //RGBA // RGBA
+    void run(int *calculation, int *source, int *additions) //RGBA // RGBA
     {
         //all_calculation[:, :, 3] = source[:, :, 3] * (np01 - additions[:, :, 3]) + additions[:, :, 3]
         calculation[3] = source[3] * (1 - additions[3]) + additions[3];

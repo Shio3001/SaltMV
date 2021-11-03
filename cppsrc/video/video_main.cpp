@@ -9,13 +9,11 @@
 using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
-#include "synthetic.hpp"
-#include "../synthetic/normal.hpp"
+//#include "synthetic.hpp"
+#include "../plugin/synthetic/normal.hpp"
 
-std::map<std::string, any> synthetic_class;
-
-SyntheticNormal synthetic_normal = new SyntheticNormal;
-synthetic_class["normal"] = *synthetic_normal;
+SyntheticNormal synthetic_normal;
+//synthetic_class["normal"] = synthetic_normal;
 
 /*
 namespace EffectProgressPlugin
@@ -362,6 +360,8 @@ namespace ObjectProgress
       py::tuple shape_size = py::make_tuple(editor_y, editor_x, 4);
       np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
+      int *draw = new int[editor_y * editor_x * 4];
+
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
       {
 
@@ -370,13 +370,36 @@ namespace ObjectProgress
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
-        object_draw_base = production_object_individual(now_objcet, object_draw_base);
+        draw = production_object_individual(now_objcet, draw);
+      }
+
+      for (int y = 0; y < editor_y; y++)
+      {
+        for (int x = 0; x < editor_x; x++)
+        {
+          int ipx = (editor_x * y + x) * 4;
+
+          //std::cout << ipx << std::endl;
+          //std::cout << draw_pointer[ipx] << std::endl;
+
+          double A = draw[ipx + 3];
+
+          int R = draw[ipx + 0] * (A / 255.0); //透明度反映
+          int G = draw[ipx + 1] * (A / 255.0);
+          int B = draw[ipx + 2] * (A / 255.0);
+
+          object_draw_base[y][x][0] = B; //openCVはBGRのため順番を入れ替える必要があり
+          object_draw_base[y][x][1] = G;
+          object_draw_base[y][x][2] = R;
+
+          //int cvy = y_hight - y;
+        }
       }
 
       return object_draw_base;
     }
 
-    np::ndarray production_object_individual(py::object &now_objcet, np::ndarray &object_individual_draw_base)
+    np::ndarray production_object_individual(py::object &now_objcet, int *draw_object_draw_base)
     {
       //cout << "production_object_individual" << endl;
 
@@ -416,11 +439,6 @@ namespace ObjectProgress
 
       string xy[] = {"x",
                      "y"};
-
-      py::list list_base_draw_range_lu;
-      py::list list_base_draw_range_rd;
-      py::list list_add_draw_range_lu;
-      py::list list_add_draw_range_rd;
 
       vector<int> base_draw_range_lu = {0, 0};
       vector<int> base_draw_range_rd = {0, 0};
@@ -492,22 +510,67 @@ namespace ObjectProgress
         //cout << "add_draw_range_lu " << add_draw_range_lu[i] << " base_draw_range_lu " << base_draw_range_lu[i] << endl;
         //cout << "add_draw_range_rd " << add_draw_range_rd[i] << " base_draw_range_rd " << base_draw_range_rd[i] << endl;
 
-        list_base_draw_range_lu.append(base_draw_range_lu[i]);
-        list_base_draw_range_rd.append(base_draw_range_rd[i]);
-        list_add_draw_range_lu.append(add_draw_range_lu[i]);
-        list_add_draw_range_rd.append(add_draw_range_rd[i]);
-
         ////cout << i << " position_lu " << position_lu << " position_rd " << position_rd << " : base " << base_draw_range_rd[i] << " add " << add_draw_range_rd[i] << endl;
       }
 
       cout << "synthetic_func" << endl;
 
-      py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
-      np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));
+      bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
+
+      cout << "cpptype" << cpptype << endl;
+
+      if (cpptype)
+      {
+        for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
+        {
+          int ya = yb + add_draw_range_lu[1] - base_draw_range_lu[1];
+          for (int xb = base_draw_range_lu[0]; xb < base_draw_range_rd[0]; xb++)
+          {
+            int xa = xb + add_draw_range_lu[0] - base_draw_range_lu[0];
+
+            int calculation[4];
+            int source[4];
+            int additions[4];
+
+            //cout << " py -> cpp" << endl;
+
+            for (int i = 0; i < 4; i++)
+            {
+              source[i] = draw_object_draw_base[ya][xa][i];
+              additions[i] = py::extract<uint>(new_effect_draw[ya][xa][i]);
+            }
+
+            //cout << "func approach" << endl;
+
+            if (synthetic_type == "normal")
+            {
+              synthetic_normal.run(calculation, source, additions);
+            }
+
+            //cout << "cpp -> np" << endl;
+
+            //synthetic_class[synthetic_type].run(&calculation, &source, &additions);
+
+            for (int j = 0; j < 4; j++)
+            {
+              draw_object_draw_base[ya][xa][j] = calculation[j];
+            }
+
+            //cout << "end" << endl;
+          }
+        }
+      }
+      else
+      {
+      }
+
+      //py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
+      //np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));
 
       cout << "synthetic_func2" << endl;
 
-      return sy_draw;
+      return object_individual_draw_base;
+      //return sy_draw;
     }
 
     vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
