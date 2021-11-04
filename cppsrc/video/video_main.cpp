@@ -29,6 +29,17 @@ namespace EffectProgressPlugin
   }
 }*/
 
+void debug_array_sum(int *array, int size)
+{
+  int sum = 0;
+  for (int i = 0; i < size; i++)
+  {
+    sum += array[i];
+  }
+
+  cout << "sum " << sum << endl;
+}
+
 namespace EffectProgress
 {
   class EffectProduction
@@ -377,34 +388,9 @@ namespace ObjectProgress
       py::tuple shape = py::make_tuple(editor_y * editor_x * 3);
       py::tuple stride = py::make_tuple(sizeof(int));
       np::dtype dt = np::dtype::get_builtin<uint>();
-
       np::ndarray object_draw_base = np::from_data(&draw[0], dt, shape, stride, py::object());
-
       //np::ndarray object_draw_base = np::from_data(&draw[0], dt, shape, stride, py::object());
       //  np::ndarray output = np::from_data(&v[0], dt, shape, stride, py::object());
-
-      // for (int y = 0; y < editor_y; y++)
-      // {
-      //   for (int x = 0; x < editor_x; x++)
-      //   {
-      //     int ipx = (editor_x * y + x) * 4;
-
-      //     //std::cout << ipx << std::endl;
-      //     //std::cout << draw_pointer[ipx] << std::endl;
-
-      //     double A = draw[ipx + 3];
-
-      //     int R = draw[ipx + 0] * (A / 255.0); //透明度反映
-      //     int G = draw[ipx + 1] * (A / 255.0);
-      //     int B = draw[ipx + 2] * (A / 255.0);
-
-      //     object_draw_base[y][x][0] = 255; //BopenCVはBGRのため順番を入れ替える必要があり
-      //     object_draw_base[y][x][1] = 0;   //G
-      //     object_draw_base[y][x][2] = 0;   //R
-
-      //     //int cvy = y_hight - y;
-      //   }
-      // }
 
       cout << "cpp -> numpy end" << endl;
 
@@ -448,6 +434,8 @@ namespace ObjectProgress
       int new_effect_draw_size[2];
       new_effect_draw_size[0] = py::extract<double>(new_draw_size_shape[1]);
       new_effect_draw_size[1] = py::extract<double>(new_draw_size_shape[0]);
+
+      cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << endl;
 
       string xy[] = {"x",
                      "y"};
@@ -524,6 +512,12 @@ namespace ObjectProgress
 
       bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
 
+      auto *now_draw_p = reinterpret_cast<int *>(new_effect_draw.get_data());
+
+      debug_array_sum(now_draw_p);
+
+      cout << "effectsum " << effectsum << endl;
+
       cout << "cpptype" << cpptype << endl;
 
       if (cpptype)
@@ -544,14 +538,17 @@ namespace ObjectProgress
 
             for (int i = 0; i < 3; i++)
             {
-              source[i] = draw_object_draw_base[ipx];
-              additions[i] = py::extract<uint>(new_effect_draw[ipx]);
+              source[i] = draw_object_draw_base[ipx + i];
+            }
+            source[3] = 255;
+
+            for (int i = 0; i < 4; i++)
+            {
+              additions[i] = *now_draw_p;
+              now_draw_p++;
             }
 
-            source[3] = 255;
-            additions[3] = py::extract<uint>(new_effect_draw[ipx + 3]);
-
-            //cout << "func approach" << endl;
+            //cout << " A -> cpp" << endl;
 
             if (synthetic_type == "normal")
             {
@@ -574,6 +571,10 @@ namespace ObjectProgress
       {
       }
 
+      cout << "effectsum2 " << effectsum2 << endl;
+
+      debug_array_sum(draw_object_draw_base, 1280 * 720 * 3);
+
       //py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
       //np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));
 
@@ -582,7 +583,8 @@ namespace ObjectProgress
       //return sy_draw;
     }
 
-    vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
+    vector<string>
+    around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
     {
       vector<string> around_point{"", ""};
 
