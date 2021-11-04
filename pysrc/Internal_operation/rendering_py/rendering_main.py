@@ -253,7 +253,7 @@ class SceneOutput:
         output_data = None
 
         if not cash_process_flag:
-            output_data = self.cpp_encode.execution_preview(frame)
+            output_data = self.cpp_encode.execution_preview(frame).astype('uint8')
 
             #self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
 
@@ -279,6 +279,8 @@ class SceneOutput:
 
         #cv2.imwrite('wiwi.jpg', image.astype('uint8'))
 
+        print(output_data.shape)
+
         image_pil = Image.fromarray(output_data)
         resize_size = (640, 360)
         img_resize = image_pil.resize(resize_size)
@@ -287,7 +289,6 @@ class SceneOutput:
 
         self.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
         #self.data_image_tk[frame] = img_resize
-        print("tk処理", frame, image.shape)
 
     def get_image_tk(self, frame):
         frame = round(frame)

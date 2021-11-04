@@ -357,10 +357,7 @@ namespace ObjectProgress
       int editor_x = py::extract<double>(editor["x"]);
       int editor_y = py::extract<double>(editor["y"]);
 
-      py::tuple shape_size = py::make_tuple(editor_y, editor_x, 4);
-      np::ndarray object_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
-
-      int *draw = new int[editor_y * editor_x * 4];
+      int *draw = new int[editor_y * editor_x * 3];
       int now_xy_size[2] = {editor_x, editor_y};
 
       for (int i = 0; i < order_decision_object_group_number.size(); i++)
@@ -371,36 +368,46 @@ namespace ObjectProgress
         int now_object_nun = order_decision_object_group_number[i];
         py::object now_objcet = order_decision_object_group[now_object_nun];
 
-        draw = production_object_individual(now_objcet, draw, now_xy_size);
+        production_object_individual(now_objcet, draw, now_xy_size);
       }
 
-      for (int y = 0; y < editor_y; y++)
-      {
-        for (int x = 0; x < editor_x; x++)
-        {
-          int ipx = (editor_x * y + x) * 4;
+      cout << "cpp -> numpy" << endl;
 
-          //std::cout << ipx << std::endl;
-          //std::cout << draw_pointer[ipx] << std::endl;
+      py::tuple shape = py::make_tuple(editor_y, editor_x, 3);
+      py::tuple stride = py::make_tuple(sizeof(int));
+      np::dtype dt = np::dtype::get_builtin<uint>();
+      np::ndarray object_draw_base = np::from_data(&draw[0], dt, shape, stride, py::object());
+      //  np::ndarray output = np::from_data(&v[0], dt, shape, stride, py::object());
 
-          double A = draw[ipx + 3];
+      // for (int y = 0; y < editor_y; y++)
+      // {
+      //   for (int x = 0; x < editor_x; x++)
+      //   {
+      //     int ipx = (editor_x * y + x) * 4;
 
-          int R = draw[ipx + 0] * (A / 255.0); //透明度反映
-          int G = draw[ipx + 1] * (A / 255.0);
-          int B = draw[ipx + 2] * (A / 255.0);
+      //     //std::cout << ipx << std::endl;
+      //     //std::cout << draw_pointer[ipx] << std::endl;
 
-          object_draw_base[y][x][0] = B; //openCVはBGRのため順番を入れ替える必要があり
-          object_draw_base[y][x][1] = G;
-          object_draw_base[y][x][2] = R;
+      //     double A = draw[ipx + 3];
 
-          //int cvy = y_hight - y;
-        }
-      }
+      //     int R = draw[ipx + 0] * (A / 255.0); //透明度反映
+      //     int G = draw[ipx + 1] * (A / 255.0);
+      //     int B = draw[ipx + 2] * (A / 255.0);
+
+      //     object_draw_base[y][x][0] = 255; //BopenCVはBGRのため順番を入れ替える必要があり
+      //     object_draw_base[y][x][1] = 0;   //G
+      //     object_draw_base[y][x][2] = 0;   //R
+
+      //     //int cvy = y_hight - y;
+      //   }
+      // }
+
+      cout << "cpp -> numpy end" << endl;
 
       return object_draw_base;
     }
 
-    np::ndarray production_object_individual(py::object &now_objcet, int *draw_object_draw_base, int *now_xy_size)
+    int production_object_individual(py::object &now_objcet, int *draw_object_draw_base, int *now_xy_size)
     {
       //cout << "production_object_individual" << endl;
 
@@ -523,6 +530,7 @@ namespace ObjectProgress
           for (int xb = base_draw_range_lu[0]; xb < base_draw_range_rd[0]; xb++)
           {
             int xa = xb + add_draw_range_lu[0] - base_draw_range_lu[0];
+            int ipx = (now_xy_size[0] * ya + xa) * 4;
 
             int calculation[4];
             int source[4];
@@ -532,8 +540,8 @@ namespace ObjectProgress
 
             for (int i = 0; i < 4; i++)
             {
-              //source[i] = draw_object_draw_base[ya][xa][i];
-              //additions[i] = py::extract<uint>(new_effect_draw[ya][xa][i]);
+              source[i] = draw_object_draw_base[ipx];
+              additions[i] = py::extract<uint>(new_effect_draw[ipx]);
             }
 
             //cout << "func approach" << endl;
@@ -543,14 +551,13 @@ namespace ObjectProgress
               synthetic_normal.run(calculation, source, additions);
             }
 
-            //cout << "cpp -> np" << endl;
-
-            //synthetic_class[synthetic_type].run(&calculation, &source, &additions);
-
-            for (int j = 0; j < 4; j++)
-            {
-              //draw_object_draw_base[ya][xa][j] = calculation[j];
-            }
+            double A = calculation[3];
+            int R = calculation[0] * (A / 255.0); //透明度反映
+            int G = calculation[1] * (A / 255.0);
+            int B = calculation[2] * (A / 255.0);
+            draw_object_draw_base[ipx + 0] = R;
+            draw_object_draw_base[ipx + 1] = G;
+            draw_object_draw_base[ipx + 2] = B;
 
             //cout << "end" << endl;
           }
@@ -565,7 +572,6 @@ namespace ObjectProgress
 
       cout << "synthetic_func2" << endl;
 
-      return draw_object_draw_base;
       //return sy_draw;
     }
 
