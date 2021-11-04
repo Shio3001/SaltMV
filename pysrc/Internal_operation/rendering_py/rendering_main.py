@@ -253,7 +253,7 @@ class SceneOutput:
         output_data = None
 
         if not cash_process_flag:
-            output_data = self.cpp_encode.execution_preview(frame).astype('uint8')
+            output_data = np.reshape(self.cpp_encode.execution_preview(frame).astype('uint8'), (self.y, self.x, 3))
 
             #self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
 

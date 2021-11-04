@@ -373,10 +373,14 @@ namespace ObjectProgress
 
       cout << "cpp -> numpy" << endl;
 
-      py::tuple shape = py::make_tuple(editor_y, editor_x, 3);
+      //py::tuple shape = py::make_tuple(editor_y, editor_x, 3);
+      py::tuple shape = py::make_tuple(editor_y * editor_x * 3);
       py::tuple stride = py::make_tuple(sizeof(int));
       np::dtype dt = np::dtype::get_builtin<uint>();
+
       np::ndarray object_draw_base = np::from_data(&draw[0], dt, shape, stride, py::object());
+
+      //np::ndarray object_draw_base = np::from_data(&draw[0], dt, shape, stride, py::object());
       //  np::ndarray output = np::from_data(&v[0], dt, shape, stride, py::object());
 
       // for (int y = 0; y < editor_y; y++)
@@ -530,7 +534,7 @@ namespace ObjectProgress
           for (int xb = base_draw_range_lu[0]; xb < base_draw_range_rd[0]; xb++)
           {
             int xa = xb + add_draw_range_lu[0] - base_draw_range_lu[0];
-            int ipx = (now_xy_size[0] * ya + xa) * 4;
+            int ipx = (now_xy_size[0] * ya + xa) * 3;
 
             int calculation[4];
             int source[4];
@@ -538,11 +542,14 @@ namespace ObjectProgress
 
             //cout << " py -> cpp" << endl;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++)
             {
               source[i] = draw_object_draw_base[ipx];
               additions[i] = py::extract<uint>(new_effect_draw[ipx]);
             }
+
+            source[3] = 255;
+            additions[3] = py::extract<uint>(new_effect_draw[ipx + 3]);
 
             //cout << "func approach" << endl;
 
