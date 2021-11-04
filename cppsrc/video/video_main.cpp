@@ -29,17 +29,6 @@ namespace EffectProgressPlugin
   }
 }*/
 
-void debug_array_sum(int *array, int size)
-{
-  int sum = 0;
-  for (int i = 0; i < size; i++)
-  {
-    sum += array[i];
-  }
-
-  cout << "sum " << sum << endl;
-}
-
 namespace EffectProgress
 {
   class EffectProduction
@@ -430,12 +419,12 @@ namespace ObjectProgress
       ////cout << starting_point_center[0] << " " << starting_point_center[1] << endl;
 
       py::tuple new_draw_size_shape = py::extract<py::tuple>(new_effect_draw.attr("shape"));
-
-      int new_effect_draw_size[2];
+      int new_effect_draw_size[3];
       new_effect_draw_size[0] = py::extract<double>(new_draw_size_shape[1]);
       new_effect_draw_size[1] = py::extract<double>(new_draw_size_shape[0]);
+      new_effect_draw_size[2] = py::extract<double>(new_draw_size_shape[2]);
 
-      cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << endl;
+      cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << " " << new_effect_draw_size[2] << endl;
 
       string xy[] = {"x",
                      "y"};
@@ -512,41 +501,58 @@ namespace ObjectProgress
 
       bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
 
+      //py::tuple new_shape = py::make_tuple(new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2]);
+      //np::ndarray new_effect_draw_one_dimension = new_effect_draw.reshape(new_shape);
       auto *now_draw_p = reinterpret_cast<int *>(new_effect_draw.get_data());
-
-      debug_array_sum(now_draw_p);
-
-      cout << "effectsum " << effectsum << endl;
-
       cout << "cpptype" << cpptype << endl;
+
+      py::tuple new_draw_size_shapeA = py::extract<py::tuple>(new_effect_draw.attr("shape"));
+
+      cout << py::extract<int>(new_draw_size_shapeA[0]) << endl;
+
+      int test = 0;
 
       if (cpptype)
       {
+        int ya = add_draw_range_lu[1];
         for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
         {
-          int ya = yb + add_draw_range_lu[1] - base_draw_range_lu[1];
+          int xa = add_draw_range_lu[0];
           for (int xb = base_draw_range_lu[0]; xb < base_draw_range_rd[0]; xb++)
           {
-            int xa = xb + add_draw_range_lu[0] - base_draw_range_lu[0];
-            int ipx = (now_xy_size[0] * ya + xa) * 3;
+            //cout << "setup" << endl;
+
+            int ipxA = (now_xy_size[0] * ya + xa) * 4;
+            int ipxB = (now_xy_size[0] * yb + xb) * 3;
 
             int calculation[4];
             int source[4];
             int additions[4];
 
+            //cout << "source" << endl;
+
             //cout << " py -> cpp" << endl;
 
             for (int i = 0; i < 3; i++)
             {
-              source[i] = draw_object_draw_base[ipx + i];
+              source[i] = draw_object_draw_base[ipxB + i];
             }
             source[3] = 255;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < new_effect_draw_size[2]; i++)
             {
-              additions[i] = *now_draw_p;
-              now_draw_p++;
+              //3686400
+              //cout << test << " " << ya << " " << xa << " " << new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2] << endl;
+              cout << "additions" << ya << " " << xa << " " << i << endl;
+
+              int *RGBA = now_draw_p;
+              additions[i] = RGBA[i];
+              test++;
             }
+
+            now_draw_p++;
+
+            //cout << "synthetic_normal" << endl;
 
             //cout << " A -> cpp" << endl;
 
@@ -555,25 +561,28 @@ namespace ObjectProgress
               synthetic_normal.run(calculation, source, additions);
             }
 
+            //cout << "read" << endl;
             double A = calculation[3];
             int R = calculation[0] * (A / 255.0); //透明度反映
             int G = calculation[1] * (A / 255.0);
             int B = calculation[2] * (A / 255.0);
-            draw_object_draw_base[ipx + 0] = R;
-            draw_object_draw_base[ipx + 1] = G;
-            draw_object_draw_base[ipx + 2] = B;
+
+            //cout << "RGB" << endl;
+
+            draw_object_draw_base[ipxB + 0] = R;
+            draw_object_draw_base[ipxB + 1] = G;
+            draw_object_draw_base[ipxB + 2] = B;
+
+            xa++;
 
             //cout << "end" << endl;
           }
+          ya++;
         }
       }
       else
       {
       }
-
-      cout << "effectsum2 " << effectsum2 << endl;
-
-      debug_array_sum(draw_object_draw_base, 1280 * 720 * 3);
 
       //py::object synthetic_func = py::extract<py::object>(python_operation["synthetic"].attr("call"));
       //np::ndarray sy_draw = py::extract<np::ndarray>(synthetic_func(synthetic_type, object_individual_draw_base, new_effect_draw, list_base_draw_range_lu, list_base_draw_range_rd, list_add_draw_range_lu, list_add_draw_range_rd));

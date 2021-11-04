@@ -78,13 +78,13 @@ endif
 
  
 $(TARGET).so: $(TARGET).o
-	g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -$(numpy) -L$(LIBPYTHON_PATH) -undefined dynamic_lookup -o $(TARGET).so 
+	g++ -g $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -$(numpy) -L$(LIBPYTHON_PATH) -undefined dynamic_lookup -o $(TARGET).so 
 #g++ $(CFLAGS) -shared -Wl,-$(EXPORT_DYNAMIC_NAME) $(TARGET).o -L$(BOOST_LIB) -$(BOOST) -L$(LIBPYTHON_PATH) -lpython3.9 -o $(TARGET).so
 # 
 #pytyhon3.9だけ手打ちで変更
  
 $(TARGET).o: $(TARGET).cpp
-	g++ $(CFLAGS) -I$(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -c $(TARGET).cpp
+	g++ -g $(CFLAGS) -I$(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -c $(TARGET).cpp
 
 #g++ -I`python -c 'from distutils.sysconfig import *; print get_python_inc()'` -DPIC -bundle -fPIC -o basic.so basic.cpp -lboost_python  -framework Python
 
