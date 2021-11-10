@@ -408,8 +408,6 @@ namespace ObjectProgress
       // ここから
       //cout << "effect_group_return" << endl;
       np::ndarray new_effect_draw = py::extract<np::ndarray>(effect_group_return[0]);
-
-      //cout << "starting_point" << endl;
       py::list starting_point_center = py::extract<py::list>(effect_group_return[1]);
 
       //py::list new_audio_function_list = py::extract<py::list>(effect_group_return[2]);
@@ -423,6 +421,8 @@ namespace ObjectProgress
       new_effect_draw_size[0] = py::extract<double>(new_draw_size_shape[1]);
       new_effect_draw_size[1] = py::extract<double>(new_draw_size_shape[0]);
       new_effect_draw_size[2] = py::extract<double>(new_draw_size_shape[2]);
+
+      int effect_draw_size_multiplication = new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2];
 
       cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << " " << new_effect_draw_size[2] << endl;
 
@@ -498,17 +498,24 @@ namespace ObjectProgress
       }
 
       cout << "synthetic_func" << endl;
+      cout << "effect_draw_size_multiplication " << effect_draw_size_multiplication << endl;
 
       bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
+      // new_effect_draw.attr("reshape")(effect_draw_size_multiplication);
+
+      // int shape_new = py::extract<int>(new_effect_draw.attr("shape")[0]);
+      // cout << shape_new << endl;
+      // int shape_new2 = py::extract<int>(new_effect_draw.attr("shape")[1]);
+      // cout << shape_new2 << endl;
+      // int shape_new3 = py::extract<int>(new_effect_draw.attr("shape")[2]);
+      // cout << shape_new3 << endl;
+
+      auto *start_pointer_numpy = reinterpret_cast<int *>(new_effect_draw.get_data());
 
       //py::tuple new_shape = py::make_tuple(new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2]);
-      //np::ndarray new_effect_draw_one_dimension = new_effect_draw.reshape(new_shape);
-      auto *now_draw_p = reinterpret_cast<int *>(new_effect_draw.get_data());
+      //np::ndarray new_effect_draw_one_dimension = np::reshape(new_effect_draw,(-1));
+      //auto *start_pointer_numpy = reinterpret_cast<int *>(new_effect_draw.get_data());
       cout << "cpptype" << cpptype << endl;
-
-      py::tuple new_draw_size_shapeA = py::extract<py::tuple>(new_effect_draw.attr("shape"));
-
-      cout << py::extract<int>(new_draw_size_shapeA[0]) << endl;
 
       int test = 0;
 
@@ -543,14 +550,23 @@ namespace ObjectProgress
             {
               //3686400
               //cout << test << " " << ya << " " << xa << " " << new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2] << endl;
-              cout << "additions" << ya << " " << xa << " " << i << endl;
+              //cout << "additions" << ya << " " << xa << " " << i << " " << test << endl;
 
-              int *RGBA = now_draw_p;
-              additions[i] = RGBA[i];
-              test++;
+              //additions[i]  = new_effect_draw[ya][xa][i];
+
+              additions[i] = *start_pointer_numpy;
+
+              // cout << "A" << endl;
+              // auto now_pointer_numpy = start_pointer_numpy + (now_xy_size[0] * ya + xa) * new_effect_draw_size[2] + i;
+              // cout << "B" << endl;
+              // additions[i] = *now_pointer_numpy;
+              // cout << "C" << endl;
+              // cout << test << endl;
+              // test++;
+
+              start_pointer_numpy++;
+              //cout << xa << " " << ya << endl;
             }
-
-            now_draw_p++;
 
             //cout << "synthetic_normal" << endl;
 
@@ -592,8 +608,7 @@ namespace ObjectProgress
       //return sy_draw;
     }
 
-    vector<string>
-    around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
+    vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
     {
       vector<string> around_point{"", ""};
 
