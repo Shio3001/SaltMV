@@ -96,6 +96,16 @@ namespace EffectProgress
             effect_group_return.append(starting_point_center);
             cout << " effect_group_return B" << endl;
 
+            cout << "shapeテスト" << endl;
+
+            py::tuple shape_test = py::extract<py::tuple>(effect_draw_base.attr("shape"));
+            int a = py::extract<int>(shape_test[0]);
+            int b = py::extract<int>(shape_test[1]);
+            int c = py::extract<int>(shape_test[2]);
+            cout << a << endl;
+            cout << b << endl;
+            cout << c << endl;
+
             return effect_group_return;
         }
         py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)

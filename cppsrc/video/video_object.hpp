@@ -213,6 +213,8 @@ namespace ObjectProgress
             auto char_pointer = new_effect_draw.get_data();
             auto strides = new_effect_draw.get_strides();
 
+            auto *start_pointer_numpy = reinterpret_cast<int *>(new_effect_draw.get_data());
+
             cout << strides[0] << endl;
             cout << strides[1] << endl;
             cout << strides[2] << endl;
@@ -245,16 +247,20 @@ namespace ObjectProgress
                         {
                             source[i] = draw_object_draw_base[ipxB + i];
                         }
-
                         source[3] = 1;
+
                         for (int i = 0; i < 4; i++)
                         {
-                            additions[i] = 200;
-                            if (i == 3)
-                            {
-                                additions[i] *= 1 / 255;
-                            }
+                        //additions[i] = 200;
+                        //additions[i] = *start_pointer_numpy;
+                        //start_pointer_numpy++;
+                            py::object this_draw = new_effect_draw.attr("__getitem__")(ya).attr("__getitem__")(xa).attr("__getitem__")(i);
+                            additions[i] = py::extract<float>(this_draw.attr("__int__")());
                         }
+
+                        //additions[i] *= 1 / 255;
+                        additions[3] = 1;
+
                         float *return_calculation;
                         if (synthetic_type == "normal")
                         {
