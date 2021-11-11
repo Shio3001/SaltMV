@@ -55,7 +55,7 @@ namespace EffectProgress
         {
             //cout << "production_effect_group" << endl;
             int effect_len = py::len(effect_group);
-            py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
+            py::tuple shape_size = py::make_tuple(editor["y"] , editor["x"] , 4);
             np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
 
             //cout << "effect_len"
@@ -97,14 +97,6 @@ namespace EffectProgress
             cout << " effect_group_return B" << endl;
 
             cout << "shapeテスト" << endl;
-
-            py::tuple shape_test = py::extract<py::tuple>(effect_draw_base.attr("shape"));
-            int a = py::extract<int>(shape_test[0]);
-            int b = py::extract<int>(shape_test[1]);
-            int c = py::extract<int>(shape_test[2]);
-            cout << a << endl;
-            cout << b << endl;
-            cout << c << endl;
 
             return effect_group_return;
         }

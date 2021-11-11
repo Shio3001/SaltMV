@@ -132,15 +132,23 @@ namespace ObjectProgress
 
             py::tuple new_draw_size_shape = py::extract<py::tuple>(new_effect_draw.attr("shape"));
             int new_effect_draw_size[3];
-            new_effect_draw_size[0] = py::extract<float>(new_draw_size_shape[1]);
-            new_effect_draw_size[1] = py::extract<float>(new_draw_size_shape[0]);
-            new_effect_draw_size[2] = py::extract<float>(new_draw_size_shape[2]);
+            new_effect_draw_size[0] = py::extract<int>(new_draw_size_shape[1]); //y
+            new_effect_draw_size[1] = py::extract<int>(new_draw_size_shape[0]); //x
+            new_effect_draw_size[2] = py::extract<int>(new_draw_size_shape[2]); //r
+
+            //new_effect_draw.attr("reshape")(-1);
 
             int effect_draw_size_multiplication = new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2];
 
-            cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << " " << new_effect_draw_size[2] << endl;
+            py::tuple shape_size = py::make_tuple(effect_draw_size_multiplication);
+            np::ndarray new_effect_draw_1dimension = new_effect_draw.reshape(shape_size);
 
-            new_effect_draw.attr("astype")("uint8");
+            py::tuple test_shape_size = py::extract<py::tuple>(new_effect_draw_1dimension.attr("shape"));
+
+            int test_shape_size_int = py::extract<int>(test_shape_size[0]);
+            cout << "test_shape_size_int " << test_shape_size_int << endl;
+
+            cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << " " << new_effect_draw_size[2] << endl;
 
             string xy[] = {"x",
                            "y"};
@@ -210,14 +218,15 @@ namespace ObjectProgress
             cout << "synthetic_func" << endl;
             cout << "effect_draw_size_multiplication " << effect_draw_size_multiplication << endl;
             bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
-            auto char_pointer = new_effect_draw.get_data();
-            auto strides = new_effect_draw.get_strides();
+            auto pointer_start = reinterpret_cast<int *>(new_effect_draw_1dimension.get_data());
+            auto strides = new_effect_draw_1dimension.get_strides();
+            //new_effect_draw_1dimension.get_data()
 
-            auto *start_pointer_numpy = reinterpret_cast<int *>(new_effect_draw.get_data());
+            //auto *start_pointer_numpy = reinterpret_cast<int *>(new_effect_draw_1dimension.get_data());
 
             cout << strides[0] << endl;
-            cout << strides[1] << endl;
-            cout << strides[2] << endl;
+            //cout << strides[1] << endl;
+            //cout << strides[2] << endl;
 
             cout << "cpptype" << cpptype << endl;
             int test = 0;
@@ -251,11 +260,13 @@ namespace ObjectProgress
 
                         for (int i = 0; i < 4; i++)
                         {
-                        //additions[i] = 200;
-                        //additions[i] = *start_pointer_numpy;
-                        //start_pointer_numpy++;
-                            py::object this_draw = new_effect_draw.attr("__getitem__")(ya).attr("__getitem__")(xa).attr("__getitem__")(i);
-                            additions[i] = py::extract<float>(this_draw.attr("__int__")());
+                            //additions[i] = 200;
+                            //additions[i] = *start_pointer_numpy;
+                            //start_pointer_numpy++;
+
+                            int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
+                            int *this_draw = pointer_start + ipx;
+                            additions[i] = this_draw;
                         }
 
                         //additions[i] *= 1 / 255;
