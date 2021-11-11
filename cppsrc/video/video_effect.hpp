@@ -45,31 +45,11 @@ namespace EffectProgress
             installation_sta = send_installation_sta;
             installation_end = send_installation_end;
 
-            //cout << "EffectProduction"
-            /*
-      << " "
-      << "before_time"
-      << " "
-      << "next_time"
-      << " "
-      << around_point_key[0]
-      << " "
-      << around_point_key[1] << endl;*/
-
-            //cout << "lord before_time" << endl;
             before_time = py::extract<double>(effect_point_internal_id_time[around_point_key[0]]);
-
-            //cout << "lord next_time" << endl;
             next_time = py::extract<double>(effect_point_internal_id_time[around_point_key[1]]);
 
             cout << before_time << " " << next_time << endl;
-
-            //cout << before_time << " " << next_time << endl;
         }
-        /*py::list get_audio_object()
-    {
-      return audio_object;
-    }*/
 
         py::list production_effect_group()
         {
@@ -93,44 +73,27 @@ namespace EffectProgress
             for (int i = 0; i < effect_len; i++)
             {
                 cout << "effect_group_val" << endl;
-
                 py::object send_effect = effect_group_val[i];
-
                 cout << "send_effect" << endl;
-
                 py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect));
-
                 // ここから
                 cout << "effect_draw_base" << endl;
                 effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
-
                 cout << "starting_point" << endl;
                 py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[1]);
-
                 for (int a = 0; a < 2; a++)
                 {
                     //cout << a << " procedure_return_starting_point_center " << endl;
                     int spc = py::extract<double>(procedure_return_starting_point_center[a]);
                     starting_point_center[a] += spc;
                 }
-
-                //starting_point_center[a] = starting_point_center[a] + py::extract<double>(procedure_return_starting_point_center[1]);
-                //effect_draw_base = new_effect_draw_base;
             }
             cout << " effect_group_return A" << endl;
-
             py::list effect_group_return;
-
             cout << " effect_group_return a1" << endl;
-
             effect_group_return.append(effect_draw_base);
-
             cout << " effect_group_return a2" << endl;
-
             effect_group_return.append(starting_point_center);
-
-            //effect_group_return.append(audio_object);
-
             cout << " effect_group_return B" << endl;
 
             return effect_group_return;

@@ -11,7 +11,7 @@ import PIL.ImageFont as ImageFont
 import cv2
 import ffmpeg
 import os
-#import subprocess
+# import subprocess
 
 
 file_all_control = {}
@@ -19,7 +19,7 @@ file_all_control = {}
 
 class EffectPluginElements:
     def __init__(self, draw, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
-        #self.draw = draw
+        # self.draw = draw
         self.draw = draw.astype('uint8')
         self.effect_value = effect_value
         self.before_value = before_value
@@ -38,11 +38,11 @@ class EffectPluginElements:
         self.cv2 = cv2
         self.np = np
 
-        #self.file_system = FileSystem
+        # self.file_system = FileSystem
 
         self.installation = [installation_sta, installation_end]
 
-        #self.cpp_file = ""
+        # self.cpp_file = ""
 
     def area_expansion(self, old_draw, x=0, y=0):
         old_size_x = old_draw.shape[1]
@@ -90,12 +90,12 @@ class EffectPluginElements:
 
         return path in list(file_all_control.keys())
 
-    #self.py_Rendering_func = py_Rendering_func
+    # self.py_Rendering_func = py_Rendering_func
 
 
 class Rendering:
     def __init__(self):
-        #self.rendering_scene_queue = {}
+        # self.rendering_scene_queue = {}
         self.operation = None
         self.scene_get = None
         self.media_object_group = None
@@ -111,7 +111,7 @@ class Rendering:
         return make_data
 
 
-#read_time = datetime.datetime.now() - start_time
+# read_time = datetime.datetime.now() - start_time
 
 
 class SceneOutput:
@@ -128,8 +128,8 @@ class SceneOutput:
         self.y = int(self.scene.editor["y"])
         self.fps = int(self.scene.editor["fps"])
         self.frame = int(self.scene.editor["len"])
-        #self.preview = self.scene.editor["preview"]
-        #print("self.scene.editor", self.scene.editor)
+        # self.preview = self.scene.editor["preview"]
+        # print("self.scene.editor", self.scene.editor)
 
         operation["audio_control"].main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], 1)
 
@@ -151,12 +151,12 @@ class SceneOutput:
         self.func["out"] = self.output_OpenCV
         self.func["layer_number"] = self.layer_id_number
         self.func["EffectPluginElements"] = EffectPluginElements
-        #self.func["FileSystem"] = FileSystem()
+        # self.func["FileSystem"] = FileSystem()
 
-        #self.func["plugin_run"] = plugin_run
+        # self.func["plugin_run"] = plugin_run
 
         self.data_image_tk = [None] * self.frame
-        #self.data_iamge = [None] * self.frame
+        # self.data_iamge = [None] * self.frame
 
         self.scene_id = copy.deepcopy(self.scene.scene_id)
 
@@ -169,7 +169,7 @@ class SceneOutput:
         self.output_temp_file_path_mp4 = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
         self.output_temp_file_path_wav = "{0}/temp_nonsound_temp.wav".format(self.temp_path)
 
-        #self.audio_preview_function_list = []
+        # self.audio_preview_function_list = []
 
         self.audio_control = operation["audio_control"]
 
@@ -191,7 +191,7 @@ class SceneOutput:
         if end is None:
             end = self.frame
 
-        #self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
+        # self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
 
         end_time = datetime.datetime.now()
 
@@ -237,11 +237,11 @@ class SceneOutput:
         return RGB.astype('uint8')
 
     def output_tk(self, frame, tk_cash=True, run=False):
-        #map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
+        # map(lambda x: x(frame, sta_bool=True), self.audio_preview_function_list)
 
         # <class 'NoneType'>
 
-        #type(self.data_image_tk[frame]) is NoneType
+        # type(self.data_image_tk[frame]) is NoneType
 
         cash_process_flag = False
 
@@ -253,31 +253,31 @@ class SceneOutput:
         output_data = None
 
         if not cash_process_flag:
-            output_data = np.reshape(self.cpp_encode.execution_preview(frame).astype('uint8'), (self.y, self.x, 3))
+            output_data = self.cpp_encode.execution_preview(frame).astype('uint8').reshape(self.y, self.x, 3)
 
-            #self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
+            # self.audio_preview_function_list = self.cpp_encode.get_audio_function_list()
 
-        #print(self.audio_preview_function_list, run)
+        # print(self.audio_preview_function_list, run)
 
         if run:
             self.audio_control.sound_run(frame)
 
-        #object_group = self.cpp_encode.object_group_recovery()
+        # object_group = self.cpp_encode.object_group_recovery()
         # self.get_set_media_object_group(data=object_group)
 
         if cash_process_flag:
             return
 
-        #output_data = self.del_alpha(image)
+        # output_data = self.del_alpha(image)
 
-        #image[:, :, 0] *= image[:, :, 3]
-        #image[:, :, 1] *= image[:, :, 3]
-        #image[:, :, 2] *= image[:, :, 3]
+        # image[:, :, 0] *= image[:, :, 3]
+        # image[:, :, 1] *= image[:, :, 3]
+        # image[:, :, 2] *= image[:, :, 3]
 
-        #image_cvt = cv2.cvtColor(image.astype('uint8'))
-        #print("B合成RGB", np.sum(image_cvt[:, :, 0:3]))
+        # image_cvt = cv2.cvtColor(image.astype('uint8'))
+        # print("B合成RGB", np.sum(image_cvt[:, :, 0:3]))
 
-        #cv2.imwrite('wiwi.jpg', image.astype('uint8'))
+        # cv2.imwrite('wiwi.jpg', image.astype('uint8'))
 
         print(output_data.shape)
 
@@ -288,7 +288,7 @@ class SceneOutput:
         # img_resize.show()
 
         self.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
-        #self.data_image_tk[frame] = img_resize
+        # self.data_image_tk[frame] = img_resize
 
     def get_image_tk(self, frame):
         frame = round(frame)
@@ -300,7 +300,7 @@ class SceneOutput:
 
     def image_stack(self):
         self.data_image_tk = [None] * self.frame
-        #self.data_iamge = [None] * self.frame
+        # self.data_iamge = [None] * self.frame
 
     def output_OpenCV(self, sta=None, end=None):
 
@@ -333,7 +333,7 @@ class SceneOutput:
 
         start_time = datetime.datetime.now()
 
-        #np_zero = ""
+        # np_zero = ""
 
         # self.audio_control.addition_process()
 
@@ -343,9 +343,9 @@ class SceneOutput:
             export_draw = self.cpp_encode.execution_main(f)
             f_time_end = datetime.datetime.now()
             print("f_time", f_time_end - f_time_sta)
-            #print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
+            # print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
 
-            #output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
+            # output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
             output_dataBGR = self.del_alpha(export_draw)
 
             output_data = cv2.cvtColor(output_dataBGR, cv2.COLOR_BGR2RGB)
@@ -353,7 +353,7 @@ class SceneOutput:
             self.writer.write(output_data.astype('uint8'))
 
         self.writer.release()
-        #file_all_control = {}
+        # file_all_control = {}
         print(file_all_control)
 
         print("音源処理開始 [ffmpeg - python] *********")
@@ -374,23 +374,23 @@ class SceneOutput:
         # # 実行
         # ffmpeg.run(stream)
 
-        #output_temp_file = ffmpeg.input(self.output_temp_file_path_mp4)
-        #silence_audio = output_temp_file.audio
+        # output_temp_file = ffmpeg.input(self.output_temp_file_path_mp4)
+        # silence_audio = output_temp_file.audio
 
         # for a in self.audio_preview_function_list:
         #    file_name = a[3]()
-        #uuid_name = self.scene.editor("sound_temp_{0}_sound".format(self.path))
+        # uuid_name = self.scene.editor("sound_temp_{0}_sound".format(self.path))
 
-        #sound_long = file_name[2] - file_name[1]
+        # sound_long = file_name[2] - file_name[1]
 
         # if sound_long >= (end - sta):
         #    sound_long = end + sta
 
-        #now_time = datetime.datetime.now()
-        #temp_sound_file_name = "{0}/{1}_{2}.wav".format(self.temp_path, str(uuid.uuid1()), str(now_time.strftime('%y%m%H%M%S%f')))
-        #os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path_mp4, temp_sound_file_name,sta,end))
+        # now_time = datetime.datetime.now()
+        # temp_sound_file_name = "{0}/{1}_{2}.wav".format(self.temp_path, str(uuid.uuid1()), str(now_time.strftime('%y%m%H%M%S%f')))
+        # os.system("ffmpeg -i {0} -ss {3} -t {4} {1}".format(self.output_temp_file_path_mp4, temp_sound_file_name,sta,end))
 
-        #file_data = ffmpeg.input(file_name)
+        # file_data = ffmpeg.input(file_name)
 
         print("音源処理終了 [ffmpeg - python] *********")
 
@@ -399,7 +399,7 @@ class SceneOutput:
         print("")
         print("終了 所要時間 : {0}".format(print_time()))
 
-        #os.system("rmdir temp")
+        # os.system("rmdir temp")
 
 
 # 再帰的なシーン発火をしないといけない、どうしよう？

@@ -140,6 +140,8 @@ namespace ObjectProgress
 
             cout << "new_effect_draw_size " << new_effect_draw_size[0] << " " << new_effect_draw_size[1] << " " << new_effect_draw_size[2] << endl;
 
+            new_effect_draw.attr("astype")("uint8");
+
             string xy[] = {"x",
                            "y"};
 
@@ -208,11 +210,32 @@ namespace ObjectProgress
             cout << "synthetic_func" << endl;
             cout << "effect_draw_size_multiplication " << effect_draw_size_multiplication << endl;
             bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
-            auto *start_pointer_numpy = reinterpret_cast<int *>(new_effect_draw.get_data());
+            auto char_pointer = new_effect_draw.get_data();
+            auto strides = new_effect_draw.get_strides();
+
+            cout << strides[0] << endl;
+            cout << strides[1] << endl;
+            cout << strides[2] << endl;
+
             cout << "cpptype" << cpptype << endl;
             int test = 0;
             if (cpptype)
             {
+
+                // auto strides = a.get_strides();
+                // std::cout << "i j val\n";
+                // for (int i = 0; i < shape[0]; ++i) {
+                //     for (int j = 0; j < shape[1]; ++j) {
+                //      std::cout << i << " " << j << " " << *reinterpret_cast<double *>(a.get_data() + i * strides[0] + j * strides[1]) << std::endl;
+                //     }
+                // }
+
+                cout << "add_draw_range_lu" << endl;
+                cout << add_draw_range_lu[1] << endl;
+                cout << add_draw_range_lu[0] << endl;
+                cout << base_draw_range_rd[1] - base_draw_range_lu[1] << endl;
+                cout << base_draw_range_rd[0] - base_draw_range_lu[0] << endl;
+
                 int ya = add_draw_range_lu[1];
                 for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
                 {
@@ -234,8 +257,15 @@ namespace ObjectProgress
 
                         for (int i = 0; i < new_effect_draw_size[2]; i++)
                         {
-                            additions[i] = *start_pointer_numpy;
-                            start_pointer_numpy++;
+                            //additions[i] = *start_pointer_numpy;
+                            //start_pointer_numpy++;
+
+                            int number = *reinterpret_cast<double *>(char_pointer + ya * strides[0] + xa * strides[1] + i * strides[2]);
+                            additions[i] = number;
+
+                            //additions[i] = py::extract<int>(new_effect_draw[ya][xa][i]);
+
+                            //cout << ya << " " << xa << " " << i << endl;
                         }
 
                         if (synthetic_type == "normal")
@@ -248,6 +278,11 @@ namespace ObjectProgress
                         int R = calculation[0] * (A / 255.0); //透明度反映
                         int G = calculation[1] * (A / 255.0);
                         int B = calculation[2] * (A / 255.0);
+
+                        if (R + G + B > 0)
+                        {
+                            cout << R << G << B << endl;
+                        }
 
                         //cout << "RGB" << endl;
 
