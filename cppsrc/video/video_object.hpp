@@ -222,14 +222,6 @@ namespace ObjectProgress
             if (cpptype)
             {
 
-                // auto strides = a.get_strides();
-                // std::cout << "i j val\n";
-                // for (int i = 0; i < shape[0]; ++i) {
-                //     for (int j = 0; j < shape[1]; ++j) {
-                //      std::cout << i << " " << j << " " << *reinterpret_cast<double *>(a.get_data() + i * strides[0] + j * strides[1]) << std::endl;
-                //     }
-                // }
-
                 cout << "add_draw_range_lu" << endl;
                 cout << add_draw_range_lu[1] << endl;
                 cout << add_draw_range_lu[0] << endl;
@@ -245,54 +237,39 @@ namespace ObjectProgress
                         int ipxA = (now_xy_size[0] * ya + xa) * 4;
                         int ipxB = (now_xy_size[0] * yb + xb) * 3;
 
-                        int calculation[4];
-                        int source[4];
-                        int additions[4];
+                        float calculation[4];
+                        float source[4];
+                        float additions[4];
 
                         for (int i = 0; i < 3; i++)
                         {
                             source[i] = draw_object_draw_base[ipxB + i];
                         }
-                        source[3] = 255;
 
-                        for (int i = 0; i < new_effect_draw_size[2]; i++)
+                        source[3] = 1;
+                        for (int i = 0; i < 4; i++)
                         {
-                            //additions[i] = *start_pointer_numpy;
-                            //start_pointer_numpy++;
-
-                            int number = *reinterpret_cast<double *>(char_pointer + ya * strides[0] + xa * strides[1] + i * strides[2]);
-                            additions[i] = number;
-
-                            //additions[i] = py::extract<int>(new_effect_draw[ya][xa][i]);
-
-                            //cout << ya << " " << xa << " " << i << endl;
+                            additions[i] = 200;
+                            if (i == 3)
+                            {
+                                additions[i] *= 1 / 255;
+                            }
                         }
-
+                        float *return_calculation;
                         if (synthetic_type == "normal")
                         {
-                            synthetic_normal.run(calculation, source, additions);
+                            return_calculation = synthetic_normal.run(calculation, source, additions);
                         }
 
-                        //cout << "read" << endl;
-                        double A = calculation[3];
-                        int R = calculation[0] * (A / 255.0); //透明度反映
-                        int G = calculation[1] * (A / 255.0);
-                        int B = calculation[2] * (A / 255.0);
-
-                        if (R + G + B > 0)
-                        {
-                            cout << R << G << B << endl;
-                        }
-
-                        //cout << "RGB" << endl;
+                        float A = return_calculation[3];
+                        int R = return_calculation[0] * A; //透明度反映
+                        int G = return_calculation[1] * A;
+                        int B = return_calculation[2] * A;
 
                         draw_object_draw_base[ipxB + 0] = R;
                         draw_object_draw_base[ipxB + 1] = G;
                         draw_object_draw_base[ipxB + 2] = B;
-
                         xa++;
-
-                        //cout << "end" << endl;
                     }
                     ya++;
                 }
