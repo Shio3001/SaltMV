@@ -55,15 +55,15 @@ namespace ObjectProgress
                 py::object object_group_values = object_group.attr("values")();
                 py::object this_object = py::list(object_group_values)[i];
                 py::list installation = py::extract<py::list>(this_object[0].attr("installation"));
-                int installation_sta = py::extract<double>(installation[0]);
-                int installation_end = py::extract<double>(installation[1]);
+                int installation_sta = py::extract<float>(installation[0]);
+                int installation_end = py::extract<float>(installation[1]);
                 bool low = installation_sta <= frame;
                 bool high = frame < installation_end;
                 if (low && high)
                 {
                     string layer_id = py::extract<string>(this_object[1]);
                     py::object layer_number_func = py_out_func["layer_number"];
-                    int now_layer_number = py::extract<double>(layer_number_func(layer_id));
+                    int now_layer_number = py::extract<float>(layer_number_func(layer_id));
                     order_decision_object_group[now_layer_number] = this_object[0];
                     order_decision_object_group_number.push_back(now_layer_number);
                 }
@@ -78,8 +78,8 @@ namespace ObjectProgress
         np::ndarray production_object_group()
         {
 
-            int editor_x = py::extract<double>(editor["x"]);
-            int editor_y = py::extract<double>(editor["y"]);
+            int editor_x = py::extract<float>(editor["x"]);
+            int editor_y = py::extract<float>(editor["y"]);
 
             int *draw = new int[editor_y * editor_x * 3];
             int now_xy_size[2] = {editor_x, editor_y};
@@ -118,8 +118,8 @@ namespace ObjectProgress
 
             py::list installation = py::extract<py::list>(now_objcet.attr("installation"));
 
-            int installation_sta = py::extract<double>(installation[0]);
-            int installation_end = py::extract<double>(installation[1]);
+            int installation_sta = py::extract<float>(installation[0]);
+            int installation_end = py::extract<float>(installation[1]);
 
             vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value, installation_sta, installation_end);
             py::object effect_group = now_objcet.attr("effect_group"); //ここ  now_objcet  に effect_pointがあるわけないやろばか
@@ -132,9 +132,9 @@ namespace ObjectProgress
 
             py::tuple new_draw_size_shape = py::extract<py::tuple>(new_effect_draw.attr("shape"));
             int new_effect_draw_size[3];
-            new_effect_draw_size[0] = py::extract<double>(new_draw_size_shape[1]);
-            new_effect_draw_size[1] = py::extract<double>(new_draw_size_shape[0]);
-            new_effect_draw_size[2] = py::extract<double>(new_draw_size_shape[2]);
+            new_effect_draw_size[0] = py::extract<float>(new_draw_size_shape[1]);
+            new_effect_draw_size[1] = py::extract<float>(new_draw_size_shape[0]);
+            new_effect_draw_size[2] = py::extract<float>(new_draw_size_shape[2]);
 
             int effect_draw_size_multiplication = new_effect_draw_size[0] * new_effect_draw_size[1] * new_effect_draw_size[2];
 
@@ -155,7 +155,7 @@ namespace ObjectProgress
 
                 int draw_size = now_xy_size[i];
                 int new_draw_size = new_effect_draw_size[i];
-                int center = py::extract<double>(starting_point_center[i]);
+                int center = py::extract<float>(starting_point_center[i]);
 
                 //ここから基準点が左下に変わります
 
@@ -290,29 +290,29 @@ namespace ObjectProgress
             int low_frame = 0;
             for (int i = 0; i < id_time_len; i++) //低い値
             {
-                int target = py::extract<double>(id_time_value[i]);
+                int target = py::extract<float>(id_time_value[i]);
                 if (target >= low_frame && target <= frame) //ここの条件式を直さないといけない
                 {
                     around_point[0] = py::extract<string>(id_time_key[i]);
-                    low_frame = py::extract<double>(id_time_value[i]);
+                    low_frame = py::extract<float>(id_time_value[i]);
                 }
             }
 
             bool frag_high = false;
-            int high_frame = py::extract<double>(editor["len"]);
+            int high_frame = py::extract<float>(editor["len"]);
             for (int i = 0; i < id_time_len; i++) //大きいあたい
             {
-                int target = py::extract<double>(id_time_value[i]);
+                int target = py::extract<float>(id_time_value[i]);
                 if (target <= high_frame && target > frame)
                 {
                     around_point[1] = py::extract<string>(id_time_key[i]);
-                    high_frame = py::extract<double>(id_time_value[i]);
+                    high_frame = py::extract<float>(id_time_value[i]);
                     //cout << "around_point[1] " << around_point[1] << endl;
                 }
                 else if (frame == installation_end)
                 {
                     around_point[1] = "default_end";
-                    high_frame = py::extract<double>(id_time_value[i]);
+                    high_frame = py::extract<float>(id_time_value[i]);
                     //cout << "around_point[1] " << around_point[1] << endl;
                 }
             }
