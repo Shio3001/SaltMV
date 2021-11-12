@@ -83,13 +83,14 @@ class CentralRole:
 
                 self.import_data, sr = librosa.load(file_name, sr=44100, mono=False)
                 self.sound_sampling_rate = 44100
-                self.sound_channles = 1
-                self.sound_frame = len(self.import_data) / self.sound_channles
+                self.sound_channles = self.import_data.shape[0]
+                self.sound_frame = self.import_data.shape[1]
 
                 rendering_main_data.add_file_all_control(file_name, SendFileAudio(self.import_data, self.sound_sampling_rate, self.sound_frame, self.sound_channles))
             #data, samplerate = sf.read('existing_file.wav')
 
             print("サウンド", self.import_data, len(self.import_data), self.sound_sampling_rate, self.sound_frame, self.sound_channles)
+            print("サウンドshape", self.import_data.shape)
 
             # file_list
 
@@ -124,7 +125,7 @@ class CentralRole:
 
         return_import_data = self.import_data[now_sound_rate_now:now_sound_rate_end]
 
-        rendering_main_data.audio_control.add(rendering_main_data.effect_id, return_import_data, self.sound_sampling_rate, 1, self.installation_sta, self.installation_end)
+        rendering_main_data.audio_control.add(rendering_main_data.effect_id, return_import_data, self.sound_sampling_rate, self.sound_channles, self.installation_sta, self.installation_end)
         rendering_main_data.audio_control.addition_process()
 
     def main(self, rendering_main_data):

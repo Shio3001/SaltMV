@@ -131,8 +131,6 @@ class SceneOutput:
         # self.preview = self.scene.editor["preview"]
         # print("self.scene.editor", self.scene.editor)
 
-        operation["audio_control"].main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], 1)
-
         self.operation = operation
 
         path_extension = ".mp4"
@@ -172,6 +170,7 @@ class SceneOutput:
         # self.audio_preview_function_list = []
 
         self.audio_control = operation["audio_control"]
+        self.audio_control.main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], self.editor["sound_channel"])
 
         print("audio_control", self.audio_control)
 
