@@ -218,7 +218,7 @@ namespace ObjectProgress
             cout << "synthetic_func" << endl;
             cout << "effect_draw_size_multiplication " << effect_draw_size_multiplication << endl;
             bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
-            auto pointer_start = reinterpret_cast<int *>(new_effect_draw_1dimension.get_data());
+            auto pointer_start = reinterpret_cast<char *>(new_effect_draw_1dimension.get_data());
             auto strides = new_effect_draw_1dimension.get_strides();
             //new_effect_draw_1dimension.get_data()
 
@@ -266,9 +266,9 @@ namespace ObjectProgress
 
                             int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
 
-                            cout << xa << " " << ya << " " << i << " " << ipx << endl;
+                            //cout << xa << " " << ya << " " << i << " " << ipx << endl;
 
-                            int *this_draw = pointer_start + ipx;
+                            char *this_draw = pointer_start + ipx;
                             additions[i] = *this_draw;
                         }
 
