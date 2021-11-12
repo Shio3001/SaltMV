@@ -265,8 +265,11 @@ namespace ObjectProgress
                             //start_pointer_numpy++;
 
                             int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
+
+                            cout << xa << " " << ya << " " << i << " " << ipx << endl;
+
                             int *this_draw = pointer_start + ipx;
-                            additions[i] = this_draw;
+                            additions[i] = *this_draw;
                         }
 
                         //additions[i] *= 1 / 255;
