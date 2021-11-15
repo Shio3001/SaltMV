@@ -46,12 +46,13 @@ class AudioControl:
 
         self.fps = fps
         self.frame_len = frame_len
-        self.criterion_conversion_rate = criterion_conversion_rate
-        self.criterion_sound_channles = criterion_sound_channles
+        self.criterion_conversion_rate = int(criterion_conversion_rate)
+        self.criterion_sound_channles = int(criterion_sound_channles)
 
         self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
         self.combined_size = self.criterion_sound_channles * frame_len * self.one_fps_samplingsize
+        print(type(self.combined_size), self.combined_size, self.criterion_sound_channles, frame_len, self.one_fps_samplingsize)
         self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
 
     def audio_individual_data_existence(self, effect_id):
@@ -135,7 +136,6 @@ class AudioControl:
 
                 # for cadd in range(multiple_val_riterion - 1):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
                 #     multiple_individual_data.vstack(multiple_individual_data[0])
-
                 #     print("                  C", cadd, multiple_individual_data.shape)
 
                 print("                  D", multiple_individual_data.shape)
