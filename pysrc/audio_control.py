@@ -34,12 +34,12 @@ class AudioControl:
 
         self.one_fps_samplingsize = 1
 
-        self.combined_2dimension = np.full(1, 0, dtype=np.float32)
+        self.combined_for_process = np.full(1, 0, dtype=np.float32)
 
         self.setup_flag = False  # 流す準備ができているかどうか
         self.run_flag = False  # 現在流しているか
 
-        #self.audio_data = 0
+        # self.audio_data = 0
 
     def main(self, fps, frame_len, criterion_conversion_rate, criterion_sound_channles):
         print("     **********AudioControl main")
@@ -51,8 +51,8 @@ class AudioControl:
 
         self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
-        self.combined_size = (self.criterion_sound_channles, frame_len * self.one_fps_samplingsize)
-        self.combined_2dimension = np.full(self.combined_size, 0, dtype=np.float32)
+        self.combined_size = self.criterion_sound_channles * frame_len * self.one_fps_samplingsize
+        self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
 
     def audio_individual_data_existence(self, effect_id):
         keys = self.audio_individual_data.keys()
@@ -63,8 +63,7 @@ class AudioControl:
     def add(self, effect_id, add_import_data, add_conversion_rate, sound_channles, sta_frame, end_frame):
 
         print("     **********AudioControl add", effect_id, " / sound_channles", sound_channles)
-        add_import_data.reshape(sound_channles, -1)
-        self.audio_individual_data[effect_id] = AudioIndividual(add_import_data, sound_channles, sta_frame, end_frame, effect_id)
+        self.audio_individual_data[effect_id] = AudioIndividual(add_import_data.reshape(-1), sound_channles, sta_frame, end_frame, effect_id)
 
     def del_audio_individual_data(self, effect_id):
 
@@ -82,20 +81,20 @@ class AudioControl:
     def addition_process(self):
         print("     **********AudioControl addition_process", len(list(self.audio_individual_data.values())))
 
-        self.combined_2dimension = np.full(self.combined_size, 0, dtype=np.float32)
+        self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
 
         audio_individual_data_values = list(self.audio_individual_data.values())
         for v in audio_individual_data_values:
-            ss = v.sta_frame * self.one_fps_samplingsize  # * v.sound_channles
-            es = v.end_frame * self.one_fps_samplingsize  # *v.sound_channles
+            ss = v.sta_frame * self.one_fps_samplingsize * v.sound_channles
+            es = v.end_frame * self.one_fps_samplingsize * v.sound_channles
             vss = 0
-            ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize  # * v.sound_channles
-            print("v.audio_data", v.audio_data)
+            ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
+            print("v.audio_data", v.audio_data, v.audio_data.shape)
             print("ss, es, vss, ves", ss, es, vss, ves)
 
             if self.criterion_sound_channles == v.sound_channles:
                 print(" - - - - - - - - - - - - - - - - -チャンネル数制御 一致", v.sound_channles, " -> ", self.criterion_sound_channles)
-                self.combined_2dimension[:, ss:es] += v.audio_data[:, vss:ves]
+                self.combined_for_process[ss:es] += v.audio_data[vss:ves]
 
             elif self.criterion_sound_channles != v.sound_channles:  # 数合わせ：公倍数方式
                 print(" - - - - - - - - - - - - - - - - -チャンネル数制御 公倍数方式", v.sound_channles, " -> ", self.criterion_sound_channles)
@@ -107,34 +106,47 @@ class AudioControl:
 
                 print("                  公倍数", multiple_val_riterion, multiple_val_riterion, multiple_val_individual)
 
-                multiple_individual_data = copy.deepcopy(v.audio_data[:, vss:ves])
+                multiple_individual_data = copy.deepcopy(v.audio_data[vss:ves])
 
                 print("                  A", multiple_individual_data.shape)
 
-                for cplus in range(1, multiple_val_individual - 1):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
-                    multiple_individual_data[0] += multiple_individual_data[cplus]
-                    del multiple_individual_data[cplus]
+                section = ves - vss
 
-                    print("                  B", cplus, multiple_individual_data.shape)
+                loop_sta = 0
+                loop_end = 0
 
-                multiple_individual_data[0] /= multiple_val_individual
+                if v.sound_channles == 1:
+                    loop_sta = 0
+                    loop_end = multiple_val_individual - 1
+                else:
+                    loop_sta = 1
+                    loop_end = multiple_val_individual
 
-                for cadd in range(multiple_val_riterion - 1):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
-                    multiple_individual_data.vstack(multiple_individual_data[0])
+                for cplus in range(loop_sta, loop_end):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
+                    cplus_vss = vss + section * cplus
+                    cplus_ves = ves + section * cplus
 
-                    print("                  C", cadd, multiple_individual_data.shape)
+                    print("                  B1", cplus_vss, cplus_ves, v.audio_data.shape, v.audio_data[cplus_vss:cplus_ves].shape)
+                    multiple_individual_data += v.audio_data[cplus_vss:cplus_ves]
+                    print("                  B2", cplus, multiple_individual_data.shape)
 
-                self.combined_2dimension[:, ss:es] += multiple_individual_data[:, :]
+                multiple_individual_data /= multiple_val_individual
+                self.combined_for_process[ss:es] += multiple_individual_data[:]
+
+                # for cadd in range(multiple_val_riterion - 1):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
+                #     multiple_individual_data.vstack(multiple_individual_data[0])
+
+                #     print("                  C", cadd, multiple_individual_data.shape)
 
                 print("                  D", multiple_individual_data.shape)
-                print("                  E", self.combined_2dimension.shape)
+                print("                  E", self.combined_for_process.shape)
 
                 # 目的の数まで減らす
 
-            print("combined", self.combined_2dimension)
-            print("self.combined_2dimension[ss:es]", self.combined_2dimension[ss:es])
+            print("combined", self.combined_for_process)
+            print("self.combined_for_process[ss:es]", self.combined_for_process[ss:es])
 
-        print("音源総和", np.sum(self.combined_2dimension))
+        print("音源総和", np.sum(self.combined_for_process))
 
         self.setup_flag = True
 
@@ -156,7 +168,7 @@ class AudioControl:
 
         ss = now_frame * self.one_fps_samplingsize * sound_channles
 
-        combined_1dimension = self.combined_2dimension.reshape(-1)
+        combined_1dimension = self.combined_for_process.reshape(-1)
 
         print("再生", combined_1dimension[ss:-1], self.criterion_conversion_rate)
 
@@ -167,8 +179,8 @@ class AudioControl:
     def output_audio_file(self, path):
         print("     **********AudioControl output_audio_file")
 
-        combined_1dimension = self.combined_2dimension.reshape(-1)
-        #librosa.output.write_wav(path,self.combined_2dimension, self.criterion_conversion_rate)
+        combined_1dimension = self.combined_for_process.reshape(-1)
+        # librosa.output.write_wav(path,self.combined_for_process, self.criterion_conversion_rate)
         scipy_write(path, self.criterion_conversion_rate, combined_1dimension)
 
 

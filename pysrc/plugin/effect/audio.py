@@ -11,6 +11,7 @@ import librosa
 
 import numpy as np
 import time
+import traceback
 
 
 class SendFileAudio:
@@ -61,7 +62,7 @@ class CentralRole:
     def setup(self, rendering_main_data, file_name):
         try:
 
-            sound_file = None
+            #sound_file = None
 
             if rendering_main_data.check_file_all_control(file_name):
                 send_file_audio = rendering_main_data.get_file_all_control(file_name)
@@ -73,6 +74,8 @@ class CentralRole:
 
                 #self.import_data = rendering_main_data.get_file_all_control(file_name).audio_numpy
             else:
+                print(" / / / / / / / / / / / / / / / / / / / / / / / / / / / / / setup audio ++ ", file_name)
+
                 #sound_file = wave.open(file_name)
 
                 #self.sound_sampling_rate = sound_file.getframerate()
@@ -81,10 +84,24 @@ class CentralRole:
                 # sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
                 #self.import_data = np.frombuffer(sound_data, dtype='int16')
 
-                self.import_data, sr = librosa.load(file_name, sr=44100, mono=False)
+                self.import_data, sr = librosa.load(file_name, sr=44100, mono=False)  # , mono=False
+
+                print("読み込み終了")
+                print(self.import_data.shape)
+
+                data_shape = self.import_data.shape
+
+                print(len(data_shape))
+
+                if len(data_shape) == 1:
+                    self.sound_channles = 1
+                    self.sound_frame = self.import_data.shape[0]
+
+                else:
+                    self.sound_channles = self.import_data.shape[0]
+                    self.sound_frame = self.import_data.shape[1]
+
                 self.sound_sampling_rate = 44100
-                self.sound_channles = self.import_data.shape[0]
-                self.sound_frame = self.import_data.shape[1]
 
                 rendering_main_data.add_file_all_control(file_name, SendFileAudio(self.import_data, self.sound_sampling_rate, self.sound_frame, self.sound_channles))
             #data, samplerate = sf.read('existing_file.wav')
@@ -102,6 +119,8 @@ class CentralRole:
             self.open_status = True
 
         except:
+            traceback.print_exc()
+            print("エラー発生")
             self.open_status = False
 
         print("読み込み状況 :", self.open_status)
