@@ -755,6 +755,8 @@ class InitialValue:
             self.nowtime_bar.one_lock()
             self.window_control.edit_control_auxiliary.callback_operation.event("cash_clear")
 
+            
+
         self.run_cash_clear = self.window_control.new_parts("timeline", "run_cash_clear", parts_name="button")  # 左側のやつ
         self.run_cash_clear.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)
         self.run_cash_clear.edit_territory_position(x=timeline_left+3*list_button, y=5)

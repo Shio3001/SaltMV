@@ -116,6 +116,9 @@ class Rendering:
 
 class SceneOutput:
     def __init__(self, operation, scene_get, get_set_media_object_group, make, scene_id, path):
+
+        print(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - SceneOutput初期化")
+
         self.scene_get = scene_get
         self.get_set_media_object_group = get_set_media_object_group
         self.scene = self.scene_get(scene_id=scene_id)
@@ -322,7 +325,7 @@ class SceneOutput:
         for f in range(sta, end):
 
             f_time_sta = datetime.datetime.now()
-            export_draw = self.cpp_encode.execution_main(f)
+            export_draw = self.cpp_encode.execution_main(f).astype('uint8').reshape(self.y, self.x, 3)
             f_time_end = datetime.datetime.now()
             print("f_time", f_time_end - f_time_sta)
             # print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
@@ -332,7 +335,7 @@ class SceneOutput:
 
             #output_data = cv2.cvtColor(export_draw, cv2.COLOR_BGR2RGB)
 
-            self.writer.write(export_draw.astype('uint8'))
+            self.writer.write(export_draw)
 
         self.writer.release()
         # file_all_control = {}
@@ -344,6 +347,8 @@ class SceneOutput:
 
         self.audio_control.addition_process()
         self.audio_control.output_audio_file(self.output_temp_file_path_wav)
+
+        print(self.path)
 
         os.system("ffmpeg -i {0} -i {1} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 {2}".format(self.output_temp_file_path_mp4, self.output_temp_file_path_wav, self.path))
 
@@ -376,7 +381,7 @@ class SceneOutput:
 
         print("音源処理終了 [ffmpeg - python] *********")
 
-        os.system("rm -rf {0}".format(self.temp_path))
+        #os.system("rm -rf {0}".format(self.temp_path))
 
         print("")
         print("終了 所要時間 : {0}".format(print_time()))

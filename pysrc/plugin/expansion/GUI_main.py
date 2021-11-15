@@ -122,9 +122,11 @@ class InitialValue:
         def cash_clear():
             self.make_preview_data.image_stack()
             self.make_preview_data.re_scene()
+            preview_setup()
 
         def re_scene():
             self.make_preview_data.re_scene()
+            preview_setup()
 
         self.window_control.edit_control_auxiliary.callback_operation.set_event("re_scene", re_scene)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("cash_clear", cash_clear)

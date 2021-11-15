@@ -92,6 +92,8 @@ class AudioControl:
             ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
             print("v.audio_data", v.audio_data, v.audio_data.shape)
             print("ss, es, vss, ves", ss, es, vss, ves)
+            print("one_fps_samplingsize", self.one_fps_samplingsize)
+            print("v.sound_channles", v.sound_channles)
 
             if self.criterion_sound_channles == v.sound_channles:
                 print(" - - - - - - - - - - - - - - - - -チャンネル数制御 一致", v.sound_channles, " -> ", self.criterion_sound_channles)
