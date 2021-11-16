@@ -9,7 +9,6 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import uuid
 from tkinter import filedialog
-import ctypes
 
 
 class SendUIData:  # パーツひとつあたりのためのclass
@@ -72,8 +71,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
 
         self.image_tk = None
         self.get_window_view_flag = get_window_view_flag
-
-        self.FILE_HELP_TKIMAGE = self.operation["plugin"]["other"]["help_tkimage"]
 
         # print(self.uidata_id, "生成しました＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊")
 
@@ -457,31 +454,10 @@ class SendUIData:  # パーツひとつあたりのためのclass
     def diagram_shape_view_status(self, di_name, view):
         self.canvas_data.territory[self.te_name].diagram[di_name].view_state = copy.deepcopy(view)
 
-    def __diagram_tkimage_draw(self, territory_data, diagram_data,  di_name, di_del, image_numpy):
+    def __diagram_tkimage_draw(self, territory_data, diagram_data,  di_name, di_del, image_tk):
 
-        # self.FILE_HELP_TKIMAGE
-        self.image_numpy = image_numpy
+        self.image_tk = image_tk
 
-        ptr_img = self.image_numpy.ctypes.data_as(ctypes.POINTER(ctypes.c_byte))
-        # ----------------------------------------------------------------------
-        # ヘッダの作成
-        bi = self.FILE_HELP_TKIMAGE.BITMAPINFO()
-        bi.bmiHeader.biSize = ctypes.sizeof(self.FILE_HELP_TKIMAGE.BITMAPINFOHEADER)
-
-        src_height, src_width, src_ch = self.image_numpy.shape
-        bi.bmiHeader.biWidth = src_width
-        bi.bmiHeader.biHeight = -src_height
-        bi.bmiHeader.biPlanes = 1
-        bi.bmiHeader.biBitCount = 8 * src_ch
-
-        # カラーパレット
-        for i in range(256):
-            bi.bmiColors[i].rgbBlue = i
-            bi.bmiColors[i].rgbGreen = i
-            bi.bmiColors[i].rgbRed = i
-            bi.bmiColors[i].rgbReserved = 255
-        # ----------------------------------------------------------------------
-        
         if di_del:
             self.canvas_data.canvas.delete(self, self.canvas_data.territory[self.te_name].diagram[di_name].tag)
             diagram_data.draw_tag = False
