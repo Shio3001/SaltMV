@@ -38,8 +38,8 @@ class AudioControl:
 
         self.one_fps_samplingsize = 1
 
-        self.combined_for_process = np.full(1, 0, dtype=np.float32)
-        self.combined_for_play = np.full(1, 0, dtype=np.float32)
+        self.combined_for_process = np.zeros(1,  dtype=np.float32)
+        self.combined_for_play = np.zeros(1,  dtype=np.float32)
 
         self.setup_flag = False  # 流す準備ができているかどうか
         self.run_flag = False  # 現在流しているか
@@ -92,7 +92,7 @@ class AudioControl:
     def addition_process(self):
         print("     **********AudioControl addition_process", len(list(self.audio_individual_data.values())))
 
-        self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
+        self.combined_for_process = np.zeros(self.combined_size, dtype=np.float32)
 
         audio_individual_data_values = list(self.audio_individual_data.values())
         for v in audio_individual_data_values:
@@ -124,10 +124,10 @@ class AudioControl:
 
                 # 公倍数までデータを増やす
                 common_multiple = self.criterion_sound_channles * v.sound_channles
-                multiple_val_riterion = v.sound_channles
-                multiple_val_individual = self.criterion_sound_channles
+                #multiple_val_riterion = v.sound_channles
+                #multiple_val_individual = self.criterion_sound_channles
 
-                print("                  公倍数", multiple_val_riterion, multiple_val_riterion, multiple_val_individual)
+                #print("                  公倍数", multiple_val_riterion, multiple_val_riterion, multiple_val_individual)
 
                 multiple_individual_data = copy.deepcopy(v.audio_data[vss:ves])
 
@@ -136,23 +136,28 @@ class AudioControl:
                 loop_sta = 0
                 loop_end = 0
 
-                if v.sound_channles == 1:
-                    loop_sta = 0
-                    loop_end = multiple_val_individual - 1
-                else:
+                if v.sound_channles > 1:
                     loop_sta = 1
-                    loop_end = multiple_val_individual
+                    loop_end = self.criterion_sound_channles
 
-                for cplus in range(loop_sta, loop_end):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
-                    cplus_vss = vss + self.combined_size_1channel * cplus
-                    cplus_ves = ves + self.combined_size_1channel * cplus
+                    for cplus in range(loop_sta, loop_end):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
+                        cplus_vss = vss + v.section * cplus
+                        cplus_ves = ves + v.section * cplus
 
-                    print("                  B1", cplus_vss, cplus_ves, v.audio_data.shape, v.audio_data[cplus_vss:cplus_ves].shape)
-                    multiple_individual_data += v.audio_data[cplus_vss:cplus_ves]
-                    print("                  B2", cplus, multiple_individual_data.shape)
+                        print("                  B1", cplus_vss, cplus_ves, v.audio_data.shape, v.audio_data[cplus_vss:cplus_ves].shape)
+                        multiple_individual_data += v.audio_data[cplus_vss:cplus_ves]
+                        print("                  B2", cplus, multiple_individual_data.shape)
 
-                multiple_individual_data /= multiple_val_individual
-                self.combined_for_process[ss:es] += multiple_individual_data[:]
+                    multiple_individual_data /= self.criterion_sound_channles
+
+                for cpluscopy in range(self.criterion_sound_channles):
+                    cpluscopy_ss = ss + cpluscopy * self.combined_size_1channel  # ここ間違っているような気がする
+                    cpluscopy_es = es + cpluscopy * self.combined_size_1channel  # ここ間違っているような気がする
+                    self.combined_for_process[cpluscopy_ss:cpluscopy_es] += multiple_individual_data[:]
+
+                # v.sound_channles
+
+                
 
                 # for cadd in range(multiple_val_riterion - 1):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
                 #     multiple_individual_data.vstack(multiple_individual_data[0])
