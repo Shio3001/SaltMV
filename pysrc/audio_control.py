@@ -1,4 +1,5 @@
 import wave
+from numpy.core.fromnumeric import shape
 from numpy.core.numeric import outer
 import sounddevice
 
@@ -20,6 +21,8 @@ class AudioIndividual:
         self.sta_frame = sta_frame
         self.end_frame = end_frame
         self.effect_id = effect_id
+
+        self.section = int(len(self.audio_data.shape) / self.sound_channles)
 
 
 class AudioControl:
@@ -49,17 +52,17 @@ class AudioControl:
     def main(self, fps, frame_len, criterion_conversion_rate, criterion_sound_channles):
         print("     **********AudioControl main")
 
-        self.fps = fps
-        self.frame_len = frame_len
+        self.fps = int(fps)
+        self.frame_len = int(frame_len)
         self.criterion_conversion_rate = int(criterion_conversion_rate)
         self.criterion_sound_channles = int(criterion_sound_channles)
 
         self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
-        self.combined_size_1channel = frame_len * self.one_fps_samplingsize
+        self.combined_size_1channel = self.frame_len * self.one_fps_samplingsize
         self.combined_size = self.criterion_sound_channles * self.combined_size_1channel
 
-        print(type(self.combined_size), self.combined_size, self.criterion_sound_channles, frame_len, self.one_fps_samplingsize)
+        print(type(self.combined_size), self.combined_size, self.combined_size_1channel, self.criterion_sound_channles, self.frame_len, self.one_fps_samplingsize)
         self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
 
     def audio_individual_data_existence(self, effect_id):
@@ -110,9 +113,10 @@ class AudioControl:
                 for cpuls in range(self.criterion_sound_channles):
                     cpuls_ss = ss + cpuls * self.combined_size_1channel  # ここ間違っているような気がする
                     cpuls_es = es + cpuls * self.combined_size_1channel
-                    cpuls_vss = vss + cpuls * self.combined_size_1channel
-                    cpuls_ves = ves + cpuls * self.combined_size_1channel
+                    cpuls_vss = vss + cpuls * v.section
+                    cpuls_ves = ves + cpuls * v.section
 
+                    print("cpuls : ", cpuls, cpuls_ss, cpuls_es, cpuls_vss, cpuls_ves)
                     self.combined_for_process[cpuls_ss:cpuls_es] += v.audio_data[cpuls_vss:cpuls_ves]
 
             elif self.criterion_sound_channles != v.sound_channles:  # 数合わせ：公倍数方式
@@ -158,13 +162,12 @@ class AudioControl:
                 print("                  E", self.combined_for_process.shape)
 
                 # 目的の数まで減らす
-
-            self.combined_for_play = self.combined_for_process.reshape([2, -1],order='F')
-
-            print("combined", self.combined_for_process)
-            print("self.combined_for_process[ss:es]", self.combined_for_process[ss:es])
+            print("combined_for_process", self.combined_for_process.shape)
 
         print("音源総和", np.sum(self.combined_for_process))
+
+        self.combined_for_play = self.combined_for_process.reshape([-1, self.criterion_sound_channles], order='F')
+        print("combined_for_play", self.combined_for_play.shape)
 
         self.setup_flag = True
 
@@ -183,18 +186,18 @@ class AudioControl:
             return
 
         ss = now_frame * self.one_fps_samplingsize  # * sound_channles
-        combined_1dimension = self.combined_for_play[ss:-1]
-        print("再生", combined_1dimension, self.criterion_conversion_rate)
+        combined_has_dimension = self.combined_for_play[ss:-1]
+        print("再生", combined_has_dimension, self.criterion_conversion_rate)
 
-        sounddevice.play(combined_1dimension, self.criterion_conversion_rate)
+        sounddevice.play(combined_has_dimension, self.criterion_conversion_rate)
 
         self.run_flag = True
 
     def output_audio_file(self, path):
         print("     **********AudioControl output_audio_file")
 
-        combined_1dimension = self.combined_for_play
-        scipy_write(path, self.criterion_conversion_rate, combined_1dimension)
+        combined_has_dimension = self.combined_for_play
+        scipy_write(path, self.criterion_conversion_rate, combined_has_dimension)
 
 
 # https://qiita.com/sumita_v09/items/808a3f8506065639cf51
