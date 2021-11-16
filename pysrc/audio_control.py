@@ -1,4 +1,5 @@
 import wave
+from numpy.core.numeric import outer
 import sounddevice
 
 import numpy as np
@@ -35,9 +36,13 @@ class AudioControl:
         self.one_fps_samplingsize = 1
 
         self.combined_for_process = np.full(1, 0, dtype=np.float32)
+        self.combined_for_play = np.full(1, 0, dtype=np.float32)
 
         self.setup_flag = False  # 流す準備ができているかどうか
         self.run_flag = False  # 現在流しているか
+
+        self.combined_size_1channel = 0
+        self.combined_size = 0
 
         # self.audio_data = 0
 
@@ -51,7 +56,9 @@ class AudioControl:
 
         self.one_fps_samplingsize = round(criterion_conversion_rate / fps)
 
-        self.combined_size = self.criterion_sound_channles * frame_len * self.one_fps_samplingsize
+        self.combined_size_1channel = frame_len * self.one_fps_samplingsize
+        self.combined_size = self.criterion_sound_channles * self.combined_size_1channel
+
         print(type(self.combined_size), self.combined_size, self.criterion_sound_channles, frame_len, self.one_fps_samplingsize)
         self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
 
@@ -86,10 +93,12 @@ class AudioControl:
 
         audio_individual_data_values = list(self.audio_individual_data.values())
         for v in audio_individual_data_values:
-            ss = v.sta_frame * self.one_fps_samplingsize * v.sound_channles
-            es = v.end_frame * self.one_fps_samplingsize * v.sound_channles
+            ss = v.sta_frame * self.one_fps_samplingsize  # * v.sound_channles
+            es = v.end_frame * self.one_fps_samplingsize  # * v.sound_channles
+
             vss = 0
-            ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize * v.sound_channles
+            ves = (v.end_frame - v.sta_frame) * self.one_fps_samplingsize  # * v.sound_channles
+
             print("v.audio_data", v.audio_data, v.audio_data.shape)
             print("ss, es, vss, ves", ss, es, vss, ves)
             print("one_fps_samplingsize", self.one_fps_samplingsize)
@@ -97,7 +106,14 @@ class AudioControl:
 
             if self.criterion_sound_channles == v.sound_channles:
                 print(" - - - - - - - - - - - - - - - - -チャンネル数制御 一致", v.sound_channles, " -> ", self.criterion_sound_channles)
-                self.combined_for_process[ss:es] += v.audio_data[vss:ves]
+
+                for cpuls in range(self.criterion_sound_channles):
+                    cpuls_ss = ss + cpuls * self.combined_size_1channel  # ここ間違っているような気がする
+                    cpuls_es = es + cpuls * self.combined_size_1channel
+                    cpuls_vss = vss + cpuls * self.combined_size_1channel
+                    cpuls_ves = ves + cpuls * self.combined_size_1channel
+
+                    self.combined_for_process[cpuls_ss:cpuls_es] += v.audio_data[cpuls_vss:cpuls_ves]
 
             elif self.criterion_sound_channles != v.sound_channles:  # 数合わせ：公倍数方式
                 print(" - - - - - - - - - - - - - - - - -チャンネル数制御 公倍数方式", v.sound_channles, " -> ", self.criterion_sound_channles)
@@ -113,8 +129,6 @@ class AudioControl:
 
                 print("                  A", multiple_individual_data.shape)
 
-                section = ves - vss
-
                 loop_sta = 0
                 loop_end = 0
 
@@ -126,8 +140,8 @@ class AudioControl:
                     loop_end = multiple_val_individual
 
                 for cplus in range(loop_sta, loop_end):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
-                    cplus_vss = vss + section * cplus
-                    cplus_ves = ves + section * cplus
+                    cplus_vss = vss + self.combined_size_1channel * cplus
+                    cplus_ves = ves + self.combined_size_1channel * cplus
 
                     print("                  B1", cplus_vss, cplus_ves, v.audio_data.shape, v.audio_data[cplus_vss:cplus_ves].shape)
                     multiple_individual_data += v.audio_data[cplus_vss:cplus_ves]
@@ -144,6 +158,8 @@ class AudioControl:
                 print("                  E", self.combined_for_process.shape)
 
                 # 目的の数まで減らす
+
+            self.combined_for_play = self.combined_for_process.reshape([2, -1],order='F')
 
             print("combined", self.combined_for_process)
             print("self.combined_for_process[ss:es]", self.combined_for_process[ss:es])
@@ -166,23 +182,18 @@ class AudioControl:
         if not self.setup_flag or self.run_flag:
             return
 
-        sound_channles = 1
+        ss = now_frame * self.one_fps_samplingsize  # * sound_channles
+        combined_1dimension = self.combined_for_play[ss:-1]
+        print("再生", combined_1dimension, self.criterion_conversion_rate)
 
-        ss = now_frame * self.one_fps_samplingsize * sound_channles
-
-        combined_1dimension = self.combined_for_process.reshape(-1)
-
-        print("再生", combined_1dimension[ss:-1], self.criterion_conversion_rate)
-
-        sounddevice.play(combined_1dimension[ss:-1], self.criterion_conversion_rate)
+        sounddevice.play(combined_1dimension, self.criterion_conversion_rate)
 
         self.run_flag = True
 
     def output_audio_file(self, path):
         print("     **********AudioControl output_audio_file")
 
-        combined_1dimension = self.combined_for_process.reshape(-1)
-        # librosa.output.write_wav(path,self.combined_for_process, self.criterion_conversion_rate)
+        combined_1dimension = self.combined_for_play
         scipy_write(path, self.criterion_conversion_rate, combined_1dimension)
 
 

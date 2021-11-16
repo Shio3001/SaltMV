@@ -381,7 +381,7 @@ class SceneOutput:
 
         print("音源処理終了 [ffmpeg - python] *********")
 
-        #os.system("rm -rf {0}".format(self.temp_path))
+        os.system("rm -rf {0}".format(self.temp_path))
 
         print("")
         print("終了 所要時間 : {0}".format(print_time()))
