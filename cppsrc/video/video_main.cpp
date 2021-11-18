@@ -86,7 +86,7 @@ namespace VideoMain
         frame = maxlen;
       }
 
-      np::ndarray draw = run(frame);
+      np::ndarray draw = run(frame, "BGR");
 
       return draw;
     }
@@ -100,7 +100,7 @@ namespace VideoMain
         frame = py::extract<double>(editor["len"]);
       }
 
-      np::ndarray draw = run(frame);
+      np::ndarray draw = run(frame, "RGB");
       //np::ndarray draw2 = run(frame);
       return draw;
     }
@@ -124,12 +124,12 @@ namespace VideoMain
 
   private:
     //np::ndarray
-    np::ndarray run(int frame)
+    np::ndarray run(int frame, string rgb_mode)
     {
       cout << "フレーム[処理開始] " << frame << endl;
 
       namespace OP = ObjectProgress;
-      OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor);
+      OP::ObjectProduction *object_production = new OP::ObjectProduction(frame, object_group, layer_layer_id, py_out_func, python_operation, video_image_control, editor, rgb_mode);
       object_production->production_order_decision();
       np::ndarray object_draw_base = object_production->production_object_group();
       //audio_function_list = object_production->get_audio_function_list();

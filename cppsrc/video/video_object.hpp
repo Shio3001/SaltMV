@@ -30,9 +30,11 @@ namespace ObjectProgress
         vector<int> order_decision_object_group_number;
         py::dict editor;
 
+        string rgb_mode;
+
         int object_len;
 
-        ObjectProduction(int send_frame, py::object &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor)
+        ObjectProduction(int send_frame, py::object &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, string send_rgb_mode)
         {
             frame = send_frame;
             object_group = send_object_group;
@@ -42,6 +44,7 @@ namespace ObjectProgress
             video_image_control = send_video_image_control;
             object_len = py::len(object_group);
             editor = send_editor;
+            rgb_mode = send_rgb_mode;
         }
 
         void production_order_decision()
@@ -239,6 +242,25 @@ namespace ObjectProgress
                 cout << base_draw_range_rd[1] - base_draw_range_lu[1] << endl;
                 cout << base_draw_range_rd[0] - base_draw_range_lu[0] << endl;
 
+                int Rm;
+                int Gm;
+                int Bm;
+
+                //エフェクト側はRGB出力
+
+                if (rgb_mode == "RGB")
+                { //tkitner出力など
+                    Rm = 0;
+                    Gm = 1;
+                    Bm = 2;
+                }
+                if (rgb_mode == "BGR")
+                { //opencv出力など
+                    Rm = 2;
+                    Gm = 1;
+                    Bm = 0;
+                }
+
                 int ya = add_draw_range_lu[1];
                 for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
                 {
@@ -282,9 +304,9 @@ namespace ObjectProgress
                         }
 
                         float A = return_calculation[3];
-                        int R = return_calculation[0] * A; //透明度反映
-                        int G = return_calculation[1] * A;
-                        int B = return_calculation[2] * A;
+                        int R = return_calculation[Rm] * A; //透明度反映
+                        int G = return_calculation[Gm] * A;
+                        int B = return_calculation[Bm] * A;
 
                         draw_object_draw_base[ipxB + 0] = R;
                         draw_object_draw_base[ipxB + 1] = G;
