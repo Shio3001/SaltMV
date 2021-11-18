@@ -14,7 +14,22 @@ import os
 # import subprocess
 
 
-file_all_control = {}
+class DataStorage:
+    def __init__(self):
+        self.file_all_control = None
+        self.data_image_tk = None
+        self.tk_setup_flag = False
+        self.setup_file_all_control()
+
+    def setup_file_all_control(self):
+        self.file_all_control = {}
+
+    def setup_data_image_tk(self, tk_long):
+        self.data_image_tk = [None] * tk_long
+        self.tk_setup_flag = True
+
+
+data_storage = DataStorage()
 
 
 class EffectPluginElements:
@@ -57,38 +72,38 @@ class EffectPluginElements:
 
     def get_file_all_control(self, path):
 
-        print(file_all_control, "sta")
+        print(data_storage.file_all_control, "sta")
 
-        if not path in list(file_all_control.keys()):
+        if not path in list(data_storage.file_all_control.keys()):
             print("file_all_control *** get_file_all_control", path, "None")
             return None
 
-        print("file_all_control *** get_file_all_control", path, file_all_control[path])
+        print("file_all_control *** get_file_all_control", path, data_storage.file_all_control[path])
 
-        print(file_all_control, "end")
+        print(data_storage.file_all_control, "end")
 
-        return file_all_control[path]
+        return data_storage.file_all_control[path]
 
     def add_file_all_control(self, path, file):
 
-        print(file_all_control, "sta")
+        print(data_storage.file_all_control, "sta")
 
         print("file_all_control *** add_file_all_control", path, file)
 
         if not self.check_file_all_control(path):
-            file_all_control[path] = copy.deepcopy(file)
+            data_storage.file_all_control[path] = copy.deepcopy(file)
 
-        print(file_all_control, "end")
+        print(data_storage.file_all_control, "end")
 
     def check_file_all_control(self, path):
 
-        print(file_all_control, "sta")
+        print(data_storage.file_all_control, "sta")
 
-        print("file_all_control *** check_file_all_control", path in list(file_all_control.keys()))
+        print("file_all_control *** check_file_all_control", path in list(data_storage.file_all_control.keys()))
 
-        print(file_all_control, "end")
+        print(data_storage.file_all_control, "end")
 
-        return path in list(file_all_control.keys())
+        return path in list(data_storage.file_all_control.keys())
 
     # self.py_Rendering_func = py_Rendering_func
 
@@ -156,8 +171,11 @@ class SceneOutput:
 
         # self.func["plugin_run"] = plugin_run
 
-        self.data_image_tk = [None] * self.frame
+        # data_image_tk = [None] * self.frame
         # self.data_iamge = [None] * self.frame
+
+        if not data_storage.tk_setup_flag:
+            data_storage.setup_data_image_tk(self.frame)
 
         self.scene_id = copy.deepcopy(self.scene.scene_id)
 
@@ -226,12 +244,16 @@ class SceneOutput:
 
         # <class 'NoneType'>
 
-        # type(self.data_image_tk[frame]) is NoneType
+        # type(data_image_tk[frame]) is NoneType
 
         cash_process_flag = False
 
         frame = round(frame)
-        if not self.data_image_tk[frame] is None and tk_cash:
+
+        print("tktype", type(data_storage.data_image_tk[frame]))
+        print(tk_cash)
+
+        if not data_storage.data_image_tk[frame] is None and tk_cash:
             print("キャッシュ生成済み")
             cash_process_flag = True
 
@@ -272,20 +294,18 @@ class SceneOutput:
         # self.image_tk_PhotoImage =
         # img_resize.show()
 
-        self.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
-        # self.data_image_tk[frame] = img_resize
+        data_storage.data_image_tk[frame] = ImageTk.PhotoImage(img_resize)  # ImageTkフォーマットへ変換
+        # data_image_tk[frame] = img_resize
 
     def get_image_tk(self, frame):
         frame = round(frame)
-        image_tk = self.data_image_tk[frame]
+        image_tk = data_storage.data_image_tk[frame]
         return image_tk
 
-    def image_tk_init(self, sta, end):
-        self.data_image_tk = [None] * self.frame
-
     def image_stack(self):
-        self.data_image_tk = [None] * self.frame
-        # self.data_iamge = [None] * self.frame
+
+        print("tkinter保管データ初期化")
+        data_storage.setup_data_image_tk(self.frame)
 
     def output_OpenCV(self, sta=None, end=None):
 
@@ -339,7 +359,7 @@ class SceneOutput:
 
         self.writer.release()
         # file_all_control = {}
-        print(file_all_control)
+        print(data_storage.file_all_control)
 
         print("音源処理開始 [ffmpeg - python] *********")
 

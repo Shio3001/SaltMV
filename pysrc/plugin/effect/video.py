@@ -3,6 +3,7 @@ import sys
 import os
 import copy
 import cv2
+import datetime
 # 削除厳禁！
 
 
@@ -30,6 +31,9 @@ class CentralRole:
         if not self.open_status:
             return
 
+    def frame_load(self, frame):
+        pass
+
     def main(self, data):
 
         if data.various_fixed["path"] != self.now_file or not self.open_status:
@@ -49,8 +53,15 @@ class CentralRole:
             fps_point_editor = fps_point + data.now_frame - data.installation[0]
             fps_point = round(fps_point_editor * fps / self.video_fps)
 
+        Atime = datetime.datetime.now()
         self.video_data.set(cv2.CAP_PROP_POS_FRAMES, fps_point)
+        Btime = datetime.datetime.now()
         ret, frame = self.video_data.read()
+        Ctime = datetime.datetime.now()
+
+        print(Btime - Atime)
+        print(Ctime - Btime)
+
         data.draw = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
 
         return data.draw, self.starting_point
