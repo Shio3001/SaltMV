@@ -11,6 +11,8 @@ class parts:
         UI_auxiliary.edit_diagram_color("point", UI_auxiliary.GUI_alpha_color)
         UI_auxiliary.territory_draw()
 
+        UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
+
         UI_auxiliary.mov_flag = False
 
         def click_start(e=None):
@@ -33,6 +35,8 @@ class parts:
             UI_auxiliary.territory_draw()
 
         def click_end(e=None):
+            UI_auxiliary.callback_operation.event("click_end", info=None)
+
             if not UI_auxiliary.mov_flag:
                 return
             UI_auxiliary.mov_flag = False
