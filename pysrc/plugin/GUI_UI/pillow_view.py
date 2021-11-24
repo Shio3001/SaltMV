@@ -9,7 +9,7 @@ class parts:
         # UI_auxiliary.territory_draw()
 
         def size_update(width_size, height_size):
-            pass
+            UI_auxiliary.edit_territory_size(x=width_size, y=height_size)
 
         def view(preview_image_tk):
             UI_auxiliary.diagram_draw("TkImage_ground", image_tk=preview_image_tk)
