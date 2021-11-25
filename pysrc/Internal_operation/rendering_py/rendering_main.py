@@ -191,6 +191,7 @@ class SceneOutput:
         # self.audio_preview_function_list = []
 
         self.audio_control = operation["audio_control"]
+        # self.audio_control.wav_file_clear()
         self.audio_control.main(self.editor["fps"], self.editor["len"], self.editor["sound_sampling_rate"], self.editor["sound_channel"])
 
         print("audio_control", self.audio_control)

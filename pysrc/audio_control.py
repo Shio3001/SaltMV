@@ -63,7 +63,17 @@ class AudioControl:
         self.combined_size = self.criterion_sound_channles * self.combined_size_1channel
 
         print(type(self.combined_size), self.combined_size, self.combined_size_1channel, self.criterion_sound_channles, self.frame_len, self.one_fps_samplingsize)
+
         self.combined_for_process = np.zeros(self.combined_size,  dtype=np.float32)
+
+        print("main総和", np.sum(self.combined_for_process))
+        #self.combined_for_play = np.zeros(1,  dtype=np.float32)
+
+    def wav_file_clear(self):
+        self.audio_individual_data = {}
+
+        self.combined_for_process = np.zeros(1,  dtype=np.float32)
+        self.combined_for_play = np.zeros(1,  dtype=np.float32)
 
     def audio_individual_data_existence(self, effect_id):
         keys = self.audio_individual_data.keys()
@@ -191,6 +201,8 @@ class AudioControl:
         ss = now_frame * self.one_fps_samplingsize  # * sound_channles
         combined_has_dimension = self.combined_for_play[ss:-1]
         print("再生", combined_has_dimension, self.criterion_conversion_rate)
+
+        print("再生総和", np.sum(combined_has_dimension))
 
         sounddevice.play(combined_has_dimension, self.criterion_conversion_rate)
 

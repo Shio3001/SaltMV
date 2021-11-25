@@ -122,6 +122,7 @@ class InitialValue:
         def cash_clear():
             self.make_preview_data.image_stack()
             self.make_preview_data.re_scene()
+            self.make_preview_data.audio_control.wav_file_clear()
             preview_setup()
 
         def re_scene():
