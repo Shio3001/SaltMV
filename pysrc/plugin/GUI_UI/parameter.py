@@ -77,8 +77,8 @@ class parts:
                 UI_auxiliary.button_parameter_control_file.edit_diagram_color("background", "#44ff44")
                 UI_auxiliary.button_parameter_control_file.diagram_stack("text", True)
                 UI_auxiliary.button_parameter_control_file.territory_draw()
-                UI_auxiliary.button_parameter_control_file.add_diagram_event("text", "Button-1", request_easing)
-                UI_auxiliary.button_parameter_control_file.add_diagram_event("background", "Button-1", request_easing)
+                UI_auxiliary.button_parameter_control_file.add_diagram_event("text", "Button-1", file_open)
+                UI_auxiliary.button_parameter_control_file.add_diagram_event("background", "Button-1", file_open)
                 UI_auxiliary.file_path_open_flag = True
 
             elif UI_auxiliary.file_path_open_flag:
@@ -107,8 +107,8 @@ class parts:
                 UI_auxiliary.button_parameter_control_easing.edit_diagram_color("background", "#44ff44")
                 UI_auxiliary.button_parameter_control_easing.diagram_stack("text", True)
                 UI_auxiliary.button_parameter_control_easing.territory_draw()
-                UI_auxiliary.button_parameter_control_easing.add_diagram_event("text", "Button-1", file_open)
-                UI_auxiliary.button_parameter_control_easing.add_diagram_event("background", "Button-1", file_open)
+                UI_auxiliary.button_parameter_control_easing.add_diagram_event("text", "Button-1", request_easing)
+                UI_auxiliary.button_parameter_control_easing.add_diagram_event("background", "Button-1", request_easing)
                 UI_auxiliary.easing_flag = True
 
             UI_auxiliary.territory_draw()

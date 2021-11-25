@@ -239,10 +239,14 @@ class Storage:
 
         now_time = datetime.datetime.now()
 
-        for ev in new_copy_obj.effect_group.values():
-            now_t = now_time.strftime('%y%m%H%M%S%f')
+        old_effect_group = copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[copy_target_id][0].effect_group)
+        new_copy_obj.effect_group = {}
 
-            ev.effect_id += "_copy{0}".format(now_t)
+        for oev in old_effect_group.values():
+            now_t = now_time.strftime('%y%m%H%M%S%f')
+            oev.effect_id += "_copy{0}".format(now_t)
+
+            new_copy_obj.effect_group[oev.effect_id] = oev
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id] = [None, None]
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][0] = new_copy_obj
@@ -395,6 +399,9 @@ class Storage:
 
     def edit_various_fixed(self, obj_id, effect_id, various_fixed_key, various_fixed_val=None):
         if various_fixed_val is None:
+            print(obj_id, effect_id, various_fixed_key)
+            print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group)
+            print(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group)
             return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed[various_fixed_key]
 
         if not various_fixed_key in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].various_fixed.keys():
