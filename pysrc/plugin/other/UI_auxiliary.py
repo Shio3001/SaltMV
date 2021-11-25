@@ -461,7 +461,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
         x_pos = territory_data.position[0] + territory_data.size[0] / 2
         y_pos = territory_data.position[1] + territory_data.size[1] / 2
 
-
         print("__diagram_tkimage_draw", x_pos, y_pos)
 
         if di_del:
@@ -589,7 +588,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
         read = {True: "readonly", False: "normal"}
         state = read[diagram_data.readonly]
         # print("state", state)
-        self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=state)
+        text_color = self.canvas_data.territory[self.te_name].diagram[di_name].text_color
+        back_ground_color = self.canvas_data.territory[self.te_name].diagram[di_name].back_ground_color
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=state,fg=text_color, bg=back_ground_color)
 
     def diagram_forget(self, di_name, forget):
         self.canvas_data.territory[self.te_name].diagram[di_name].forget = forget
@@ -660,7 +661,9 @@ class SendUIData:  # パーツひとつあたりのためのclass
                           anchor=None,
                           readonly=None,
                           entry_event=None,
-                          set_int_type=None):
+                          set_int_type=None,
+                          text_color=None,
+                          back_ground_color=None):
 
         if not self.get_diagram_type(di_name, "TextBoxData") and not self.get_diagram_type(di_name, "DiagramTextData"):
             self.operation["error"].action(message="これテキスト用じゃないぞ")
@@ -681,15 +684,19 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].center[1] = copy.deepcopy(y_center)
         if not center is None:
             self.canvas_data.territory[self.te_name].diagram[di_name].center = copy.deepcopy([center, center])
+
         if not anchor is None and self.get_diagram_type(di_name, "DiagramTextData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].anchor = copy.deepcopy(anchor)
         if not readonly is None and self.get_diagram_type(di_name, "TextBoxData"):
-            # print("readonlyに関しての変更", readonly)
             self.canvas_data.territory[self.te_name].diagram[di_name].readonly = copy.deepcopy(bool(readonly))
         if not entry_event is None and self.get_diagram_type(di_name, "TextBoxData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].entry_event_callback = entry_event
-        # if not set_int_type is None and self.get_diagram_type(di_name, "TextBoxData"):
-        #    self.canvas_data.territory[self.te_name].diagram[di_name].set_int_type(set_int_type)
+
+
+        if not text_color is None and self.get_diagram_type(di_name, "TextBoxData"):
+            self.canvas_data.territory[self.te_name].diagram[di_name].text_color = copy.deepcopy(text_color)
+        if not back_ground_color is None and self.get_diagram_type(di_name, "TextBoxData"):
+            self.canvas_data.territory[self.te_name].diagram[di_name].back_ground_color = copy.deepcopy(back_ground_color)
 
         self.diagram_draw(di_name)
 
@@ -791,7 +798,8 @@ class TextBoxData():
     def __init__(self, canvas):
         self.size = [0, 0]
         self.position = [0, 0]
-        self.color = None
+        self.text_color = None
+        self.back_ground_color = None
         self.fill = [False, False]
         self.draw_tag = False
         self.event = {}
