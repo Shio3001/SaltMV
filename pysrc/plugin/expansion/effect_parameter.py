@@ -17,13 +17,6 @@ class TextReceivePoint:
 
         self.window_control.edit_control_auxiliary.undo_stack_list = []
 
-        def set_easing_func(info):
-            gx, gy, rx, ry = info
-            print("set_easing_func", info)
-            self.window_control.edit_control_auxiliary.edit_easing(self.media_id, self.effect_id, self.mov_key, gx, gy, rx, ry)
-
-        self.window_control.edit_control_auxiliary.callback_operation.set_event("easing_request_end", set_easing_func, duplicate=False)
-
     def text_func(self, text):
         old_text_data = self.window_control.edit_control_auxiliary.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key)
 
@@ -45,7 +38,7 @@ class TextReceivePoint:
         self.window_control.edit_control_auxiliary.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
 
     def get_easing_func(self):
-        return self.window_control.edit_control_auxiliary.get_easing(self.media_id, self.effect_id, self.mov_key)
+        return self.window_control.edit_control_auxiliary.get_easing(self.media_id, self.effect_id, self.mov_key), self.media_id, self.effect_id, self.mov_key
 
 
 class TextReceiveVariousFixed:
@@ -198,6 +191,12 @@ class InitialValue:
 
             #print(button, "ボタンをインスタンス 化しました")
             return button
+
+        def set_easing_func(info):
+            media_id, effect_id, mov_key , gx, gy, rx, ry = info
+            print("set_easing_func", info)
+            self.window_control.edit_control_auxiliary.edit_easing(media_id, effect_id, mov_key, gx, gy, rx, ry)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("easing_request_end", set_easing_func, duplicate=False)
 
         self.window_control.edit_control_auxiliary.callback_operation.set_event("new_button_for_parameter", new_button_for_parameter)
 

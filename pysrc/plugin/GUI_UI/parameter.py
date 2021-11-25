@@ -36,9 +36,8 @@ class parts:
             UI_auxiliary.run_entry_event_callback("textbox1")
 
         def request_easing(e=None):
-            easing_data = UI_auxiliary.get_easing_func()
-
-            info = (easing_data.gx, easing_data.gy, easing_data.rx, easing_data.ry)
+            easing_data, media_id, effect_id, mov_key = UI_auxiliary.get_easing_func()
+            info = (easing_data.gx, easing_data.gy, easing_data.rx, easing_data.ry,media_id, effect_id, mov_key)
             UI_auxiliary.edit_control_auxiliary.callback_operation.event("easing_request", info=info)
 
         UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()

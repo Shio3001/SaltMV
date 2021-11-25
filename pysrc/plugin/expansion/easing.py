@@ -38,6 +38,10 @@ class InitialValue:
         self.red_x_rate = 100
         self.red_y_rate = 100
 
+        self.media_id = ""
+        self.effect_id = ""
+        self.mov_key = ""
+
     def main(self):
         self.window_control.new_canvas("easing_beziercurve")
         self.window_control.edit_canvas_size("easing_beziercurve", x=500, y=500)
@@ -77,7 +81,7 @@ class InitialValue:
             close_save.edit_diagram_color("background", self.close_save_gray)
             self.window_control.window.update()
             close_save.territory_draw()
-            self.window_control.edit_control_auxiliary.callback_operation.event("easing_request_end", info=(self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate))
+            self.window_control.edit_control_auxiliary.callback_operation.event("easing_request_end", info=(self.media_id, self.effect_id, self.mov_key, self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate))
             self.window_control.window_open_close(False)
 
         close_save = self.window_control.new_parts("easing_beziercurve", "close_save", parts_name="button")  # 左側のやつ
@@ -99,7 +103,7 @@ class InitialValue:
         def easing_request(info):
             self.window_control.window_open_close(True)
             close_save.edit_diagram_color("background", self.close_save_green)
-            self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate = info
+            self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate, self.media_id, self.effect_id, self.mov_key = info
 
             for_textbox()
             window_size_edit_end()
