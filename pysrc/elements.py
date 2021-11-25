@@ -57,13 +57,15 @@ class ObjectElements:  # その次にえらい
 class EffectElements:  # えらくない
     def __init__(self):
         self.effect_name = None  # str(os.path.basename(__file__)).replace('.py', '')
-        #self.effect_point = {}
+        self.effect_point = {}
         self.procedure = self.non_func  # インスタンス化したclassを詰め込む
         self.various_fixed = {}  # 固定設定
         self.effect_id = None
         self.effect_point_internal_id_point = {}
         self.cpp_file = ""
         self.audio = False
+
+        self.easing_number = {}
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

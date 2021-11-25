@@ -72,14 +72,12 @@ class InitialValue:
             if self.flag_re_instance:
                 return
 
+            print("終了処理")
+
             close_save.edit_diagram_color("background", self.close_save_gray)
             self.window_control.window.update()
             close_save.territory_draw()
-
             self.window_control.edit_control_auxiliary.callback_operation.event("easing_request_end", info=(self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate))
-
-            #input_text = textbox.get_textbox_text("textbox")
-            #self.window_control.edit_control_auxiliary.callback_operation.event("text_input_end", info=(self.now_name, input_text))
             self.window_control.window_open_close(False)
 
         close_save = self.window_control.new_parts("easing_beziercurve", "close_save", parts_name="button")  # 左側のやつ
@@ -92,9 +90,18 @@ class InitialValue:
         close_save.territory_draw()
         close_save.callback_operation.set_event("button", save_end)
 
+        def for_textbox():
+            textboxGX.edit_diagram_text("textbox", text=str(self.green_x_rate))
+            textboxGY.edit_diagram_text("textbox", text=str(self.green_y_rate))
+            textboxRX.edit_diagram_text("textbox", text=str(self.red_x_rate))
+            textboxRY.edit_diagram_text("textbox", text=str(self.red_y_rate))
+
         def easing_request(info):
             self.window_control.window_open_close(True)
+            close_save.edit_diagram_color("background", self.close_save_green)
             self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate = info
+
+            for_textbox()
             window_size_edit_end()
             input_forcpp()
 
@@ -106,7 +113,6 @@ class InitialValue:
             gy = self.view_height_size08 * (100 - self.green_y_rate) / 100
             rx = self.window_width * self.red_x_rate / 100
             ry = self.view_height_size08 * (100 - self.red_y_rate) / 100
-
             greenpoint.edit_diagram_position("point", x=gx, y=gy)
             redpoint.edit_diagram_position("point", x=rx, y=ry)
             greenpoint.territory_draw()
@@ -271,10 +277,7 @@ class InitialValue:
             self.red_x_rate = redpoint.edit_diagram_position("point")[0] / self.window_width * 100
             self.red_y_rate = 100 - (redpoint.edit_diagram_position("point")[1] / self.view_height_size08) * 100
 
-            textboxGX.edit_diagram_text("textbox", text=str(self.green_x_rate))
-            textboxGY.edit_diagram_text("textbox", text=str(self.green_y_rate))
-            textboxRX.edit_diagram_text("textbox", text=str(self.red_x_rate))
-            textboxRY.edit_diagram_text("textbox", text=str(self.red_y_rate))
+            for_textbox()
 
             print("green_red", self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate)
 

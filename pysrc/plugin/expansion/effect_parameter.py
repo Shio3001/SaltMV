@@ -17,6 +17,13 @@ class TextReceivePoint:
 
         self.window_control.edit_control_auxiliary.undo_stack_list = []
 
+        def set_easing_func(info):
+            gx, gy, rx, ry = info
+            print("set_easing_func", info)
+            self.window_control.edit_control_auxiliary.edit_easing(self.media_id, self.effect_id, self.mov_key, gx, gy, rx, ry)
+
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("easing_request_end", set_easing_func, duplicate=False)
+
     def text_func(self, text):
         old_text_data = self.window_control.edit_control_auxiliary.get_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key)
 
@@ -36,6 +43,9 @@ class TextReceivePoint:
             self.stack_add_timelime_effect(media_id=self.media_id)
 
         self.window_control.edit_control_auxiliary.edit_key_frame_val(self.media_id, self.effect_id, self.effect_uuid_key, self.mov_key, text)
+
+    def get_easing_func(self):
+        return self.window_control.edit_control_auxiliary.get_easing(self.media_id, self.effect_id, self.mov_key)
 
 
 class TextReceiveVariousFixed:
@@ -110,8 +120,8 @@ class InitialValue:
             #print("before_point, next_point", before_point, next_point)
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
-                    if pk_b in self.window_control.edit_control_auxiliary.effect_point_default_keys:
-                        continue
+                    # if pk_b in self.window_control.edit_control_auxiliary.effect_point_default_keys:
+                    #     continue
                     # #print("pk_b, pv_b", pk_b, pv_b)
 
                     left = TextReceivePoint(self.window_control, media_id, element.effect_id, left_key, pk_b, stack_add, int_type=True)
@@ -122,14 +132,15 @@ class InitialValue:
 
             else:
                 for pk_b, pv_b, pk_n, pv_n in zip(before_point.keys(), before_point.values(), next_point.keys(), next_point.values()):
-                    if pk_b in self.window_control.edit_control_auxiliary.effect_point_default_keys:
-                        continue
+                    # if pk_b in self.window_control.edit_control_auxiliary.effect_point_default_keys:
+                    #     continue
 
                     left = TextReceivePoint(self.window_control, media_id, element.effect_id, left_key, pk_b, stack_add, int_type=True)
                     right = TextReceivePoint(self.window_control, media_id, element.effect_id, right_key, pk_n, stack_add, int_type=True)
                     self.window_control.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
                     # #print("pk_b, pv_b, pk_n, pv_n", pk_b, pv_b, pk_n, pv_n)
-                    self.window_control.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func, text_b_return=right.text_func)
+                    self.window_control.ui_management.ui_list[self.now].parameter_ui_set(motion=True, column=self.now, text=pk_b, text_a=pv_b, text_b=pv_n, text_a_return=left.text_func,
+                                                                                         text_b_return=right.text_func, get_easing_func=left.get_easing_func)
                     self.now += 1
 
             for vk, vv in zip(element.various_fixed.keys(), element.various_fixed.values()):

@@ -13,6 +13,14 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import datetime
 
 
+class EasingData:
+    def __init__(self, gx, gy, rx, ry):
+        self.gx = gx
+        self.gy = gy
+        self.rx = rx
+        self.ry = ry
+
+
 class Storage:
     def __init__(self, main_path):
         self.edit_data = None
@@ -43,8 +51,6 @@ class Storage:
         self.font_data = {}
         self.font_name = {}
         self.read_font()
-
-        self.effect_point_default_keys = ["motion"]
 
         self.callback_operation = None
 
@@ -245,8 +251,9 @@ class Storage:
         for oev in old_effect_group.values():
             now_t = now_time.strftime('%y%m%H%M%S%f')
             oev.effect_id += "_copy{0}".format(now_t)
-
             new_copy_obj.effect_group[oev.effect_id] = oev
+
+        del old_effect_group
 
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id] = [None, None]
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[new_copy_obj.obj_id][0] = new_copy_obj
@@ -295,21 +302,15 @@ class Storage:
         if new_effect.effect_id is None:
             new_effect.effect_name = effect_name
 
-        # effect_point
-
-        for k in self.effect_point_default_keys:
-            if k in new_effect.effect_point:
-                self.operation["error"].action("はあ？？？？？？？？？？？？？？？？？？？？？？？？？")
-
-            new_effect.effect_point[k] = 0
-
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id] = new_effect
-
         e = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group[new_effect.effect_id]
 
         # for e in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_group.values():
         for ek in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[object_order][0].effect_point_internal_id_time.keys():
             e.effect_point_internal_id_point[ek] = copy.deepcopy(e.effect_point)
+
+        for ei in new_effect.effect_point.keys():
+            self.edit_easing(object_order, new_effect.effect_id, ei, 0, 0, 100, 100)
 
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
@@ -364,8 +365,13 @@ class Storage:
     def edit_key_frame_val(self, obj_id, effect_id, key_frame_id, mov_key, mov_val):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
             self.operation["error"].action("そんなのないですよ {0}".format(key_frame_id))
-
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point[key_frame_id][mov_key] = mov_val
+
+    def edit_easing(self, obj_id, effect_id, mov_key, gx, gy, rx, ry):
+        self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].easing_number[mov_key] = EasingData(gx, gy, rx, ry)
+
+    def get_easing(self, obj_id, effect_id, mov_key):
+        return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].easing_number[mov_key]
 
     def get_key_frame(self, obj_id, data=None):
 

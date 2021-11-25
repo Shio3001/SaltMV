@@ -36,7 +36,10 @@ class parts:
             UI_auxiliary.run_entry_event_callback("textbox1")
 
         def request_easing(e=None):
-            pass
+            easing_data = UI_auxiliary.get_easing_func()
+
+            info = (easing_data.gx, easing_data.gy, easing_data.rx, easing_data.ry)
+            UI_auxiliary.edit_control_auxiliary.callback_operation.event("easing_request", info=info)
 
         UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
 
@@ -51,9 +54,11 @@ class parts:
 
         UI_auxiliary.callback_operation.set_event("parameter_diagram_del", file_path_open_del_button)
 
-        def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None, text_a_return=None, text_b_return=None, text_fixed=None, file_path=False):
+        def parameter_ui_set(motion=False, column=0, text=None, text_a=None, text_b=None, text_a_return=None, text_b_return=None, text_fixed=None, file_path=False, get_easing_func=None):
             pos_y = pos_y_normal * column
             text_fixed_x_size = textbox2_x - textbox1_x + 100
+
+            UI_auxiliary.get_easing_func = get_easing_func
 
             UI_auxiliary.edit_diagram_text("text", text=text)
             UI_auxiliary.edit_diagram_text("textbox1", text=text_a,  entry_event=text_a_return)
