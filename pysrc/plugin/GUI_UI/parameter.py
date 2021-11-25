@@ -33,8 +33,10 @@ class parts:
             default = UI_auxiliary.get_text("textbox1")
             file_open_text = UI_auxiliary.open_file_select(default)
             UI_auxiliary.edit_diagram_text("textbox1", text=file_open_text)
-
             UI_auxiliary.run_entry_event_callback("textbox1")
+
+        def request_easing(e=None):
+            pass
 
         UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
 
@@ -75,8 +77,8 @@ class parts:
                 UI_auxiliary.button_parameter_control_file.edit_diagram_color("background", "#44ff44")
                 UI_auxiliary.button_parameter_control_file.diagram_stack("text", True)
                 UI_auxiliary.button_parameter_control_file.territory_draw()
-                UI_auxiliary.button_parameter_control_file.add_diagram_event("text", "Button-1", file_open)
-                UI_auxiliary.button_parameter_control_file.add_diagram_event("background", "Button-1", file_open)
+                UI_auxiliary.button_parameter_control_file.add_diagram_event("text", "Button-1", request_easing)
+                UI_auxiliary.button_parameter_control_file.add_diagram_event("background", "Button-1", request_easing)
                 UI_auxiliary.file_path_open_flag = True
 
             elif UI_auxiliary.file_path_open_flag:

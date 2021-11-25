@@ -75,6 +75,9 @@ class InitialValue:
             close_save.edit_diagram_color("background", self.close_save_gray)
             self.window_control.window.update()
             close_save.territory_draw()
+
+            self.window_control.edit_control_auxiliary.callback_operation.event("easing_request_end", info=(self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate))
+
             #input_text = textbox.get_textbox_text("textbox")
             #self.window_control.edit_control_auxiliary.callback_operation.event("text_input_end", info=(self.now_name, input_text))
             self.window_control.window_open_close(False)
@@ -88,6 +91,26 @@ class InitialValue:
         close_save.edit_diagram_text("text", text="決定")
         close_save.territory_draw()
         close_save.callback_operation.set_event("button", save_end)
+
+        def easing_request(info):
+            self.window_control.window_open_close(True)
+            self.green_x_rate, self.green_y_rate, self.red_x_rate, self.red_y_rate = info
+            window_size_edit_end()
+            input_forcpp()
+
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("easing_request", easing_request)
+
+        def green_red_view():
+
+            gx = self.window_width * self.green_x_rate / 100
+            gy = self.view_height_size08 * (100 - self.green_y_rate) / 100
+            rx = self.window_width * self.red_x_rate / 100
+            ry = self.view_height_size08 * (100 - self.red_y_rate) / 100
+
+            greenpoint.edit_diagram_position("point", x=gx, y=gy)
+            redpoint.edit_diagram_position("point", x=rx, y=ry)
+            greenpoint.territory_draw()
+            redpoint.territory_draw()
 
         def textboxGX_input(text):
             self.green_x_rate = int(text)
@@ -104,18 +127,6 @@ class InitialValue:
         def textboxRY_input(text):
             self.red_y_rate = int(text)
             input_forcpp()
-
-        def green_red_view():
-
-            gx = self.window_width * self.green_x_rate / 100
-            gy = self.view_height_size08 * (100 - self.green_y_rate) / 100
-            rx = self.window_width * self.red_x_rate / 100
-            ry = self.view_height_size08 * (100 - self.red_y_rate) / 100
-
-            greenpoint.edit_diagram_position("point", x=gx, y=gy)
-            redpoint.edit_diagram_position("point", x=rx, y=ry)
-            greenpoint.territory_draw()
-            redpoint.territory_draw()
 
         def input_forcpp():
 
@@ -280,6 +291,9 @@ class InitialValue:
         #self.window_control.add_window_event("Button-1", window_size_edit_start)
         self.window_control.add_window_event("Configure", window_size_edit_mov)
         self.window_control.add_window_event("ButtonRelease-1", window_size_edit_end)
+
+        window_size_edit_end()
+        # self.window_control.window_open_close(False)
 
 
 class CentralRole:
