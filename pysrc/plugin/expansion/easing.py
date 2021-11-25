@@ -105,12 +105,7 @@ class InitialValue:
             self.red_y_rate = int(text)
             input_forcpp()
 
-        def input_forcpp():
-
-            # self.green_x_rate = greenpoint.edit_diagram_position("point")[0] / self.window_width * 100
-            # self.green_y_rate = 100 - (greenpoint.edit_diagram_position("point")[1] / self.view_height_size08) * 100
-            # self.red_x_rate = redpoint.edit_diagram_position("point")[0] / self.window_width * 100
-            # self.red_y_rate = 100 - (redpoint.edit_diagram_position("point")[1] / self.view_height_size08) * 100
+        def green_red_view():
 
             gx = self.window_width * self.green_x_rate / 100
             gy = self.view_height_size08 * (100 - self.green_y_rate) / 100
@@ -121,6 +116,15 @@ class InitialValue:
             redpoint.edit_diagram_position("point", x=rx, y=ry)
             greenpoint.territory_draw()
             redpoint.territory_draw()
+
+        def input_forcpp():
+
+            # self.green_x_rate = greenpoint.edit_diagram_position("point")[0] / self.window_width * 100
+            # self.green_y_rate = 100 - (greenpoint.edit_diagram_position("point")[1] / self.view_height_size08) * 100
+            # self.red_x_rate = redpoint.edit_diagram_position("point")[0] / self.window_width * 100
+            # self.red_y_rate = 100 - (redpoint.edit_diagram_position("point")[1] / self.view_height_size08) * 100
+
+            green_red_view()
 
             self.salt_bezier_curveInstance = self.salt_bezier_curveModule.ForPyInterface(int(self.window_width), int(self.view_height_size08))
             self.salt_bezier_curveInstance.Setx1y1(self.green_x_rate, self.green_y_rate)
@@ -215,6 +219,8 @@ class InitialValue:
 
             greenpoint.edit_diagram_size("point", point_size, point_size)
             redpoint.edit_diagram_size("point", point_size, point_size)
+
+            green_red_view()
 
             greenpoint.territory_draw()
             redpoint.territory_draw()

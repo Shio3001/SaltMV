@@ -1,3 +1,4 @@
+import sys
 
 
 class parts:
@@ -38,10 +39,13 @@ class parts:
         UI_auxiliary.callback_operation = UI_auxiliary.operation["plugin"]["other"]["callback"].CallBack()
 
         UI_auxiliary.file_path_open_flag = False
+        UI_auxiliary.easing_flag = False
 
         def file_path_open_del_button():
             if UI_auxiliary.file_path_open_flag:
-                UI_auxiliary.button_parameter_control.del_territory()
+                UI_auxiliary.button_parameter_control_file.del_territory()
+            if UI_auxiliary.easing_flag:
+                UI_auxiliary.button_parameter_control_easing.del_territory()
 
         UI_auxiliary.callback_operation.set_event("parameter_diagram_del", file_path_open_del_button)
 
@@ -64,21 +68,22 @@ class parts:
                 print("text_fixed and file_path")
 
                 new_button_for_parameter = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter", 0)
-                UI_auxiliary.button_parameter_control = new_button_for_parameter()  # effect_controller ←40行付近呼び出し先
-                UI_auxiliary.button_parameter_control.edit_diagram_text("text", "ファイル設定", font_size=15)
-                UI_auxiliary.button_parameter_control.edit_territory_position(x=text_fixed_x_size+110, y=pos_y)
-                UI_auxiliary.button_parameter_control.edit_territory_size(x=100, y=20)
-                UI_auxiliary.button_parameter_control.edit_diagram_color("background", "#44ff44")
-                UI_auxiliary.button_parameter_control.diagram_stack("text", True)
-                UI_auxiliary.button_parameter_control.territory_draw()
-
-                UI_auxiliary.button_parameter_control.add_diagram_event("text", "Button-1", file_open)
-                UI_auxiliary.button_parameter_control.add_diagram_event("background", "Button-1", file_open)
-
+                UI_auxiliary.button_parameter_control_file = new_button_for_parameter()  # effect_controller ←40行付近呼び出し先
+                UI_auxiliary.button_parameter_control_file.edit_diagram_text("text", "ファイル設定", font_size=15)
+                UI_auxiliary.button_parameter_control_file.edit_territory_position(x=text_fixed_x_size+110, y=pos_y)
+                UI_auxiliary.button_parameter_control_file.edit_territory_size(x=100, y=20)
+                UI_auxiliary.button_parameter_control_file.edit_diagram_color("background", "#44ff44")
+                UI_auxiliary.button_parameter_control_file.diagram_stack("text", True)
+                UI_auxiliary.button_parameter_control_file.territory_draw()
+                UI_auxiliary.button_parameter_control_file.add_diagram_event("text", "Button-1", file_open)
+                UI_auxiliary.button_parameter_control_file.add_diagram_event("background", "Button-1", file_open)
                 UI_auxiliary.file_path_open_flag = True
 
             elif UI_auxiliary.file_path_open_flag:
-                UI_auxiliary.button_parameter_control.del_territory()
+                UI_auxiliary.button_parameter_control_file.del_territory()
+
+            elif UI_auxiliary.easing_flag:
+                UI_auxiliary.button_parameter_control_easing.del_territory()
 
             if text_fixed:
                 UI_auxiliary.diagram_forget("textbox2", True)
@@ -91,6 +96,18 @@ class parts:
                 UI_auxiliary.edit_diagram_size("textbox1", x=100, y=20)
                 #UI_auxiliary.edit_diagram_text("textbox1", set_int_type=True)
                 #UI_auxiliary.edit_diagram_text("textbox2", set_int_type=True)
+
+                new_button_for_parameter = UI_auxiliary.edit_control_auxiliary.callback_operation.get_event("new_button_for_parameter", 0)
+                UI_auxiliary.button_parameter_control_easing = new_button_for_parameter()  # effect_controller ←40行付近呼び出し先
+                UI_auxiliary.button_parameter_control_easing.edit_diagram_text("text", "イージング設定", font_size=15)
+                UI_auxiliary.button_parameter_control_easing.edit_territory_position(x=text_fixed_x_size+110, y=pos_y)
+                UI_auxiliary.button_parameter_control_easing.edit_territory_size(x=100, y=20)
+                UI_auxiliary.button_parameter_control_easing.edit_diagram_color("background", "#44ff44")
+                UI_auxiliary.button_parameter_control_easing.diagram_stack("text", True)
+                UI_auxiliary.button_parameter_control_easing.territory_draw()
+                UI_auxiliary.button_parameter_control_easing.add_diagram_event("text", "Button-1", file_open)
+                UI_auxiliary.button_parameter_control_easing.add_diagram_event("background", "Button-1", file_open)
+                UI_auxiliary.easing_flag = True
 
             UI_auxiliary.territory_draw()
 
