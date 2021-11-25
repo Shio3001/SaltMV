@@ -63,7 +63,7 @@ class EffectElements:  # えらくない
         self.effect_id = None
         self.effect_point_internal_id_point = {}
         self.cpp_file = ""
-        self.audio = False
+        #self.audio = False
 
         self.easing_number = {}
         #self.export_loop = True

@@ -261,6 +261,10 @@ namespace ObjectProgress
                     Bm = 0;
                 }
 
+                float RGBa_sum = 0;
+                int RGB_sum = 0;
+                float A_sum = 0;
+
                 int ya = add_draw_range_lu[1];
                 for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
                 {
@@ -276,26 +280,22 @@ namespace ObjectProgress
 
                         for (int i = 0; i < 3; i++)
                         {
-                            source[i] = draw_object_draw_base[ipxB + i];
+                            float so = draw_object_draw_base[ipxB + i];
+                            source[i] = so / 255;
                         }
-                        source[3] = 1;
 
+                        source[3] = 1;
                         for (int i = 0; i < 4; i++)
                         {
-                            //additions[i] = 200;
-                            //additions[i] = *start_pointer_numpy;
-                            //start_pointer_numpy++;
-
                             int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
-
-                            //cout << xa << " " << ya << " " << i << " " << ipx << endl;
-
                             char *this_draw = pointer_start + ipx;
-                            additions[i] = *this_draw;
+                            float ad = *this_draw;
+                            additions[i] = ad / 255;
                         }
 
+                        //additions[3] = 1;
+
                         //additions[i] *= 1 / 255;
-                        additions[3] = 1;
 
                         float *return_calculation;
                         if (synthetic_type == "normal")
@@ -304,17 +304,34 @@ namespace ObjectProgress
                         }
 
                         float A = return_calculation[3];
-                        int R = return_calculation[Rm] * A; //透明度反映
-                        int G = return_calculation[Gm] * A;
-                        int B = return_calculation[Bm] * A;
+                        float R = return_calculation[Rm] * 255; //透明度反映
+                        float G = return_calculation[Gm] * 255;
+                        float B = return_calculation[Bm] * 255;
 
-                        draw_object_draw_base[ipxB + 0] = R;
-                        draw_object_draw_base[ipxB + 1] = G;
-                        draw_object_draw_base[ipxB + 2] = B;
+                        RGB_sum += R;
+                        RGB_sum += G;
+                        RGB_sum += B;
+
+                        int Ra = R * A;
+                        int Ga = G * A;
+                        int Ba = B * A;
+
+                        RGBa_sum += Ra;
+                        RGBa_sum += Ga;
+                        RGBa_sum += Ba;
+                        A_sum += A;
+
+                        draw_object_draw_base[ipxB + 0] = Ra;
+                        draw_object_draw_base[ipxB + 1] = Ga;
+                        draw_object_draw_base[ipxB + 2] = Ba;
                         xa++;
                     }
                     ya++;
                 }
+
+                cout << "RGB_sum" << RGB_sum << endl;
+                cout << "RGBa_sum" << RGBa_sum << endl;
+                cout << "A_sum" << A_sum << endl;
             }
             else
             {

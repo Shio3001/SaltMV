@@ -121,7 +121,6 @@ namespace EffectProgress
 
             //py::dict effect_point = py::extract<py::dict>(effect.attr("effect_point"));
             py::object procedure = effect.attr("procedure");
-            bool audio = effect.attr("audio");
 
             //string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
             cout << "procedure " << endl;
