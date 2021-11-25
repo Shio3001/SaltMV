@@ -85,6 +85,11 @@ namespace ObjectProgress
             int editor_y = py::extract<float>(editor["y"]);
 
             int *draw = new int[editor_y * editor_x * 3];
+
+            for (int di = 0; di < editor_y * editor_x * 3;di++){
+                draw[di] = 0;  
+            }
+
             int now_xy_size[2] = {editor_x, editor_y};
 
             for (int i = 0; i < order_decision_object_group_number.size(); i++)
@@ -175,7 +180,6 @@ namespace ObjectProgress
 
                 add_draw_range_lu[i] = 0;
                 base_draw_range_lu[i] = position_lu;
-
                 add_draw_range_rd[i] = new_draw_size;
                 base_draw_range_rd[i] = position_rd;
 
@@ -261,9 +265,7 @@ namespace ObjectProgress
                     Bm = 0;
                 }
 
-                float RGBa_sum = 0;
-                int RGB_sum = 0;
-                float A_sum = 0;
+                
 
                 int ya = add_draw_range_lu[1];
                 for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
@@ -281,17 +283,17 @@ namespace ObjectProgress
                         for (int i = 0; i < 3; i++)
                         {
                             float so = draw_object_draw_base[ipxB + i];
-                            source[i] = so / 255;
                         }
-
                         source[3] = 1;
+
                         for (int i = 0; i < 4; i++)
                         {
                             int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
                             char *this_draw = pointer_start + ipx;
-                            float ad = *this_draw;
-                            additions[i] = ad / 255;
+                            additions[i] = *this_draw;
                         }
+
+                        additions[3] = 1;
 
                         //additions[3] = 1;
 
@@ -304,40 +306,25 @@ namespace ObjectProgress
                         }
 
                         float A = return_calculation[3];
-                        float R = return_calculation[Rm] * 255; //透明度反映
-                        float G = return_calculation[Gm] * 255;
-                        float B = return_calculation[Bm] * 255;
+                        int R = return_calculation[Rm] * A; //透明度反映
+                        int G = return_calculation[Gm] * A;
+                        int B = return_calculation[Bm] * A;
 
-                        RGB_sum += R;
-                        RGB_sum += G;
-                        RGB_sum += B;
-
-                        int Ra = R * A;
-                        int Ga = G * A;
-                        int Ba = B * A;
-
-                        RGBa_sum += Ra;
-                        RGBa_sum += Ga;
-                        RGBa_sum += Ba;
-                        A_sum += A;
-
-                        draw_object_draw_base[ipxB + 0] = Ra;
-                        draw_object_draw_base[ipxB + 1] = Ga;
-                        draw_object_draw_base[ipxB + 2] = Ba;
+                        draw_object_draw_base[ipxB + 0] = R;
+                        draw_object_draw_base[ipxB + 1] = G;
+                        draw_object_draw_base[ipxB + 2] = B;
                         xa++;
                     }
                     ya++;
                 }
 
-                cout << "RGB_sum" << RGB_sum << endl;
-                cout << "RGBa_sum" << RGBa_sum << endl;
-                cout << "A_sum" << A_sum << endl;
             }
             else
             {
             }
 
             cout << "synthetic_func2" << endl;
+            cout << "make 2" << endl;
         }
 
         vector<string> around_point_search(int frame, py::list &id_time_key, py::list &id_time_value, int installation_sta, int installation_end)
