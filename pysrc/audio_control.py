@@ -63,7 +63,7 @@ class AudioControl:
         self.combined_size = self.criterion_sound_channles * self.combined_size_1channel
 
         print(type(self.combined_size), self.combined_size, self.combined_size_1channel, self.criterion_sound_channles, self.frame_len, self.one_fps_samplingsize)
-        self.combined_for_process = np.full(self.combined_size, 0, dtype=np.float32)
+        self.combined_for_process = np.zeros(self.combined_size,  dtype=np.float32)
 
     def audio_individual_data_existence(self, effect_id):
         keys = self.audio_individual_data.keys()
@@ -156,8 +156,6 @@ class AudioControl:
                     self.combined_for_process[cpluscopy_ss:cpluscopy_es] += multiple_individual_data[:]
 
                 # v.sound_channles
-
-                
 
                 # for cadd in range(multiple_val_riterion - 1):  # データの個数を公倍数のところまで増やしていく , 縦方向に結合していく
                 #     multiple_individual_data.vstack(multiple_individual_data[0])

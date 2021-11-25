@@ -75,7 +75,7 @@ namespace VideoMain
 
       cout << "execution_main 出力処理" << endl;
 
-      int maxlen = py::extract<double>(editor["len"]);
+      int maxlen = py::extract<float>(editor["len"]);
 
       if (frame < 0)
       {
@@ -95,9 +95,9 @@ namespace VideoMain
     {
       cout << "execution_preview 出力処理" << endl;
 
-      if (frame > py::extract<double>(editor["len"]))
+      if (frame > py::extract<float>(editor["len"]))
       {
-        frame = py::extract<double>(editor["len"]);
+        frame = py::extract<float>(editor["len"]);
       }
 
       np::ndarray draw = run(frame, "RGB");
