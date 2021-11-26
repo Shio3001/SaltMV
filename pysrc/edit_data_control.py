@@ -315,26 +315,14 @@ class Storage:
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
     def add_key_frame(self, time, obj_id, key_frame_id):
-
         print("add_key_frame")
-
         self.add_key_frame_point_onely(time, obj_id, key_frame_id)
         self.add_key_frame_inside_data(obj_id, key_frame_id)
 
     def add_key_frame_point_onely(self, time, obj_id, key_frame_id):
-
         print("add_key_frame_point_onely1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = copy.deepcopy(time)
-
         print("add_key_frame_point_onely2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
-    def del_key_frame_point(self, obj_id, key_frame_id):
-        print("del_key_frame_point1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
-        del self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id]
-
-        print("del_key_frame_point2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def add_key_frame_inside_data(self, obj_id, key_frame_id):
         effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group
@@ -344,6 +332,13 @@ class Storage:
         for eg in effect_group.values():
             new_effect = copy.deepcopy(eg.effect_point)
             eg.effect_point_internal_id_point[key_frame_id] = new_effect
+
+    def del_key_frame_point(self, obj_id, key_frame_id):
+        print("del_key_frame_point1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
+        del self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id]
+
+        print("del_key_frame_point2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def layer_id_set(self, obj_id, new_layer_id):
         #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1])
