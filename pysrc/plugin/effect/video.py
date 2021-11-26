@@ -2,8 +2,9 @@
 import sys
 import os
 import copy
-import cv2
 import datetime
+import ffmpeg
+import numpy as np
 # 削除厳禁！
 
 
@@ -13,6 +14,7 @@ class InitialValue:
         setting_effect.effect_point = {"fps_point": 0}
         setting_effect.various_fixed = {"path": "", "frame_configuration": False}
         setting_effect.procedure = CentralRole()
+        # setting_effect.cpp = "read_video"
 
 
 class CentralRole:
@@ -23,16 +25,37 @@ class CentralRole:
         self.open_status = False
 
     def setup(self, file_name):
-        self.video_data = cv2.VideoCapture(file_name)
-        self.video_fps = self.video_data.get(cv2.CAP_PROP_FPS)
-        self.now_file = copy.deepcopy(file_name)
-        self.open_status = self.video_data.isOpened()
+        # self.video_data = cv2.VideoCapture(file_name)
+        # self.video_fps = self.video_data.get(cv2.CAP_PROP_FPS)
+        # self.now_file = copy.deepcopy(file_name)
+        # self.open_status = self.video_data.isOpened()
+
+        self.file_name = file_name
+
+        self.video_info = ffmpeg.probe(self.file_name)
+
+        print(self.video_info)
+
+        self.width = self.video_info["streams"][0]["width"]
+        self.height = self.video_info["streams"][0]["height"]
+        self.video_fps = round(eval(self.video_info["streams"][0]["r_frame_rate"]))
+
+    def frame_load(self, frame):
+        out, _ = (
+            ffmpeg
+            .input(self.file_name,)
+            .output('pipe:', format='rawvideo', pix_fmt='rgb24')
+            .run(capture_stdout=True)
+        )
+
+        self.video_data = (
+            np
+            .frombuffer(out, np.uint8)
+            .reshape([-1, self.height, self.width, 3])
+        )
 
         if not self.open_status:
             return
-
-    def frame_load(self, frame):
-        pass
 
     def main(self, data):
 
@@ -53,15 +76,6 @@ class CentralRole:
             fps_point_editor = fps_point + data.now_frame - data.installation[0]
             fps_point = round(fps_point_editor * fps / self.video_fps)
 
-        Atime = datetime.datetime.now()
-        self.video_data.set(cv2.CAP_PROP_POS_FRAMES, fps_point)
-        Btime = datetime.datetime.now()
-        ret, frame = self.video_data.read()
-        Ctime = datetime.datetime.now()
-
-        print(Btime - Atime)
-        print(Ctime - Btime)
-
-        data.draw = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        data.draw = self.video_data[int(fps_point)]
 
         return data.draw, self.starting_point

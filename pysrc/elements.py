@@ -62,7 +62,7 @@ class EffectElements:  # えらくない
         self.various_fixed = {}  # 固定設定
         self.effect_id = None
         self.effect_point_internal_id_point = {}
-        self.cpp_file = ""
+        self.cpp = "py"
         #self.audio = False
 
         self.easing_number = {}

@@ -125,7 +125,7 @@ namespace EffectProgress
             //string test_txt1 = py::extract<string>(py::extract<py::object>(procedure.attr("now_file")));
             cout << "procedure " << endl;
 
-            string cpp_file = py::extract<string>(effect.attr("cpp_file"));
+            string cpp = py::extract<string>(effect.attr("cpp"));
 
             cout << "before_value"
                  << " "
@@ -197,12 +197,25 @@ namespace EffectProgress
 
             //string effect_id =
 
+           // if (cpp == "py"){
             cout << "effect_plugin_elements" << endl;
             py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
             cout << "procedure_return" << endl;
             py::object main_function = procedure.attr("main");
             cout << "procedure_return2" << endl;
             py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
+            //}
+            // else if (cpp == "read_video"){
+            //     cout << "effect_plugin_elements" << endl;
+            //     py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
+            //     cout << "procedure_return" << endl;
+            //     py::object main_function = procedure.attr("main");
+            //     cout << "procedure_return2" << endl;
+            //     py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));        
+            // }
+            // else{
+
+            // }
 
             cout << "effect終了" << endl;
 
