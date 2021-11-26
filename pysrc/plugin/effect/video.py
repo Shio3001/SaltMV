@@ -31,31 +31,28 @@ class CentralRole:
         # self.open_status = self.video_data.isOpened()
 
         self.file_name = file_name
-
         self.video_info = ffmpeg.probe(self.file_name)
 
         print(self.video_info)
 
-        self.width = self.video_info["streams"][0]["width"]
-        self.height = self.video_info["streams"][0]["height"]
+        self.width = round(self.video_info["streams"][0]["width"])
+        self.height = round(self.video_info["streams"][0]["height"])
         self.video_fps = round(eval(self.video_info["streams"][0]["r_frame_rate"]))
+
+        if not self.video_info is None:
+            self.open_status = True
 
     def frame_load(self, frame):
         out, _ = (
             ffmpeg
-            .input(self.file_name,)
+            .input(self.file_name, ss=40, t=0.03)
             .output('pipe:', format='rawvideo', pix_fmt='rgb24')
             .run(capture_stdout=True)
         )
 
-        self.video_data = (
-            np
-            .frombuffer(out, np.uint8)
-            .reshape([-1, self.height, self.width, 3])
-        )
+        self.video_data = np.frombuffer(out, np.uint8).astype('uint8').reshape(self.height, self.width, 3)
 
-        if not self.open_status:
-            return
+        return self.video_data[0]
 
     def main(self, data):
 
@@ -76,6 +73,6 @@ class CentralRole:
             fps_point_editor = fps_point + data.now_frame - data.installation[0]
             fps_point = round(fps_point_editor * fps / self.video_fps)
 
-        data.draw = self.video_data[int(fps_point)]
+        data.draw = self.frame_load(int(fps_point))
 
         return data.draw, self.starting_point
