@@ -13,6 +13,7 @@ class InitialValue:
         setting_effect.effect_name = str(os.path.basename(__file__)).replace('.py', '')
         setting_effect.effect_point = {"fps_point": 0}
         setting_effect.various_fixed = {"path": "", "frame_configuration": False}
+        setting_effect.effect_point_path_name = ["path"]
         setting_effect.procedure = CentralRole()
         # setting_effect.cpp = "read_video"
 

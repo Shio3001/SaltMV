@@ -11,6 +11,7 @@ class InitialValue:
         setting_effect.effect_name = "画像"
         setting_effect.effect_point = {}
         setting_effect.various_fixed = {"path": ""}
+        setting_effect.effect_point_path_name = ["path"]
         setting_effect.procedure = CentralRole()
 
         print(setting_effect.procedure.setup.__self__)

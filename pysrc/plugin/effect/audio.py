@@ -27,6 +27,7 @@ class InitialValue:
         setting_effect.effect_name = "音声"
         setting_effect.effect_point = {}
         setting_effect.various_fixed = {"path": "", "start_f": 0}
+        setting_effect.effect_point_path_name = ["path"]
         setting_effect.procedure = CentralRole()
 
         setting_effect.audio = True
@@ -75,14 +76,6 @@ class CentralRole:
                 #self.import_data = rendering_main_data.get_file_all_control(file_name).audio_numpy
             else:
                 print(" / / / / / / / / / / / / / / / / / / / / / / / / / / / / / setup audio ++ ", file_name)
-
-                #sound_file = wave.open(file_name)
-
-                #self.sound_sampling_rate = sound_file.getframerate()
-                # self.sound_frame = sound_file.getnframes()  # フレーム数を取得
-                #self.sound_channles = sound_file.getnchannels()
-                # sound_data = sound_file.readframes(self.sound_frame)  # 指定したフレーム数の読み込み
-                #self.import_data = np.frombuffer(sound_data, dtype='int16')
 
                 self.import_data, sr = librosa.load(file_name, sr=44100, mono=False)  # , mono=False
 
