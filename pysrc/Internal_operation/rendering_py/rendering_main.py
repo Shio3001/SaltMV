@@ -292,6 +292,7 @@ class SceneOutput:
         image_pil = Image.fromarray(output_data)
         resize_size = (640, 360)
         img_resize = image_pil.resize(resize_size)
+
         # self.image_tk_PhotoImage =
         # img_resize.show()
 

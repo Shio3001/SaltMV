@@ -283,6 +283,7 @@ namespace ObjectProgress
                         for (int i = 0; i < 3; i++)
                         {
                             float so = draw_object_draw_base[ipxB + i];
+                            source[i] = so;
                         }
                         source[3] = 1;
 
@@ -290,10 +291,10 @@ namespace ObjectProgress
                         {
                             int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
                             char *this_draw = pointer_start + ipx;
-                            additions[i] = *this_draw;
+                            float ad = *this_draw;
+                            additions[i] = ad;
                         }
 
-                        additions[3] = 1;
 
                         //additions[3] = 1;
 
