@@ -524,11 +524,14 @@ class InitialValue:
                     print("effect_point_internal_id_point", e.effect_point_internal_id_point)
 
                 layer_number = get_scene.layer_group.layer_layer_id[obj_v[1]]  # 所属レイヤー解釈
+
+                print("obj_k, obj_v", obj_k, obj_v)
+
                 make_object(media_id=obj_k, sta=sta_f, end=end_f, layer_number=layer_number)
 
                 for point_key, point_val in zip(obj_v[0].effect_point_internal_id_time.keys(), obj_v[0].effect_point_internal_id_time.values()):
-                    self.window_control.edit_control_auxiliary.add_key_frame_point_onely(point_val, obj_k, point_key)
-
+                    #self.window_control.edit_control_auxiliary.add_key_frame_point_onely(point_val, obj_k, point_key)
+                    print("point_key, point_val", point_key, point_val)
                     if point_key in ["default_sta", "default_end"]:
                         continue
 
@@ -754,8 +757,6 @@ class InitialValue:
         def run_cash_clear_func(r=None):
             self.nowtime_bar.one_lock()
             self.window_control.edit_control_auxiliary.callback_operation.event("cash_clear")
-
-            
 
         self.run_cash_clear = self.window_control.new_parts("timeline", "run_cash_clear", parts_name="button")  # 左側のやつ
         self.run_cash_clear.edit_territory_size(x=100, y=timeline_up - scroll_size - 10)

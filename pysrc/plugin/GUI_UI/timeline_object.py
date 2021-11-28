@@ -69,7 +69,7 @@ class KeyFrame:
         self.UI_auxiliary.new_diagram(self.uu_id)
         self.UI_auxiliary.set_shape_rhombus(self.uu_id, self.size[1] / 2, 100, 100)  # ひし形
 
-        self.UI_auxiliary.edit_control_auxiliary.add_key_frame(0, self.UI_auxiliary.option_data["media_id"], self.uu_id)
+        self.UI_auxiliary.edit_control_auxiliary.add_key_frame(0, self.UI_auxiliary.option_data["media_id"], self.uu_id,overwrite=False)
         self.pxf.set_sub_point(self.uu_id)
         self.pxf.set_px_ratio_sub_point(self.uu_id, self.center_x)
         self.UI_auxiliary.edit_diagram_color(self.uu_id, "#000000")

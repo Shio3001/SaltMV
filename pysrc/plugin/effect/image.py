@@ -59,4 +59,6 @@ class CentralRole:
 
         print("main_end", self.now_file, self.open_status)
 
+        print(self.image_data, self.image_data.dtype, self.image_data.shape)
+
         return self.image_data, self.starting_point

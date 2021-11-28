@@ -314,20 +314,36 @@ class Storage:
 
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
-    def add_key_frame(self, time, obj_id, key_frame_id):
-
-        print("add_key_frame")
-
-        self.add_key_frame_point_onely(time, obj_id, key_frame_id)
+    def add_key_frame(self, time, obj_id, key_frame_id, overwrite=True):
+        self.add_key_frame_point_onely(time, obj_id, key_frame_id, overwrite)
         self.add_key_frame_inside_data(obj_id, key_frame_id)
 
-    def add_key_frame_point_onely(self, time, obj_id, key_frame_id):
-
+    def add_key_frame_point_onely(self, time, obj_id, key_frame_id, overwrite=True):
         print("add_key_frame_point_onely1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
+        overwrite_bool = key_frame_id in list(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys())
+        if overwrite_bool and not overwrite:
+            print("add_key_frame_point_onely 返却")
+            return
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time[key_frame_id] = copy.deepcopy(time)
-
         print("add_key_frame_point_onely2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
+
+    def add_key_frame_inside_data(self, obj_id, key_frame_id, overwrite=True):
+        effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group
+        if len(effect_group) == 0:
+            return
+
+        for eg in effect_group.values():
+            new_effect = copy.deepcopy(eg.effect_point)
+
+            print("eg.effect_point_internal_id_point1", eg.effect_point_internal_id_point)
+
+            overwrite_bool = key_frame_id in list(eg.effect_point_internal_id_point.keys())
+            if overwrite_bool and not overwrite:
+                print("add_key_frame_inside_data 返却")
+                return
+            eg.effect_point_internal_id_point[key_frame_id] = new_effect
+
+            print("eg.effect_point_internal_id_point2", eg.effect_point_internal_id_point)
 
     def del_key_frame_point(self, obj_id, key_frame_id):
         print("del_key_frame_point1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
@@ -336,22 +352,8 @@ class Storage:
 
         print("del_key_frame_point2", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
-    def add_key_frame_inside_data(self, obj_id, key_frame_id):
-        effect_group = self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group
-        if len(effect_group) == 0:
-            return
-
-        for eg in effect_group.values():
-            new_effect = copy.deepcopy(eg.effect_point)
-            eg.effect_point_internal_id_point[key_frame_id] = new_effect
-
     def layer_id_set(self, obj_id, new_layer_id):
-        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1])
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1] = copy.deepcopy(new_layer_id)
-        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][1])
-
-        # if typeA != typeB:
-        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def move_key_frame(self, time, obj_id, key_frame_id):
         if not key_frame_id in self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time.keys():
@@ -374,28 +376,18 @@ class Storage:
         return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].easing_number[mov_key]
 
     def get_key_frame(self, obj_id, data=None):
-
         if not data is None:
-
             typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
             self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time = copy.deepcopy(data)
-
             typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-
             if typeA != typeB:
                 self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
-
             return
 
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
 
     def override_key_frame_val_list(self, obj_id, effect_id, key_frame_data):
-        #typeA = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
         self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point = copy.deepcopy(key_frame_data)
-        #typeB = type(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
-        # if typeA != typeB:
-        #    self.operation["error"].action("方が変更されています {0} -> {1}".format(typeA, typeB))
 
     def get_key_frame_val_list(self, obj_id, effect_id):
         return copy.deepcopy(self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].effect_point_internal_id_point)

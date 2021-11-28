@@ -10,7 +10,7 @@ using namespace std;
 namespace py = boost::python;
 namespace np = boost::python::numpy;
 
-#include "../plugin/synthetic/normal.hpp"
+#include "../synthetic/normal.hpp"
 SyntheticNormal synthetic_normal;
 
 namespace ObjectProgress
@@ -86,8 +86,9 @@ namespace ObjectProgress
 
             int *draw = new int[editor_y * editor_x * 3];
 
-            for (int di = 0; di < editor_y * editor_x * 3;di++){
-                draw[di] = 0;  
+            for (int di = 0; di < editor_y * editor_x * 3; di++)
+            {
+                draw[di] = 0;
             }
 
             int now_xy_size[2] = {editor_x, editor_y};
@@ -152,7 +153,6 @@ namespace ObjectProgress
             np::ndarray new_effect_draw_1dimension = new_effect_draw.reshape(shape_size);
 
             py::tuple test_shape_size = py::extract<py::tuple>(new_effect_draw_1dimension.attr("shape"));
-
             int test_shape_size_int = py::extract<int>(test_shape_size[0]);
             cout << "test_shape_size_int " << test_shape_size_int << endl;
 
@@ -225,7 +225,7 @@ namespace ObjectProgress
             cout << "synthetic_func" << endl;
             cout << "effect_draw_size_multiplication " << effect_draw_size_multiplication << endl;
             bool cpptype = python_operation["plugin"]["synthetic"][synthetic_type] == "TypeHppfileDefaultInclude";
-            auto pointer_start = reinterpret_cast<char *>(new_effect_draw_1dimension.get_data());
+            auto pointer_start = reinterpret_cast<uint8_t *>(new_effect_draw_1dimension.get_data());
             auto strides = new_effect_draw_1dimension.get_strides();
             //new_effect_draw_1dimension.get_data()
 
@@ -265,8 +265,6 @@ namespace ObjectProgress
                     Bm = 0;
                 }
 
-                
-
                 int ya = add_draw_range_lu[1];
                 for (int yb = base_draw_range_lu[1]; yb < base_draw_range_rd[1]; yb++)
                 {
@@ -283,18 +281,20 @@ namespace ObjectProgress
                         for (int i = 0; i < 3; i++)
                         {
                             float so = draw_object_draw_base[ipxB + i];
-                            source[i] = so;
+                            source[i] = so / 255;
                         }
                         source[3] = 1;
 
                         for (int i = 0; i < 4; i++)
                         {
                             int ipx = (ya * new_effect_draw_size[0] + xa) * new_effect_draw_size[2] + i;
-                            char *this_draw = pointer_start + ipx;
-                            float ad = *this_draw;
-                            additions[i] = ad;
-                        }
+                            uint8_t *this_draw = pointer_start + ipx;
+                            uint8_t aduint = *this_draw;
+                            float ad = (float)aduint;
+                            additions[i] = ad / 255;
 
+                            //cout << i << " " << ad << " " << additions[i] << endl;
+                        }
 
                         //additions[3] = 1;
 
@@ -307,18 +307,23 @@ namespace ObjectProgress
                         }
 
                         float A = return_calculation[3];
-                        int R = return_calculation[Rm] * A; //透明度反映
-                        int G = return_calculation[Gm] * A;
-                        int B = return_calculation[Bm] * A;
+                        float R = return_calculation[Rm] * 255.0 * A; //透明度反映
+                        float G = return_calculation[Gm] * 255.0 * A;
+                        float B = return_calculation[Bm] * 255.0 * A;
 
-                        draw_object_draw_base[ipxB + 0] = R;
-                        draw_object_draw_base[ipxB + 1] = G;
-                        draw_object_draw_base[ipxB + 2] = B;
+                        int Ra = R;
+                        int Ga = G;
+                        int Ba = B;
+
+                        draw_object_draw_base[ipxB + 0] = Ra;
+                        draw_object_draw_base[ipxB + 1] = Ga;
+                        draw_object_draw_base[ipxB + 2] = Ba;
+
+                        cout << "RGB" << R << " " << G << " " << B << endl;
                         xa++;
                     }
                     ya++;
                 }
-
             }
             else
             {
