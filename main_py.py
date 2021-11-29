@@ -33,6 +33,8 @@ from pysrc import synthetic
 from media_input.video_image import control
 
 from pysrc import audio_control
+import MV_file_control
+
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
@@ -110,6 +112,8 @@ operation["plugin"]["synthetic"] = {}
 typecpp_message = "TypeHppfileDefaultInclude"
 operation["plugin"]["synthetic"]["normal"] = typecpp_message
 operation["SaltBezierCurve"] = SaltBezierCurve
+
+operation["salt_file"] = MV_file_control.SaltFile()
 
 # plugin読み込み終了
 

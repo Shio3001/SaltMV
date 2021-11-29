@@ -29,7 +29,7 @@ class InitialValue:
         setting_effect.various_fixed = {"path": "", "start_f": 0}
         setting_effect.effect_point_path_name = ["path"]
         setting_effect.procedure = CentralRole()
-
+        setting_effect.path_type = {"path": "audio"}
         setting_effect.audio = True
 
 

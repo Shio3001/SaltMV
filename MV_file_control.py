@@ -3,15 +3,16 @@ import cv2
 import numpy as np
 import librosa
 import traceback
+import copy
 
 
 class videoDATA:
     def __init__(self, video, file_name, width, height, video_fps):
         self.video = video
-        self.file_name = file_name
-        self.width = width
-        self.height = height
-        self.video_fps = video_fps
+        self.file_name = copy.deepcopy(file_name)
+        self.width = copy.deepcopy(width)
+        self.height = copy.deepcopy(height)
+        self.video_fps = copy.deepcopy(video_fps)
         self.type = "video"
 
     def get(self, frame):
@@ -20,8 +21,8 @@ class videoDATA:
 
 class imageDATA:
     def __init__(self, image, file_name):
-        self.image = image
-        self.file_name = file_name
+        self.image = copy.deepcopy(image)
+        self.file_name = copy.deepcopy(file_name)
         self.type = "image"
 
     def get(self):
@@ -30,11 +31,11 @@ class imageDATA:
 
 class audioDATA:
     def __init__(self, audio, file_name, channel, frame, sampling_rate):
-        self.audio = audio
-        self.file_name = file_name
-        self.channel = channel
-        self.frame = frame
-        self.sampling_rate = sampling_rate
+        self.audio = copy.deepcopy(audio)
+        self.file_name = copy.deepcopy(file_name)
+        self.channel = copy.deepcopy(channel)
+        self.frame = copy.deepcopy(frame)
+        self.sampling_rate = copy.deepcopy(sampling_rate)
         self.type = "audio"
 
     def get(self):
@@ -46,11 +47,45 @@ class SaltFile:
         self.DATA = {}
 
     def __confirmation_key(self, file_name):  # 存在するかどうかを確認
-        data_key = list(self.DATA.keys())
+        data_key = self.DATA.keys()
 
         ans = file_name in data_key
 
         return ans
+
+    def analysis(self, scenes):
+        object_group = scenes.layer_group.object_group
+        object_group_key = object_group.keys()
+        object_group_val = object_group.values()
+
+        for ogi in object_group_val:
+            effect_group = ogi[0].effect_group
+
+            effect_group_key = effect_group.keys()
+            effect_group_val = effect_group.values()
+
+            for egi in effect_group_val:
+                various_fixed = egi.various_fixed
+                path_type = egi.path_type
+
+                path_type_key = list(path_type.keys())
+                path_type_val = list(path_type.values())
+                path_type_len = len(path_type)
+
+                for pti in range(path_type_len):
+                    ptk = path_type_key[pti]
+                    ptv = path_type_val[pti]
+
+                    vff = various_fixed[ptk]
+
+                    if ptv == "video":
+                        self.input_video(vff)
+
+                    if ptv == "image":
+                        self.input_image(vff)
+
+                    if ptv == "audio":
+                        self.input_audio(vff)
 
     def input_video(self, file_name):
 
@@ -88,7 +123,6 @@ class SaltFile:
             return
 
         try:
-
             image_dataBGR = cv2.imread(file_name)
             video_dataRGBA = cv2.cvtColor(image_dataBGR, cv2.COLOR_BGR2RGBA)
 
@@ -127,6 +161,9 @@ class SaltFile:
             self.DATA[file_name] = audio_data_class
         except:
             traceback.print_exc()
+
+    def get_bool(self, file_name):
+        return self.__confirmation_key(file_name)
 
     def get_data(self, file_name):
         return self.DATA[file_name]

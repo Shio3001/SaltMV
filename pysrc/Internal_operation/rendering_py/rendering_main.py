@@ -11,7 +11,7 @@ import PIL.ImageFont as ImageFont
 import cv2
 import ffmpeg
 import os
-import MV_file_control
+
 # import subprocess
 
 
@@ -26,7 +26,6 @@ class TkStorage:
 
 
 tk_image_control = TkStorage()
-salt_file = MV_file_control.SaltFile()
 
 
 class EffectPluginElements:
@@ -42,6 +41,7 @@ class EffectPluginElements:
         self.editor = editor
         self.operation = operation
         self.audio_control = operation["audio_control"]
+        self.salt_file = operation["salt_file"]
         self.effect_id = effect_id
 
         print("audio_control", self.audio_control)
@@ -51,8 +51,6 @@ class EffectPluginElements:
         self.np = np
 
         self.installation = [installation_sta, installation_end]
-
-        self.salt_file = salt_file
 
     def area_expansion(self, old_draw, x=0, y=0):
         old_size_x = old_draw.shape[1]
@@ -98,8 +96,6 @@ class SceneOutput:
         self.get_set_media_object_group = get_set_media_object_group
         self.scene = self.scene_get(scene_id=scene_id)
 
-        # print(scene_get,make,scene_id,path,self.scene)
-
         self.editor = self.scene.editor
 
         self.x = int(self.scene.editor["x"])
@@ -110,6 +106,9 @@ class SceneOutput:
         # print("self.scene.editor", self.scene.editor)
 
         self.operation = operation
+        self.salt_file = operation["salt_file"]
+
+        self.salt_file.analysis(self.scene)
 
         path_extension = ".mp4"
 
@@ -211,10 +210,10 @@ class SceneOutput:
 
         frame = round(frame)
 
-        print("tktype", type(tk_control.data_image_tk[frame]))
+        print("tktype", type(tk_image_control.data_image_tk[frame]))
         print(tk_cash)
 
-        if not tk_control.data_image_tk[frame] is None and tk_cash:
+        if not tk_image_control.data_image_tk[frame] is None and tk_cash:
             print("キャッシュ生成済み")
             cash_process_flag = True
 
