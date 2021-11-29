@@ -9,7 +9,7 @@ import copy
 class InitialValue:
     def __init__(self, setting_effect):
         setting_effect.effect_name = "透明度"
-        setting_effect.effect_point = {"alpha": 255}
+        setting_effect.effect_point = {"alpha": 100}
         setting_effect.various_fixed = {}
         setting_effect.procedure = CentralRole()
 
@@ -21,8 +21,8 @@ class CentralRole:
 
     def main(self, data):
         # 透明度
-        alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.effect_value["alpha"])
-        print(data.draw[:, :, 3])
-        data.draw[:, :, 3] = alpha_draw
-        print(data.draw[:, :, 3])
+        pro = data.draw[:, :, 3].astype('float64')
+        alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.effect_value["alpha"] / 100)
+        pro *= alpha_draw
+        data.draw[:, :, 3] = pro.astype('uint8')
         return data.draw, self.starting_point
