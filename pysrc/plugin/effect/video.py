@@ -26,19 +26,22 @@ class CentralRole:
 
     def main(self, rendering_main_data):
 
-        if not self.open_status:
-            return rendering_main_data.draw, self.starting_point
+        path = rendering_main_data.various_fixed["path"]
 
         fps_point = rendering_main_data.effect_value["fps_point"]
         fps = rendering_main_data.editor["fps"]
-        print("fps", fps, "video_fps", self.video_fps)
-        if not rendering_main_data.various_fixed["frame_configuration"]:
-            fps_point_editor = fps_point + rendering_main_data.now_frame - rendering_main_data.installation[0]
-            fps_point = round(fps_point_editor * fps / self.video_fps)
 
-        if rendering_main_data.salt_file.get_bool(rendering_main_data.various_fixed["path"]) is False:
-            pass
+        return_draw = None
+        if not rendering_main_data.salt_file.get_bool(path):
+            return_draw = rendering_main_data.draw
         else:
-            rendering_main_data.draw = rendering_main_data.salt_file.get_video(rendering_main_data.various_fixed["path"], int(fps_point))
 
-        return rendering_main_data.draw, self.starting_point
+            video_fps = rendering_main_data.salt_file.get_data(path).video_fps
+
+            if not rendering_main_data.various_fixed["frame_configuration"]:
+                fps_point_editor = fps_point + rendering_main_data.now_frame - rendering_main_data.installation[0]
+                fps_point = round(fps_point_editor * fps / video_fps)
+
+            return_draw = rendering_main_data.salt_file.get_image(path, int(fps_point))
+
+        return return_draw, self.starting_point

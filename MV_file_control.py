@@ -94,7 +94,7 @@ class SaltFile:
             return
 
         try:
-            video_info = ffmpeg.probe(self.file_name)
+            video_info = ffmpeg.probe(file_name)
             width = round(video_info["streams"][0]["width"])
             height = round(video_info["streams"][0]["height"])
             video_fps = round(eval(video_info["streams"][0]["r_frame_rate"]))
@@ -106,7 +106,7 @@ class SaltFile:
                 .run(capture_stdout=True)
             )
 
-            video_dataRGB = np.frombuffer(out, np.uint8).astype('uint8').reshape(-1, self.height, self.width, 3)
+            video_dataRGB = np.frombuffer(out, np.uint8).astype('uint8').reshape(-1, height, width, 3)
             video_dataRGBA = cv2.cvtColor(video_dataRGB, cv2.COLOR_RGB2RGBA)
 
             video_data_class = videoDATA(video_dataRGBA, file_name, width, height, video_fps)

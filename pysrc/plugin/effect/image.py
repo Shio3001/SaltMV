@@ -32,12 +32,10 @@ class CentralRole:
 
         path = rendering_main_data.various_fixed["path"]
 
-        # if not self.open_status:
-        #     self.image_rendering_main_data = rendering_main_data.draw
-
-        if rendering_main_data.salt_file.get_bool(rendering_main_data.various_fixed["path"]) is False:
-            pass
+        return_draw = None
+        if not rendering_main_data.salt_file.get_bool(path):
+            return_draw = rendering_main_data.draw
         else:
-            rendering_main_data.draw = rendering_main_data.salt_file.get_image(rendering_main_data.various_fixed["path"])
+            return_draw = rendering_main_data.salt_file.get_image(path)
 
-        return self.image_rendering_main_data, self.starting_point
+        return return_draw, self.starting_point
