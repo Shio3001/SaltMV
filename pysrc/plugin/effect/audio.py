@@ -61,63 +61,6 @@ class CentralRole:
         #self.mode = None
 
     def setup(self, rendering_main_data, file_name):
-        try:
-
-            #sound_file = None
-
-            if rendering_main_data.check_file_all_control(file_name):
-                send_file_audio = rendering_main_data.get_file_all_control(file_name)
-
-                self.import_data = send_file_audio.audio_numpy
-                self.sound_sampling_rate = send_file_audio.sound_sampling_rate
-                self.sound_frame = send_file_audio.sound_frame  # フレーム数を取得
-                self.sound_channles = send_file_audio.sound_channles
-
-                #self.import_data = rendering_main_data.get_file_all_control(file_name).audio_numpy
-            else:
-                print(" / / / / / / / / / / / / / / / / / / / / / / / / / / / / / setup audio ++ ", file_name)
-
-                self.import_data, sr = librosa.load(file_name, sr=44100, mono=False)  # , mono=False
-
-                print("読み込み終了")
-                print(self.import_data.shape)
-
-                data_shape = self.import_data.shape
-
-                print(len(data_shape))
-
-                if len(data_shape) == 1:
-                    self.sound_channles = 1
-                    self.sound_frame = self.import_data.shape[0]
-
-                else:
-                    self.sound_channles = self.import_data.shape[0]
-                    self.sound_frame = self.import_data.shape[1]
-
-                self.sound_sampling_rate = 44100
-
-                rendering_main_data.add_file_all_control(file_name, SendFileAudio(self.import_data, self.sound_sampling_rate, self.sound_frame, self.sound_channles))
-            #data, samplerate = sf.read('existing_file.wav')
-
-            print("サウンド", self.import_data, len(self.import_data), self.sound_sampling_rate, self.sound_frame, self.sound_channles)
-            print("サウンドshape", self.import_data.shape)
-
-            # file_list
-
-            # print(self.import_data[0:40])
-
-            # チャンネル数が2(ステレオ)の場合、len(self.import_data)はself.sound_frameの二倍になる
-
-            self.now_file = copy.deepcopy(file_name)
-            self.open_status = True
-
-        except:
-            traceback.print_exc()
-            print("エラー発生")
-            self.open_status = False
-
-        print("読み込み状況 :", self.open_status)
-
         self.setup_audio_control(rendering_main_data)
 
     def setup_audio_control(self, rendering_main_data):
