@@ -63,7 +63,7 @@ class InitialValue:
         def project_save():
             self.window_control.edit_control_auxiliary.callback_operation.set_event("text_input_end", send_save, duplicate=False)
             self.window_control.edit_control_auxiliary.callback_operation.event("set_init_val", info="")
-            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request_file_open", info="保存先を入力")
+            self.window_control.edit_control_auxiliary.callback_operation.event("text_input_request_folder_open", info="保存先を入力")
 
         def project_overwrite_save():
             print("send_save")

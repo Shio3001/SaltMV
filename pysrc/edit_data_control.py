@@ -316,7 +316,7 @@ class Storage:
 
     def add_key_frame(self, time, obj_id, key_frame_id, overwrite=True):
         self.add_key_frame_point_onely(time, obj_id, key_frame_id, overwrite)
-        self.add_key_frame_inside_data(obj_id, key_frame_id)
+        self.add_key_frame_inside_data(obj_id, key_frame_id, overwrite)
 
     def add_key_frame_point_onely(self, time, obj_id, key_frame_id, overwrite=True):
         print("add_key_frame_point_onely1", self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_point_internal_id_time)
@@ -463,14 +463,13 @@ class Storage:
 
         # return all_elements, save_location
 
-    def file_output(self, user_select):
+    def file_output(self, send_user_select):
 
         self.callback_operation.event("file_output_before")
 
-        # for layer in self.edit_data.scenes[self.edit_data.now_scene].layer_group.values():
-        #    ##print("layer_obj len:", layer.object_group)
-
-        user_select = self.extension_detection(user_select)
+        now_time = datetime.datetime.now()
+        output_file_name = "output_" + str(now_time.strftime('%y_%m_%H_%M_%S_%f'))
+        user_select = self.extension_detection(os.path.join(send_user_select, output_file_name))
 
         openfile = open(user_select, 'wb')
         pickle.dump(self.edit_data, openfile, protocol=5)
