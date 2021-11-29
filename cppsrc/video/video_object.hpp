@@ -292,8 +292,6 @@ namespace ObjectProgress
                             uint8_t aduint = *this_draw;
                             float ad = (float)aduint;
                             additions[i] = ad / 255;
-
-                            //cout << i << " " << ad << " " << additions[i] << endl;
                         }
 
                         //additions[3] = 1;
@@ -307,19 +305,18 @@ namespace ObjectProgress
                         }
 
                         float A = return_calculation[3];
-                        float R = return_calculation[Rm] * 255.0 * A; //透明度反映
-                        float G = return_calculation[Gm] * 255.0 * A;
-                        float B = return_calculation[Bm] * 255.0 * A;
+                        float R = return_calculation[Rm]; //透明度反映
+                        float G = return_calculation[Gm];
+                        float B = return_calculation[Bm];
 
-                        int Ra = R;
-                        int Ga = G;
-                        int Ba = B;
+                        int Ra = R * 255.0;
+                        int Ga = G * 255.0;
+                        int Ba = B * 255.0;
 
                         draw_object_draw_base[ipxB + 0] = Ra;
                         draw_object_draw_base[ipxB + 1] = Ga;
                         draw_object_draw_base[ipxB + 2] = Ba;
 
-                        cout << "RGB" << R << " " << G << " " << B << endl;
                         xa++;
                     }
                     ya++;

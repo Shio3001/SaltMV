@@ -6,6 +6,10 @@ public:
     }
     float *run(float *calculation, float *source, float *additions) //RGBA // RGBA
     {
+
+        //cout << "source" << source[0] << " " << source[1] << " " << source[2] << " " << source[3] << endl;
+        //cout << "additions" << additions[0] << " " << additions[1] << " " << additions[2] << " " << additions[3] << endl;
+
         //all_calculation[:, :, 3] = source[:, :, 3] * (np01 - additions[:, :, 3]) + additions[:, :, 3]
         calculation[3] = source[3] * (1 - additions[3]) + additions[3];
 
@@ -27,6 +31,8 @@ public:
                 calculation[i] /= calculation[3];
             }
         }
+
+        //cout << "calculation" << calculation[0] << " " << calculation[1] << " " << calculation[2] << " " << calculation[3] << endl;
 
         return &calculation[0];
     }
