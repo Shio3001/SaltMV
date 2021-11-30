@@ -29,7 +29,10 @@ class CentralRole:
         path = rendering_main_data.various_fixed["path"]
 
         fps_point = rendering_main_data.effect_value["fps_point"]
+        fps_point_b = rendering_main_data.before_value["fps_point"]
         fps = rendering_main_data.editor["fps"]
+
+        now_fps = 0
 
         return_draw = None
         if not rendering_main_data.salt_file.get_bool(path):
@@ -39,9 +42,11 @@ class CentralRole:
             video_fps = rendering_main_data.salt_file.get_data(path).video_fps
 
             if not rendering_main_data.various_fixed["frame_configuration"]:
-                fps_point_editor = fps_point + rendering_main_data.now_frame - rendering_main_data.installation[0]
-                fps_point = round(fps_point_editor * video_fps / fps)
+                fps_point_editor = rendering_main_data.now_frame - rendering_main_data.installation[0]
+                now_fps = round(fps_point_editor * video_fps / fps) + fps_point_b
 
-            return_draw = rendering_main_data.salt_file.get_video(path, int(fps_point))
+            print("書き出し番号:fps_point", now_fps)
+
+            return_draw = rendering_main_data.salt_file.get_video(path, int(now_fps))
 
         return return_draw, self.starting_point

@@ -7,8 +7,9 @@ import copy
 
 
 class videoDATA:
-    def __init__(self, video, file_name, width, height, video_fps, video_frame):
-        self.video = video
+    def __init__(self, cap, file_name, width, height, video_fps, video_frame):
+        self.cap = cap
+        self.video = [None] * video_frame
         self.file_name = copy.deepcopy(file_name)
         self.width = copy.deepcopy(width)
         self.height = copy.deepcopy(height)
@@ -16,8 +17,14 @@ class videoDATA:
         self.video_frame = copy.deepcopy(video_frame)
         self.type = "video"
 
-    def get(self, frame):
-        return self.file_name[frame]
+    def data_get(self, frame):
+
+        if self.video[frame] is None:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
+            ret, video_dataBGR = self.cap.read()
+            self.video[frame] = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
+
+        return self.video[frame]
 
 
 class imageDATA:
@@ -26,7 +33,7 @@ class imageDATA:
         self.file_name = copy.deepcopy(file_name)
         self.type = "image"
 
-    def get(self):
+    def data_get(self):
         return self.iamge
 
 
@@ -39,7 +46,7 @@ class audioDATA:
         self.sampling_rate = copy.deepcopy(sampling_rate)
         self.type = "audio"
 
-    def get(self):
+    def data_get(self):
         pass
 
 
@@ -107,16 +114,9 @@ class SaltFile:
             video_fps = cap.get(cv2.CAP_PROP_FPS)
             video_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-            video = [None] * video_frame
-
-            for i in range(video_frame):
-                ret, video_dataBGR = cap.read()
-                video_dataRGBA = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
-                video[i] = video_dataRGBA
-
             print("RGB変換終了", width, height, video_fps, video_frame)
 
-            video_data_class = videoDATA(video, file_name, width, height, video_fps, video_frame)
+            video_data_class = videoDATA(cap, file_name, width, height, video_fps, video_frame)
 
             self.DATA[file_name] = video_data_class
 
@@ -177,10 +177,16 @@ class SaltFile:
 
     def get_video(self, file_name, frame):
 
-        if self.DATA[file_name].video_frame <= frame:
-            return self.DATA[file_name].video[-1]
+        frame = int(frame)
 
-        return self.DATA[file_name].video[frame]
+        if self.DATA[file_name].video_frame <= frame:
+            frame = -1
+
+        print("フレーム要求", frame)
+
+        return_data = self.DATA[file_name].data_get(frame)
+
+        return return_data
 
     def get_image(self, file_name):
         return self.DATA[file_name].image
