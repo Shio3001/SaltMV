@@ -38,6 +38,6 @@ class CentralRole:
 
         print(p2.shape)
 
-        data.draw = p2
+        data.draw = p2.astype('uint8')
 
         return data.draw, self.starting_point
