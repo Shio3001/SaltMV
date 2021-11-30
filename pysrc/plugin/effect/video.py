@@ -40,7 +40,7 @@ class CentralRole:
 
             if not rendering_main_data.various_fixed["frame_configuration"]:
                 fps_point_editor = fps_point + rendering_main_data.now_frame - rendering_main_data.installation[0]
-                fps_point = round(fps_point_editor * fps / video_fps)
+                fps_point = round(fps_point_editor * video_fps / fps)
 
             return_draw = rendering_main_data.salt_file.get_video(path, int(fps_point))
 

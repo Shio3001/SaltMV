@@ -165,6 +165,8 @@ class InitialValue:
             sta = scrollbar_sta_end[0]
             end = scrollbar_sta_end[1]
 
+            print(sta, end)
+
             # print("scroll_data.ratio_f", scroll_data.ratio_f)
 
             make_data.output_main(sta, end)

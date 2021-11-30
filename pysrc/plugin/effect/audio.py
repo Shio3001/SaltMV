@@ -56,14 +56,15 @@ class CentralRole:
 
         self.run_flag = False
 
-        self.start_f = None
-
         #self.mode = None
 
     def setup(self, rendering_main_data, file_name):
-        self.setup_audio_control(rendering_main_data)
 
-    def setup_audio_control(self, rendering_main_data):
+        self.open_status = rendering_main_data.salt_file.get_bool(file_name)
+
+        self.setup_audio_control(rendering_main_data, file_name)
+
+    def setup_audio_control(self, rendering_main_data, file_name):
 
         if not self.open_status:
             return
@@ -72,6 +73,12 @@ class CentralRole:
 
         now_inside_second = self.start_f / self.fps
         end_inside_second = (self.start_f + self.installation_end - self.installation_sta) / self.fps
+
+        self.get_data = rendering_main_data.salt_file.get_data(file_name)
+
+        self.sound_channles = self.get_data.channel
+        self.sound_sampling_rate = self.get_data.sampling_rate
+        self.import_data = self.get_data.audio
 
         conversion_rate = self.sound_channles * self.sound_sampling_rate
 
@@ -88,7 +95,6 @@ class CentralRole:
         self.installation_end = rendering_main_data.installation[1]
 
         self.fps = rendering_main_data.editor["fps"]
-        #rendering_main_data = rendering_main_data
         path = rendering_main_data.various_fixed["path"]
 
         existence = rendering_main_data.audio_control.audio_individual_data_existence(rendering_main_data.effect_id)
@@ -97,14 +103,14 @@ class CentralRole:
             self.setup(rendering_main_data, path)
 
         elif int(rendering_main_data.various_fixed["start_f"]) != self.start_f or not existence:
-            self.setup_audio_control(rendering_main_data)
+            self.setup_audio_control(rendering_main_data, path)
 
         if self.open_status:
             sf, ef = rendering_main_data.audio_control.get_installation(rendering_main_data.effect_id)
             installation_consistency = sf == self.installation_sta and ef == self.installation_end
 
             if not installation_consistency:
-                self.setup_audio_control(rendering_main_data)
+                self.setup_audio_control(rendering_main_data, path)
 
         return rendering_main_data.draw, self.starting_point
 

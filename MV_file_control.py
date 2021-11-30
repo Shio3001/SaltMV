@@ -176,6 +176,10 @@ class SaltFile:
         return self.DATA[file_name]
 
     def get_video(self, file_name, frame):
+
+        if self.DATA[file_name].video_frame <= frame:
+            return self.DATA[file_name].video[-1]
+
         return self.DATA[file_name].video[frame]
 
     def get_image(self, file_name):
