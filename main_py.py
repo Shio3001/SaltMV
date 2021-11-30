@@ -34,7 +34,7 @@ from media_input.video_image import control
 
 from pysrc import audio_control
 import MV_file_control
-
+from pysrc import Font
 
 now_path = os.getcwd()
 start_time = datetime.datetime.now()
@@ -114,7 +114,8 @@ operation["plugin"]["synthetic"]["normal"] = typecpp_message
 operation["SaltBezierCurve"] = SaltBezierCurve
 
 operation["salt_file"] = MV_file_control.SaltFile()
-
+#operation["font"] = Font.FontControl()
+operation["font"] = None
 # plugin読み込み終了
 
 

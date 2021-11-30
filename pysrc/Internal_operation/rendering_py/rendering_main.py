@@ -13,8 +13,6 @@ import ffmpeg
 import os
 import gc
 
-# import subprocess
-
 
 class TkStorage:
     def __init__(self):
@@ -44,6 +42,8 @@ class EffectPluginElements:
         self.audio_control = operation["audio_control"]
         self.salt_file = operation["salt_file"]
         self.effect_id = effect_id
+
+        #self.font_name, self.font_data = operation["font"].get_font()
 
         print("audio_control", self.audio_control)
 

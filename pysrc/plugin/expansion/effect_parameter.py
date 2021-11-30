@@ -141,7 +141,7 @@ class InitialValue:
                 text = TextReceiveVariousFixed(self.window_control, media_id, element.effect_id, vk, stack_add)
                 self.window_control.ui_management.new_parameter_ui(self.now, canvas_name="parameter", parts_name="parameter")
 
-                file_path = True if vk == "path" else False
+                file_path = vk == "path"
 
                 self.window_control.ui_management.ui_list[self.now].parameter_ui_set(motion=False, column=self.now, text=vk, text_a=vv, text_b=None, text_a_return=text.text_func, text_fixed=True, file_path=file_path)
                 self.now += 1

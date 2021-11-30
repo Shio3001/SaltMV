@@ -19,7 +19,8 @@ class SendWindowData:  # window生成のためのデータ
         self.GUI_base_color = "#1a1a1a"
         self.GUI_alpha_color = "#000000"
 
-        self.font_data = edit_control_auxiliary.font_data
+        #self.font_data = edit_control_auxiliary.font_data
+        self.font_data = None
 
         if not self.main_window is None:
             self.window = tk.Toplevel(self.main_window)
@@ -189,7 +190,7 @@ class SendWindowData:  # window生成のためのデータ
 
         if parts_name == "timeline_object":
             new_parts_obj = self.UI_parts[parts_name].parts(new_UIdata)
-            #new_parts_obj.after_setup()
+            # new_parts_obj.after_setup()
             return new_parts_obj
 
         # new_UIdata.new_territory()
