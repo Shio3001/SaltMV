@@ -11,6 +11,7 @@ import PIL.ImageFont as ImageFont
 import cv2
 import ffmpeg
 import os
+import gc
 
 # import subprocess
 
@@ -309,18 +310,12 @@ class SceneOutput:
             export_draw = self.cpp_encode.execution_main(f).astype('uint8').reshape(self.y, self.x, 3)
             f_time_end = datetime.datetime.now()
             print("f_time", f_time_end - f_time_sta)
-            # print("\r書き出しを行っています [python - opencv - numpy] 処理時間: {7} 現在: {5} 範囲: {3} - {4} 進捗: {0} / {1} 進捗率: {2} % {6}".format(f + 1, end, print_percent(), sta, end, f+1, np_zero, print_time()), end='')
-
-            # output_data = cv2.cvtColor(export_draw.astype('uint8'), cv2.COLOR_RGBA2BGR)
-            #output_dataBGR = self.del_alpha(export_draw)
-
-            #output_data = cv2.cvtColor(export_draw, cv2.COLOR_BGR2RGB)
 
             self.writer.write(export_draw)
+            del export_draw
+            gc.collect()
 
         self.writer.release()
-        # file_all_control = {}
-        print(tk_image_control.file_all_control)
 
         print("音源処理開始 [ffmpeg - python] *********")
 

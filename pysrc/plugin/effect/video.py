@@ -42,6 +42,6 @@ class CentralRole:
                 fps_point_editor = fps_point + rendering_main_data.now_frame - rendering_main_data.installation[0]
                 fps_point = round(fps_point_editor * fps / video_fps)
 
-            return_draw = rendering_main_data.salt_file.get_image(path, int(fps_point))
+            return_draw = rendering_main_data.salt_file.get_video(path, int(fps_point))
 
         return return_draw, self.starting_point
