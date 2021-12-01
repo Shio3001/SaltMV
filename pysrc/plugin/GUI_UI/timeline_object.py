@@ -321,7 +321,7 @@ class parts:
         self.popup.set(popup_list)
 
     def copy_object(self):
-        self.callback_operation.event("media_object_copy_entry", info=self.UI_auxiliary.option_data["media_id"])
+        self.UI_auxiliary.edit_control_auxiliary.callback_operation.event("media_object_copy_entry", info=self.UI_auxiliary.option_data["media_id"])
 
     def media_object_separate(self):
         frame = self.pxf.px_to_f(self.popup_click_position[0])

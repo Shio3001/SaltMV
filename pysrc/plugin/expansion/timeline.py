@@ -355,6 +355,9 @@ class InitialValue:
 
         self.media_object_copy_media_id = None
 
+        def media_object_get_copy_id(info=None):
+            return self.media_object_copy_media_id
+
         def media_object_copy_entry(info):
             media_id = info
             self.media_object_copy_media_id = media_id
@@ -364,19 +367,39 @@ class InitialValue:
             if self.media_object_copy_media_id is None:
                 return
 
-            layer_id = info
+            layer_number = info
 
             scroll_data = self.window_control.timeline_object[self.media_object_copy_media_id].pxf.get_event_data()
-            from_f_pos = self.scrollbar_sta_end[0]
+
+            from_f_pos = self.window_control.edit_control_auxiliary.get_now_time()
+            from_f_size = scroll_data.ratio_f[1] - scroll_data.ratio_f[0]
 
             copy_obj, layer_id = self.window_control.edit_control_auxiliary.copy_object_elements(self.media_object_copy_media_id, sta=from_f_pos, end=scroll_data.ratio_f[1])
-            layer_number = self.window_control.edit_control_auxiliary.layer_id_to_layer_number(layer_id)
-            make_object(copy_obj.obj_id, sta=from_f_pos, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
+            #layer_number = self.window_control.edit_control_auxiliary.layer_id_to_layer_number(layer_id)
+            make_object(copy_obj.obj_id, sta=from_f_pos, end=from_f_pos + from_f_size, layer_number=layer_number)
+
+            items = copy.deepcopy(self.window_control.timeline_object[self.media_object_copy_media_id].pxf.sub_point_f).items()
+
+            for k, v in items:
+                frame = copy.deepcopy(self.window_control.timeline_object[self.media_object_copy_media_id].pxf.sub_point_f[k])
+                frame_section = frame - scroll_data.ratio_f[0]
+                push_pos = from_f_pos + frame_section
+
+                if k == "default_end" or k == "default_sta":
+                    #self.window_control.edit_control_auxiliary.del_key_frame_point(self.media_object_copy_media_id, k)
+                    continue
+
+                #self.window_control.timeline_object[self.media_object_copy_media_id].callback_operation.event("tihs_del_{0}".format(k), info=False)
+                self.window_control.timeline_object[copy_obj.obj_id].make_KeyFrame(uu_id=k, pos_f=push_pos)
+                self.window_control.edit_control_auxiliary.add_key_frame_point_onely(push_pos, copy_obj.obj_id, k)
 
             self.media_object_copy_media_id = None
 
-        self.callback_operation.set_event("media_object_copy_entry", media_object_copy_entry)
-        self.callback_operation.set_event("media_object_copy_run", media_object_copy_run)
+            stack_add_timelime_media(add_type="add", media_id=copy_obj.obj_id)
+
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("media_object_get_copy_id", media_object_get_copy_id)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("media_object_copy_entry", media_object_copy_entry)
+        self.window_control.edit_control_auxiliary.callback_operation.set_event("media_object_copy_run", media_object_copy_run)
 
         def reflect_timeline_to_movie(scroll_data):
             media_id = scroll_data.option_data["media_id"]

@@ -40,17 +40,28 @@ class parts:
         self.popup = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
 
         def media_object_paste():
-            self.callback_operation.event("media_object_copy_run", info=UI_auxiliary.num)
+            UI_auxiliary.edit_diagram_color("background", "#aaaaaa")
+            UI_auxiliary.timeline_nowtime_approval_False()
+            UI_auxiliary.edit_control_auxiliary.callback_operation.event("media_object_copy_run", info=UI_auxiliary.num)
+            UI_auxiliary.timeline_nowtime_approval_True()
 
-        add_media_obj_list = ["メディアオブジェクト追加", add_media_obj, "貼り付け", media_object_paste]
+        add_media_obj_list = ["メディアオブジェクト追加", add_media_obj]
+        copy_media_obj_list = ["貼り付け", media_object_paste]
 
-        popup_list = [add_media_obj_list]
+        popup_list = [add_media_obj_list, copy_media_obj_list]
         self.popup.set(popup_list)
 
         def set_right_click_pop(e=None):
             print("set_right_click_pop")
 
             UI_auxiliary.edit_diagram_color("background", "#bbbbbb")
+
+            copy_id = UI_auxiliary.edit_control_auxiliary.callback_operation.event("media_object_get_copy_id")["media_object_get_copy_id"]
+
+            if copy_id is None:
+                self.popup.edit_bool_twice("貼り付け", False)
+            else:
+                self.popup.edit_bool_twice("貼り付け", True)
 
             mouse, _, _, xy = UI_auxiliary.window_event_data["contact"]()
             UI_auxiliary.popup_click_position, _, _ = UI_auxiliary.get_diagram_contact("background")
