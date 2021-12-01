@@ -150,7 +150,7 @@ class InitialValue:
             #editor_func_name, editor_func_val = editor_func_send
             scene_id = self.window_control.edit_control_auxiliary.scene_id()
             make_data = self.operation["rendering_py"]["main"].make(scene_id, output_file_path())
-            make_data.output_main()
+            make_data.output_OpenCV()
 
             # make_data.output_OpenCV()
 
@@ -169,7 +169,7 @@ class InitialValue:
 
             # print("scroll_data.ratio_f", scroll_data.ratio_f)
 
-            make_data.output_main(sta, end)
+            make_data.output_OpenCV(sta, end)
             # make_data.output_OpenCV()
 
         def edit_data_del():

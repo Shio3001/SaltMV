@@ -184,7 +184,7 @@ namespace EffectProgress
 
                 //ここら辺floatじゃないと精密さが失われて中間点を経由する時に誤差が出る
                 //なお被演算数値がどちらもint型だと出力もintになってしまうので注意
-                int pos = now_section + before;
+                float pos = now_section + before;
                 effect_value[before_value_key[i]] = pos;
 
                 string test_text = py::extract<string>(before_value_key[i]);

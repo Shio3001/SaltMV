@@ -21,17 +21,19 @@ class CentralRole:
 
     def main(self, data):
 
-        if data.draw_size["x"] == 0 or data.draw_size["y"] == 1:
+        if data.draw_size["x"] == 0 or data.draw_size["y"] == 0:
             return data.draw, self.starting_point
 
         size_x = data.effect_value["size_x"]
         size_y = data.effect_value["size_y"]
 
+        print("size_x, size_y", size_x, size_y)
+
         if data.various_fixed["size_lnk"] == True:
             size_y = size_x
 
-        resize_value = [math.floor(size_x * 0.01 * data.draw_size["x"]), math.floor(size_y * 0.01 * data.draw_size["y"])]
+        resize_value = (math.floor(size_x * 0.01 * data.draw_size["x"]), math.floor(size_y * 0.01 * data.draw_size["y"]))
 
-        data.draw = data.cv2.resize(data.draw, (resize_value))
+        data.draw = data.cv2.resize(data.draw, resize_value)
 
         return data.draw, self.starting_point

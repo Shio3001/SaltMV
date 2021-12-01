@@ -16,11 +16,13 @@ import gc
 
 class TkStorage:
     def __init__(self):
-        self.data_image_tk = None
+        self.tk_frame_len = 0
+        self.data_image_tk = [None]
         self.tk_setup_flag = False
 
     def setup_data_image_tk(self, tk_long):
         self.data_image_tk = [None] * tk_long
+        self.tk_frame_len = tk_long
         self.tk_setup_flag = True
 
 
@@ -121,7 +123,7 @@ class SceneOutput:
 
         self.func = {}
         self.func["scene_make"] = make
-        self.func["main"] = self.output_main
+        #self.func["main"] = self.output_main
         self.func["frame"] = self.output_frame
         self.func["tk"] = self.output_tk
         self.func["out"] = self.output_OpenCV
@@ -163,25 +165,25 @@ class SceneOutput:
     def layer_id_number(self, layer_id):
         return self.scene.layer_group.layer_layer_id[layer_id]
 
-    def output_main(self, sta=None, end=None):
+    # def output_main(self, sta=None, end=None):
 
-        start_time = datetime.datetime.now()
+    #     start_time = datetime.datetime.now()
 
-        if sta is None:
-            sta = 0
-        if end is None:
-            end = self.frame
+    #     if sta is None:
+    #         sta = 0
+    #     if end is None:
+    #         end = self.frame
 
-        # self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
+    #     # self.data_image[sta:end] = self.cpp_encode.execution_main(-1,-1)
 
-        end_time = datetime.datetime.now()
+    #     end_time = datetime.datetime.now()
 
-        repair = end_time - start_time
+    #     repair = end_time - start_time
 
-        print("本処理 [ python / C++ ] [ boost ] {0}".format(repair))
+    #     print("本処理 [ python / C++ ] [ boost ] {0}".format(repair))
 
-        self.output_OpenCV(sta, end)
-        # s
+    #     self.output_OpenCV(sta, end)
+    #     # s
 
     def output_frame(self, frame=None):
         frame = round(frame)
@@ -206,6 +208,9 @@ class SceneOutput:
         # <class 'NoneType'>
 
         # type(data_image_tk[frame]) is NoneType
+
+        if frame > tk_image_control.tk_frame_len:
+            return
 
         cash_process_flag = False
 
@@ -261,6 +266,10 @@ class SceneOutput:
 
     def get_image_tk(self, frame):
         frame = round(frame)
+
+        if frame > tk_image_control.tk_frame_len:
+            return
+
         image_tk = tk_image_control.data_image_tk[frame]
         return image_tk
 
@@ -303,6 +312,8 @@ class SceneOutput:
         # np_zero = ""
 
         # self.audio_control.addition_process()
+
+        print("sta, end", sta, end)
 
         for f in range(sta, end):
 

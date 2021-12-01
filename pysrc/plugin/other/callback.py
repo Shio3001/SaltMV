@@ -60,7 +60,7 @@ class CallBack:
             print("呼び出し先[callback]", self.__event_data[name], inspect.stack()[1].filename, inspect.stack()[1].function, len(self.__event_data[name]))
 
         if not name in self.__event_data.keys():
-            print("返送", name, inspect.stack()[1].filename, inspect.stack()[1].function)
+            #print("返送", name, inspect.stack()[1].filename, inspect.stack()[1].function)
             return
 
         # print("実行")
