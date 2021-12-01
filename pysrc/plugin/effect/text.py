@@ -29,12 +29,12 @@ class CentralRole:
 
         path = rendering_main_data.various_fixed["path"]
         text = rendering_main_data.various_fixed["text"]
-        R = rendering_main_data.effect_value["R"]
-        G = rendering_main_data.effect_value["G"]
-        B = rendering_main_data.effect_value["B"]
-        X = rendering_main_data.effect_value["X"] + dsx / 2
-        Y = rendering_main_data.effect_value["Y"] + dsy / 2
-        size = rendering_main_data.effect_value["size"]
+        R = int(rendering_main_data.effect_value["R"])
+        G = int(rendering_main_data.effect_value["G"])
+        B = int(rendering_main_data.effect_value["B"])
+        X = int(rendering_main_data.effect_value["X"] + dsx / 2)
+        Y = int(rendering_main_data.effect_value["Y"] + dsy / 2)
+        size = int(rendering_main_data.effect_value["size"])
 
         im = Image.new("RGBA", (dsx, dsy), (R, G, B, 0))  # Imageインスタンスを作る
         draw_pillow = ImageDraw.Draw(im)  # im上のImageDrawインスタンスを作る

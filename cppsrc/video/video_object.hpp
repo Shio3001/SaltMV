@@ -278,12 +278,17 @@ namespace ObjectProgress
                         float source[4];
                         float additions[4];
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            float so = draw_object_draw_base[ipxB + i];
-                            source[i] = so / 255;
-                        }
-                        source[3] = 1;
+                        // for (int i = 0; i < 3; i++)
+                        // {
+                        float draw_baseR = draw_object_draw_base[ipxB + Rm];
+                        float draw_baseG = draw_object_draw_base[ipxB + Gm];
+                        float draw_baseB = draw_object_draw_base[ipxB + Bm];
+                        float draw_baseA = 1;
+
+                        source[0] = draw_baseR / 255;
+                        source[1] = draw_baseG / 255;
+                        source[2] = draw_baseB / 255;
+                        source[3] = draw_baseA;
 
                         for (int i = 0; i < 4; i++)
                         {
