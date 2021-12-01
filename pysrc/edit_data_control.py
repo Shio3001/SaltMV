@@ -421,6 +421,8 @@ class Storage:
         self.callback_operation.event("preview_setup")
         self.callback_operation.event("file_input_after")
 
+        self.callback_operation.event("cash_clear")
+
         return save_path
 
         # return all_elements, save_location

@@ -4,6 +4,7 @@ import numpy as np
 import librosa
 import traceback
 import copy
+import sys
 
 
 class videoDATA:
@@ -17,11 +18,21 @@ class videoDATA:
         self.video_frame = copy.deepcopy(video_frame)
         self.type = "video"
 
+        print("videoDATA", self.file_name)
+
+        sys.exit()
+
     def data_get(self, frame):
+
+        if self.video_frame <= frame:
+            frame = self.video_frame - 1
+
+        print(len(self.video[frame]), frame)
 
         if self.video[frame] is None:
             self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
             ret, video_dataBGR = self.cap.read()
+            print("ret", ret)
             self.video[frame] = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
 
         return self.video[frame]
@@ -178,9 +189,6 @@ class SaltFile:
     def get_video(self, file_name, frame):
 
         frame = int(frame)
-
-        if self.DATA[file_name].video_frame <= frame:
-            frame = -1
 
         print("フレーム要求", frame)
 
