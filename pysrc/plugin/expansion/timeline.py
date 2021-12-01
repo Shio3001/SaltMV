@@ -372,7 +372,7 @@ class InitialValue:
             scroll_data = self.window_control.timeline_object[self.media_object_copy_media_id].pxf.get_event_data()
 
             from_f_pos = self.window_control.edit_control_auxiliary.get_now_time()
-            from_f_size = scroll_data.ratio_f[1] - scroll_data.ratio_f[0]
+            from_f_size = scroll_data.ratio_f[1]
 
             copy_obj, layer_id = self.window_control.edit_control_auxiliary.copy_object_elements(self.media_object_copy_media_id, sta=from_f_pos, end=scroll_data.ratio_f[1])
             #layer_number = self.window_control.edit_control_auxiliary.layer_id_to_layer_number(layer_id)
@@ -395,6 +395,8 @@ class InitialValue:
 
             self.media_object_copy_media_id = None
 
+            new_layer_id = self.window_control.edit_control_auxiliary.layer_number_to_layer_id(layer_number)
+            self.window_control.edit_control_auxiliary.layer_id_set(copy_obj.obj_id, new_layer_id)
             stack_add_timelime_media(add_type="add", media_id=copy_obj.obj_id)
 
         self.window_control.edit_control_auxiliary.callback_operation.set_event("media_object_get_copy_id", media_object_get_copy_id)
@@ -438,6 +440,7 @@ class InitialValue:
             # old_data = self.window_control.edit_control_auxiliary.media_object_had_layer(new_object.obj_id)
             # stack_add("add", old_data)
             stack_add_timelime_media(add_type="add", media_id=new_object.obj_id)
+
             # stack_add_timelime_keyframe(add_type="lord", media_id=new_object.obj_id)
 
         def layer_updown(mouse_pos):  # この関数重たそうだから要調整かな

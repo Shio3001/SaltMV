@@ -179,7 +179,30 @@ namespace EffectProgress
                 float rx = py::extract<float>(easing_data.attr("rx"));
                 float ry = py::extract<float>(easing_data.attr("ry"));
 
-                float now_y_rate = BezierFunction(rate, 0, gy, ry, 100) / 100;
+                float sample0 = BezierFunction(0, 0, gy, ry, 100);
+                float sample1 = BezierFunction(0.25, 0, gy, ry, 100);
+                float sample2 = BezierFunction(0.5, 0, gy, ry, 100);
+                float sample3 = BezierFunction(0.75, 0, gy, ry, 100);
+                float sample4 = BezierFunction(1, 0, gy, ry, 100);
+
+                cout << rate << " " << gx << " " << gy << " " << rx << " " << ry << endl;
+
+                cout << "BezierFunctionSample"
+                     << " " << sample0 << " " << sample1 << " " << sample2 << " " << sample3 << " " << sample4 << endl;
+
+                float now_y_rate;
+
+                if (gx == gy && rx == ry)
+                {
+                    now_y_rate = rate;
+                }
+                else
+                {
+                    now_y_rate = BezierFunction(rate, 0, gy, ry, 100) / 100;
+                }
+
+                cout << "now_y_rate" << now_y_rate << endl;
+
                 float now_section = all_section * now_y_rate;
 
                 //ここら辺floatじゃないと精密さが失われて中間点を経由する時に誤差が出る
@@ -197,7 +220,7 @@ namespace EffectProgress
 
             //string effect_id =
 
-           // if (cpp == "py"){
+            // if (cpp == "py"){
             cout << "effect_plugin_elements" << endl;
             py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
             cout << "procedure_return" << endl;
@@ -211,7 +234,7 @@ namespace EffectProgress
             //     cout << "procedure_return" << endl;
             //     py::object main_function = procedure.attr("main");
             //     cout << "procedure_return2" << endl;
-            //     py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));        
+            //     py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
             // }
             // else{
 
