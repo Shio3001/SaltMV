@@ -14,6 +14,7 @@ import time
 import sounddevice
 import wave
 import cv2
+import signal
 
 
 class InitialValue:

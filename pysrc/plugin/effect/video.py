@@ -41,7 +41,10 @@ class CentralRole:
 
             video_fps = rendering_main_data.salt_file.get_data(path).video_fps
 
-            if not rendering_main_data.various_fixed["frame_configuration"]:
+            if rendering_main_data.various_fixed["frame_configuration"]:
+                now_fps = round(fps_point)
+
+            elif not rendering_main_data.various_fixed["frame_configuration"]:
                 fps_point_editor = rendering_main_data.now_frame - rendering_main_data.installation[0]
                 now_fps = round(fps_point_editor * video_fps / fps) + fps_point_b
 
