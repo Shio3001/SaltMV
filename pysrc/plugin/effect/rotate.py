@@ -5,6 +5,12 @@ import copy
 import cv2
 import numpy as np
 # 削除厳禁！
+# coding:utf-8
+from PIL import Image, ImageDraw, ImageFilter, ImageTk
+import PIL.Image as Image
+import PIL.ImageDraw as ImageDraw
+import PIL.ImageFont as ImageFont
+import numpy as np
 
 
 class InitialValue:
@@ -20,35 +26,22 @@ class CentralRole:
         self.starting_point = [0, 0]
         # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に現在のフレーム, 第五引数にエディタ情報, 操作一覧
 
-    def main(self, data):
-        draw_size = tuple(map(int, data.draw_size.values()))
-        center = (draw_size[0] / 2 + data.effect_value["rotate_center_x"], draw_size[1] / 2 + data.effect_value["rotate_center_y"])
+    def main(self, rendering_main_data):
+        draw_size = tuple(map(int, rendering_main_data.draw_size.values()))
+        center = (draw_size[0] / 2 + rendering_main_data.effect_value["rotate_center_x"], draw_size[1] / 2 + rendering_main_data.effect_value["rotate_center_y"])
 
-        rotate_list = [[self.rotate_z, data.effect_value["rotate_z"]]]
+        angle = rendering_main_data.effect_value["rotate_z"]
+        PILdraw = Image.fromarray(rendering_main_data.draw)  # ImageTkフォーマットへ変換
+        PILdraw = self.rotate_z(PILdraw, center, angle)
 
-        for i in rotate_list:
-            data.draw = i[0](data, data.draw, draw_size, center, i[1])
+        rendering_main_data.draw = np.array(PILdraw, dtype=np.uint8)
 
-        return data.draw, self.starting_point
+        return rendering_main_data.draw, self.starting_point
 
-    def rotate_z(self, data, draw, draw_size, center, angle):
+    def rotate_z(self, PILdraw, center, angle):
 
-        print("draw.shape", draw.shape, draw_size)
-
-        rotate_sin = abs(np.sin(angle))
-
-        expansion_draw_size = (int(draw_size[0] + draw_size[0] * rotate_sin), int(draw_size[1] + draw_size[1] * rotate_sin))
-
-        print("expansion_draw_size", expansion_draw_size, rotate_sin)
-
-        # getRotationMatrix2D関数を使用
-        trans = data.cv2.getRotationMatrix2D(center, angle, 1.0)
-        # アフィン変換
-        draw = data.cv2.warpAffine(draw, trans, expansion_draw_size)
-
-        print("draw.shape", draw.shape)
-
-        return draw
+        PILdraw2 = PILdraw.rotate(angle, expand=True, center=center)
+        return PILdraw2
 
     def rotate_x(self, draw):
         return draw
