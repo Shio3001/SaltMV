@@ -33,12 +33,18 @@ class CentralRole:
 
     def rotate_z(self, data, draw, draw_size, center, angle):
 
-        print("draw.shape", draw.shape)
+        print("draw.shape", draw.shape, draw_size)
+
+        rotate_sin = abs(np.sin(angle))
+
+        expansion_draw_size = (int(draw_size[0] + draw_size[0] * rotate_sin), int(draw_size[1] + draw_size[1] * rotate_sin))
+
+        print("expansion_draw_size", expansion_draw_size, rotate_sin)
 
         # getRotationMatrix2D関数を使用
         trans = data.cv2.getRotationMatrix2D(center, angle, 1.0)
         # アフィン変換
-        draw = data.cv2.warpAffine(draw, trans, draw_size)
+        draw = data.cv2.warpAffine(draw, trans, expansion_draw_size)
 
         print("draw.shape", draw.shape)
 
