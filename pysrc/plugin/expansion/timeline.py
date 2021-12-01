@@ -797,43 +797,38 @@ class InitialValue:
             self.run_button.edit_diagram_text("text", text="停止")
             self.run_button.edit_diagram_color("background", "#992222")
 
-            process_time = self.window_control.edit_control_auxiliary.get_now_time()
+            self.process_time = self.window_control.edit_control_auxiliary.get_now_time()
             fps = self.window_control.edit_control_auxiliary.scene_editor()["fps"]
             mov_len = self.window_control.edit_control_auxiliary.scene_editor()["len"]
             one_fps = 1 / fps
 
             self.window_control.edit_control_auxiliary.callback_operation.event("sound_init")
 
-            while True:
-                if process_time >= mov_len or self.time_lime_space_flag == 0:
-                    break
-
-                print("再生", process_time)
+            def task(arg1, arg2):
+                print("再生", self.process_time)
 
                 sta_section_time = time.time()
 
-                self.window_control.edit_control_auxiliary.callback_operation.event("preview", info=(process_time, True))
-                self.nowtime_bar.preview_frame_set(process_time)
+                self.window_control.edit_control_auxiliary.callback_operation.event("preview", info=(self.process_time, True))
+                self.nowtime_bar.preview_frame_set(self.process_time)
 
                 update_section_time = time.time()
-
-                # if not self.window_control.edit_control_auxiliary.scene_editor()["preview"] == "opencv":
                 self.window_control.window.update()
 
                 end_section_time = time.time()
                 section = end_section_time - sta_section_time
+                print("sleep_time ", section, "うちupdate時間 :", end_section_time - update_section_time, "update直接以外の時間 :", update_section_time - sta_section_time)
 
-                sleep_time = one_fps - section
-                print("sleep_time ", sleep_time, one_fps, section, "うちupdate時間 :", end_section_time - update_section_time, "update直接以外の時間 :", update_section_time - sta_section_time)
+                self.process_time += 1
 
-                if sleep_time > 0:
-                    print(sleep_time)
-                    time.sleep(sleep_time)
+            signal.signal(signal.SIGALRM, task)
+            signal.setitimer(signal.ITIMER_REAL, 0.1, one_fps)
 
-                fps_end_section_time = time.time()
-                print("fps_time ", fps_end_section_time - sta_section_time)
+            while True:
+                if process_time >= mov_len or self.time_lime_space_flag == 0:
+                    return
 
-                process_time += 1
+                time.sleep(1)
 
 
 class CentralRole:
