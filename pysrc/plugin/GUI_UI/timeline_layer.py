@@ -39,7 +39,10 @@ class parts:
 
         self.popup = UI_auxiliary.operation["plugin"]["other"]["menu_popup"].MenuPopup(UI_auxiliary.window, popup=True)
 
-        add_media_obj_list = ["メディアオブジェクト追加", add_media_obj]
+        def media_object_paste():
+            self.callback_operation.event("media_object_copy_run", info=UI_auxiliary.num)
+
+        add_media_obj_list = ["メディアオブジェクト追加", add_media_obj, "貼り付け", media_object_paste]
 
         popup_list = [add_media_obj_list]
         self.popup.set(popup_list)

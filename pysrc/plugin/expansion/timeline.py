@@ -14,7 +14,6 @@ import time
 import sounddevice
 import wave
 import cv2
-import signal
 
 
 class InitialValue:
@@ -353,6 +352,31 @@ class InitialValue:
             print("分割処理終了")
 
             # self.window_control.window.update()
+
+        self.media_object_copy_media_id = None
+
+        def media_object_copy_entry(info):
+            media_id = info
+            self.media_object_copy_media_id = media_id
+
+        def media_object_copy_run(info):
+
+            if self.media_object_copy_media_id is None:
+                return
+
+            layer_id = info
+
+            scroll_data = self.window_control.timeline_object[self.media_object_copy_media_id].pxf.get_event_data()
+            from_f_pos = self.scrollbar_sta_end[0]
+
+            copy_obj, layer_id = self.window_control.edit_control_auxiliary.copy_object_elements(self.media_object_copy_media_id, sta=from_f_pos, end=scroll_data.ratio_f[1])
+            layer_number = self.window_control.edit_control_auxiliary.layer_id_to_layer_number(layer_id)
+            make_object(copy_obj.obj_id, sta=from_f_pos, end=scroll_data.ratio_f[0] + scroll_data.ratio_f[1], layer_number=layer_number)
+
+            self.media_object_copy_media_id = None
+
+        self.callback_operation.set_event("media_object_copy_entry", media_object_copy_entry)
+        self.callback_operation.set_event("media_object_copy_run", media_object_copy_run)
 
         def reflect_timeline_to_movie(scroll_data):
             media_id = scroll_data.option_data["media_id"]

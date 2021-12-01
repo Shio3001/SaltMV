@@ -69,7 +69,7 @@ class KeyFrame:
         self.UI_auxiliary.new_diagram(self.uu_id)
         self.UI_auxiliary.set_shape_rhombus(self.uu_id, self.size[1] / 2, 100, 100)  # ひし形
 
-        self.UI_auxiliary.edit_control_auxiliary.add_key_frame(0, self.UI_auxiliary.option_data["media_id"], self.uu_id,overwrite=False)
+        self.UI_auxiliary.edit_control_auxiliary.add_key_frame(0, self.UI_auxiliary.option_data["media_id"], self.uu_id, overwrite=False)
         self.pxf.set_sub_point(self.uu_id)
         self.pxf.set_px_ratio_sub_point(self.uu_id, self.center_x)
         self.UI_auxiliary.edit_diagram_color(self.uu_id, "#000000")
@@ -317,8 +317,11 @@ class parts:
             synthetic_user_list.append(k)
             synthetic_user_list.append(synthetic_get.edit_synthetic)
 
-        popup_list = [effect_user_list, synthetic_user_list, ("分割", self.media_object_separate), ("削除", self.media_object_del), ("中間点追加", self.add_key_frame)]
+        popup_list = [effect_user_list, synthetic_user_list, ("分割", self.media_object_separate), ("削除", self.media_object_del), ("中間点追加", self.add_key_frame), ("複製", self.copy_object)]
         self.popup.set(popup_list)
+
+    def copy_object(self):
+        self.callback_operation.event("media_object_copy_entry", info=self.UI_auxiliary.option_data["media_id"])
 
     def media_object_separate(self):
         frame = self.pxf.px_to_f(self.popup_click_position[0])
