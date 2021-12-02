@@ -29,7 +29,7 @@ class CentralRole:
         path = rendering_main_data.various_fixed["path"]
 
         fps_point = rendering_main_data.effect_value["fps_point"]
-        fps_point_b = rendering_main_data.before_value["fps_point"]
+        fps_point_b = rendering_main_data.first_value["fps_point"]
         fps = rendering_main_data.editor["fps"]
 
         now_fps = 0

@@ -18,16 +18,14 @@ class videoDATA:
         self.video_frame = copy.deepcopy(video_frame)
         self.type = "video"
 
-        print("videoDATA", self.file_name)
-
-        sys.exit()
+        print("videoDATA", self.file_name, video_frame)
 
     def data_get(self, frame):
 
         if self.video_frame <= frame:
             frame = self.video_frame - 1
 
-        print(len(self.video[frame]), frame)
+        print(len(self.video), frame)
 
         if self.video[frame] is None:
             self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
@@ -112,27 +110,27 @@ class SaltFile:
         if ans:
             return
 
-        try:
+        # try:
             # video_info = ffmpeg.probe(file_name)
             # width = round(video_info["streams"][0]["width"])
             # height = round(video_info["streams"][0]["height"])
             # video_fps = round(eval(video_info["streams"][0]["r_frame_rate"]))
 
-            cap = cv2.VideoCapture(file_name)
+        cap = cv2.VideoCapture(file_name)
 
-            width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-            height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-            video_fps = cap.get(cv2.CAP_PROP_FPS)
-            video_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        video_fps = cap.get(cv2.CAP_PROP_FPS)
+        video_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-            print("RGB変換終了", width, height, video_fps, video_frame)
+        print("RGB変換終了", width, height, video_fps, video_frame)
 
-            video_data_class = videoDATA(cap, file_name, width, height, video_fps, video_frame)
+        video_data_class = videoDATA(cap, file_name, width, height, video_fps, video_frame)
 
-            self.DATA[file_name] = video_data_class
+        self.DATA[file_name] = video_data_class
 
-        except:
-            traceback.print_exc()
+        # except:
+        #     traceback.print_exc()
 
     def input_image(self, file_name):
 

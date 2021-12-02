@@ -30,9 +30,10 @@ tk_image_control = TkStorage()
 
 
 class EffectPluginElements:
-    def __init__(self, draw, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
+    def __init__(self, draw, effect_id, effect_value, first_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, operation, installation_sta, installation_end):
         # self.draw = draw
         self.draw = draw.astype('uint8')
+        self.first_value = first_value
         self.effect_value = effect_value
         self.before_value = before_value
         self.various_fixed = various_fixed
@@ -324,7 +325,7 @@ class SceneOutput:
 
             self.writer.write(export_draw)
             del export_draw
-            gc.collect()
+            # gc.collect()
 
         self.writer.release()
 
@@ -333,7 +334,7 @@ class SceneOutput:
         print("audio_control", self.audio_control)
 
         self.audio_control.addition_process()
-        self.audio_control.output_audio_file(self.output_temp_file_path_wav)
+        self.audio_control.output_audio_file(self.output_temp_file_path_wav, sta_f=sta, end_f=end)
 
         print(self.path)
 

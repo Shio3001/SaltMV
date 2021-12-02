@@ -131,6 +131,8 @@ namespace EffectProgress
                  << " "
                  << "next_value" << endl;
 
+            py::dict first_value = py::extract<py::dict>(effect_point_internal_id_point["default_sta"]);
+
             py::dict before_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[0]]);
             py::dict next_value = py::extract<py::dict>(effect_point_internal_id_point[around_point_key[1]]);
 
@@ -139,6 +141,9 @@ namespace EffectProgress
 
             py::list before_value_values = py::extract<py::list>(before_value.values());
             py::list next_value_values = py::extract<py::list>(next_value.values());
+
+            py::list first_value_key = py::extract<py::list>(first_value.keys());
+            py::list first_value_values = py::extract<py::list>(first_value.values());
 
             cout << "before_value"
                  << " "
@@ -222,7 +227,7 @@ namespace EffectProgress
 
             // if (cpp == "py"){
             cout << "effect_plugin_elements" << endl;
-            py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
+            py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, first_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
             cout << "procedure_return" << endl;
             py::object main_function = procedure.attr("main");
             cout << "procedure_return2" << endl;

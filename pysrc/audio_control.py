@@ -208,10 +208,19 @@ class AudioControl:
 
         self.run_flag = True
 
-    def output_audio_file(self, path):
+    def output_audio_file(self, path, sta_f=None, end_f=None):
         print("     **********AudioControl output_audio_file")
 
-        combined_has_dimension = self.combined_for_play
+        if sta_f is None:
+            sta_f = 0
+
+        if end_f is None:
+            end_f = len(self.combined_for_play)
+
+        sta_fss = sta_f * self.one_fps_samplingsize  # * sound_channles
+        end_fss = end_f * self.one_fps_samplingsize  # * sound_channles
+
+        combined_has_dimension = self.combined_for_play[sta_fss:end_fss]
         scipy_write(path, self.criterion_conversion_rate, combined_has_dimension)
 
 
