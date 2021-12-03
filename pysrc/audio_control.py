@@ -22,7 +22,7 @@ class AudioIndividual:
         self.end_frame = end_frame
         self.effect_id = effect_id
 
-        self.section = int(len(self.audio_data.shape) / self.sound_channles)
+        self.section = int(self.audio_data.shape[0] / self.sound_channles)
 
 
 class AudioControl:
@@ -219,6 +219,11 @@ class AudioControl:
 
         sta_fss = sta_f * self.one_fps_samplingsize  # * sound_channles
         end_fss = end_f * self.one_fps_samplingsize  # * sound_channles
+
+        Asum = np.sum(self.combined_for_play[sta_fss:end_fss, 0])
+        Bsum = np.sum(self.combined_for_play[sta_fss:end_fss, 1])
+
+        print("Asum,Bsum", Asum, Bsum)
 
         combined_has_dimension = self.combined_for_play[sta_fss:end_fss]
         scipy_write(path, self.criterion_conversion_rate, combined_has_dimension)
