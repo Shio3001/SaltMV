@@ -52,4 +52,4 @@ class CentralRole:
 
             return_draw = rendering_main_data.salt_file.get_video(path, int(now_fps))
 
-        return return_draw, self.starting_point
+        return "DRAW",return_draw, self.starting_point

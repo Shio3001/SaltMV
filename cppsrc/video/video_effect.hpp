@@ -63,11 +63,8 @@ namespace EffectProgress
             int effect_len = py::len(effect_group);
             py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
             np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
-
-            //cout << "effect_len"
-            //<< " " << effect_len << endl;
-
             py::object effect_group_val = py::list(effect_group.attr("values")());
+            map<string, float> accompany_value;
 
             py::list starting_point_center;
 
@@ -81,17 +78,30 @@ namespace EffectProgress
                 cout << "effect_group_val" << endl;
                 py::object send_effect = effect_group_val[i];
                 cout << "send_effect" << endl;
-                py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect));
-                // ここから
-                cout << "effect_draw_base" << endl;
-                effect_draw_base = py::extract<np::ndarray>(procedure_return[0]);
-                cout << "starting_point" << endl;
-                py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[1]);
-                for (int a = 0; a < 2; a++)
+                py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect, accompany_value));
+
+                string procedure_return_type = py::extract<string>(procedure_return[0]);
+
+                if (procedure_return_type == "DRAW")
                 {
-                    //cout << a << " procedure_return_starting_point_center " << endl;
-                    int spc = py::extract<float>(procedure_return_starting_point_center[a]);
-                    starting_point_center[a] += spc;
+                    effect_draw_base = py::extract<np::ndarray>(procedure_return[1]);
+                    py::list procedure_return_starting_point_center = py::extract<py::list>(procedure_return[2]);
+                    for (int a = 0; a < 2; a++)
+                    {
+                        int spc = py::extract<float>(procedure_return_starting_point_center[a]);
+                        starting_point_center[a] += spc;
+                    }
+                }
+                if (procedure_return_type == "ACCOMPANY")
+                {
+
+                    string key = py::extract<string>(procedure_return[1]);
+                    float val = py::extract<float>(procedure_return[2]);
+                    accompany_value[key] = val;
+                }
+                if (procedure_return_type == "AUDIO")
+                {
+                    //audioが来たとき
                 }
             }
             cout << " effect_group_return A" << endl;
@@ -106,7 +116,7 @@ namespace EffectProgress
 
             return effect_group_return;
         }
-        py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)
+        py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect, map<string, float> &accompany_value)
         {
             cout << "production_effect_individual" << endl;
 
@@ -116,6 +126,7 @@ namespace EffectProgress
             string effect_name = py::extract<string>(effect.attr("effect_name"));
             string effect_id = py::extract<string>(effect.attr("effect_id"));
             py::dict various_fixed = py::extract<py::dict>(effect.attr("various_fixed"));
+            py::dict accompany_target = py::extract<py::dict>(effect.attr("accompany_target"));
 
             py::dict easing_number = py::extract<py::dict>(effect.attr("easing_number"));
 
@@ -144,6 +155,8 @@ namespace EffectProgress
 
             py::list first_value_key = py::extract<py::list>(first_value.keys());
             py::list first_value_values = py::extract<py::list>(first_value.values());
+
+            py::list accompany_target_values = py::extract<py::list>(accompany_target.values());
 
             cout << "before_value"
                  << " "
@@ -184,17 +197,6 @@ namespace EffectProgress
                 float rx = py::extract<float>(easing_data.attr("rx"));
                 float ry = py::extract<float>(easing_data.attr("ry"));
 
-                float sample0 = BezierFunction(0, 0, gy, ry, 100);
-                float sample1 = BezierFunction(0.25, 0, gy, ry, 100);
-                float sample2 = BezierFunction(0.5, 0, gy, ry, 100);
-                float sample3 = BezierFunction(0.75, 0, gy, ry, 100);
-                float sample4 = BezierFunction(1, 0, gy, ry, 100);
-
-                cout << rate << " " << gx << " " << gy << " " << rx << " " << ry << endl;
-
-                cout << "BezierFunctionSample"
-                     << " " << sample0 << " " << sample1 << " " << sample2 << " " << sample3 << " " << sample4 << endl;
-
                 float now_y_rate;
 
                 if (gx == gy && rx == ry)
@@ -213,6 +215,19 @@ namespace EffectProgress
                 //ここら辺floatじゃないと精密さが失われて中間点を経由する時に誤差が出る
                 //なお被演算数値がどちらもint型だと出力もintになってしまうので注意
                 float pos = now_section + before;
+
+                string accompany_key = py::extract<string>(accompany_target_values[i]);
+
+                bool existence = accompany_value.find(accompany_key) != accompany_value.end();
+
+                cout << "accompany_key" << existence << endl;
+
+                if (existence)
+                {
+                    pos += accompany_value[accompany_key];
+                    cout << "accompany_key 加算" << accompany_value[accompany_key] << endl;
+                }
+
                 effect_value[before_value_key[i]] = pos;
 
                 string test_text = py::extract<string>(before_value_key[i]);
@@ -232,18 +247,6 @@ namespace EffectProgress
             py::object main_function = procedure.attr("main");
             cout << "procedure_return2" << endl;
             py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
-            //}
-            // else if (cpp == "read_video"){
-            //     cout << "effect_plugin_elements" << endl;
-            //     py::object effect_plugin_elements = py::extract<py::object>(py_out_func["EffectPluginElements"](effect_draw_base, effect_id, effect_value, before_value, next_value, various_fixed, now_frame, b_now_time, editor, python_operation, installation_sta, installation_end));
-            //     cout << "procedure_return" << endl;
-            //     py::object main_function = procedure.attr("main");
-            //     cout << "procedure_return2" << endl;
-            //     py::tuple procedure_return = py::extract<py::tuple>(main_function(effect_plugin_elements));
-            // }
-            // else{
-
-            // }
 
             cout << "effect終了" << endl;
 

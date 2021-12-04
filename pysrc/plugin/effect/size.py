@@ -36,4 +36,4 @@ class CentralRole:
 
         data.draw = data.cv2.resize(data.draw, resize_value)
 
-        return data.draw, self.starting_point
+        return "DRAW", data.draw, self.starting_point

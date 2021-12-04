@@ -27,4 +27,4 @@ class CentralRole:
         name = rendering_main_data.various_fixed["name"]
         number = rendering_main_data.effect_value["number"]
 
-        return "FLAG", name, number
+        return "ACCOMPANY", name, number

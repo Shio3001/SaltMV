@@ -20,4 +20,4 @@ class CentralRole:
         # 第一引数にself, 第二引数にメディアデータ、第三引数に居場所、第四引数に現在のフレーム, 第五引数にエディタ情報, 操作一覧
 
     def main(self, data):
-        return data.draw, self.starting_point
+        return "DRAW", data.draw, self.starting_point

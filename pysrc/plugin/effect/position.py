@@ -21,4 +21,4 @@ class CentralRole:
 
     def main(self, data):
         self.starting_point = [data.effect_value["x"], data.effect_value["y"]]
-        return data.draw, self.starting_point
+        return "DRAW", data.draw, self.starting_point

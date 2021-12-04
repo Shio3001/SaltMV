@@ -28,4 +28,4 @@ class CentralRole:
         except:
             return data.draw, self.starting_point
 
-        return im, self.starting_point
+        return "DRAW", im, self.starting_point

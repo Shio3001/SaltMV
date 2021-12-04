@@ -36,7 +36,7 @@ class CentralRole:
 
         rendering_main_data.draw = np.array(PILdraw, dtype=np.uint8)
 
-        return rendering_main_data.draw, self.starting_point
+        return "DRAW", rendering_main_data.draw, self.starting_point
 
     def rotate_z(self, PILdraw, center, angle):
 

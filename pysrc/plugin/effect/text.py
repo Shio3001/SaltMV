@@ -46,4 +46,4 @@ class CentralRole:
 
         print(rendering_main_data.draw.shape)
 
-        return rendering_main_data.draw, self.starting_point
+        return "DRAW", rendering_main_data.draw, self.starting_point

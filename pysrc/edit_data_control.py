@@ -273,6 +273,7 @@ class Storage:
 
         for ei in new_effect.effect_point.keys():
             self.edit_easing(object_order, new_effect.effect_id, ei, 0, 0, 100, 100)
+            self.set_get_accompany(object_order, new_effect.effect_id, ei, "not")
 
         return copy.deepcopy(self.media_object(object_order).effect_group[new_effect.effect_id])
 
@@ -336,6 +337,12 @@ class Storage:
 
     def get_easing(self, obj_id, effect_id, mov_key):
         return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].easing_number[mov_key]
+
+    def set_get_accompany(self, obj_id, effect_id, mov_key, target_name=None):
+        if not target_name is None:
+            self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].accompany_target[mov_key] = target_name
+
+        return self.edit_data.scenes[self.edit_data.now_scene].layer_group.object_group[obj_id][0].effect_group[effect_id].accompany_target[mov_key]
 
     def get_key_frame(self, obj_id, data=None):
         if not data is None:

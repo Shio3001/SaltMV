@@ -64,6 +64,7 @@ class EffectElements:  # えらくない
         self.effect_point_internal_id_point = {}
         self.cpp = "py"
         self.easing_number = {}
+        self.accompany_target = {}
         self.path_type = {}
         #self.export_loop = True
 

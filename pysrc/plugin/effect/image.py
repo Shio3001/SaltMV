@@ -38,4 +38,4 @@ class CentralRole:
         else:
             return_draw = rendering_main_data.salt_file.get_image(path)
 
-        return return_draw, self.starting_point
+        return "DRAW", return_draw, self.starting_point

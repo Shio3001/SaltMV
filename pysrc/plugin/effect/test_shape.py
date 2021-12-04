@@ -37,4 +37,4 @@ class CentralRole:
 
         data.draw = p2
 
-        return data.draw, self.starting_point
+        return "DRAW", data.draw, self.starting_point

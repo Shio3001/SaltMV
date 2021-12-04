@@ -549,7 +549,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             xy[0] -= text_size[0] / 2
             xy[1] -= text_size[1] / 2
 
-        # ##print("テキスト最終座標", xy[1], text_size)
+        print("テキスト最終座標", xy, text_size)
 
         # print("テキスト最終座標", xy)
 
