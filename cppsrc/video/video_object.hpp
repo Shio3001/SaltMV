@@ -28,10 +28,11 @@ namespace ObjectProgress
         py::dict layer_layer_id;
         map<int, py::object> order_decision_object_group;
         vector<int> order_decision_object_group_number;
+
+        map<string, float> accompany_value;
+
         py::dict editor;
-
         string rgb_mode;
-
         int object_len;
 
         ObjectProduction(int send_frame, py::object &send_object_group, py::dict &send_layer_layer_id, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, string send_rgb_mode)
@@ -133,7 +134,7 @@ namespace ObjectProgress
             vector<string> around_point_key = around_point_search(frame, id_time_key, id_time_value, installation_sta, installation_end);
             py::object effect_group = now_objcet.attr("effect_group"); //ここ  now_objcet  に effect_pointがあるわけないやろばか
             string synthetic_type = py::extract<string>(now_objcet.attr("synthetic"));
-            EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time, installation_sta, installation_end);
+            EP::EffectProduction *effect_production = new EP::EffectProduction(frame, effect_group, py_out_func, python_operation, video_image_control, editor, around_point_key, effect_point_internal_id_time, installation_sta, installation_end, accompany_value);
             py::list effect_group_return = effect_production->production_effect_group();
 
             np::ndarray new_effect_draw = py::extract<np::ndarray>(effect_group_return[0]);

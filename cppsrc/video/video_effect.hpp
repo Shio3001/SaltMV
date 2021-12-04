@@ -23,6 +23,7 @@ namespace EffectProgress
         py::dict editor;
         py::dict effect_point_internal_id_time;
         vector<string> around_point_key;
+        map<string, float> *accompany_value;
         int now_frame;
         int before_time;
         int next_time;
@@ -31,7 +32,7 @@ namespace EffectProgress
 
         //py::list audio_object;
 
-        EffectProduction(int send_now_frame, py::object &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key, py::dict &send_effect_point_internal_id_time, int send_installation_sta, int send_installation_end)
+        EffectProduction(int send_now_frame, py::object &send_effect_group, py::dict &send_py_out_func, py::dict &send_python_operation, py::object &send_video_image_control, py::dict &send_editor, vector<string> send_around_point_key, py::dict &send_effect_point_internal_id_time, int send_installation_sta, int send_installation_end, map<string, float> &send_accompany_value)
         {
             effect_group = send_effect_group;
             py_out_func = send_py_out_func;
@@ -47,6 +48,8 @@ namespace EffectProgress
 
             before_time = py::extract<float>(effect_point_internal_id_time[around_point_key[0]]);
             next_time = py::extract<float>(effect_point_internal_id_time[around_point_key[1]]);
+
+            accompany_value = &send_accompany_value;
 
             cout << before_time << " " << next_time << endl;
         }
@@ -64,7 +67,6 @@ namespace EffectProgress
             py::tuple shape_size = py::make_tuple(editor["y"], editor["x"], 4);
             np::ndarray effect_draw_base = np::zeros(shape_size, np::dtype::get_builtin<uint>());
             py::object effect_group_val = py::list(effect_group.attr("values")());
-            map<string, float> accompany_value;
 
             py::list starting_point_center;
 
@@ -78,7 +80,7 @@ namespace EffectProgress
                 cout << "effect_group_val" << endl;
                 py::object send_effect = effect_group_val[i];
                 cout << "send_effect" << endl;
-                py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect, accompany_value));
+                py::tuple procedure_return = py::extract<py::tuple>(production_effect_individual(effect_draw_base, send_effect));
 
                 string procedure_return_type = py::extract<string>(procedure_return[0]);
 
@@ -97,7 +99,9 @@ namespace EffectProgress
 
                     string key = py::extract<string>(procedure_return[1]);
                     float val = py::extract<float>(procedure_return[2]);
-                    accompany_value[key] = val;
+                    //accompany_value[key] = val;
+                    //(*ss)[key]
+                    (*accompany_value)[key] = val;
                 }
                 if (procedure_return_type == "AUDIO")
                 {
@@ -116,7 +120,7 @@ namespace EffectProgress
 
             return effect_group_return;
         }
-        py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect, map<string, float> &accompany_value)
+        py::tuple production_effect_individual(np::ndarray &effect_draw_base, py::object &send_effect)
         {
             cout << "production_effect_individual" << endl;
 
@@ -218,14 +222,15 @@ namespace EffectProgress
 
                 string accompany_key = py::extract<string>(accompany_target_values[i]);
 
-                bool existence = accompany_value.find(accompany_key) != accompany_value.end();
+                bool existence = accompany_value->find(accompany_key) != accompany_value->end();
 
                 cout << "accompany_key" << existence << endl;
 
                 if (existence)
                 {
-                    pos += accompany_value[accompany_key];
-                    cout << "accompany_key 加算" << accompany_value[accompany_key] << endl;
+                    //(*accompany_value)[accompany_key] = val;
+                    pos += (*accompany_value)[accompany_key];
+                    cout << "accompany_key 加算" << (*accompany_value)[accompany_key] << endl;
                 }
 
                 effect_value[before_value_key[i]] = pos;
