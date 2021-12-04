@@ -24,5 +24,7 @@ class CentralRole:
         pro = data.draw[:, :, 3].astype('float64')
         alpha_draw = data.np.full(data.draw[:, :, 3].shape, data.effect_value["alpha"] / 100)
         pro *= alpha_draw
+
         data.draw[:, :, 3] = pro.astype('uint8')
-        return "AUDIO", data.draw, self.starting_point
+
+        return "DRAW", data.draw, self.starting_point
