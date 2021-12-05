@@ -71,6 +71,8 @@ file_py_cpp = "pysrc"
 file_type = ".py"
 plugin_dict_name = "plugin"
 
+operation["path"] = {}
+operation["path"]["py_path"] = py_path
 
 plugin_path = os.path.join(py_path.replace(this_name, ''), file_py_cpp, "plugin")
 operation["log"].write(now_path)

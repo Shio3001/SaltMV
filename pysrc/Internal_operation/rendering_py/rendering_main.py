@@ -147,7 +147,9 @@ class SceneOutput:
 
         self.fmt = cv2.VideoWriter_fourcc('H', '2', '6', '4')  # ファイル形式(ここではmp4)
         self.size = (self.x, self.y)
-        self.temp_path = "pysrc/Internal_operation/rendering_py/temp"
+
+        self.py_path = self.operation["path"]["py_path"]
+        self.temp_path = "{0}/pysrc/Internal_operation/rendering_py/temp".format(self.py_path)
         self.output_temp_file_path_mp4 = "{0}/temp_nonsound_temp.mp4".format(self.temp_path)
         self.output_temp_file_path_wav = "{0}/temp_nonsound_temp.wav".format(self.temp_path)
 
