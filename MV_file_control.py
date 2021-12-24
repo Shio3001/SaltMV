@@ -10,7 +10,6 @@ import sys
 class videoDATA:
     def __init__(self, cap, file_name, width, height, video_fps, video_frame):
         self.cap = cap
-        self.video = [None] * video_frame
         self.file_name = copy.deepcopy(file_name)
         self.width = copy.deepcopy(width)
         self.height = copy.deepcopy(height)
@@ -25,15 +24,12 @@ class videoDATA:
         if self.video_frame <= frame:
             frame = self.video_frame - 1
 
-        print(len(self.video), frame)
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
+        ret, video_dataBGR = self.cap.read()
+        print("ret", ret)
+        video = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
 
-        if self.video[frame] is None:
-            self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
-            ret, video_dataBGR = self.cap.read()
-            print("ret", ret)
-            self.video[frame] = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
-
-        return self.video[frame]
+        return video
 
 
 class imageDATA:

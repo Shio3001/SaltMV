@@ -112,7 +112,7 @@ class CentralRole:
             if not installation_consistency:
                 self.setup_audio_control(rendering_main_data, path)
 
-        return "AUDIO"
+        return "AUDIO", None
 
     def get_now_file(self):
         return self.now_file, self.installation_sta, self.installation_end
