@@ -9,6 +9,7 @@ class parts:
         xgap = 5
         ygap = 5
         left = 50
+        up_normal = 30
 
         UI_auxiliary.new_diagram("text", diagram_type="text")
         #UI_auxiliary.edit_diagram_position("text", x=0, y=pos_y_normal)
@@ -64,7 +65,7 @@ class parts:
             # xgap
             # ygap
 
-            pos_y = (pos_y_normal + ygap) * column
+            pos_y = (pos_y_normal + ygap) * column + up_normal
             text_fixed_x_size = (text_box_size + xgap) * 3 - xgap
 
             textbox1_x = left + (text_box_size + xgap) * 0

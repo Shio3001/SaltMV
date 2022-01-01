@@ -21,13 +21,23 @@ class videoDATA:
 
     def data_get(self, frame):
 
-        if self.video_frame <= frame:
+        if self.video_frame < frame:
             frame = self.video_frame - 1
+
+        if frame < 0:
+            frame = 0
 
         self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
         ret, video_dataBGR = self.cap.read()
         print("ret", ret)
-        video = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
+
+        video = None
+
+        if video_dataBGR is None:
+            video = self.data_get(0)
+
+        else:
+            video = cv2.cvtColor(video_dataBGR.astype('uint8'), cv2.COLOR_BGR2RGBA)
 
         return video
 

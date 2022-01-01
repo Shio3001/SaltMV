@@ -16,13 +16,18 @@ class InitialValue:
 
         setting_effect.procedure = CentralRole()
         setting_effect.path_type = {"path": "video"}
-        # setting_effect.cpp = "read_video"
 
 
 class CentralRole:
     def __init__(self):
         self.starting_point = [0, 0]
         self.now_file = ""
+
+    def set_message(self, element, salt_file):
+        path = element.various_fixed["path"]
+        file_data = salt_file.get_data(path)
+        message = file_data.video_frame
+        return message
 
     def main(self, rendering_main_data):
 

@@ -66,6 +66,8 @@ class EffectElements:  # えらくない
         self.easing_number = {}
         self.accompany_target = {}
         self.path_type = {}
+
+        self.message = "(´･ω･`)"
         #self.export_loop = True
 
         print("エフェクトを追加しました : effectElements [ Elements ]")

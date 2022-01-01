@@ -549,7 +549,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
             xy[0] -= text_size[0] / 2
             xy[1] -= text_size[1] / 2
 
-        print("テキスト最終座標", xy, text_size)
+        print("テキスト最終座標", xy)
 
         # print("テキスト最終座標", xy)
 
@@ -590,7 +590,7 @@ class SendUIData:  # パーツひとつあたりのためのclass
         # print("state", state)
         text_color = self.canvas_data.territory[self.te_name].diagram[di_name].text_color
         back_ground_color = self.canvas_data.territory[self.te_name].diagram[di_name].back_ground_color
-        self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=state,fg=text_color, bg=back_ground_color)
+        self.canvas_data.territory[self.te_name].diagram[di_name].entry.configure(state=state, fg=text_color, bg=back_ground_color)
 
     def diagram_forget(self, di_name, forget):
         self.canvas_data.territory[self.te_name].diagram[di_name].forget = forget
@@ -691,7 +691,6 @@ class SendUIData:  # パーツひとつあたりのためのclass
             self.canvas_data.territory[self.te_name].diagram[di_name].readonly = copy.deepcopy(bool(readonly))
         if not entry_event is None and self.get_diagram_type(di_name, "TextBoxData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].entry_event_callback = entry_event
-
 
         if not text_color is None and self.get_diagram_type(di_name, "TextBoxData"):
             self.canvas_data.territory[self.te_name].diagram[di_name].text_color = copy.deepcopy(text_color)

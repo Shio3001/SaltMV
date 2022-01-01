@@ -4,6 +4,8 @@ import os
 import copy
 import datetime
 
+import traceback
+
 
 class TextReceiveAccompany:
     def __init__(self, data, media_id, effect_id, mov_key, stack_add_timelime_effect):
@@ -113,6 +115,11 @@ class InitialValue:
         self.window_control.edit_canvas_size("parameter", x=1000, y=1000)
         self.window_control.edit_canvas_position("parameter", x=0, y=0)
 
+        self.message_ui = self.window_control.new_parts("parameter", "message_ui", parts_name="text")
+        self.message_ui.edit_territory_position(x=0, y=0)
+        self.message_ui.edit_diagram_text("text", font_size=20)
+        self.message_ui.territory_draw()
+
         self.window_control.ui_management = self.window_control.operation["plugin"]["other"]["timeline_UI_management"].UIManagement(self.window_control)
 
         def undo_stack(undo):
@@ -134,9 +141,17 @@ class InitialValue:
 
             # element, effect_point_internal_id_time, media_id = self.send.effect_element, self.send.effect_point_internal_id_time, self.send.media_id
 
+            try:
+                salt_file = self.window_control.operation["salt_file"]
+                message = element.procedure.set_message(element, salt_file)
+                self.message_ui.edit_diagram_text("text", text=message)
+
+            except:
+                traceback.print_exc()
+
             # for i, e in enumerate(elements_effect.values()):
             before_point, next_point, left_key, right_key = self.time_search(self.push_f, element, effect_point_internal_id_time, key_get=True)
-            #print("before_point, next_point", before_point, next_point)
+            # print("before_point, next_point", before_point, next_point)
             if next_point is None:
                 for pk_b, pv_b in zip(before_point.keys(), before_point.values()):
                     # if pk_b in self.window_control.edit_control_auxiliary.effect_point_default_keys:
@@ -192,7 +207,7 @@ class InitialValue:
             self.window_control.ui_management.set_old_elements_len()
             make()
 
-            #old_text_data = self.window_control.edit_control_auxiliary.get_key_frame_val_list(self.send.media_id, self.send.effect_element.effect_id)
+            # old_text_data = self.window_control.edit_control_auxiliary.get_key_frame_val_list(self.send.media_id, self.send.effect_element.effect_id)
 
             new_send_effect_id = copy.deepcopy(self.send.effect_element.effect_id)
 
@@ -208,6 +223,8 @@ class InitialValue:
             self.window_control.ui_management.del_ignition(self.now)
             self.window_control.window_title_set("タイムライン設定")
 
+            self.message_ui.edit_diagram_text("text", text="待機中")
+
         self.window_control.edit_control_auxiliary.callback_operation.set_event("element_ui_all_del", element_ui_all_del)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("element_lord", element_lord)
         self.window_control.edit_control_auxiliary.callback_operation.set_event("element_del", self.window_control.ui_management.element_del)
@@ -216,7 +233,7 @@ class InitialValue:
             ui_id = self.window_control.edit_control_auxiliary.elements.make_id("parameter_UI")
             button = self.window_control.new_parts("parameter", ui_id, parts_name="button")
 
-            #print(button, "ボタンをインスタンス 化しました")
+            # print(button, "ボタンをインスタンス 化しました")
             return button
 
         def set_easing_func(info):
