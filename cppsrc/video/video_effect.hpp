@@ -56,7 +56,11 @@ namespace EffectProgress
 
         float BezierFunction(float t, float xy1, float xy2, float xy3, float xy4)
         {
-            float bezier_result = pow((1 - t), 3) * xy1 + 3 * pow((1 - t), 2) * t * xy2 + 3 * (1 - t) * pow(t, 2) * xy3 + pow(t, 3) * xy4;
+            float tp = 1 - t;
+            float bezier_result = pow(tp, 3) * xy1 +
+                                  3 * pow(tp, 2) * t * xy2 +
+                                  3 * tp * pow(t, 2) * xy3 +
+                                  pow(t, 3) * xy4;
             return bezier_result;
         }
 
@@ -200,19 +204,24 @@ namespace EffectProgress
                 float gy = py::extract<float>(easing_data.attr("gy"));
                 float rx = py::extract<float>(easing_data.attr("rx"));
                 float ry = py::extract<float>(easing_data.attr("ry"));
+                cout << "gx gy rx ry";
+                cout << gx;
+                cout << " ";
+                cout << gy;
+                cout << " ";
+                cout << rx;
+                cout << " ";
+                cout << ry;
+                cout << " " << endl;
+
+                float now_x_rate;
+                now_x_rate = BezierFunction(rate, 0, gx, rx, 100) / 100;
 
                 float now_y_rate;
+                now_y_rate = BezierFunction(rate, 0, gy, ry / 100, 1);
 
-                if (gx == gy && rx == ry)
-                {
-                    now_y_rate = rate;
-                }
-                else
-                {
-                    now_y_rate = BezierFunction(rate, 0, gy, ry, 100) / 100;
-                }
-
-                cout << "now_y_rate" << now_y_rate << endl;
+                cout << "now_x_rate" << rate << " " << now_x_rate << endl;
+                cout << "now_y_rate" << rate << " " << now_y_rate << endl;
 
                 float now_section = all_section * now_y_rate;
 
