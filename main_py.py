@@ -26,7 +26,7 @@ from pysrc import undo
 from pysrc.chord_tool import class_var_to_dict
 
 from cppsrc.video import video_main
-from SaltBezierCurve import forpy_saltbeziercurve as SaltBezierCurve
+from SaltBezierCurve import forpy_saltbeziercurve
 
 from pysrc import synthetic
 
@@ -113,7 +113,7 @@ operation["plugin"]["synthetic"] = {}
 
 typecpp_message = "TypeHppfileDefaultInclude"
 operation["plugin"]["synthetic"]["normal"] = typecpp_message
-operation["SaltBezierCurve"] = SaltBezierCurve
+operation["SaltBezierCurve"] = forpy_saltbeziercurve
 
 operation["salt_file"] = MV_file_control.SaltFile()
 #operation["font"] = Font.FontControl()
