@@ -26,7 +26,7 @@ from pysrc import undo
 from pysrc.chord_tool import class_var_to_dict
 
 from cppsrc.video import video_main
-from BezierCurve import forpy_saltbeziercurve as SaltBezierCurve
+from SaltBezierCurve import forpy_saltbeziercurve as SaltBezierCurve
 
 from pysrc import synthetic
 

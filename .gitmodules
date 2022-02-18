@@ -1,0 +1,3 @@
+[submodule "SaltBezierCurve"]
+	path = SaltBezierCurve
+	url = https://github.com/Shio3001/SaltBezierCurve.git
